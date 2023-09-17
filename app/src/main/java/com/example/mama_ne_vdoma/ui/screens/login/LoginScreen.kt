@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -26,7 +27,6 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.example.mama_ne_vdoma.ui.theme.Gray
 import com.example.mama_ne_vdoma.ui.theme.Mama_ne_vdomaTheme
-import com.example.mama_ne_vdoma.utils.CustomButton
 import com.example.mama_ne_vdoma.utils.ShowHidePasswordTextField
 import com.example.mama_ne_vdoma.utils.SocialLoginBlock
 import com.example.mama_ne_vdoma.utils.getTextWithUnderline
@@ -123,16 +123,15 @@ fun LoginUser(
 
                     Spacer(modifier = modifier.height(48.dp))
 
-                    CustomButton(
+                    Button(
                         modifier = modifier
                             .fillMaxWidth()
                             .height(48.dp)
                             .padding(horizontal = 16.dp),
-                        text = "Увійти",
-                        containerColor = MaterialTheme.colorScheme.primary,
-                        contentColor = MaterialTheme.colorScheme.onPrimary,
-                        action = onLogin
-                    )
+                        onClick = onLogin
+                    ) {
+                        Text(text = "Увійти")
+                    }
 
                     Spacer(modifier = modifier.height(32.dp))
 

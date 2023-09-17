@@ -2,6 +2,7 @@ package com.example.mama_ne_vdoma.utils
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,6 +20,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -32,7 +35,7 @@ fun SocialLoginBlock(
     textForBottomButton: CharSequence = "",
     onGoogleLogin: () -> Unit = {},
     onFBLogin: () -> Unit = {},
-    onLogin: () -> Unit = {},
+    onAction: () -> Unit = {},
 ) {
     Column(
         modifier = modifier
@@ -97,14 +100,27 @@ fun SocialLoginBlock(
 
         Spacer(modifier = modifier.height(24.dp))
 
-        CustomButton(
-            modifier = modifier
-                .fillMaxWidth()
-                .height(48.dp),
-            text = textForBottomButton,
-            containerColor = MaterialTheme.colorScheme.background,
-            contentColor = MaterialTheme.colorScheme.onBackground,
-            action = onLogin
-        )
+        if (textForBottomButton is AnnotatedString)
+            Text(
+                modifier = modifier
+                    .clickable {
+                        onAction()
+                    }
+                    .fillMaxWidth()
+                    .height(48.dp),
+                text = textForBottomButton,
+                textAlign = TextAlign.Center
+            )
+        else
+            Text(
+                modifier = modifier
+                    .clickable {
+                        onAction()
+                    }
+                    .fillMaxWidth()
+                    .height(48.dp),
+                text = textForBottomButton.toString(),
+                textAlign = TextAlign.Center
+            )
     }
 }

@@ -6,7 +6,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 
-fun getTextWithUnderline(simpleText: String, underlinedText: String, isBold: Boolean = true) = buildAnnotatedString {
+fun getTextWithUnderline(
+    simpleText: String,
+    underlinedText: String,
+    isBold: Boolean = true
+) = buildAnnotatedString {
     append(simpleText)
     val fontWeight = if (isBold) FontWeight.Bold else FontWeight.Normal
     withStyle(

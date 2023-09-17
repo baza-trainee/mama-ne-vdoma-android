@@ -1,23 +1,25 @@
 package com.example.mama_ne_vdoma.ui.screens.start
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Button
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.example.mama_ne_vdoma.R
 import com.example.mama_ne_vdoma.ui.theme.Mama_ne_vdomaTheme
-import com.example.mama_ne_vdoma.utils.CustomButton
 import com.example.mama_ne_vdoma.utils.getTextWithUnderline
 
 @Composable
@@ -54,7 +56,7 @@ fun StartScreen(
                     contentDescription = "start",
                     contentScale = ContentScale.Fit
                 )
-                CustomButton(
+                Button(
                     modifier = modifier
                         .constrainAs(btnStart) {
                             bottom.linkTo(btnLogin.top, margin = 16.dp)
@@ -62,22 +64,23 @@ fun StartScreen(
                         .fillMaxWidth()
                         .height(48.dp)
                         .padding(horizontal = 16.dp),
-                    text = "Почати",
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    contentColor = MaterialTheme.colorScheme.onPrimary,
-                    action = onStart
-                )
-                CustomButton(
-                    modifier = modifier.constrainAs(btnLogin) {
-                        bottom.linkTo(parent.bottom, margin = 16.dp)
-                    }
+                    onClick = onStart
+                ) {
+                    Text(text = "Почати")
+                }
+                Text(
+                    text = getTextWithUnderline("Вже є акаунт? ", "Увійти"),
+                    modifier = modifier
+                        .constrainAs(btnLogin) {
+                            bottom.linkTo(parent.bottom, margin = 16.dp)
+                        }
+                        .clickable {
+                            onLogin()
+                        }
                         .fillMaxWidth()
                         .height(48.dp)
                         .padding(horizontal = 16.dp),
-                    text = getTextWithUnderline("Вже є акаунт? ", "Увійти"),
-                    containerColor = MaterialTheme.colorScheme.background,
-                    contentColor = MaterialTheme.colorScheme.onBackground,
-                    action = onLogin
+                    textAlign = TextAlign.Center
                 )
             }
         }

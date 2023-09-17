@@ -7,6 +7,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,6 +22,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -41,7 +43,6 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.example.mama_ne_vdoma.R
 import com.example.mama_ne_vdoma.ui.theme.Mama_ne_vdomaTheme
-import com.example.mama_ne_vdoma.utils.CustomButton
 import kotlinx.coroutines.launch
 
 @Composable
@@ -167,50 +168,47 @@ fun InfoScreen(
                                 )
                             }
                         }
-                        CustomButton(
+                        Text(
                             modifier = modifier
+                                .clickable {
+                                    onCreate()
+                                }
                                 .constrainAs(btnSkip) {
                                     top.linkTo(parent.top)
                                     bottom.linkTo(parent.bottom)
-                                    end.linkTo(btnNext.start)
-                                }
-                                .height(48.dp),
-                            text = "Пропустити",
-                            containerColor = MaterialTheme.colorScheme.background,
-                            contentColor = MaterialTheme.colorScheme.onBackground,
-                            action = onCreate
+                                    end.linkTo(btnNext.start, 24.dp)
+                                },
+                            text = "Пропустити"
                         )
-                        CustomButton(
-                            text = ">",
-                            fontSize = 24.sp,
+                        Button(
                             shape = CircleShape,
-                            containerColor = MaterialTheme.colorScheme.primary,
-                            contentColor = MaterialTheme.colorScheme.onPrimary,
                             modifier = modifier
                                 .size(60.dp)
                                 .constrainAs(btnNext) {
                                     top.linkTo(parent.top)
                                     bottom.linkTo(parent.bottom)
                                     end.linkTo(parent.end, 16.dp)
-                                }
-                        ) {
-                            with(pagerState) {
-                                scrollCoroutineScope.launch {
-                                    animateScrollToPage(currentPage + 1)
+                                },
+                            onClick = {
+                                with(pagerState) {
+                                    scrollCoroutineScope.launch {
+                                        animateScrollToPage(currentPage + 1)
+                                    }
                                 }
                             }
+                        ) {
+                            Text(text = ">", fontSize = 24.sp)
                         }
                     } else {
-                        CustomButton(
+                        Button(
                             modifier = modifier
                                 .height(48.dp)
                                 .fillMaxWidth()
                                 .padding(horizontal = 16.dp),
-                            text = "Почати",
-                            containerColor = MaterialTheme.colorScheme.primary,
-                            contentColor = MaterialTheme.colorScheme.onPrimary,
-                            action = onCreate
-                        )
+                            onClick = onCreate
+                        ) {
+                            Text(text = "Почати")
+                        }
                     }
                 }
             }
