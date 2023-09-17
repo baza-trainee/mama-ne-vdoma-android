@@ -7,16 +7,17 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
@@ -50,7 +51,10 @@ fun InfoScreenFunc(onCreate: () -> Unit) {
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun InfoScreen(modifier: Modifier = Modifier, onCreate: () -> Unit = {}) {
+fun InfoScreen(
+    modifier: Modifier = Modifier,
+    onCreate: () -> Unit = {}
+) {
 
     val scrollCoroutineScope = rememberCoroutineScope()
 
@@ -75,73 +79,82 @@ fun InfoScreen(modifier: Modifier = Modifier, onCreate: () -> Unit = {}) {
             ConstraintLayout(
                 modifier = modifier.fillMaxSize()
             ) {
-                val (pager, footer) = createRefs()
+                val (pager, spacer, footer) = createRefs()
 
                 HorizontalPager(
                     state = pagerState,
                     modifier = Modifier
                         .constrainAs(pager) {
                             top.linkTo(parent.top)
-                            bottom.linkTo(footer.top, margin = 16.dp)
-                            height = Dimension.fillToConstraints
+                            height = Dimension.preferredWrapContent
                         }
                         .fillMaxWidth()
                 ) { page ->
                     Column(
-                        modifier = modifier.fillMaxWidth()
+                        modifier = modifier.fillMaxWidth(),
+                        verticalArrangement = Arrangement.Top
                     ) {
                         Image(
-                            modifier = modifier
-                                .fillMaxWidth()
-                                .padding(
-                                    bottom = 16.dp
-                                ),
+                            modifier = modifier.fillMaxWidth(),
                             painter = painterResource(id = pagerImageContent[page]),
                             contentDescription = pageTextContent[page],
                             contentScale = ContentScale.FillWidth
+                        )
+                        Spacer(
+                            modifier = modifier.height(16.dp)
                         )
                         Text(
                             text = "Няня у твоєму телефоні",
                             color = MaterialTheme.colorScheme.primary,
                             modifier = modifier
                                 .fillMaxWidth()
-                                .padding(
-                                    bottom = 16.dp
-                                ),
+                                .padding(horizontal = 24.dp),
                             fontSize = 24.sp,
                             textAlign = TextAlign.Center
+                        )
+                        Spacer(
+                            modifier = modifier.height(8.dp)
                         )
                         Text(
                             text = pageTextContent[page],
                             color = MaterialTheme.colorScheme.onBackground,
                             modifier = modifier
-                                .fillMaxWidth(),
+                                .fillMaxWidth()
+                                .padding(horizontal = 24.dp),
                             fontSize = 16.sp,
                             textAlign = TextAlign.Center
                         )
                     }
                 }
 
-                val (indicator, btnSkip, btnNext) = createRefs()
+                Spacer(
+                    modifier = modifier
+                        .constrainAs(spacer) {
+                            top.linkTo(pager.bottom, 8.dp)
+                            bottom.linkTo(footer.top, 8.dp)
+                        }
+                        .height(16.dp)
+                )
 
                 ConstraintLayout(
                     modifier = modifier
                         .fillMaxWidth()
                         .constrainAs(footer) {
-                            bottom.linkTo(parent.bottom, margin = 16.dp)
+                            bottom.linkTo(parent.bottom, 16.dp)
+                            height = Dimension.preferredValue(70.dp)
                         }
-                        .wrapContentHeight()
-                        .padding(bottom = 16.dp)
+                        .background(MaterialTheme.colorScheme.background)
                 ) {
+                    val (indicator, btnSkip, btnNext) = createRefs()
+
                     if (pagerState.currentPage < 2) {
                         Row(
                             modifier = modifier
-                                .wrapContentHeight()
                                 .constrainAs(indicator) {
                                     top.linkTo(parent.top)
                                     bottom.linkTo(parent.bottom)
                                 }
-                                .padding(horizontal = 8.dp)
+                                .padding(horizontal = 16.dp)
                         ) {
                             repeat(pageTextContent.size) { iteration ->
                                 Indicator(
@@ -157,10 +170,10 @@ fun InfoScreen(modifier: Modifier = Modifier, onCreate: () -> Unit = {}) {
                         CustomButton(
                             modifier = modifier
                                 .constrainAs(btnSkip) {
-                                top.linkTo(parent.top)
-                                bottom.linkTo(parent.bottom)
-                                end.linkTo(btnNext.start)
-                            }
+                                    top.linkTo(parent.top)
+                                    bottom.linkTo(parent.bottom)
+                                    end.linkTo(btnNext.start)
+                                }
                                 .height(48.dp),
                             text = "Пропустити",
                             containerColor = MaterialTheme.colorScheme.background,
@@ -172,7 +185,7 @@ fun InfoScreen(modifier: Modifier = Modifier, onCreate: () -> Unit = {}) {
                             fontSize = 24.sp,
                             shape = CircleShape,
                             containerColor = MaterialTheme.colorScheme.primary,
-                            contentColor =MaterialTheme.colorScheme.onPrimary,
+                            contentColor = MaterialTheme.colorScheme.onPrimary,
                             modifier = modifier
                                 .size(60.dp)
                                 .constrainAs(btnNext) {
@@ -192,8 +205,7 @@ fun InfoScreen(modifier: Modifier = Modifier, onCreate: () -> Unit = {}) {
                             modifier = modifier
                                 .height(48.dp)
                                 .fillMaxWidth()
-                                .padding(horizontal = 16.dp)
-                            ,
+                                .padding(horizontal = 16.dp),
                             text = "Почати",
                             containerColor = MaterialTheme.colorScheme.primary,
                             contentColor = MaterialTheme.colorScheme.onPrimary,
