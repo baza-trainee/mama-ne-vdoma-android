@@ -16,8 +16,6 @@ fun NavGraphBuilder.createUserNavGraph(
         composable("create_user_screen") {
             CreateUserFunc(
                 {},
-                {},
-                {},
                 { navController.navigate("login_screen") }
             )
         }
