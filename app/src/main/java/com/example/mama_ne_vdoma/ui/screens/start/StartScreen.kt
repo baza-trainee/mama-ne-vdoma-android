@@ -49,15 +49,16 @@ fun StartScreen(
                 .fillMaxSize()
         ) {
             ConstraintLayout(
-                modifier = modifier.fillMaxWidth()
+                modifier = modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp)
             ) {
                 val (image, btnStart, btnLogin) = createRefs()
                 Image(
                     modifier = modifier
-                        .fillMaxWidth()
                         .constrainAs(image) {
-                            top.linkTo(parent.top)
-                            bottom.linkTo(btnStart.top, margin = 16.dp)
+                            top.linkTo(parent.top, margin = 24.dp)
+                            bottom.linkTo(btnStart.top, margin = 24.dp)
                             height = Dimension.fillToConstraints
                         },
                     painter = painterResource(id = R.drawable.collage),
@@ -71,8 +72,7 @@ fun StartScreen(
                             bottom.linkTo(btnLogin.top, margin = 16.dp)
                         }
                         .fillMaxWidth()
-                        .height(48.dp)
-                        .padding(horizontal = 16.dp),
+                        .height(48.dp),
                     onClick = onStart
                 ) {
                     Text(text = "Почати")
@@ -90,8 +90,7 @@ fun StartScreen(
                             onLogin()
                         }
                         .fillMaxWidth()
-                        .height(48.dp)
-                        .padding(horizontal = 16.dp),
+                        .height(48.dp),
                     textAlign = TextAlign.Center
                 )
             }
