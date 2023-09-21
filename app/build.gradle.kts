@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.mama_ne_vdoma"
+    namespace = "tech.baza_trainee.mama_ne_vdoma"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.mama_ne_vdoma"
+        applicationId = "tech.baza_trainee.mama_ne_vdoma"
         minSdk = 24
         targetSdk = 33
         versionCode = 1
@@ -72,7 +72,10 @@ dependencies {
     implementation("androidx.compose.material:material:1.5.1")
     implementation("androidx.compose.material:material-icons-extended:1.5.1")
 
+    implementation ("com.google.accompanist:accompanist-permissions:0.33.1-alpha")
+
     //Google Maps
+    implementation("com.google.maps.android:maps-compose:2.4.0")
     implementation("com.google.android.gms:play-services-maps:18.1.0")
     implementation("com.google.android.gms:play-services-location:21.0.1")
     implementation("com.google.maps.android:android-maps-utils:2.3.0")
