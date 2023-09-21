@@ -1,4 +1,4 @@
-package com.example.mama_ne_vdoma.ui.screens.create_user
+package com.example.mama_ne_vdoma.ui.screens.login
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -73,7 +73,7 @@ fun RestorePassword(
                                     onBack()
                                 }
                                 .constrainAs(back) {
-                                    start.linkTo(parent.start, 16.dp)
+                                    start.linkTo(parent.start, 24.dp)
                                 },
                             text = "<",
                             fontSize = 20.sp,
@@ -84,7 +84,7 @@ fun RestorePassword(
                             modifier = modifier
                                 .constrainAs(title) {
                                     start.linkTo(back.end, 16.dp)
-                                    end.linkTo(parent.end, 16.dp)
+                                    end.linkTo(parent.end, 24.dp)
                                     width = Dimension.fillToConstraints
                                 },
                             text = "Забули пароль?",
@@ -112,7 +112,7 @@ fun RestorePassword(
                         value = "",
                         onValueChange = {},
                         modifier = modifier
-                            .padding(horizontal = 16.dp)
+                            .padding(horizontal = 24.dp)
                             .fillMaxWidth(),
                         label = { Text("Введіть свій email") },
                         colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -127,7 +127,7 @@ fun RestorePassword(
                     modifier = modifier
                         .fillMaxWidth()
                         .height(48.dp)
-                        .padding(horizontal = 16.dp),
+                        .padding(horizontal = 24.dp),
                     onClick = onRestore
                 ) {
                     Text(text = "Відправити")

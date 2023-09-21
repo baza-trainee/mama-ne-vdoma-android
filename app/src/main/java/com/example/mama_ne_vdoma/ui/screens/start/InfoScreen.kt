@@ -171,7 +171,7 @@ fun InfoScreen(
                                         top.linkTo(parent.top)
                                         bottom.linkTo(parent.bottom)
                                     }
-                                    .padding(horizontal = 16.dp)
+                                    .padding(horizontal = 24.dp)
                             ) {
                                 repeat(pageTextContent.size) { iteration ->
                                     val isSelected by remember {
@@ -205,7 +205,7 @@ fun InfoScreen(
                                     .constrainAs(btnNext) {
                                         top.linkTo(parent.top)
                                         bottom.linkTo(parent.bottom)
-                                        end.linkTo(parent.end, 16.dp)
+                                        end.linkTo(parent.end, 24.dp)
                                     },
                                 onClick = {
                                     with(pagerState) {
@@ -229,7 +229,7 @@ fun InfoScreen(
                             modifier = modifier
                                 .height(48.dp)
                                 .fillMaxWidth()
-                                .padding(horizontal = 16.dp),
+                                .padding(horizontal = 24.dp),
                             onClick = onCreate
                         ) {
                             Text(text = "Почати")

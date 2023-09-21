@@ -94,7 +94,7 @@ fun LoginUser(
                         value = "",
                         onValueChange = {},
                         modifier = modifier
-                            .padding(horizontal = 16.dp)
+                            .padding(horizontal = 24.dp)
                             .fillMaxWidth(),
                         label = { Text("Введіть свій email") },
                         colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -108,7 +108,7 @@ fun LoginUser(
 
                     ShowHidePasswordTextField(
                         modifier = modifier
-                            .padding(horizontal = 16.dp)
+                            .padding(horizontal = 24.dp)
                             .fillMaxWidth(),
                         label = "Введіть свій пароль",
                         placeHolder = "Пароль"
@@ -119,7 +119,7 @@ fun LoginUser(
                     Text(
                         modifier = modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 16.dp)
+                            .padding(horizontal = 24.dp)
                             .clickable(
                                 indication = null,
                                 interactionSource = remember { MutableInteractionSource() }
@@ -137,7 +137,7 @@ fun LoginUser(
                         modifier = modifier
                             .fillMaxWidth()
                             .height(48.dp)
-                            .padding(horizontal = 16.dp),
+                            .padding(horizontal = 24.dp),
                         onClick = onLogin
                     ) {
                         Text(text = "Увійти")
@@ -154,7 +154,7 @@ fun LoginUser(
                                 .height(height = 2.dp)
                                 .background(color = Gray)
                                 .constrainAs(box1) {
-                                    start.linkTo(parent.start, 16.dp)
+                                    start.linkTo(parent.start, 24.dp)
                                     end.linkTo(text.start, 16.dp)
                                     top.linkTo(parent.top)
                                     bottom.linkTo(parent.bottom)
@@ -179,7 +179,7 @@ fun LoginUser(
                                 .background(color = Gray)
                                 .constrainAs(box2) {
                                     start.linkTo(text.end, 16.dp)
-                                    end.linkTo(parent.end, 16.dp)
+                                    end.linkTo(parent.end, 24.dp)
                                     top.linkTo(parent.top)
                                     bottom.linkTo(parent.bottom)
                                     width = Dimension.fillToConstraints
@@ -192,7 +192,7 @@ fun LoginUser(
 
                 SocialLoginBlock(
                     modifier = modifier,
-                    horizontalPadding = 16.dp,
+                    horizontalPadding = 24.dp,
                     getTextWithUnderline("Ще немає профілю? ", "Зареєструватись"),
                     onCreateUser
                 )
