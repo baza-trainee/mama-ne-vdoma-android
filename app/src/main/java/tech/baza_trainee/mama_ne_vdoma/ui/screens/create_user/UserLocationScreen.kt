@@ -1,5 +1,7 @@
 package tech.baza_trainee.mama_ne_vdoma.ui.screens.create_user
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -22,24 +24,31 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import androidx.core.app.ActivityCompat.shouldShowRequestPermissionRationale
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
-import tech.baza_trainee.mama_ne_vdoma.ui.screens.create_user.location.RequestPermission
 import tech.baza_trainee.mama_ne_vdoma.ui.theme.Gray
 import tech.baza_trainee.mama_ne_vdoma.ui.theme.Mama_ne_vdomaTheme
+import tech.baza_trainee.mama_ne_vdoma.utils.LocationPermissionTextProvider
+import tech.baza_trainee.mama_ne_vdoma.utils.PermissionDialog
+import tech.baza_trainee.mama_ne_vdoma.utils.findActivity
+import tech.baza_trainee.mama_ne_vdoma.utils.openAppSettings
 
 @Composable
 fun UserLocationFunc(
@@ -50,23 +59,56 @@ fun UserLocationFunc(
     )
 }
 
-@OptIn(ExperimentalPermissionsApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UserLocation(
     modifier: Modifier = Modifier,
     onNext: () -> Unit = {}
 ) {
     Mama_ne_vdomaTheme {
-        RequestPermission(
-            onPermissionGranted = { /*TODO*/ },
-            onRefuse = { /*TODO*/ }
-        )
-
         Surface(
             modifier = modifier
                 .windowInsetsPadding(WindowInsets.navigationBars)
                 .fillMaxSize()
         ) {
+            val activity = LocalContext.current.findActivity()
+            val permissionDialogQueue = remember { mutableStateListOf<String>() }
+
+            val permissions = arrayOf(
+                    android.Manifest.permission.ACCESS_FINE_LOCATION,
+                    android.Manifest.permission.ACCESS_COARSE_LOCATION
+                )
+
+            val multiplePermissionResultLauncher = rememberLauncherForActivityResult(
+                contract = ActivityResultContracts.RequestMultiplePermissions(),
+                onResult = { perms ->
+                    if (perms.values.contains(false)) {
+                        val permission = perms.filter { !it.value }.keys.first()
+                        if (activity.shouldShowRequestPermissionRationale(permission))
+                            permissionDialogQueue.add(permission)
+                    }
+                }
+            )
+
+            LaunchedEffect(key1 = true) {
+                multiplePermissionResultLauncher.launch(permissions)
+            }
+
+            permissionDialogQueue.reversed().forEach {
+                PermissionDialog(
+                    permissionTextProvider = LocationPermissionTextProvider(),
+                    isPermanentlyDeclined = !shouldShowRequestPermissionRationale(
+                        activity,
+                        it
+                    ),
+                    onDismiss = { permissionDialogQueue.remove(it) },
+                    onGranted = {
+                        permissionDialogQueue.remove(it)
+                        multiplePermissionResultLauncher.launch(permissions)
+                    },
+                    onGoToAppSettingsClick = { activity.openAppSettings() })
+            }
+
             ConstraintLayout(
                 modifier = modifier.fillMaxWidth()
             ) {
