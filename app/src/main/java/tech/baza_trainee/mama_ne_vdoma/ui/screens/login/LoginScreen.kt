@@ -14,6 +14,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.material.Icon
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Email
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -22,8 +25,10 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -90,13 +95,23 @@ fun LoginUser(
 
                     Spacer(modifier = modifier.height(24.dp))
 
+                    val emailText = remember { mutableStateOf(TextFieldValue("")) }
+
                     OutlinedTextField(
-                        value = "",
-                        onValueChange = {},
                         modifier = modifier
                             .padding(horizontal = 24.dp)
                             .fillMaxWidth(),
+                        value = emailText.value,
                         label = { Text("Введіть свій email") },
+                        onValueChange = { newValue ->
+                            emailText.value = newValue
+                        },
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Default.Email,
+                                contentDescription = null
+                            )
+                        },
                         colors = TextFieldDefaults.outlinedTextFieldColors(
                             containerColor = Gray,
                             focusedBorderColor = MaterialTheme.colorScheme.background,

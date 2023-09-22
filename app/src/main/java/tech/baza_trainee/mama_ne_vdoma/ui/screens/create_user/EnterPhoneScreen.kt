@@ -16,8 +16,11 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -64,17 +67,20 @@ fun EnterPhone(
                     color = MaterialTheme.colorScheme.onBackground
                 )
 
+                val phoneText = remember { mutableStateOf(TextFieldValue("")) }
+
                 OutlinedTextField(
-                    value = "",
-                    onValueChange = {},
                     modifier = modifier
                         .padding(horizontal = 24.dp)
                         .fillMaxWidth()
                         .constrainAs(input) {
                             top.linkTo(title.bottom, 24.dp)
                         },
+                    value = phoneText.value,
                     label = { Text("Введіть свій номер телефону") },
-                    keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Phone),
+                    onValueChange = { phoneText.value = it },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+                    maxLines = 1,
                     colors = TextFieldDefaults.outlinedTextFieldColors(
                         containerColor = Gray,
                         focusedBorderColor = MaterialTheme.colorScheme.background,
