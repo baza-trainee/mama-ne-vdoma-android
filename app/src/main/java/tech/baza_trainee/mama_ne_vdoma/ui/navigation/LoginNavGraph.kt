@@ -8,6 +8,7 @@ import tech.baza_trainee.mama_ne_vdoma.ui.screens.login.EmailConfirmFunc
 import tech.baza_trainee.mama_ne_vdoma.ui.screens.login.LoginUserFunc
 import tech.baza_trainee.mama_ne_vdoma.ui.screens.login.NewPasswordFunc
 import tech.baza_trainee.mama_ne_vdoma.ui.screens.login.RestorePasswordFunc
+import tech.baza_trainee.mama_ne_vdoma.ui.screens.login.RestoreSuccessFunc
 
 fun NavGraphBuilder.loginNavGraph(
     navController: NavHostController
@@ -38,9 +39,10 @@ fun NavGraphBuilder.loginNavGraph(
             )
         }
         composable("new_password_screen") {
-            NewPasswordFunc(
-                {}
-            )
+            NewPasswordFunc { navController.navigate("restore_success_screen") }
+        }
+        composable("restore_success_screen") {
+            RestoreSuccessFunc { navController.navigate("start_graph") }
         }
     }
 }
