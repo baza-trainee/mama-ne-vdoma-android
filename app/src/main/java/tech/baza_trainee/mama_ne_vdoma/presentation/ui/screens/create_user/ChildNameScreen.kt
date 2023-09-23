@@ -1,14 +1,17 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
@@ -61,36 +64,54 @@ fun ChildName(
             ConstraintLayout(
                 modifier = modifier.fillMaxWidth()
             ) {
-                val (title, name, age, gender, btnNext) = createRefs()
+                val (topBar, name, age, gender, btnNext) = createRefs()
 
                 val topGuideline = createGuidelineFromTop(0.2f)
 
                 Column(
                     modifier = modifier
                         .background(MaterialTheme.colorScheme.primary)
-                        .constrainAs(title) {
+                        .windowInsetsPadding(WindowInsets.statusBars)
+                        .constrainAs(topBar) {
                             top.linkTo(parent.top)
                             bottom.linkTo(topGuideline)
                             height = Dimension.fillToConstraints
                         }
                         .fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Bottom
+                    verticalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text(
+                    Row(
                         modifier = modifier
+                            .align(Alignment.Start)
                             .fillMaxWidth()
-                            .padding(horizontal = 24.dp),
-                        text = "Розкажіть про свою дитину",
-                        fontSize = 20.sp,
-                        textAlign = TextAlign.Center,
-                        color = MaterialTheme.colorScheme.onPrimary
-                    )
+                    ) {
+                        Text(
+                            modifier = modifier
+                                .clickable {
+                                    onBack()
+                                }
+                                .padding(start = 16.dp),
+                            text = "<",
+                            fontSize = 20.sp,
+                            textAlign = TextAlign.Start,
+                            color = MaterialTheme.colorScheme.onPrimary
+                        )
+                        Text(
+                            modifier = modifier
+                                .padding(horizontal = 24.dp)
+                                .padding(bottom = 8.dp),
+                            text = "Розкажіть про свою дитину",
+                            fontSize = 20.sp,
+                            textAlign = TextAlign.Center,
+                            color = MaterialTheme.colorScheme.onPrimary
+                        )
+                    }
                     Text(
                         modifier = modifier
                             .fillMaxWidth()
                             .padding(horizontal = 24.dp)
-                            .padding(bottom = 8.dp),
+                            .padding(bottom = 8.dp, top = 8.dp),
                         text = "Це допоможе підібрати для вас групи " +
                                 "з дітьми приблизно одного віку",
                         textAlign = TextAlign.Center,

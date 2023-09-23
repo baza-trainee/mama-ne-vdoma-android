@@ -36,14 +36,14 @@ fun NavGraphBuilder.createUserNavGraph(
         }
         composable("child_name_screen") {
             ChildNameFunc(
-                { navController.popBackStack() },
-                { navController.navigate("child_schedule_screen") }
+                { navController.navigate("child_schedule_screen") },
+                { navController.popBackStack() }
             )
         }
         composable("child_schedule_screen") {
             ChildScheduleFunc(
-                { navController.popBackStack() },
-                {  }
+                {  },
+                { navController.popBackStack() }
             )
         }
     }

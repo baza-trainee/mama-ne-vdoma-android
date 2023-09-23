@@ -3,6 +3,7 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,13 +19,12 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.constraintlayout.compose.Dimension
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.Gray
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.Mama_ne_vdomaTheme
 
@@ -51,27 +51,26 @@ fun RestorePassword(
             Column(
                 modifier = modifier
                     .fillMaxWidth()
-                    .padding(bottom = 24.dp)
-                ,
+                    .padding(bottom = 16.dp),
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
                 Column(
-                    modifier = modifier.fillMaxWidth()
+                    modifier = modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Top
                 ) {
                     Spacer(modifier = modifier.height(16.dp))
 
-                    ConstraintLayout(
+                    Row(
                         modifier = modifier
+                            .align(Alignment.Start)
                             .fillMaxWidth()
                     ) {
-                        val (back, title) = createRefs()
                         Text(
                             modifier = modifier
+                                .padding(start = 16.dp)
                                 .clickable {
                                     onBack()
-                                }
-                                .constrainAs(back) {
-                                    start.linkTo(parent.start, 24.dp)
                                 },
                             text = "<",
                             fontSize = 20.sp,
@@ -80,17 +79,16 @@ fun RestorePassword(
                         )
                         Text(
                             modifier = modifier
-                                .constrainAs(title) {
-                                    start.linkTo(back.end, 16.dp)
-                                    end.linkTo(parent.end, 24.dp)
-                                    width = Dimension.fillToConstraints
-                                },
+                                .fillMaxWidth()
+                                .padding(horizontal = 24.dp),
                             text = "Забули пароль?",
                             fontSize = 20.sp,
                             textAlign = TextAlign.Center,
                             color = MaterialTheme.colorScheme.onBackground
                         )
                     }
+
+                    Spacer(modifier = modifier.height(8.dp))
 
                     Text(
                         modifier = modifier

@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
@@ -66,6 +67,7 @@ fun EmailConfirm(
                 Column(
                     modifier = modifier
                         .background(MaterialTheme.colorScheme.primary)
+                        .windowInsetsPadding(WindowInsets.statusBars)
                         .constrainAs(title) {
                             top.linkTo(parent.top)
                             bottom.linkTo(topGuideline)
@@ -73,12 +75,13 @@ fun EmailConfirm(
                         }
                         .fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Bottom
+                    verticalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
                         modifier = modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 24.dp),
+                            .padding(horizontal = 24.dp)
+                            .padding(bottom = 8.dp),
                         text = "Лист був відправлений",
                         fontSize = 20.sp,
                         textAlign = TextAlign.Center,
