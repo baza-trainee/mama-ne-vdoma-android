@@ -221,8 +221,8 @@ fun UserLocation(
                             bottom.linkTo(btnNext.top, 16.dp)
                             height = Dimension.fillToConstraints
                         }
-                        .padding(horizontal = 24.dp)
-                        .fillMaxWidth(),
+                        .fillMaxWidth()
+                        .padding(horizontal = 24.dp),
                     label = { Text("Введіть вашу адресу") },
                     colors = TextFieldDefaults.outlinedTextFieldColors(
                         containerColor = Gray,

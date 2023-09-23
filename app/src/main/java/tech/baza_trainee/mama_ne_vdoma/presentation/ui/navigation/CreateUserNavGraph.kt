@@ -4,6 +4,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.ChildNameFunc
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.CreateUserFunc
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.EnterPhoneFunc
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.UserLocationFunc
@@ -28,7 +29,15 @@ fun NavGraphBuilder.createUserNavGraph(
         }
         composable("user_location_screen") {
             val userCreateViewModel: UserCreateViewModel = it.sharedViewModel(navController)
-            UserLocationFunc(userCreateViewModel) {}
+            UserLocationFunc(userCreateViewModel) {
+                navController.navigate("child_name_screen")
+            }
+        }
+        composable("child_name_screen") {
+            ChildNameFunc(
+                { navController.popBackStack() },
+                {  }
+            )
         }
     }
 }

@@ -99,8 +99,8 @@ fun LoginUser(
 
                     OutlinedTextField(
                         modifier = modifier
-                            .padding(horizontal = 24.dp)
-                            .fillMaxWidth(),
+                            .fillMaxWidth()
+                            .padding(horizontal = 24.dp),
                         value = emailText.value,
                         label = { Text("Введіть свій email") },
                         onValueChange = { newValue ->
@@ -123,8 +123,8 @@ fun LoginUser(
 
                     ShowHidePasswordTextField(
                         modifier = modifier
-                            .padding(horizontal = 24.dp)
-                            .fillMaxWidth(),
+                            .fillMaxWidth()
+                            .padding(horizontal = 24.dp),
                         label = "Введіть свій пароль",
                         placeHolder = "Пароль"
                     )

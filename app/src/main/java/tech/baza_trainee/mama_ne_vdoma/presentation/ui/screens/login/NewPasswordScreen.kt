@@ -77,8 +77,8 @@ fun NewPassword(
 
                     ShowHidePasswordTextField(
                         modifier = modifier
-                            .padding(horizontal = 24.dp)
-                            .fillMaxWidth(),
+                            .fillMaxWidth()
+                            .padding(horizontal = 24.dp),
                         label = "Введіть свій пароль",
                         placeHolder = "Пароль"
                     )
@@ -97,8 +97,8 @@ fun NewPassword(
 
                     ShowHidePasswordTextField(
                         modifier = modifier
-                            .padding(horizontal = 24.dp)
-                            .fillMaxWidth(),
+                            .fillMaxWidth()
+                            .padding(horizontal = 24.dp),
                         label = "Повторіть ваш пароль",
                         placeHolder = "Пароль"
                     )

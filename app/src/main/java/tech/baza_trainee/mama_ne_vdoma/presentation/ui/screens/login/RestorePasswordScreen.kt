@@ -112,8 +112,8 @@ fun RestorePassword(
                         value = "",
                         onValueChange = {},
                         modifier = modifier
-                            .padding(horizontal = 24.dp)
-                            .fillMaxWidth(),
+                            .fillMaxWidth()
+                            .padding(horizontal = 24.dp),
                         label = { Text("Введіть свій email") },
                         colors = TextFieldDefaults.outlinedTextFieldColors(
                             containerColor = Gray,

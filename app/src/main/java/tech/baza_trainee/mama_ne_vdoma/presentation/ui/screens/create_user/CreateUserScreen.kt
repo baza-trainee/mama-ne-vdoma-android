@@ -88,8 +88,8 @@ fun CreateUser(
 
                     OutlinedTextField(
                         modifier = modifier
-                            .padding(horizontal = 24.dp)
-                            .fillMaxWidth(),
+                            .fillMaxWidth()
+                            .padding(horizontal = 24.dp),
                         value = emailText.value,
                         label = { Text("Введіть свій email") },
                         onValueChange = { newValue ->
@@ -112,8 +112,8 @@ fun CreateUser(
 
                     ShowHidePasswordTextField(
                         modifier = modifier
-                            .padding(horizontal = 24.dp)
-                            .fillMaxWidth(),
+                            .fillMaxWidth()
+                            .padding(horizontal = 24.dp),
                         label = "Введіть свій пароль",
                         placeHolder = "Пароль"
                     )
@@ -132,8 +132,8 @@ fun CreateUser(
 
                     ShowHidePasswordTextField(
                         modifier = modifier
-                            .padding(horizontal = 24.dp)
-                            .fillMaxWidth(),
+                            .fillMaxWidth()
+                            .padding(horizontal = 24.dp),
                         label = "Повторіть ваш пароль",
                         placeHolder = "Пароль"
                     )

@@ -71,8 +71,8 @@ fun EnterPhone(
 
                 OutlinedTextField(
                     modifier = modifier
-                        .padding(horizontal = 24.dp)
                         .fillMaxWidth()
+                        .padding(horizontal = 24.dp)
                         .constrainAs(input) {
                             top.linkTo(title.bottom, 24.dp)
                         },
