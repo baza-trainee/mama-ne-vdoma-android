@@ -5,6 +5,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.ChildNameFunc
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.ChildScheduleFunc
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.CreateUserFunc
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.EnterPhoneFunc
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.UserLocationFunc
@@ -35,6 +36,12 @@ fun NavGraphBuilder.createUserNavGraph(
         }
         composable("child_name_screen") {
             ChildNameFunc(
+                { navController.popBackStack() },
+                { navController.navigate("child_schedule_screen") }
+            )
+        }
+        composable("child_schedule_screen") {
+            ChildScheduleFunc(
                 { navController.popBackStack() },
                 {  }
             )

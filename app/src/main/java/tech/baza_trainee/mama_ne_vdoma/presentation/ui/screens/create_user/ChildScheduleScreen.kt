@@ -30,24 +30,22 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.Gender
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.Gray
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.Mama_ne_vdomaTheme
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RadioGroup
 
 @Composable
-fun ChildNameFunc(
+fun ChildScheduleFunc(
     onNext: () -> Unit,
     onBack: () -> Unit
 ) {
-    ChildName(
+    ChildSchedule(
         onNext = onNext,
         onBack = onBack
     )
 }
 
 @Composable
-fun ChildName(
+fun ChildSchedule(
     modifier: Modifier = Modifier,
     onNext: () -> Unit,
     onBack: () -> Unit
@@ -81,7 +79,7 @@ fun ChildName(
                         modifier = modifier
                             .fillMaxWidth()
                             .padding(horizontal = 24.dp),
-                        text = "Розкажіть про свою дитину",
+                        text = "Визначіть графік",
                         fontSize = 20.sp,
                         textAlign = TextAlign.Center,
                         color = MaterialTheme.colorScheme.onPrimary
@@ -91,8 +89,7 @@ fun ChildName(
                             .fillMaxWidth()
                             .padding(horizontal = 24.dp)
                             .padding(bottom = 8.dp),
-                        text = "Це допоможе підібрати для вас групи " +
-                                "з дітьми приблизно одного віку",
+                        text = "Вкажіть коли потрібно доглянути за вашою дитиною",
                         textAlign = TextAlign.Center,
                         color = MaterialTheme.colorScheme.onPrimary
                     )
@@ -122,7 +119,7 @@ fun ChildName(
                     )
                 )
 
-                val ageText = remember { mutableStateOf(TextFieldValue("")) }
+                val commentText = remember { mutableStateOf(TextFieldValue("")) }
 
                 OutlinedTextField(
                     modifier = modifier
@@ -130,12 +127,13 @@ fun ChildName(
                         .padding(horizontal = 24.dp)
                         .constrainAs(age) {
                             top.linkTo(name.bottom, 16.dp)
+                            bottom.linkTo(btnNext.top, 16.dp)
                         },
-                    value = ageText.value,
-                    label = { Text("Вкажіть вік дитини") },
-                    onValueChange = { ageText.value = it },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    maxLines = 1,
+                    value = commentText.value,
+                    label = { Text("Нотатка") },
+                    onValueChange = { commentText.value = it },
+                    minLines = 3,
+                    maxLines = 3,
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedContainerColor = Gray,
                         unfocusedContainerColor = Gray,
@@ -143,19 +141,6 @@ fun ChildName(
                         focusedBorderColor = MaterialTheme.colorScheme.background,
                         unfocusedBorderColor = MaterialTheme.colorScheme.background,
                     )
-                )
-
-                val genderOptions = listOf(Gender.BOY, Gender.GIRL)
-
-                RadioGroup(
-                    modifier = modifier
-                        .constrainAs(gender) {
-                            top.linkTo(age.bottom, 24.dp)
-                        }
-                        .padding(horizontal = 8.dp)
-                        .fillMaxWidth(),
-                    radioGroupOptions = genderOptions,
-                    getText = { it.gender }
                 )
 
                 Button(
@@ -168,7 +153,7 @@ fun ChildName(
                         .height(48.dp),
                     onClick = onNext
                 ) {
-                    Text(text = "Зареєструвати дитину")
+                    Text(text = "Встановити розклад")
                 }
             }
         }
@@ -177,8 +162,8 @@ fun ChildName(
 
 @Composable
 @Preview
-fun ChildNamePreview() {
-    ChildName(
+fun ChildSchedulePreview() {
+    ChildSchedule(
         onBack = {},
         onNext = {}
     )

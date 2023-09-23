@@ -5,13 +5,12 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -23,7 +22,6 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.Gray
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ShowHidePasswordTextField(
     modifier: Modifier = Modifier,
@@ -42,8 +40,10 @@ fun ShowHidePasswordTextField(
         },
         label = { Text(text = label) },
         placeholder = { Text(text = placeHolder) },
-        colors = TextFieldDefaults.outlinedTextFieldColors(
-            containerColor = Gray,
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedContainerColor = Gray,
+            unfocusedContainerColor = Gray,
+            disabledContainerColor = Gray,
             focusedBorderColor = MaterialTheme.colorScheme.background,
             unfocusedBorderColor = MaterialTheme.colorScheme.background,
         ),

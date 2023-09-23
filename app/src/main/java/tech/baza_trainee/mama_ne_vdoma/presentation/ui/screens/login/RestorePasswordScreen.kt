@@ -12,12 +12,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
@@ -37,7 +36,6 @@ fun RestorePasswordFunc(
     RestorePassword(onBack = onBack, onRestore = onRestore)
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RestorePassword(
     modifier: Modifier = Modifier,
@@ -115,8 +113,10 @@ fun RestorePassword(
                             .fillMaxWidth()
                             .padding(horizontal = 24.dp),
                         label = { Text("Введіть свій email") },
-                        colors = TextFieldDefaults.outlinedTextFieldColors(
-                            containerColor = Gray,
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedContainerColor = Gray,
+                            unfocusedContainerColor = Gray,
+                            disabledContainerColor = Gray,
                             focusedBorderColor = MaterialTheme.colorScheme.background,
                             unfocusedBorderColor = MaterialTheme.colorScheme.background,
                         )

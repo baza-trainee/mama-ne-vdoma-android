@@ -19,14 +19,13 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
@@ -75,7 +74,6 @@ fun UserLocationFunc(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UserLocation(
     modifier: Modifier = Modifier,
@@ -224,8 +222,10 @@ fun UserLocation(
                         .fillMaxWidth()
                         .padding(horizontal = 24.dp),
                     label = { Text("Введіть вашу адресу") },
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        containerColor = Gray,
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedContainerColor = Gray,
+                        unfocusedContainerColor = Gray,
+                        disabledContainerColor = Gray,
                         focusedBorderColor = MaterialTheme.colorScheme.background,
                         unfocusedBorderColor = MaterialTheme.colorScheme.background,
                     ),
