@@ -3,6 +3,7 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
@@ -89,17 +91,22 @@ fun ChildName(
                             .align(Alignment.Start)
                             .fillMaxWidth()
                     ) {
-                        Text(
+                        Box(
                             modifier = modifier
                                 .clickable {
                                     onBack()
                                 }
-                                .padding(start = 16.dp),
-                            text = "<",
-                            fontSize = 20.sp,
-                            textAlign = TextAlign.Start,
-                            color = MaterialTheme.colorScheme.onPrimary
-                        )
+                                .padding(start = 16.dp)
+                                .height(24.dp)
+                                .width(24.dp)
+                        ) {
+                            Text(
+                                text = "<",
+                                fontSize = 20.sp,
+                                textAlign = TextAlign.Start,
+                                color = MaterialTheme.colorScheme.onPrimary
+                            )
+                        }
                         Text(
                             modifier = modifier
                                 .padding(horizontal = 24.dp)
