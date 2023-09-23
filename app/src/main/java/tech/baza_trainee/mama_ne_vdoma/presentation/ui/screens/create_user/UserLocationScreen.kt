@@ -36,6 +36,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -51,6 +52,7 @@ import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
+import kotlinx.coroutines.delay
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.UserLocationViewState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.vm.UserCreateViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.Gray
@@ -128,15 +130,19 @@ fun UserLocation(
 
             val imeState = rememberImeState()
             val scrollState = rememberScrollState()
+            val density = LocalDensity.current.density
+            val offset = (5000 * density).toInt()
 
             LaunchedEffect(key1 = imeState.value) {
-                if (imeState.value){
-                    scrollState.scrollTo(scrollState.maxValue)
+                if (imeState.value) {
+                    delay(100)
+                    scrollState.scrollTo(offset)
                 }
             }
 
             ConstraintLayout(
                 modifier = modifier
+                    .verticalScroll(scrollState)
                     .imePadding()
                     .fillMaxWidth(),
             ) {
@@ -148,7 +154,6 @@ fun UserLocation(
                     modifier = modifier
                         .background(MaterialTheme.colorScheme.primary)
                         .windowInsetsPadding(WindowInsets.statusBars)
-                        .verticalScroll(scrollState)
                         .constrainAs(title) {
                             top.linkTo(parent.top)
                             bottom.linkTo(topGuideline)

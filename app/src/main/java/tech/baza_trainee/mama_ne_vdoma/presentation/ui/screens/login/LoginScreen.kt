@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
@@ -44,15 +45,11 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.getTextWithUnderline
 fun LoginUserFunc(
     onCreateUser: () -> Unit,
     onRestore: () -> Unit,
-    onGoogleLogin: () -> Unit,
-    onFBLogin: () -> Unit,
     onLogin: () -> Unit
 ) {
     LoginUser(
         onCreateUser = onCreateUser,
         onRestore = onRestore,
-        onGoogleLogin = onGoogleLogin,
-        onFBLogin = onFBLogin,
         onLogin = onLogin,
     )
 }
@@ -62,8 +59,6 @@ fun LoginUser(
     modifier: Modifier = Modifier,
     onCreateUser: () -> Unit = {},
     onRestore: () -> Unit = {},
-    onGoogleLogin: () -> Unit = {},
-    onFBLogin: () -> Unit = {},
     onLogin: () -> Unit = {}
 ) {
     Mama_ne_vdomaTheme {
@@ -74,6 +69,7 @@ fun LoginUser(
         ) {
             Column(
                 modifier = modifier
+                    .imePadding()
                     .fillMaxWidth(),
                 verticalArrangement = Arrangement.SpaceBetween
             ) {

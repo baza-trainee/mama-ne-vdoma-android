@@ -21,8 +21,6 @@ fun NavGraphBuilder.loginNavGraph(
             LoginUserFunc(
                 { navController.navigate("create_user_screen") },
                 { navController.navigate("restore_password_screen") },
-                {},
-                {},
                 {}
             )
         }

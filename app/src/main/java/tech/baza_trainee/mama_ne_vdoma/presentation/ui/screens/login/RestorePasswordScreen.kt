@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
@@ -50,6 +51,7 @@ fun RestorePassword(
         ) {
             Column(
                 modifier = modifier
+                    .imePadding()
                     .fillMaxWidth()
                     .padding(bottom = 16.dp),
                 verticalArrangement = Arrangement.SpaceBetween
