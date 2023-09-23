@@ -148,6 +148,8 @@ fun ChildScheduleGroup(
                                     morningState.value = false
                                     noonState.value = false
                                     afternoonState.value = false
+                                } else if (morningState.value && wholeDayState.value) {
+                                    wholeDayState.value = false
                                 }
                             }
                         )
@@ -174,6 +176,8 @@ fun ChildScheduleGroup(
                                     morningState.value = false
                                     noonState.value = false
                                     afternoonState.value = false
+                                } else if (noonState.value && wholeDayState.value) {
+                                    wholeDayState.value = false
                                 }
                             }
                         )
@@ -200,6 +204,8 @@ fun ChildScheduleGroup(
                                     morningState.value = false
                                     noonState.value = false
                                     afternoonState.value = false
+                                } else if (afternoonState.value && wholeDayState.value) {
+                                    wholeDayState.value = false
                                 }
                             }
                         )
