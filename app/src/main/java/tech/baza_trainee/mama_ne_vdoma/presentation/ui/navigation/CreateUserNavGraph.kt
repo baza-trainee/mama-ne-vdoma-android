@@ -10,6 +10,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.Creat
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.EnterPhoneFunc
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.UserLocationFunc
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.vm.UserCreateViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.vm.UserSettingsViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.sharedViewModel
 
 fun NavGraphBuilder.createUserNavGraph(
@@ -20,17 +21,22 @@ fun NavGraphBuilder.createUserNavGraph(
         startDestination = "create_user_screen"
     ) {
         composable("create_user_screen") {
+            val userCreateViewModel: UserCreateViewModel = it.sharedViewModel(navController)
             CreateUserFunc(
+                userCreateViewModel,
                 { navController.navigate("enter_phone_screen") }, //temp need replace with logic
                 { navController.navigate("login_screen") }
             )
         }
         composable("enter_phone_screen") {
-            EnterPhoneFunc { navController.navigate("user_location_screen") }
+            val userSettingsViewModel: UserSettingsViewModel = it.sharedViewModel(navController)
+            EnterPhoneFunc(
+                userSettingsViewModel
+            ) { navController.navigate("user_location_screen") }
         }
         composable("user_location_screen") {
-            val userCreateViewModel: UserCreateViewModel = it.sharedViewModel(navController)
-            UserLocationFunc(userCreateViewModel) {
+            val userSettingsViewModel: UserSettingsViewModel = it.sharedViewModel(navController)
+            UserLocationFunc(userSettingsViewModel) {
                 navController.navigate("child_name_screen")
             }
         }

@@ -26,18 +26,19 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.Gray
 fun ShowHidePasswordTextField(
     modifier: Modifier = Modifier,
     label: String,
-    placeHolder: String
+    placeHolder: String,
+    password: String,
+    onValueChange: (String) -> Unit,
+    isError: Boolean = false
 ) {
 
-    var password by remember { mutableStateOf(value = "") }
     var showPassword by remember { mutableStateOf(value = false) }
 
     OutlinedTextField(
         modifier = modifier.fillMaxWidth(),
         value = password,
-        onValueChange = { newText ->
-            password = newText
-        },
+        onValueChange = { onValueChange(it) },
+        isError = isError,
         label = { Text(text = label) },
         placeholder = { Text(text = placeHolder) },
         colors = OutlinedTextFieldDefaults.colors(
@@ -47,7 +48,7 @@ fun ShowHidePasswordTextField(
             focusedBorderColor = MaterialTheme.colorScheme.background,
             unfocusedBorderColor = MaterialTheme.colorScheme.background,
         ),
-        visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation() ,
+        visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation(),
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
         trailingIcon = {
             if (showPassword) {

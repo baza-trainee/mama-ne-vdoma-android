@@ -8,9 +8,20 @@ import tech.baza_trainee.mama_ne_vdoma.data.datasource.impl.LocationDataSourceIm
 import tech.baza_trainee.mama_ne_vdoma.data.repository.LocationRepositoryImpl
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.LocationRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.vm.UserCreateViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.vm.UserSettingsViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.vm.LoginScreenViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.vm.NewPasswordScreenViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.vm.RestorePasswordScreenViewModel
 
 val userKoinModule = module {
-    viewModel { UserCreateViewModel(get()) }
+    viewModel { UserSettingsViewModel(get()) }
+    viewModel { UserCreateViewModel() }
     factory<LocationDataSource> { LocationDataSourceImpl(androidApplication()) }
     factory<LocationRepository> { LocationRepositoryImpl(get()) }
+}
+
+val loginKoinModule = module {
+    viewModel { LoginScreenViewModel() }
+    viewModel { NewPasswordScreenViewModel() }
+    viewModel { RestorePasswordScreenViewModel() }
 }

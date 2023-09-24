@@ -15,39 +15,46 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.model.LoginViewState
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.vm.LoginScreenViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.Gray
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.Mama_ne_vdomaTheme
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ShowHidePasswordTextField
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.OutlinedTextFieldWithError
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.PasswordTextFieldWithError
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.SocialLoginBlock
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.getTextWithUnderline
 
 @Composable
 fun LoginUserFunc(
+    viewModel: LoginScreenViewModel,
     onCreateUser: () -> Unit,
     onRestore: () -> Unit,
     onLogin: () -> Unit
 ) {
     LoginUser(
+        screenState = viewModel.viewState.collectAsStateWithLifecycle(),
+        validateEmail = { viewModel.validateEmail(it) },
+        validatePassword = { viewModel.validatePassword(it) },
         onCreateUser = onCreateUser,
         onRestore = onRestore,
         onLogin = onLogin,
@@ -57,6 +64,9 @@ fun LoginUserFunc(
 @Composable
 fun LoginUser(
     modifier: Modifier = Modifier,
+    screenState: State<LoginViewState> = mutableStateOf(LoginViewState()),
+    validateEmail: (String) -> Unit = {},
+    validatePassword: (String) -> Unit = {},
     onCreateUser: () -> Unit = {},
     onRestore: () -> Unit = {},
     onLogin: () -> Unit = {}
@@ -89,40 +99,32 @@ fun LoginUser(
 
                     Spacer(modifier = modifier.height(24.dp))
 
-                    val emailText = remember { mutableStateOf(TextFieldValue("")) }
-
-                    OutlinedTextField(
+                    OutlinedTextFieldWithError(
                         modifier = modifier
                             .fillMaxWidth()
                             .padding(horizontal = 24.dp),
-                        value = emailText.value,
-                        label = { Text("Введіть свій email") },
-                        onValueChange = { newValue ->
-                            emailText.value = newValue
-                        },
+                        text = screenState.value.email,
+                        label = "Введіть свій email",
+                        onValueChange = { validateEmail(it) },
+                        isError = screenState.value.emailValid == ValidField.INVALID,
+                        errorText = "Ви ввели некоректний email",
                         leadingIcon = {
                             Icon(
                                 imageVector = Icons.Default.Email,
                                 contentDescription = null
                             )
-                        },
-                        colors = OutlinedTextFieldDefaults.colors(
-                            focusedContainerColor = Gray,
-                            unfocusedContainerColor = Gray,
-                            disabledContainerColor = Gray,
-                            focusedBorderColor = MaterialTheme.colorScheme.background,
-                            unfocusedBorderColor = MaterialTheme.colorScheme.background,
-                        )
+                        }
                     )
 
                     Spacer(modifier = modifier.height(16.dp))
 
-                    ShowHidePasswordTextField(
+                    PasswordTextFieldWithError(
                         modifier = modifier
                             .fillMaxWidth()
                             .padding(horizontal = 24.dp),
-                        label = "Введіть свій пароль",
-                        placeHolder = "Пароль"
+                        password = screenState.value.password,
+                        onValueChange = { validatePassword(it) },
+                        isError = screenState.value.passwordValid == ValidField.INVALID
                     )
 
                     Spacer(modifier = modifier.height(8.dp))
@@ -149,7 +151,9 @@ fun LoginUser(
                             .fillMaxWidth()
                             .height(48.dp)
                             .padding(horizontal = 24.dp),
-                        onClick = onLogin
+                        onClick = onLogin,
+                        enabled = screenState.value.passwordValid == ValidField.VALID &&
+                                screenState.value.emailValid == ValidField.VALID
                     ) {
                         Text(text = "Увійти")
                     }

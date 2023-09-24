@@ -14,7 +14,8 @@ fun initKoin(context: Context) {
         fragmentFactory()
         modules(
             listOf(
-                userKoinModule
+                userKoinModule,
+                loginKoinModule
             )
         )
     }

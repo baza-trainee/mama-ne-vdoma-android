@@ -54,7 +54,7 @@ import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
 import kotlinx.coroutines.delay
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.UserLocationViewState
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.vm.UserCreateViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.vm.UserSettingsViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.Gray
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.Mama_ne_vdomaTheme
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.LocationPermissionTextProvider
@@ -65,13 +65,13 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.rememberImeState
 
 @Composable
 fun UserLocationFunc(
-    viewModel: UserCreateViewModel,
+    viewModel: UserSettingsViewModel,
     onNext: () -> Unit
 ) {
     viewModel.requestCurrentLocation()
 
     UserLocation(
-        viewState = viewModel.viewState.collectAsStateWithLifecycle(),
+        viewState = viewModel.locationScreenState.collectAsStateWithLifecycle(),
         onSearchUserAddress = { viewModel.getLocationFromAddress(it) },
         onNext = onNext
     )

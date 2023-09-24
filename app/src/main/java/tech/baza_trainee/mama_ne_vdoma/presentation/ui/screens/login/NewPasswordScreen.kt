@@ -16,24 +16,39 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.model.NewPasswordViewState
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.vm.NewPasswordScreenViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.Mama_ne_vdomaTheme
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ShowHidePasswordTextField
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.PasswordTextFieldWithError
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 
 @Composable
 fun NewPasswordFunc(
+    viewModel: NewPasswordScreenViewModel,
     onRestore: () -> Unit
 ) {
-    NewPassword(onRestore = onRestore)
+    NewPassword(
+        screenState = viewModel.viewState.collectAsStateWithLifecycle(),
+        validatePassword = { viewModel.validatePassword(it) },
+        validateConfirmPassword = { viewModel.validateConfirmPassword(it) },
+        onRestore = onRestore
+    )
 }
 
 @Composable
 fun NewPassword(
     modifier: Modifier = Modifier,
+    screenState: State<NewPasswordViewState> = mutableStateOf(NewPasswordViewState()),
+    validatePassword: (String) -> Unit = {},
+    validateConfirmPassword: (String) -> Unit = {},
     onRestore: () -> Unit = {}
 ) {
     Mama_ne_vdomaTheme {
@@ -77,12 +92,13 @@ fun NewPassword(
 
                     Spacer(modifier = modifier.height(16.dp))
 
-                    ShowHidePasswordTextField(
+                    PasswordTextFieldWithError(
                         modifier = modifier
                             .fillMaxWidth()
                             .padding(horizontal = 24.dp),
-                        label = "Введіть свій пароль",
-                        placeHolder = "Пароль"
+                        password = screenState.value.password,
+                        onValueChange = { validatePassword(it) },
+                        isError = screenState.value.passwordValid == ValidField.INVALID
                     )
 
                     Spacer(modifier = modifier.height(8.dp))
@@ -91,18 +107,21 @@ fun NewPassword(
                         modifier = modifier
                             .fillMaxWidth()
                             .padding(horizontal = 24.dp),
-                        text = "Ваш пароль повинен складатись з 6-12 символів і включати хоча б одну цифру",
+                        text = "Пароль має бути від 6 до 24 символів, обов’язково містити латинські букви, цифри, спеціальні знаки",
                         fontSize = 14.sp,
                     )
 
                     Spacer(modifier = modifier.height(16.dp))
 
-                    ShowHidePasswordTextField(
+                    PasswordTextFieldWithError(
                         modifier = modifier
                             .fillMaxWidth()
                             .padding(horizontal = 24.dp),
                         label = "Повторіть ваш пароль",
-                        placeHolder = "Пароль"
+                        password = screenState.value.confirmPassword,
+                        onValueChange = { validateConfirmPassword(it) },
+                        isError = screenState.value.confirmPasswordValid == ValidField.INVALID,
+                        errorText = "Паролі не співпадають"
                     )
                 }
 
@@ -112,7 +131,9 @@ fun NewPassword(
                         .padding(horizontal = 24.dp)
                         .padding(bottom = 16.dp)
                         .height(48.dp),
-                    onClick = onRestore
+                    onClick = onRestore,
+                    enabled = screenState.value.passwordValid == ValidField.VALID &&
+                            screenState.value.confirmPasswordValid == ValidField.VALID
                 ) {
                     Text(text = "Зберегти пароль")
                 }

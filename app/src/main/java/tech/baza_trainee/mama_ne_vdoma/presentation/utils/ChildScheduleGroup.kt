@@ -10,8 +10,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
@@ -44,54 +44,53 @@ fun ChildScheduleGroup(
                 .padding(horizontal = 24.dp)
                 .border(1.dp, MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(4.dp))
                 .background(Gray),
-            verticalArrangement = Arrangement.Top
+            verticalArrangement = Arrangement.SpaceAround
         ) {
             Row(
                 modifier = modifier
                     .fillMaxWidth()
                     .height(48.dp)
-                    .weight(1f),
-                horizontalArrangement = Arrangement.End,
+                    .weight(1f)
+                    .padding(vertical = 8.dp),
+                horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
                     modifier = modifier
-                        .wrapContentWidth()
-                        .weight(1f)
+                        .width(128.dp)
                         .padding(horizontal = 8.dp),
                     text = Period.WHOLE_DAY.period,
                     textAlign = TextAlign.Center
                 )
                 Text(
                     modifier = modifier
-                        .wrapContentWidth()
                         .padding(horizontal = 8.dp),
                     text = Period.MORNING.period,
                     textAlign = TextAlign.Center
                 )
                 Text(
                     modifier = modifier
-                        .wrapContentWidth()
                         .padding(horizontal = 8.dp),
                     text = Period.NOON.period,
                     textAlign = TextAlign.Center
                 )
                 Text(
                     modifier = modifier
-                        .wrapContentWidth()
                         .padding(horizontal = 8.dp),
                     text = Period.AFTERNOON.period,
                     textAlign = TextAlign.Center
                 )
             }
+
             val days = schedule.value.schedule
             days.keys.forEach {
                 Row(
                     modifier = modifier
                         .fillMaxWidth()
                         .wrapContentHeight()
-                        .weight(1f),
-                    horizontalArrangement = Arrangement.End,
+                        .weight(1f)
+                        .padding(vertical = 8.dp),
+                    horizontalArrangement = Arrangement.SpaceEvenly,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     val dayName = it.getDisplayName(TextStyle.FULL, Locale.getDefault())
@@ -104,14 +103,17 @@ fun ChildScheduleGroup(
 
                     Box(
                         modifier = modifier
-                            .border(
-                                width = 2.dp,
+                            .background(
                                 color = if (wholeDayState.value) MaterialTheme.colorScheme.primary else Gray,
                                 shape = RoundedCornerShape(8.dp)
                             )
+                            .border(
+                                width = 1.dp,
+                                color = MaterialTheme.colorScheme.primary,
+                                shape = RoundedCornerShape(8.dp)
+                            )
                             .height(48.dp)
-                            .weight(1f)
-                            .padding(horizontal = 8.dp)
+                            .width(128.dp)
                             .clickable {
                                 wholeDayState.value = !wholeDayState.value
                                 if (wholeDayState.value) {
@@ -119,12 +121,15 @@ fun ChildScheduleGroup(
                                     noonState.value = false
                                     afternoonState.value = false
                                 }
-                            },
+                            }
+                            .padding(horizontal = 8.dp),
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
                             text = dayName,
-                            textAlign = TextAlign.Center
+                            textAlign = TextAlign.Center,
+                            color = if (wholeDayState.value) MaterialTheme.colorScheme.onPrimary
+                            else MaterialTheme.colorScheme.onBackground
                         )
                     }
                     Box(
@@ -136,8 +141,8 @@ fun ChildScheduleGroup(
                         Checkbox(
                             modifier = modifier
                                 .border(
-                                    width = 2.dp,
-                                    color = if (morningState.value) MaterialTheme.colorScheme.primary else Gray,
+                                    width = 1.dp,
+                                    color = MaterialTheme.colorScheme.primary,
                                     shape = RoundedCornerShape(8.dp)
                                 ),
                             checked = morningState.value,
@@ -164,8 +169,8 @@ fun ChildScheduleGroup(
                         Checkbox(
                             modifier = modifier
                                 .border(
-                                    width = 2.dp,
-                                    color = if (noonState.value) MaterialTheme.colorScheme.primary else Gray,
+                                    width = 1.dp,
+                                    color = MaterialTheme.colorScheme.primary,
                                     shape = RoundedCornerShape(8.dp)
                                 ),
                             checked = noonState.value,
@@ -192,8 +197,8 @@ fun ChildScheduleGroup(
                         Checkbox(
                             modifier = modifier
                                 .border(
-                                    width = 2.dp,
-                                    color = if (afternoonState.value) MaterialTheme.colorScheme.primary else Gray,
+                                    width = 1.dp,
+                                    color = MaterialTheme.colorScheme.primary,
                                     shape = RoundedCornerShape(8.dp)
                                 ),
                             checked = afternoonState.value,
