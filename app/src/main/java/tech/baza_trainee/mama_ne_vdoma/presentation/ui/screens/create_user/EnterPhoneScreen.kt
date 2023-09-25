@@ -1,5 +1,6 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
@@ -73,6 +74,7 @@ fun EnterPhone(
     Mama_ne_vdomaTheme {
         Surface(
             modifier = modifier
+                .background(MaterialTheme.colorScheme.background)
                 .windowInsetsPadding(WindowInsets.systemBars)
                 .fillMaxSize()
         ) {

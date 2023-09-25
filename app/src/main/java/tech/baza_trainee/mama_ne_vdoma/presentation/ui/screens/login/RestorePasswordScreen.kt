@@ -1,5 +1,6 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -61,6 +62,7 @@ fun RestorePassword(
     Mama_ne_vdomaTheme {
         Surface(
             modifier = modifier
+                .background(MaterialTheme.colorScheme.background)
                 .windowInsetsPadding(WindowInsets.systemBars)
                 .fillMaxSize()
         ) {
@@ -96,8 +98,9 @@ fun RestorePassword(
                         )
                         Text(
                             modifier = modifier
+                                .weight(1f)
                                 .fillMaxWidth()
-                                .padding(horizontal = 24.dp),
+                                .padding(bottom = 8.dp, end = 24.dp),
                             text = "Забули пароль?",
                             fontSize = 20.sp,
                             textAlign = TextAlign.Center,

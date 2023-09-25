@@ -120,8 +120,9 @@ fun ChildName(
                         }
                         Text(
                             modifier = modifier
-                                .padding(horizontal = 24.dp)
-                                .padding(bottom = 8.dp),
+                                .weight(1f)
+                                .fillMaxWidth()
+                                .padding(bottom = 8.dp, end = 24.dp),
                             text = "Розкажіть про свою дитину",
                             fontSize = 20.sp,
                             textAlign = TextAlign.Center,

@@ -70,6 +70,7 @@ fun CreateUser(
     Mama_ne_vdomaTheme {
         Surface(
             modifier = modifier
+                .background(MaterialTheme.colorScheme.background)
                 .windowInsetsPadding(WindowInsets.systemBars)
                 .fillMaxSize()
         ) {

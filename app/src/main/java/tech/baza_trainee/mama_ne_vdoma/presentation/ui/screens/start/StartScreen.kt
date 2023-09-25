@@ -1,6 +1,7 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.start
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.WindowInsets
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -45,6 +47,7 @@ fun StartScreen(
     Mama_ne_vdomaTheme {
         Surface(
             modifier = modifier
+                .background(MaterialTheme.colorScheme.background)
                 .windowInsetsPadding(WindowInsets.systemBars)
                 .fillMaxSize()
         ) {

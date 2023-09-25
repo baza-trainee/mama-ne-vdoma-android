@@ -54,6 +54,7 @@ fun EmailConfirm(
     Mama_ne_vdomaTheme {
         Surface(
             modifier = modifier
+                .background(MaterialTheme.colorScheme.background)
                 .windowInsetsPadding(WindowInsets.navigationBars)
                 .fillMaxSize()
         ) {

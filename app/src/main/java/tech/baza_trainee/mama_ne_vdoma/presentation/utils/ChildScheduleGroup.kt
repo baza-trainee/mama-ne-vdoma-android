@@ -107,11 +107,6 @@ fun ChildScheduleGroup(
                                 color = if (wholeDayState.value) MaterialTheme.colorScheme.primary else Gray,
                                 shape = RoundedCornerShape(8.dp)
                             )
-                            .border(
-                                width = 1.dp,
-                                color = MaterialTheme.colorScheme.primary,
-                                shape = RoundedCornerShape(8.dp)
-                            )
                             .height(48.dp)
                             .width(128.dp)
                             .clickable {
@@ -129,7 +124,7 @@ fun ChildScheduleGroup(
                             text = dayName,
                             textAlign = TextAlign.Center,
                             color = if (wholeDayState.value) MaterialTheme.colorScheme.onPrimary
-                            else MaterialTheme.colorScheme.onBackground
+                            else MaterialTheme.colorScheme.primary
                         )
                     }
                     Box(
@@ -139,12 +134,6 @@ fun ChildScheduleGroup(
                         contentAlignment = Alignment.Center
                     ) {
                         Checkbox(
-                            modifier = modifier
-                                .border(
-                                    width = 1.dp,
-                                    color = MaterialTheme.colorScheme.primary,
-                                    shape = RoundedCornerShape(8.dp)
-                                ),
                             checked = morningState.value,
                             onCheckedChange = {
                                 morningState.value = !morningState.value
@@ -167,12 +156,6 @@ fun ChildScheduleGroup(
                         contentAlignment = Alignment.Center
                     ) {
                         Checkbox(
-                            modifier = modifier
-                                .border(
-                                    width = 1.dp,
-                                    color = MaterialTheme.colorScheme.primary,
-                                    shape = RoundedCornerShape(8.dp)
-                                ),
                             checked = noonState.value,
                             onCheckedChange = {
                                 noonState.value = !noonState.value
@@ -195,12 +178,6 @@ fun ChildScheduleGroup(
                         contentAlignment = Alignment.Center
                     ) {
                         Checkbox(
-                            modifier = modifier
-                                .border(
-                                    width = 1.dp,
-                                    color = MaterialTheme.colorScheme.primary,
-                                    shape = RoundedCornerShape(8.dp)
-                                ),
                             checked = afternoonState.value,
                             onCheckedChange = {
                                 afternoonState.value = !afternoonState.value

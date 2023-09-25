@@ -126,9 +126,9 @@ fun ChildSchedule(
                         }
                         Text(
                             modifier = modifier
+                                .weight(1f)
                                 .fillMaxWidth()
-                                .padding(horizontal = 24.dp)
-                                .padding(bottom = 8.dp),
+                                .padding(bottom = 8.dp, end = 24.dp),
                             text = "Визначіть графік",
                             fontSize = 20.sp,
                             textAlign = TextAlign.Center,
