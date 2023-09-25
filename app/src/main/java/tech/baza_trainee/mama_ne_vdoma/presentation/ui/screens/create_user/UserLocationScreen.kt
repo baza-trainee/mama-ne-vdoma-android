@@ -15,8 +15,6 @@ import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
@@ -36,7 +34,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -52,7 +49,6 @@ import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
-import kotlinx.coroutines.delay
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.UserLocationViewState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.vm.UserSettingsViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.Gray
@@ -61,7 +57,6 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.LocationPermissionText
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.PermissionDialog
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.findActivity
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.openAppSettings
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.rememberImeState
 
 @Composable
 fun UserLocationFunc(
@@ -128,21 +123,8 @@ fun UserLocation(
                     onGoToAppSettingsClick = { activity.openAppSettings() })
             }
 
-            val imeState = rememberImeState()
-            val scrollState = rememberScrollState()
-            val density = LocalDensity.current.density
-            val offset = (5000 * density).toInt()
-
-            LaunchedEffect(key1 = imeState.value) {
-                if (imeState.value) {
-                    delay(100)
-                    scrollState.scrollTo(offset)
-                }
-            }
-
             ConstraintLayout(
                 modifier = modifier
-                    .verticalScroll(scrollState)
                     .imePadding()
                     .fillMaxWidth(),
             ) {
