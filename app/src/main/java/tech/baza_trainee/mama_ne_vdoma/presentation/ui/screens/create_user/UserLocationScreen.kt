@@ -80,8 +80,8 @@ fun UserLocationFunc(
 @Composable
 fun UserLocation(
     modifier: Modifier = Modifier,
-    viewState: State<UserLocationViewState>,
-    onSearchUserAddress: (String) -> Unit,
+    viewState: State<UserLocationViewState> = mutableStateOf(UserLocationViewState()),
+    onSearchUserAddress: (String) -> Unit = {},
     onNext: () -> Unit = {}
 ) {
     Mama_ne_vdomaTheme {
@@ -269,5 +269,5 @@ fun UserLocation(
 @Composable
 @Preview
 fun UserLocationPreview() {
-//    UserLocation()
+    UserLocation()
 }

@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,34 +20,40 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.ChildNameViewState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.Gender
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.Gray
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.vm.UserSettingsViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.Mama_ne_vdomaTheme
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.OutlinedTextFieldWithError
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RadioGroup
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 
 @Composable
 fun ChildNameFunc(
+    viewModel: UserSettingsViewModel,
     onNext: () -> Unit,
     onBack: () -> Unit
 ) {
     ChildName(
+        screenState = viewModel.childNameScreenState.collectAsStateWithLifecycle(),
+        validateName = { viewModel.validateName(it) },
+        validateAge = { viewModel.validateAge(it) },
+        setGender = { viewModel.setGender(it) },
         onNext = onNext,
         onBack = onBack
     )
@@ -55,6 +62,10 @@ fun ChildNameFunc(
 @Composable
 fun ChildName(
     modifier: Modifier = Modifier,
+    screenState: State<ChildNameViewState> = mutableStateOf(ChildNameViewState()),
+    validateName: (String) -> Unit = { },
+    validateAge: (String) -> Unit = { },
+    setGender: (Gender) -> Unit = { },
     onNext: () -> Unit,
     onBack: () -> Unit
 ) {
@@ -69,7 +80,7 @@ fun ChildName(
                     .imePadding()
                     .fillMaxWidth()
             ) {
-                val (topBar, name, age, gender, btnNext) = createRefs()
+                val (topBar, content, btnNext) = createRefs()
 
                 val topGuideline = createGuidelineFromTop(0.2f)
 
@@ -128,76 +139,71 @@ fun ChildName(
                         color = MaterialTheme.colorScheme.onPrimary
                     )
                 }
-
-
-                val nameText = remember { mutableStateOf(TextFieldValue("")) }
-
-                OutlinedTextField(
+                Column(
                     modifier = modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 24.dp)
-                        .constrainAs(name) {
-                            top.linkTo(topGuideline, 24.dp)
+                        .constrainAs(content) {
+                            top.linkTo(topGuideline)
+                            bottom.linkTo(btnNext.top, 16.dp)
+                            height = Dimension.fillToConstraints
                         },
-                    value = nameText.value,
-                    label = { Text("Вкажіть ім'я дитини") },
-                    onValueChange = { nameText.value = it },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
-                    maxLines = 1,
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedContainerColor = Gray,
-                        unfocusedContainerColor = Gray,
-                        disabledContainerColor = Gray,
-                        focusedBorderColor = MaterialTheme.colorScheme.background,
-                        unfocusedBorderColor = MaterialTheme.colorScheme.background,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Top
+                ) {
+                    Spacer(modifier = modifier.height(16.dp))
+
+                    OutlinedTextFieldWithError(
+                        modifier = modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 24.dp),
+                        text = screenState.value.name,
+                        label = "Вкажіть ім'я дитини",
+                        onValueChange = { validateName(it) },
+                        isError = screenState.value.nameValid == ValidField.INVALID,
+                        errorText = "Ви ввели некоректнe ім'я"
                     )
-                )
 
-                val ageText = remember { mutableStateOf(TextFieldValue("")) }
+                    Spacer(modifier = modifier.height(16.dp))
 
-                OutlinedTextField(
-                    modifier = modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 24.dp)
-                        .constrainAs(age) {
-                            top.linkTo(name.bottom, 16.dp)
-                        },
-                    value = ageText.value,
-                    label = { Text("Вкажіть вік дитини") },
-                    onValueChange = { ageText.value = it },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    maxLines = 1,
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedContainerColor = Gray,
-                        unfocusedContainerColor = Gray,
-                        disabledContainerColor = Gray,
-                        focusedBorderColor = MaterialTheme.colorScheme.background,
-                        unfocusedBorderColor = MaterialTheme.colorScheme.background,
+                    OutlinedTextFieldWithError(
+                        modifier = modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 24.dp),
+                        text = screenState.value.age,
+                        label = "Вкажіть вік дитини",
+                        onValueChange = { validateAge(it) },
+                        isError = screenState.value.ageValid == ValidField.INVALID,
+                        errorText = "Ви ввели некоректний вік",
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                     )
-                )
 
-                val genderOptions = listOf(Gender.BOY, Gender.GIRL)
+                    Spacer(modifier = modifier.height(16.dp))
 
-                RadioGroup(
-                    modifier = modifier
-                        .constrainAs(gender) {
-                            top.linkTo(age.bottom, 24.dp)
-                        }
-                        .padding(horizontal = 8.dp)
-                        .fillMaxWidth(),
-                    radioGroupOptions = genderOptions,
-                    getText = { it.gender }
-                )
+                    val genderOptions = listOf(Gender.BOY, Gender.GIRL)
+
+                    RadioGroup(
+                        modifier = modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 8.dp),
+                        radioGroupOptions = genderOptions,
+                        getText = { it.gender },
+                        selected = screenState.value.gender,
+                        onSelectedChange = { setGender(it) }
+                    )
+                }
 
                 Button(
                     modifier = modifier
+                        .fillMaxWidth()
                         .constrainAs(btnNext) {
                             bottom.linkTo(parent.bottom, margin = 16.dp)
                         }
-                        .fillMaxWidth()
                         .padding(horizontal = 24.dp)
                         .height(48.dp),
-                    onClick = onNext
+                    onClick = onNext,
+                    enabled = screenState.value.nameValid == ValidField.VALID &&
+                            screenState.value.ageValid == ValidField.VALID &&
+                            screenState.value.gender != Gender.NONE
                 ) {
                     Text(text = "Зареєструвати дитину")
                 }

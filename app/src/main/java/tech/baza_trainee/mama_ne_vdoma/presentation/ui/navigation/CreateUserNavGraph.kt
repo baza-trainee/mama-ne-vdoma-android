@@ -41,7 +41,9 @@ fun NavGraphBuilder.createUserNavGraph(
             }
         }
         composable("child_name_screen") {
+            val userSettingsViewModel: UserSettingsViewModel = it.sharedViewModel(navController)
             ChildNameFunc(
+                userSettingsViewModel,
                 { navController.navigate("child_schedule_screen") },
                 { navController.popBackStack() }
             )

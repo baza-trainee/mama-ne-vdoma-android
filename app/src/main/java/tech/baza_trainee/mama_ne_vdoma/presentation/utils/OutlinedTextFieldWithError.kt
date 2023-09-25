@@ -3,6 +3,7 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.utils
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -17,6 +18,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.Gray
 
@@ -66,7 +68,8 @@ fun OutlinedTextFieldWithError(
     leadingIcon: @Composable() (() -> Unit)? = null,
     onValueChange: (String) -> Unit = {},
     isError: Boolean = false,
-    errorText: String = ""
+    errorText: String = "",
+    keyboardOptions: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
 ) {
     Column {
         val focusRequester = remember { FocusRequester() }
@@ -92,7 +95,8 @@ fun OutlinedTextFieldWithError(
                 unfocusedBorderColor = MaterialTheme.colorScheme.background,
             ),
             leadingIcon = leadingIcon,
-            trailingIcon = trailingIcon
+            trailingIcon = trailingIcon,
+            keyboardOptions = keyboardOptions,
         )
         if (isError && isEmailFocused) {
             Text(

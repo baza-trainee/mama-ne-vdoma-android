@@ -7,6 +7,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.LocationRepository
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.ChildNameViewState
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.Gender
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.UserLocationViewState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.UserPhoneViewState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
@@ -26,6 +28,9 @@ class UserSettingsViewModel(
     private val _phoneScreenState = MutableStateFlow(UserPhoneViewState())
     val phoneScreenState: StateFlow<UserPhoneViewState> = _phoneScreenState.asStateFlow()
 
+    private val _childNameScreenState = MutableStateFlow(ChildNameViewState())
+    val childNameScreenState: StateFlow<ChildNameViewState> = _childNameScreenState.asStateFlow()
+
     fun setCode(code: String) {
         _phoneScreenState.update {
             it.copy(
@@ -42,6 +47,37 @@ class UserSettingsViewModel(
                 userPhone = phone,
                 phoneValid = phoneValid
             )
+        }
+    }
+
+    fun validateName(name: String) {
+        val nameValid = if (name.none { !it.isLetter() }) ValidField.VALID
+        else ValidField.INVALID
+        _childNameScreenState.update {
+            it.copy(
+                name = name,
+                nameValid = nameValid
+            )
+        }
+    }
+
+    fun validateAge(age: String) {
+        val intAge = age.toFloatOrNull()
+
+        val ageValid = if (intAge != null && intAge in 0f..MAX_AGE) ValidField.VALID
+        else ValidField.INVALID
+
+        _childNameScreenState.update {
+            it.copy(
+                age = age,
+                ageValid = ageValid
+            )
+        }
+    }
+
+    fun setGender(gender: Gender) {
+        _childNameScreenState.update {
+            it.copy( gender = gender)
         }
     }
 
@@ -97,5 +133,6 @@ class UserSettingsViewModel(
     companion object {
 
         private val PHONE_LENGTH = 9..12
+        private const val MAX_AGE = 18f
     }
 }

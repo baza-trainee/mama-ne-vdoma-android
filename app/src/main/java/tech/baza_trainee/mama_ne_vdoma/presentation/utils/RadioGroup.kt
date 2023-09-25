@@ -10,10 +10,6 @@ import androidx.compose.foundation.selection.selectable
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.Mama_ne_vdomaTheme
@@ -22,11 +18,11 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.Mama_ne_vdomaTheme
 fun <T> RadioGroup(
     modifier: Modifier = Modifier,
     radioGroupOptions: List<T>,
-    getText: (T) -> String
+    getText: (T) -> String,
+    selected: T? = null,
+    onSelectedChange: (T) -> Unit = { }
 ) {
     Mama_ne_vdomaTheme {
-        var selected by remember { mutableStateOf<T?>(null) }
-
         Column(
             modifier = modifier
                 .fillMaxWidth()
@@ -34,9 +30,6 @@ fun <T> RadioGroup(
             horizontalAlignment = Alignment.Start,
             verticalArrangement = Arrangement.Top
         ) {
-            val onSelectedChange: (T) -> Unit = { value ->
-                selected = value
-            }
             radioGroupOptions.forEach { value ->
                 Row(
                     modifier = modifier
