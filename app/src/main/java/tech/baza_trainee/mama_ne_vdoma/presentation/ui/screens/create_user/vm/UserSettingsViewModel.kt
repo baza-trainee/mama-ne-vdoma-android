@@ -8,7 +8,10 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.LocationRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.ChildNameViewState
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.DayPeriod
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.Gender
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.Period
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.ScheduleScreenState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.UserLocationViewState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.UserPhoneViewState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
@@ -17,6 +20,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.networkExecutor
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onError
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onLoading
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onSuccess
+import java.time.DayOfWeek
 
 class UserSettingsViewModel(
     private val locationRepository: LocationRepository
@@ -30,6 +34,12 @@ class UserSettingsViewModel(
 
     private val _childNameScreenState = MutableStateFlow(ChildNameViewState())
     val childNameScreenState: StateFlow<ChildNameViewState> = _childNameScreenState.asStateFlow()
+
+    private val _childScheduleScreenState = MutableStateFlow(ScheduleScreenState())
+    val childScheduleScreenState: StateFlow<ScheduleScreenState> = _childScheduleScreenState.asStateFlow()
+
+    private val _parentScheduleScreenState = MutableStateFlow(ScheduleScreenState())
+    val parentScheduleScreenState: StateFlow<ScheduleScreenState> = _parentScheduleScreenState.asStateFlow()
 
     fun setCode(code: String) {
         _phoneScreenState.update {
@@ -78,6 +88,108 @@ class UserSettingsViewModel(
     fun setGender(gender: Gender) {
         _childNameScreenState.update {
             it.copy( gender = gender)
+        }
+    }
+
+    fun updateChildSchedule(dayOfWeek: DayOfWeek, dayPeriod: Period) {
+        val currentSchedule = _childScheduleScreenState.value.schedule
+        when (dayPeriod) {
+            Period.WHOLE_DAY -> {
+                _childScheduleScreenState.update {
+                    it.copy(
+                        schedule = currentSchedule.apply {
+                            schedule[dayOfWeek] = schedule[dayOfWeek]?.copy(
+                                wholeDay = schedule[dayOfWeek]?.wholeDay?.not() ?: false
+                            ) ?: DayPeriod()
+                            if (schedule[dayOfWeek]?.wholeDay == true) {
+                                schedule[dayOfWeek] = schedule[dayOfWeek]?.copy(
+                                    morning = false,
+                                    noon = false,
+                                    afternoon = false
+                                ) ?: DayPeriod()
+                            }
+                        }
+                    )
+                }
+            }
+
+            Period.MORNING -> {
+                _childScheduleScreenState.update {
+                    it.copy(
+                        schedule = currentSchedule.apply {
+                            schedule[dayOfWeek] = schedule[dayOfWeek]?.copy(
+                                morning = schedule[dayOfWeek]?.morning?.not() ?: false
+                            ) ?: DayPeriod()
+                            if (schedule[dayOfWeek]?.morning == true &&
+                                schedule[dayOfWeek]?.noon == true &&
+                                schedule[dayOfWeek]?.afternoon == true) {
+                                schedule[dayOfWeek] = schedule[dayOfWeek]?.copy(
+                                    wholeDay = true,
+                                    morning = false,
+                                    noon = false,
+                                    afternoon = false
+                                ) ?: DayPeriod()
+                            } else if (schedule[dayOfWeek]?.morning == true && schedule[dayOfWeek]?.wholeDay == true) {
+                                schedule[dayOfWeek] = schedule[dayOfWeek]?.copy(
+                                    wholeDay = false
+                                ) ?: DayPeriod()
+                            }
+                        }
+                    )
+                }
+            }
+
+            Period.NOON -> {
+                _childScheduleScreenState.update {
+                    it.copy(
+                        schedule = currentSchedule.apply {
+                            schedule[dayOfWeek] = schedule[dayOfWeek]?.copy(
+                                noon = schedule[dayOfWeek]?.noon?.not() ?: false
+                            ) ?: DayPeriod()
+                            if (schedule[dayOfWeek]?.morning == true &&
+                                schedule[dayOfWeek]?.noon == true &&
+                                schedule[dayOfWeek]?.afternoon == true) {
+                                schedule[dayOfWeek] = schedule[dayOfWeek]?.copy(
+                                    wholeDay = true,
+                                    morning = false,
+                                    noon = false,
+                                    afternoon = false
+                                ) ?: DayPeriod()
+                            } else if (schedule[dayOfWeek]?.noon == true && schedule[dayOfWeek]?.wholeDay == true) {
+                                schedule[dayOfWeek] = schedule[dayOfWeek]?.copy(
+                                    wholeDay = false
+                                ) ?: DayPeriod()
+                            }
+                        }
+                    )
+                }
+            }
+
+            Period.AFTERNOON -> {
+                _childScheduleScreenState.update {
+                    it.copy(
+                        schedule = currentSchedule.apply {
+                            schedule[dayOfWeek] = schedule[dayOfWeek]?.copy(
+                                afternoon = schedule[dayOfWeek]?.afternoon?.not() ?: false
+                            ) ?: DayPeriod()
+                            if (schedule[dayOfWeek]?.morning == true &&
+                                schedule[dayOfWeek]?.noon == true &&
+                                schedule[dayOfWeek]?.afternoon == true) {
+                                schedule[dayOfWeek] = schedule[dayOfWeek]?.copy(
+                                    wholeDay = true,
+                                    morning = false,
+                                    noon = false,
+                                    afternoon = false
+                                ) ?: DayPeriod()
+                            } else if (schedule[dayOfWeek]?.afternoon == true && schedule[dayOfWeek]?.wholeDay == true) {
+                                schedule[dayOfWeek] = schedule[dayOfWeek]?.copy(
+                                    wholeDay = false
+                                ) ?: DayPeriod()
+                            }
+                        }
+                    )
+                }
+            }
         }
     }
 

@@ -3,7 +3,6 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,52 +13,73 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import kotlinx.coroutines.delay
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.Period
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.ScheduleScreenState
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.Gray
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ChildScheduleGroup
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.rememberImeState
+import java.time.DayOfWeek
 
 @Composable
-fun RegisterSuccessFunc(
-    onNext: () -> Unit,
-    onBack: () -> Unit
-) {
-    RegisterSuccess(
-        onNext = onNext,
-        onBack = onBack
-    )
-}
-
-@Composable
-fun RegisterSuccess(
+@Preview
+fun ScheduleScreen(
     modifier: Modifier = Modifier,
-    onNext: () -> Unit,
-    onBack: () -> Unit
+    screenState: State<ScheduleScreenState> = mutableStateOf(ScheduleScreenState()),
+    onUpdateSchedule: (DayOfWeek, Period) -> Unit = { _, _ -> },
+    onUpdateComment: (String) -> Unit = {},
+    onNext: () -> Unit = {},
+    onBack: () -> Unit = {}
 ) {
     Surface(
         modifier = modifier
             .windowInsetsPadding(WindowInsets.navigationBars)
             .fillMaxSize()
     ) {
+        val imeState = rememberImeState()
+        val scrollState = rememberScrollState()
+        val density = LocalDensity.current.density
+        val offset = (5000 * density).toInt()
+
+        LaunchedEffect(key1 = imeState.value) {
+            if (imeState.value) {
+                delay(100)
+                scrollState.scrollTo(offset)
+            }
+        }
+
         ConstraintLayout(
             modifier = modifier
+                .verticalScroll(scrollState)
                 .imePadding()
                 .fillMaxWidth()
         ) {
-            val (topBar, content, btnNext) = createRefs()
+            val (topBar, schedule, comment, btnNext) = createRefs()
 
             val topGuideline = createGuidelineFromTop(0.2f)
 
@@ -94,58 +114,56 @@ fun RegisterSuccess(
                         .fillMaxWidth()
                         .padding(top = 16.dp)
                         .padding(horizontal = 24.dp),
-                    text = "Реєстрація пройшла успішно",
+                    text = "Вкажіть, коли потрібно доглядати дитину",
                     fontSize = 24.sp,
                     textAlign = TextAlign.Start,
                     color = MaterialTheme.colorScheme.onPrimary
                 )
             }
-            
-            Column(
+
+            ChildScheduleGroup(
+                modifier = modifier
+                    .constrainAs(schedule) {
+                        top.linkTo(topGuideline, 24.dp)
+                    },
+                scheduleModel = screenState.value.schedule,
+                onValueChange = { day, period -> onUpdateSchedule(day, period) }
+            )
+
+            OutlinedTextField(
                 modifier = modifier
                     .fillMaxWidth()
-                    .constrainAs(content) {
-                        top.linkTo(topGuideline)
+                    .padding(horizontal = 24.dp)
+                    .constrainAs(comment) {
+                        top.linkTo(schedule.bottom, 16.dp)
                         bottom.linkTo(btnNext.top, 16.dp)
-                        height = Dimension.fillToConstraints
                     },
-                horizontalAlignment = Alignment.Start,
-                verticalArrangement = Arrangement.Top
-            ) {
-                Spacer(modifier = modifier.height(16.dp))
-
-                Text(
-                    modifier = modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 24.dp)
-                        .padding(bottom = 8.dp, top = 8.dp),
-                    text = "Це допоможе підібрати для вас групи " +
-                            "з дітьми приблизно одного віку",
-                    textAlign = TextAlign.Start
+                value = screenState.value.comment,
+                label = { Text("Нотатка") },
+                onValueChange = { onUpdateComment(it) },
+                minLines = 3,
+                maxLines = 3,
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedContainerColor = Gray,
+                    unfocusedContainerColor = Gray,
+                    disabledContainerColor = Gray,
+                    focusedBorderColor = MaterialTheme.colorScheme.primary,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.primary,
                 )
-            }
+            )
 
             Button(
                 modifier = modifier
-                    .fillMaxWidth()
                     .constrainAs(btnNext) {
                         bottom.linkTo(parent.bottom, margin = 16.dp)
                     }
+                    .fillMaxWidth()
                     .padding(horizontal = 24.dp)
                     .height(48.dp),
                 onClick = onNext
             ) {
-                Text(text = "Далі")
+                Text(text = "Встановити розклад")
             }
         }
     }
-}
-
-@Composable
-@Preview
-fun RegisterSuccessPreview() {
-    RegisterSuccess(
-        onBack = {},
-        onNext = {}
-    )
 }

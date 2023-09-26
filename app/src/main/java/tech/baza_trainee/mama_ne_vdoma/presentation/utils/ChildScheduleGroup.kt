@@ -17,18 +17,16 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.ChildScheduleModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.Period
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.ScheduleModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.Gray
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.Mama_ne_vdomaTheme
+import java.time.DayOfWeek
 import java.time.format.TextStyle
 import java.util.Locale
 
@@ -36,7 +34,8 @@ import java.util.Locale
 @Preview
 fun ChildScheduleGroup(
     modifier: Modifier = Modifier,
-    schedule: State<ChildScheduleModel> = mutableStateOf(ChildScheduleModel())
+    scheduleModel: ScheduleModel = ScheduleModel(),
+    onValueChange: (DayOfWeek, Period) -> Unit = { _,_ -> }
 ) {
     Mama_ne_vdomaTheme {
         Column(
@@ -82,8 +81,7 @@ fun ChildScheduleGroup(
                 )
             }
 
-            val days = schedule.value.schedule
-            days.keys.forEach {
+            scheduleModel.schedule.keys.forEach { day ->
                 Row(
                     modifier = modifier
                         .fillMaxWidth()
@@ -93,29 +91,19 @@ fun ChildScheduleGroup(
                     horizontalArrangement = Arrangement.SpaceEvenly,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    val dayName = it.getDisplayName(TextStyle.FULL, Locale.getDefault())
+                    val dayName = day.getDisplayName(TextStyle.FULL, Locale.getDefault())
                         .replaceFirstChar { it.uppercase() }
-
-                    val wholeDayState = remember { mutableStateOf(days[it]?.wholeDay ?: false) }
-                    val morningState = remember { mutableStateOf(days[it]?.morning ?: false) }
-                    val noonState = remember { mutableStateOf(days[it]?.noon ?: false) }
-                    val afternoonState = remember { mutableStateOf(days[it]?.afternoon ?: false) }
 
                     Box(
                         modifier = modifier
                             .background(
-                                color = if (wholeDayState.value) MaterialTheme.colorScheme.primary else Gray,
+                                color = if (scheduleModel.schedule[day]?.wholeDay == true) MaterialTheme.colorScheme.primary else Gray,
                                 shape = RoundedCornerShape(8.dp)
                             )
                             .height(48.dp)
                             .width(128.dp)
                             .clickable {
-                                wholeDayState.value = !wholeDayState.value
-                                if (wholeDayState.value) {
-                                    morningState.value = false
-                                    noonState.value = false
-                                    afternoonState.value = false
-                                }
+                                onValueChange(day, Period.WHOLE_DAY)
                             }
                             .padding(horizontal = 8.dp),
                         contentAlignment = Alignment.Center
@@ -123,7 +111,7 @@ fun ChildScheduleGroup(
                         Text(
                             text = dayName,
                             textAlign = TextAlign.Center,
-                            color = if (wholeDayState.value) MaterialTheme.colorScheme.onPrimary
+                            color = if (scheduleModel.schedule[day]?.wholeDay == true) MaterialTheme.colorScheme.onPrimary
                             else MaterialTheme.colorScheme.primary
                         )
                     }
@@ -134,17 +122,9 @@ fun ChildScheduleGroup(
                         contentAlignment = Alignment.Center
                     ) {
                         Checkbox(
-                            checked = morningState.value,
+                            checked = scheduleModel.schedule[day]?.morning == true,
                             onCheckedChange = {
-                                morningState.value = !morningState.value
-                                if (morningState.value && noonState.value && afternoonState.value) {
-                                    wholeDayState.value = true
-                                    morningState.value = false
-                                    noonState.value = false
-                                    afternoonState.value = false
-                                } else if (morningState.value && wholeDayState.value) {
-                                    wholeDayState.value = false
-                                }
+                                onValueChange(day, Period.MORNING)
                             }
                         )
                     }
@@ -156,17 +136,9 @@ fun ChildScheduleGroup(
                         contentAlignment = Alignment.Center
                     ) {
                         Checkbox(
-                            checked = noonState.value,
+                            checked = scheduleModel.schedule[day]?.noon == true,
                             onCheckedChange = {
-                                noonState.value = !noonState.value
-                                if (morningState.value && noonState.value && afternoonState.value) {
-                                    wholeDayState.value = true
-                                    morningState.value = false
-                                    noonState.value = false
-                                    afternoonState.value = false
-                                } else if (noonState.value && wholeDayState.value) {
-                                    wholeDayState.value = false
-                                }
+                                onValueChange(day, Period.NOON)
                             }
                         )
                     }
@@ -178,17 +150,9 @@ fun ChildScheduleGroup(
                         contentAlignment = Alignment.Center
                     ) {
                         Checkbox(
-                            checked = afternoonState.value,
+                            checked = scheduleModel.schedule[day]?.afternoon == true,
                             onCheckedChange = {
-                                afternoonState.value = !afternoonState.value
-                                if (morningState.value && noonState.value && afternoonState.value) {
-                                    wholeDayState.value = true
-                                    morningState.value = false
-                                    noonState.value = false
-                                    afternoonState.value = false
-                                } else if (afternoonState.value && wholeDayState.value) {
-                                    wholeDayState.value = false
-                                }
+                                onValueChange(day, Period.AFTERNOON)
                             }
                         )
                     }

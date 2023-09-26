@@ -1,10 +1,11 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model
 
+import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.snapshots.SnapshotStateMap
 import java.time.DayOfWeek
-import java.util.EnumMap
 
-data class ChildScheduleModel(
-    val schedule: EnumMap<DayOfWeek, DayPeriod> = EnumMap<DayOfWeek, DayPeriod>(DayOfWeek::class.java).also { map ->
+data class ScheduleModel(
+    val schedule: SnapshotStateMap<DayOfWeek, DayPeriod> = mutableStateMapOf<DayOfWeek, DayPeriod>().also { map ->
         DayOfWeek.values().forEach {
             map[it] = DayPeriod()
         }

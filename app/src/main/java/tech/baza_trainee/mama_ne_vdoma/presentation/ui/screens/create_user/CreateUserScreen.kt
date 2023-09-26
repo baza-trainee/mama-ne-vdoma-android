@@ -127,6 +127,17 @@ fun CreateUser(
                     isError = screenState.value.passwordValid == ValidField.INVALID
                 )
 
+                Spacer(modifier = modifier.height(2.dp))
+
+                Text(
+                    modifier = modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 24.dp),
+                    text =
+                        "Ваш пароль повинен складатись з 6-24 символів і обов’язково містити букви, цифри, спеціальні знаки",
+                    fontSize = 14.sp,
+                )
+
                 Spacer(modifier = modifier.height(16.dp))
 
                 PasswordTextFieldWithError(
