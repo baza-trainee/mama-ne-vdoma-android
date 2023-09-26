@@ -8,5 +8,7 @@ data class UserCreateViewState(
     val confirmPassword: String = "",
     val emailValid: ValidField = ValidField.EMPTY,
     val passwordValid: ValidField = ValidField.EMPTY,
-    val confirmPasswordValid: ValidField = ValidField.EMPTY
+    val confirmPasswordValid: ValidField = ValidField.EMPTY,
+    val isPolicyChecked: Boolean = false,
+    val isAllConform: Boolean = false
 )

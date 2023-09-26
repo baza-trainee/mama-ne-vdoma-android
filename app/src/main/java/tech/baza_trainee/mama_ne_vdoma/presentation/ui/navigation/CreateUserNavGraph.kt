@@ -8,6 +8,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.Child
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.ChildScheduleFunc
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.CreateUserFunc
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.EnterPhoneFunc
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.RegisterSuccessFunc
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.UserLocationFunc
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.vm.UserCreateViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.vm.UserSettingsViewModel
@@ -18,8 +19,14 @@ fun NavGraphBuilder.createUserNavGraph(
 ) {
     navigation(
         route = "create_user_graph",
-        startDestination = "create_user_screen"
+        startDestination = "register_success_screen"
     ) {
+        composable("register_success_screen") {
+            RegisterSuccessFunc(
+                { navController.navigate("create_user_screen") },
+                { navController.popBackStack() }
+            )
+        }
         composable("create_user_screen") {
             val userCreateViewModel: UserCreateViewModel = it.sharedViewModel(navController)
             CreateUserFunc(
@@ -49,6 +56,18 @@ fun NavGraphBuilder.createUserNavGraph(
             )
         }
         composable("child_schedule_screen") {
+            ChildScheduleFunc(
+                { navController.navigate("child_info_screen") },
+                { navController.popBackStack() }
+            )
+        }
+        composable("child_info_screen") {
+            ChildScheduleFunc(
+                { navController.navigate("parent_schedule_screen") },
+                { navController.popBackStack() }
+            )
+        }
+        composable("parent_schedule_screen") {
             ChildScheduleFunc(
                 {  },
                 { navController.popBackStack() }

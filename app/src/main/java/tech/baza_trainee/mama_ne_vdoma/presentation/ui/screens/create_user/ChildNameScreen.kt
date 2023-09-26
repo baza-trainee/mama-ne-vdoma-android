@@ -1,11 +1,8 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,6 +15,10 @@ import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -92,49 +93,30 @@ fun ChildName(
                         height = Dimension.fillToConstraints
                     }
                     .fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.SpaceBetween
+                horizontalAlignment = Alignment.Start,
+                verticalArrangement = Arrangement.Top
             ) {
-                Row(
+                IconButton(
                     modifier = modifier
-                        .align(Alignment.Start)
-                        .fillMaxWidth()
+                        .padding(start = 16.dp, top = 16.dp)
+                        .height(24.dp)
+                        .width(24.dp),
+                    onClick = { onBack() }
                 ) {
-                    Box(
-                        modifier = modifier
-                            .clickable {
-                                onBack()
-                            }
-                            .padding(start = 16.dp)
-                            .height(24.dp)
-                            .width(24.dp)
-                    ) {
-                        Text(
-                            text = "<",
-                            fontSize = 20.sp,
-                            textAlign = TextAlign.Start,
-                            color = MaterialTheme.colorScheme.onPrimary
-                        )
-                    }
-                    Text(
-                        modifier = modifier
-                            .weight(1f)
-                            .fillMaxWidth()
-                            .padding(bottom = 8.dp, end = 24.dp),
-                        text = "Розкажіть про свою дитину",
-                        fontSize = 20.sp,
-                        textAlign = TextAlign.Center,
-                        color = MaterialTheme.colorScheme.onPrimary
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onPrimary
                     )
                 }
                 Text(
                     modifier = modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 24.dp)
-                        .padding(bottom = 8.dp, top = 8.dp),
-                    text = "Це допоможе підібрати для вас групи " +
-                            "з дітьми приблизно одного віку",
-                    textAlign = TextAlign.Center,
+                        .padding(top = 16.dp)
+                        .padding(horizontal = 24.dp),
+                    text = "Розкажіть про свою дитину",
+                    fontSize = 24.sp,
+                    textAlign = TextAlign.Start,
                     color = MaterialTheme.colorScheme.onPrimary
                 )
             }

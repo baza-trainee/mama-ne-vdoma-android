@@ -24,6 +24,7 @@ class UserCreateViewModel: ViewModel() {
                 emailValid = emailValid
             )
         }
+        updateConform()
     }
 
     fun validatePassword(password: String) {
@@ -45,6 +46,16 @@ class UserCreateViewModel: ViewModel() {
                 confirmPassword = confirmPassword
             )
         }
+        updateConform()
+    }
+
+    fun updatePolicyCheck(isChecked: Boolean) {
+        _viewState.update {
+            it.copy(
+                isPolicyChecked = isChecked
+            )
+        }
+        updateConform()
     }
 
     private fun checkPasswords(password: String, confirmPassword: String) {
@@ -53,6 +64,17 @@ class UserCreateViewModel: ViewModel() {
         _viewState.update {
             it.copy(
                 confirmPasswordValid = confirmPasswordValid
+            )
+        }
+        updateConform()
+    }
+
+    private fun updateConform() {
+        _viewState.update {
+            it.copy(
+                isAllConform =
+                it.emailValid == ValidField.VALID && it.passwordValid == ValidField.VALID &&
+                        it.confirmPasswordValid == ValidField.VALID && it.isPolicyChecked
             )
         }
     }

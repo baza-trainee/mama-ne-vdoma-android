@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,6 +17,7 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material3.Button
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -23,6 +25,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -51,6 +54,7 @@ fun CreateUserFunc(
         validateEmail = { viewModel.validateEmail(it) },
         validatePassword = { viewModel.validatePassword(it) },
         validateConfirmPassword = { viewModel.validateConfirmPassword(it) },
+        updatePolicyCheck = { viewModel.updatePolicyCheck(it) },
         onCreateUser = onCreateUser,
         onLogin = onLogin
     )
@@ -63,6 +67,7 @@ fun CreateUser(
     validateEmail: (String) -> Unit = {},
     validatePassword: (String) -> Unit = {},
     validateConfirmPassword: (String) -> Unit = {},
+    updatePolicyCheck: (Boolean) -> Unit = {},
     onCreateUser: () -> Unit = {},
     onLogin: () -> Unit = {}
 ) {
@@ -135,6 +140,29 @@ fun CreateUser(
                     errorText = "Паролі не співпадають"
                 )
 
+                Spacer(modifier = modifier.height(8.dp))
+
+                Row(
+                    modifier = modifier.fillMaxWidth()
+                        .padding(horizontal = 24.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Checkbox(
+                        checked = screenState.value.isPolicyChecked,
+                        onCheckedChange = { updatePolicyCheck(it) }
+                    )
+                    Text(
+                        modifier = modifier
+                            .weight(1f)
+                            .fillMaxWidth(),
+                        text = getTextWithUnderline(
+                            "Даю згоду на використання моїх даних згідно з ",
+                            "Політикою конфіденційності"
+                        ),
+                        fontSize = 14.sp,
+                    )
+                }
+
                 Spacer(modifier = modifier.height(24.dp))
 
                 Button(
@@ -143,25 +171,10 @@ fun CreateUser(
                         .height(48.dp)
                         .padding(horizontal = 24.dp),
                     onClick = onCreateUser,
-                    enabled = screenState.value.emailValid == ValidField.VALID &&
-                            screenState.value.passwordValid == ValidField.VALID &&
-                            screenState.value.confirmPasswordValid == ValidField.VALID
+                    enabled = screenState.value.isAllConform
                 ) {
                     Text(text = "Зареєструватись")
                 }
-
-                Spacer(modifier = modifier.height(8.dp))
-
-                Text(
-                    modifier = modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 24.dp),
-                    text = getTextWithUnderline(
-                        "Натискаючи цю кнопку, ви даєте згоду на використання ваших даних згідно з ",
-                        "Політикою конфіденційності"
-                    ),
-                    fontSize = 14.sp,
-                )
 
                 Spacer(modifier = modifier.height(32.dp))
 
