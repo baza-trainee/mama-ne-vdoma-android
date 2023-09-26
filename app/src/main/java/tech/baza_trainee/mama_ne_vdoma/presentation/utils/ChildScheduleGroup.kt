@@ -1,7 +1,6 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.utils
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -24,7 +23,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.Period
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.ScheduleModel
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.Gray
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.Mama_ne_vdomaTheme
 import java.time.DayOfWeek
 import java.time.format.TextStyle
@@ -41,8 +39,7 @@ fun ChildScheduleGroup(
         Column(
             modifier = modifier
                 .padding(horizontal = 24.dp)
-                .border(1.dp, MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(4.dp))
-                .background(Gray),
+                .background(MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(4.dp)),
             verticalArrangement = Arrangement.SpaceAround
         ) {
             Row(
@@ -97,7 +94,8 @@ fun ChildScheduleGroup(
                     Box(
                         modifier = modifier
                             .background(
-                                color = if (scheduleModel.schedule[day]?.wholeDay == true) MaterialTheme.colorScheme.primary else Gray,
+                                color = if (scheduleModel.schedule[day]?.wholeDay == true) MaterialTheme.colorScheme.primary
+                                else MaterialTheme.colorScheme.surface,
                                 shape = RoundedCornerShape(8.dp)
                             )
                             .height(48.dp)
@@ -112,7 +110,7 @@ fun ChildScheduleGroup(
                             text = dayName,
                             textAlign = TextAlign.Center,
                             color = if (scheduleModel.schedule[day]?.wholeDay == true) MaterialTheme.colorScheme.onPrimary
-                            else MaterialTheme.colorScheme.primary
+                            else MaterialTheme.colorScheme.onBackground
                         )
                     }
                     Box(

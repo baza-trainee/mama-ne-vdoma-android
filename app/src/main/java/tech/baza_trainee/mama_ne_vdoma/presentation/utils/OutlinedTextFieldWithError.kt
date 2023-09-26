@@ -20,7 +20,6 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.Gray
 
 @Composable
 fun PasswordTextFieldWithError(
@@ -88,11 +87,11 @@ fun OutlinedTextFieldWithError(
             onValueChange = { onValueChange(it) },
             isError = isError && isEmailFocused,
             colors = OutlinedTextFieldDefaults.colors(
-                focusedContainerColor = Gray,
-                unfocusedContainerColor = Gray,
-                disabledContainerColor = Gray,
-                focusedBorderColor = MaterialTheme.colorScheme.background,
-                unfocusedBorderColor = MaterialTheme.colorScheme.background,
+                focusedContainerColor = MaterialTheme.colorScheme.surface,
+                unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                disabledContainerColor = MaterialTheme.colorScheme.surface,
+                focusedBorderColor = MaterialTheme.colorScheme.primary,
+                unfocusedBorderColor = MaterialTheme.colorScheme.surface,
             ),
             leadingIcon = leadingIcon,
             trailingIcon = trailingIcon,

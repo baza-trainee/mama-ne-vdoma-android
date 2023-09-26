@@ -52,7 +52,8 @@ fun RegisterSuccess(
     Surface(
         modifier = modifier
             .windowInsetsPadding(WindowInsets.navigationBars)
-            .fillMaxSize()
+            .fillMaxSize(),
+        color = MaterialTheme.colorScheme.background
     ) {
         ConstraintLayout(
             modifier = modifier

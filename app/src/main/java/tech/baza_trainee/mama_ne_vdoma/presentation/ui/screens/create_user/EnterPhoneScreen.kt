@@ -44,7 +44,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.canopas.campose.countrypicker.CountryPickerBottomSheet
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.UserPhoneViewState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.vm.UserSettingsViewModel
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.Gray
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.SlateGray
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 
@@ -123,8 +122,8 @@ fun EnterPhone(
                         focusedContainerColor = SlateGray,
                         unfocusedContainerColor = SlateGray,
                         disabledContainerColor = SlateGray,
-                        focusedBorderColor = MaterialTheme.colorScheme.background,
-                        unfocusedBorderColor = MaterialTheme.colorScheme.background,
+                        focusedBorderColor = MaterialTheme.colorScheme.surface,
+                        unfocusedBorderColor = MaterialTheme.colorScheme.surface,
                         disabledBorderColor = MaterialTheme.colorScheme.primary
                     ),
                     shape = RoundedCornerShape(topStart = 4.dp, bottomStart = 4.dp)
@@ -147,12 +146,12 @@ fun EnterPhone(
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
                     maxLines = 1,
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedContainerColor = Gray,
-                        unfocusedContainerColor = Gray,
-                        disabledContainerColor = Gray,
-                        focusedBorderColor = MaterialTheme.colorScheme.background,
-                        unfocusedBorderColor = MaterialTheme.colorScheme.background,
-                        disabledBorderColor = MaterialTheme.colorScheme.background
+                        focusedContainerColor = MaterialTheme.colorScheme.surface,
+                        unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                        disabledContainerColor = MaterialTheme.colorScheme.surface,
+                        focusedBorderColor = MaterialTheme.colorScheme.primary,
+                        unfocusedBorderColor = MaterialTheme.colorScheme.surface,
+                        disabledBorderColor = MaterialTheme.colorScheme.surface
                     ),
                     shape = RoundedCornerShape(topEnd = 4.dp, bottomEnd = 4.dp),
                     enabled = screenState.value.code.isNotEmpty()
@@ -199,7 +198,7 @@ fun EnterPhone(
                             fontSize = 20.sp
                         )
                     },
-                    containerColor = MaterialTheme.colorScheme.background,
+                    containerColor = MaterialTheme.colorScheme.surface,
                     onItemSelected = {
                         setCode(it.dial_code)
                         openBottomSheet = false

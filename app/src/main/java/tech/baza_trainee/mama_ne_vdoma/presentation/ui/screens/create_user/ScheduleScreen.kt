@@ -41,7 +41,6 @@ import androidx.constraintlayout.compose.Dimension
 import kotlinx.coroutines.delay
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.Period
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.ScheduleScreenState
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.Gray
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ChildScheduleGroup
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.rememberImeState
 import java.time.DayOfWeek
@@ -59,7 +58,8 @@ fun ScheduleScreen(
     Surface(
         modifier = modifier
             .windowInsetsPadding(WindowInsets.navigationBars)
-            .fillMaxSize()
+            .fillMaxSize(),
+        color = MaterialTheme.colorScheme.background
     ) {
         val imeState = rememberImeState()
         val scrollState = rememberScrollState()
@@ -144,11 +144,11 @@ fun ScheduleScreen(
                 minLines = 3,
                 maxLines = 3,
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedContainerColor = Gray,
-                    unfocusedContainerColor = Gray,
-                    disabledContainerColor = Gray,
+                    focusedContainerColor =  MaterialTheme.colorScheme.surface,
+                    unfocusedContainerColor =  MaterialTheme.colorScheme.surface,
+                    disabledContainerColor =  MaterialTheme.colorScheme.surface,
                     focusedBorderColor = MaterialTheme.colorScheme.primary,
-                    unfocusedBorderColor = MaterialTheme.colorScheme.primary,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.surface,
                 )
             )
 

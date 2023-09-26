@@ -39,7 +39,7 @@ fun SocialLoginBlock(
 //                .height(48.dp),
 //            onClick = onGoogleLogin,
 //            colors = ButtonDefaults.elevatedButtonColors(
-//                containerColor = MaterialTheme.colorScheme.background,
+//                containerColor = MaterialTheme.colorScheme.surface,
 //                contentColor = MaterialTheme.colorScheme.onBackground
 //            ),
 //            border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary)
@@ -68,7 +68,7 @@ fun SocialLoginBlock(
 //                .height(48.dp),
 //            onClick = onGoogleLogin,
 //            colors = ButtonDefaults.elevatedButtonColors(
-//                containerColor = MaterialTheme.colorScheme.background,
+//                containerColor = MaterialTheme.colorScheme.surface,
 //                contentColor = MaterialTheme.colorScheme.onBackground
 //            ),
 //            border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary)

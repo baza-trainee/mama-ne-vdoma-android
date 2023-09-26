@@ -72,9 +72,9 @@ fun LoginUser(
 ) {
     Surface(
         modifier = modifier
-            .background(MaterialTheme.colorScheme.background)
             .windowInsetsPadding(WindowInsets.systemBars)
-            .fillMaxSize()
+            .fillMaxSize(),
+        color = MaterialTheme.colorScheme.background
     ) {
         Column(
             modifier = modifier

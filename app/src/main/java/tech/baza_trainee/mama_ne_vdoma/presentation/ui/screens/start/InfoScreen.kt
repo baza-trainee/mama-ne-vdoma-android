@@ -76,6 +76,7 @@ fun InfoScreen(
 
     Surface(
         modifier = modifier
+            .background(MaterialTheme.colorScheme.background)
             .windowInsetsPadding(WindowInsets.navigationBars)
             .fillMaxSize(),
     ) {
@@ -147,7 +148,6 @@ fun InfoScreen(
                         bottom.linkTo(parent.bottom, 16.dp)
                         height = Dimension.preferredValue(70.dp)
                     }
-                    .background(MaterialTheme.colorScheme.background)
             ) {
                 val isLastPage by remember {
                     derivedStateOf { pagerState.currentPage == 2 }

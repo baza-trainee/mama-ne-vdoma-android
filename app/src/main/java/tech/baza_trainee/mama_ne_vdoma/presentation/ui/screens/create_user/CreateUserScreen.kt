@@ -73,9 +73,9 @@ fun CreateUser(
 ) {
     Surface(
         modifier = modifier
-            .background(MaterialTheme.colorScheme.background)
             .windowInsetsPadding(WindowInsets.systemBars)
-            .fillMaxSize()
+            .fillMaxSize(),
+        color = MaterialTheme.colorScheme.background
     ) {
         Column(
             modifier = modifier
@@ -134,7 +134,7 @@ fun CreateUser(
                         .fillMaxWidth()
                         .padding(horizontal = 24.dp),
                     text =
-                        "Ваш пароль повинен складатись з 6-24 символів і обов’язково містити латинські букви, цифри, спеціальні знаки",
+                    "Ваш пароль повинен складатись з 6-24 символів і обов’язково містити латинські букви, цифри, спеціальні знаки",
                     fontSize = 14.sp,
                 )
 
@@ -154,7 +154,8 @@ fun CreateUser(
                 Spacer(modifier = modifier.height(8.dp))
 
                 Row(
-                    modifier = modifier.fillMaxWidth()
+                    modifier = modifier
+                        .fillMaxWidth()
                         .padding(horizontal = 24.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {

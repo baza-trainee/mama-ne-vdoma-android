@@ -20,7 +20,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.Gray
 
 @Composable
 fun ShowHidePasswordTextField(
@@ -42,11 +41,11 @@ fun ShowHidePasswordTextField(
         label = { Text(text = label) },
         placeholder = { Text(text = placeHolder) },
         colors = OutlinedTextFieldDefaults.colors(
-            focusedContainerColor = Gray,
-            unfocusedContainerColor = Gray,
-            disabledContainerColor = Gray,
-            focusedBorderColor = MaterialTheme.colorScheme.background,
-            unfocusedBorderColor = MaterialTheme.colorScheme.background,
+            focusedContainerColor = MaterialTheme.colorScheme.surface,
+            unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+            disabledContainerColor = MaterialTheme.colorScheme.surface,
+            focusedBorderColor = MaterialTheme.colorScheme.primary,
+            unfocusedBorderColor = MaterialTheme.colorScheme.surface,
         ),
         visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation(),
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),

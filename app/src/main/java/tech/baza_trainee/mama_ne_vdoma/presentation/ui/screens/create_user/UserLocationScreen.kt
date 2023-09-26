@@ -51,7 +51,6 @@ import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.UserLocationViewState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.vm.UserSettingsViewModel
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.Gray
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.LocationPermissionTextProvider
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.PermissionDialog
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.findActivity
@@ -81,7 +80,8 @@ fun UserLocation(
     Surface(
         modifier = modifier
             .windowInsetsPadding(WindowInsets.navigationBars)
-            .fillMaxSize()
+            .fillMaxSize(),
+        color = MaterialTheme.colorScheme.background
     ) {
         val activity = LocalContext.current.findActivity()
         val permissionDialogQueue = remember { mutableStateListOf<String>() }
@@ -215,11 +215,11 @@ fun UserLocation(
                     .padding(horizontal = 24.dp),
                 label = { Text("Введіть вашу адресу") },
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedContainerColor = Gray,
-                    unfocusedContainerColor = Gray,
-                    disabledContainerColor = Gray,
-                    focusedBorderColor = MaterialTheme.colorScheme.background,
-                    unfocusedBorderColor = MaterialTheme.colorScheme.background,
+                    focusedContainerColor = MaterialTheme.colorScheme.surface,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                    disabledContainerColor = MaterialTheme.colorScheme.surface,
+                    focusedBorderColor = MaterialTheme.colorScheme.primary,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.surface,
                 ),
                 trailingIcon = {
                     IconButton(

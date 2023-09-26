@@ -84,7 +84,7 @@ fun PermissionDialog(
             },
             modifier = modifier,
             shape = RoundedCornerShape(16.dp),
-            backgroundColor = MaterialTheme.colorScheme.background
+            backgroundColor = MaterialTheme.colorScheme.surface
         )
     }
 }

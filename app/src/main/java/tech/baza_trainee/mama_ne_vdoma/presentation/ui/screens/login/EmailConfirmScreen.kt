@@ -52,9 +52,9 @@ fun EmailConfirm(
 ) {
     Surface(
         modifier = modifier
-            .background(MaterialTheme.colorScheme.background)
             .windowInsetsPadding(WindowInsets.navigationBars)
-            .fillMaxSize()
+            .fillMaxSize(),
+        color = MaterialTheme.colorScheme.background
     ) {
         ConstraintLayout(
             modifier = modifier.fillMaxWidth()

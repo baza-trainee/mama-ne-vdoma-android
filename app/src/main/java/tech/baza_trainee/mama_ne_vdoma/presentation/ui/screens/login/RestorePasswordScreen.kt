@@ -1,7 +1,5 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,11 +11,14 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -60,9 +61,9 @@ fun RestorePassword(
 ) {
     Surface(
         modifier = modifier
-            .background(MaterialTheme.colorScheme.background)
             .windowInsetsPadding(WindowInsets.systemBars)
-            .fillMaxSize()
+            .fillMaxSize(),
+        color = MaterialTheme.colorScheme.background
     ) {
         Column(
             modifier = modifier
@@ -83,17 +84,19 @@ fun RestorePassword(
                         .align(Alignment.Start)
                         .fillMaxWidth()
                 ) {
-                    Text(
+                    IconButton(
                         modifier = modifier
                             .padding(start = 16.dp)
-                            .clickable {
-                                onBack()
-                            },
-                        text = "<",
-                        fontSize = 20.sp,
-                        textAlign = TextAlign.Start,
-                        color = MaterialTheme.colorScheme.onBackground
-                    )
+                            .height(24.dp)
+                            .width(24.dp),
+                        onClick = { onBack() }
+                    ) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onBackground
+                        )
+                    }
                     Text(
                         modifier = modifier
                             .weight(1f)
