@@ -19,20 +19,20 @@ fun NavGraphBuilder.createUserNavGraph(
 ) {
     navigation(
         route = "create_user_graph",
-        startDestination = "register_success_screen"
+        startDestination = "create_user_screen"
     ) {
-        composable("register_success_screen") {
-            RegisterSuccessFunc(
-                { navController.navigate("create_user_screen") },
-                { navController.popBackStack() }
-            )
-        }
         composable("create_user_screen") {
             val userCreateViewModel: UserCreateViewModel = it.sharedViewModel(navController)
             CreateUserFunc(
                 userCreateViewModel,
-                { navController.navigate("enter_phone_screen") }, //temp need replace with logic
+                { navController.navigate("register_success_screen") }, //temp need replace with logic
                 { navController.navigate("login_screen") }
+            )
+        }
+        composable("register_success_screen") {
+            RegisterSuccessFunc(
+                { navController.navigate("enter_phone_screen") },
+                { navController.popBackStack() }
             )
         }
         composable("enter_phone_screen") {
