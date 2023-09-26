@@ -44,7 +44,6 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import kotlinx.coroutines.launch
 import tech.baza_trainee.mama_ne_vdoma.R
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.Mama_ne_vdomaTheme
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.Indicator
 
 @Composable
@@ -75,165 +74,163 @@ fun InfoScreen(
 
     val pagerState = rememberPagerState(pageCount = { pageTextContent.size })
 
-    Mama_ne_vdomaTheme {
-        Surface(
-            modifier = modifier
-                .windowInsetsPadding(WindowInsets.navigationBars)
-                .fillMaxSize(),
+    Surface(
+        modifier = modifier
+            .windowInsetsPadding(WindowInsets.navigationBars)
+            .fillMaxSize(),
+    ) {
+        ConstraintLayout(
+            modifier = modifier.fillMaxSize()
         ) {
-            ConstraintLayout(
-                modifier = modifier.fillMaxSize()
+            val (pager, footer) = createRefs()
+
+            HorizontalPager(
+                state = pagerState,
+                modifier = Modifier
+                    .constrainAs(pager) {
+                        top.linkTo(parent.top)
+                        bottom.linkTo(footer.top, 16.dp)
+                    }
+                    .fillMaxSize()
+            ) { page ->
+                ConstraintLayout(
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    val (image, title, info) = createRefs()
+
+                    Image(
+                        modifier = modifier
+                            .constrainAs(image) {
+                                top.linkTo(parent.top)
+                            }
+                            .fillMaxWidth()
+                            .fillMaxHeight(0.7f)
+                            .verticalScroll(rememberScrollState()),
+                        alignment = Alignment.TopCenter,
+                        painter = painterResource(id = pagerImageContent[page]),
+                        contentDescription = pageTextContent[page],
+                        contentScale = ContentScale.FillHeight
+                    )
+                    Text(
+                        text = "Няня у твоєму телефоні",
+                        color = MaterialTheme.colorScheme.primary,
+                        modifier = modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 24.dp)
+                            .constrainAs(title) {
+                                top.linkTo(image.bottom, 8.dp)
+                                height = Dimension.wrapContent
+                            },
+                        fontSize = 24.sp,
+                        textAlign = TextAlign.Center
+                    )
+                    Text(
+                        text = pageTextContent[page],
+                        color = MaterialTheme.colorScheme.onBackground,
+                        modifier = modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 24.dp)
+                            .constrainAs(info) {
+                                top.linkTo(title.bottom, 16.dp)
+                                height = Dimension.wrapContent
+                            },
+                        fontSize = 16.sp,
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
+
+            Column(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .constrainAs(footer) {
+                        bottom.linkTo(parent.bottom, 16.dp)
+                        height = Dimension.preferredValue(70.dp)
+                    }
+                    .background(MaterialTheme.colorScheme.background)
             ) {
-                val (pager, footer) = createRefs()
+                val isLastPage by remember {
+                    derivedStateOf { pagerState.currentPage == 2 }
+                }
 
-                HorizontalPager(
-                    state = pagerState,
-                    modifier = Modifier
-                        .constrainAs(pager) {
-                            top.linkTo(parent.top)
-                            bottom.linkTo(footer.top, 16.dp)
-                        }
-                        .fillMaxSize()
-                ) { page ->
+                AnimatedVisibility(
+                    visible = !isLastPage,
+                    enter = slideInHorizontally(initialOffsetX = { -it }),
+                    exit = slideOutHorizontally(targetOffsetX = { -it })
+                ) {
                     ConstraintLayout(
-                        modifier = Modifier.fillMaxSize()
+                        modifier = modifier.fillMaxWidth()
                     ) {
-                        val (image, title, info) = createRefs()
+                        val (indicator, btnSkip, btnNext) = createRefs()
 
-                        Image(
+                        Row(
                             modifier = modifier
-                                .constrainAs(image) {
+                                .constrainAs(indicator) {
                                     top.linkTo(parent.top)
+                                    bottom.linkTo(parent.bottom)
                                 }
-                                .fillMaxWidth()
-                                .fillMaxHeight(0.7f)
-                                .verticalScroll(rememberScrollState()),
-                            alignment = Alignment.TopCenter,
-                            painter = painterResource(id = pagerImageContent[page]),
-                            contentDescription = pageTextContent[page],
-                            contentScale = ContentScale.FillHeight
-                        )
-                        Text(
-                            text = "Няня у твоєму телефоні",
-                            color = MaterialTheme.colorScheme.primary,
-                            modifier = modifier
-                                .fillMaxWidth()
                                 .padding(horizontal = 24.dp)
-                                .constrainAs(title) {
-                                    top.linkTo(image.bottom, 8.dp)
-                                    height = Dimension.wrapContent
-                                },
-                            fontSize = 24.sp,
-                            textAlign = TextAlign.Center
-                        )
+                        ) {
+                            repeat(pageTextContent.size) { iteration ->
+                                val isSelected by remember {
+                                    derivedStateOf { pagerState.currentPage == iteration }
+                                }
+
+                                Indicator(
+                                    isSelected = isSelected,
+                                    selectedColor = MaterialTheme.colorScheme.primary,
+                                    backgroundColor = MaterialTheme.colorScheme.background,
+                                    defaultRadius = 8.dp,
+                                    selectedLength = 24.dp,
+                                    modifier = modifier.padding(horizontal = 4.dp)
+                                )
+                            }
+                        }
                         Text(
-                            text = pageTextContent[page],
-                            color = MaterialTheme.colorScheme.onBackground,
                             modifier = modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 24.dp)
-                                .constrainAs(info) {
-                                    top.linkTo(title.bottom, 16.dp)
-                                    height = Dimension.wrapContent
+                                .clickable { onCreate() }
+                                .constrainAs(btnSkip) {
+                                    top.linkTo(parent.top)
+                                    bottom.linkTo(parent.bottom)
+                                    end.linkTo(btnNext.start, 24.dp)
                                 },
-                            fontSize = 16.sp,
-                            textAlign = TextAlign.Center
+                            text = "Пропустити"
                         )
+                        Button(
+                            shape = CircleShape,
+                            modifier = modifier
+                                .size(60.dp)
+                                .constrainAs(btnNext) {
+                                    top.linkTo(parent.top)
+                                    bottom.linkTo(parent.bottom)
+                                    end.linkTo(parent.end, 24.dp)
+                                },
+                            onClick = {
+                                with(pagerState) {
+                                    scrollCoroutineScope.launch {
+                                        animateScrollToPage(currentPage + 1)
+                                    }
+                                }
+                            }
+                        ) {
+                            Text(text = ">", fontSize = 24.sp)
+                        }
                     }
                 }
 
-                Column(
-                    modifier = modifier
-                        .fillMaxWidth()
-                        .constrainAs(footer) {
-                            bottom.linkTo(parent.bottom, 16.dp)
-                            height = Dimension.preferredValue(70.dp)
-                        }
-                        .background(MaterialTheme.colorScheme.background)
+                AnimatedVisibility(
+                    visible = isLastPage,
+                    enter = slideInHorizontally(initialOffsetX = { it }),
+                    exit = slideOutHorizontally(targetOffsetX = { it })
                 ) {
-                    val isLastPage by remember {
-                        derivedStateOf { pagerState.currentPage == 2 }
-                    }
-
-                    AnimatedVisibility(
-                        visible = !isLastPage,
-                        enter = slideInHorizontally(initialOffsetX = { -it }),
-                        exit = slideOutHorizontally(targetOffsetX = { -it })
+                    Button(
+                        modifier = modifier
+                            .height(48.dp)
+                            .fillMaxWidth()
+                            .padding(horizontal = 24.dp),
+                        onClick = onCreate
                     ) {
-                        ConstraintLayout(
-                            modifier = modifier.fillMaxWidth()
-                        ) {
-                            val (indicator, btnSkip, btnNext) = createRefs()
-
-                            Row(
-                                modifier = modifier
-                                    .constrainAs(indicator) {
-                                        top.linkTo(parent.top)
-                                        bottom.linkTo(parent.bottom)
-                                    }
-                                    .padding(horizontal = 24.dp)
-                            ) {
-                                repeat(pageTextContent.size) { iteration ->
-                                    val isSelected by remember {
-                                        derivedStateOf { pagerState.currentPage == iteration }
-                                    }
-
-                                    Indicator(
-                                        isSelected = isSelected,
-                                        selectedColor = MaterialTheme.colorScheme.primary,
-                                        backgroundColor = MaterialTheme.colorScheme.background,
-                                        defaultRadius = 8.dp,
-                                        selectedLength = 24.dp,
-                                        modifier = modifier.padding(horizontal = 4.dp)
-                                    )
-                                }
-                            }
-                            Text(
-                                modifier = modifier
-                                    .clickable { onCreate() }
-                                    .constrainAs(btnSkip) {
-                                        top.linkTo(parent.top)
-                                        bottom.linkTo(parent.bottom)
-                                        end.linkTo(btnNext.start, 24.dp)
-                                    },
-                                text = "Пропустити"
-                            )
-                            Button(
-                                shape = CircleShape,
-                                modifier = modifier
-                                    .size(60.dp)
-                                    .constrainAs(btnNext) {
-                                        top.linkTo(parent.top)
-                                        bottom.linkTo(parent.bottom)
-                                        end.linkTo(parent.end, 24.dp)
-                                    },
-                                onClick = {
-                                    with(pagerState) {
-                                        scrollCoroutineScope.launch {
-                                            animateScrollToPage(currentPage + 1)
-                                        }
-                                    }
-                                }
-                            ) {
-                                Text(text = ">", fontSize = 24.sp)
-                            }
-                        }
-                    }
-
-                    AnimatedVisibility(
-                        visible = isLastPage,
-                        enter = slideInHorizontally(initialOffsetX = { it }),
-                        exit = slideOutHorizontally(targetOffsetX = { it })
-                    ) {
-                        Button(
-                            modifier = modifier
-                                .height(48.dp)
-                                .fillMaxWidth()
-                                .padding(horizontal = 24.dp),
-                            onClick = onCreate
-                        ) {
-                            Text(text = "Почати")
-                        }
+                        Text(text = "Почати")
                     }
                 }
             }

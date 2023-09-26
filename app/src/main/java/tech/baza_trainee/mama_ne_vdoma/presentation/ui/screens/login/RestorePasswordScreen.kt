@@ -33,7 +33,6 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.model.RestorePasswordViewState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.vm.RestorePasswordScreenViewModel
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.Mama_ne_vdomaTheme
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.OutlinedTextFieldWithError
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 
@@ -59,99 +58,97 @@ fun RestorePassword(
     onBack: () -> Unit = {},
     onRestore: () -> Unit = {}
 ) {
-    Mama_ne_vdomaTheme {
-        Surface(
+    Surface(
+        modifier = modifier
+            .background(MaterialTheme.colorScheme.background)
+            .windowInsetsPadding(WindowInsets.systemBars)
+            .fillMaxSize()
+    ) {
+        Column(
             modifier = modifier
-                .background(MaterialTheme.colorScheme.background)
-                .windowInsetsPadding(WindowInsets.systemBars)
-                .fillMaxSize()
+                .imePadding()
+                .fillMaxWidth()
+                .padding(bottom = 16.dp),
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
             Column(
-                modifier = modifier
-                    .imePadding()
-                    .fillMaxWidth()
-                    .padding(bottom = 16.dp),
-                verticalArrangement = Arrangement.SpaceBetween
+                modifier = modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Top
             ) {
-                Column(
-                    modifier = modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Top
+                Spacer(modifier = modifier.height(16.dp))
+
+                Row(
+                    modifier = modifier
+                        .align(Alignment.Start)
+                        .fillMaxWidth()
                 ) {
-                    Spacer(modifier = modifier.height(16.dp))
-
-                    Row(
-                        modifier = modifier
-                            .align(Alignment.Start)
-                            .fillMaxWidth()
-                    ) {
-                        Text(
-                            modifier = modifier
-                                .padding(start = 16.dp)
-                                .clickable {
-                                    onBack()
-                                },
-                            text = "<",
-                            fontSize = 20.sp,
-                            textAlign = TextAlign.Start,
-                            color = MaterialTheme.colorScheme.onBackground
-                        )
-                        Text(
-                            modifier = modifier
-                                .weight(1f)
-                                .fillMaxWidth()
-                                .padding(bottom = 8.dp, end = 24.dp),
-                            text = "Забули пароль?",
-                            fontSize = 20.sp,
-                            textAlign = TextAlign.Center,
-                            color = MaterialTheme.colorScheme.onBackground
-                        )
-                    }
-
-                    Spacer(modifier = modifier.height(8.dp))
-
                     Text(
                         modifier = modifier
+                            .padding(start = 16.dp)
+                            .clickable {
+                                onBack()
+                            },
+                        text = "<",
+                        fontSize = 20.sp,
+                        textAlign = TextAlign.Start,
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
+                    Text(
+                        modifier = modifier
+                            .weight(1f)
                             .fillMaxWidth()
-                            .padding(24.dp),
-                        text = "Не турбуйтеся! Будь ласка, введіть " +
-                                "свій email за яким ви реєструвались, " +
-                                "щоб отримати лист з інструкціями",
-                        fontSize = 14.sp,
+                            .padding(bottom = 8.dp, end = 24.dp),
+                        text = "Забули пароль?",
+                        fontSize = 20.sp,
                         textAlign = TextAlign.Center,
                         color = MaterialTheme.colorScheme.onBackground
                     )
-
-                    Spacer(modifier = modifier.height(24.dp))
-
-                    OutlinedTextFieldWithError(
-                        modifier = modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 24.dp),
-                        text = screenState.value.email,
-                        label = "Введіть свій email",
-                        onValueChange = { validateEmail(it) },
-                        isError = screenState.value.emailValid == ValidField.INVALID,
-                        errorText = "Ви ввели некоректний email",
-                        leadingIcon = {
-                            Icon(
-                                imageVector = Icons.Default.Email,
-                                contentDescription = null
-                            )
-                        }
-                    )
                 }
 
-                Button(
+                Spacer(modifier = modifier.height(8.dp))
+
+                Text(
                     modifier = modifier
                         .fillMaxWidth()
-                        .height(48.dp)
+                        .padding(24.dp),
+                    text = "Не турбуйтеся! Будь ласка, введіть " +
+                            "свій email за яким ви реєструвались, " +
+                            "щоб отримати лист з інструкціями",
+                    fontSize = 14.sp,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+
+                Spacer(modifier = modifier.height(24.dp))
+
+                OutlinedTextFieldWithError(
+                    modifier = modifier
+                        .fillMaxWidth()
                         .padding(horizontal = 24.dp),
-                    onClick = onRestore,
-                    enabled = screenState.value.emailValid == ValidField.VALID
-                ) {
-                    Text(text = "Відправити")
-                }
+                    text = screenState.value.email,
+                    label = "Введіть свій email",
+                    onValueChange = { validateEmail(it) },
+                    isError = screenState.value.emailValid == ValidField.INVALID,
+                    errorText = "Ви ввели некоректний email",
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.Email,
+                            contentDescription = null
+                        )
+                    }
+                )
+            }
+
+            Button(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .height(48.dp)
+                    .padding(horizontal = 24.dp),
+                onClick = onRestore,
+                enabled = screenState.value.emailValid == ValidField.VALID
+            ) {
+                Text(text = "Відправити")
             }
         }
     }

@@ -27,7 +27,6 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import tech.baza_trainee.mama_ne_vdoma.R
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.Mama_ne_vdomaTheme
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.getTextWithUnderline
 
 @Composable
@@ -44,59 +43,57 @@ fun StartScreen(
     onStart: () -> Unit = {},
     onLogin: () -> Unit = {}
 ) {
-    Mama_ne_vdomaTheme {
-        Surface(
+    Surface(
+        modifier = modifier
+            .background(MaterialTheme.colorScheme.background)
+            .windowInsetsPadding(WindowInsets.systemBars)
+            .fillMaxSize()
+    ) {
+        ConstraintLayout(
             modifier = modifier
-                .background(MaterialTheme.colorScheme.background)
-                .windowInsetsPadding(WindowInsets.systemBars)
-                .fillMaxSize()
+                .fillMaxWidth()
+                .padding(horizontal = 24.dp)
         ) {
-            ConstraintLayout(
+            val (image, btnStart, btnLogin) = createRefs()
+            Image(
                 modifier = modifier
+                    .constrainAs(image) {
+                        top.linkTo(parent.top, margin = 24.dp)
+                        bottom.linkTo(btnStart.top, margin = 24.dp)
+                        height = Dimension.fillToConstraints
+                    },
+                painter = painterResource(id = R.drawable.collage),
+                contentDescription = "start",
+                alignment = Alignment.TopCenter,
+                contentScale = ContentScale.Fit
+            )
+            Button(
+                modifier = modifier
+                    .constrainAs(btnStart) {
+                        bottom.linkTo(btnLogin.top, margin = 16.dp)
+                    }
                     .fillMaxWidth()
-                    .padding(horizontal = 24.dp)
+                    .height(48.dp),
+                onClick = onStart
             ) {
-                val (image, btnStart, btnLogin) = createRefs()
-                Image(
-                    modifier = modifier
-                        .constrainAs(image) {
-                            top.linkTo(parent.top, margin = 24.dp)
-                            bottom.linkTo(btnStart.top, margin = 24.dp)
-                            height = Dimension.fillToConstraints
-                        },
-                    painter = painterResource(id = R.drawable.collage),
-                    contentDescription = "start",
-                    alignment = Alignment.TopCenter,
-                    contentScale = ContentScale.Fit
-                )
-                Button(
-                    modifier = modifier
-                        .constrainAs(btnStart) {
-                            bottom.linkTo(btnLogin.top, margin = 16.dp)
-                        }
-                        .fillMaxWidth()
-                        .height(48.dp),
-                    onClick = onStart
-                ) {
-                    Text(text = "Почати")
-                }
-                Text(
-                    text = getTextWithUnderline("Вже є акаунт? ", "Увійти"),
-                    modifier = modifier
-                        .constrainAs(btnLogin) {
-                            bottom.linkTo(parent.bottom, margin = 16.dp)
-                        }
-                        .clickable(
-                            indication = null,
-                            interactionSource = remember { MutableInteractionSource() }
-                        ) {
-                            onLogin()
-                        }
-                        .fillMaxWidth()
-                        .height(48.dp),
-                    textAlign = TextAlign.Center
-                )
+                Text(text = "Почати")
             }
+            Text(
+                text = getTextWithUnderline("Вже є акаунт? ", "Увійти"),
+                modifier = modifier
+                    .constrainAs(btnLogin) {
+                        bottom.linkTo(parent.bottom, margin = 16.dp)
+                    }
+                    .clickable(
+                        indication = null,
+                        interactionSource = remember { MutableInteractionSource() }
+                    ) {
+                        onLogin()
+                    }
+                    .fillMaxWidth()
+                    .height(48.dp),
+                textAlign = TextAlign.Center
+            )
         }
     }
 }

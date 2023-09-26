@@ -37,7 +37,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.model.LoginViewState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.vm.LoginScreenViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.Gray
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.Mama_ne_vdomaTheme
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.OutlinedTextFieldWithError
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.PasswordTextFieldWithError
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.SocialLoginBlock
@@ -71,148 +70,146 @@ fun LoginUser(
     onRestore: () -> Unit = {},
     onLogin: () -> Unit = {}
 ) {
-    Mama_ne_vdomaTheme {
-        Surface(
+    Surface(
+        modifier = modifier
+            .background(MaterialTheme.colorScheme.background)
+            .windowInsetsPadding(WindowInsets.systemBars)
+            .fillMaxSize()
+    ) {
+        Column(
             modifier = modifier
-                .background(MaterialTheme.colorScheme.background)
-                .windowInsetsPadding(WindowInsets.systemBars)
-                .fillMaxSize()
+                .imePadding()
+                .fillMaxWidth(),
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
             Column(
-                modifier = modifier
-                    .imePadding()
-                    .fillMaxWidth(),
-                verticalArrangement = Arrangement.SpaceBetween
+                modifier = modifier.fillMaxWidth()
             ) {
-                Column(
-                    modifier = modifier.fillMaxWidth()
+                Spacer(modifier = modifier.height(16.dp))
+
+                Text(
+                    modifier = modifier
+                        .fillMaxWidth(),
+                    text = "Увійти у свій профіль",
+                    fontSize = 20.sp,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+
+                Spacer(modifier = modifier.height(24.dp))
+
+                OutlinedTextFieldWithError(
+                    modifier = modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 24.dp),
+                    text = screenState.value.email,
+                    label = "Введіть свій email",
+                    onValueChange = { validateEmail(it) },
+                    isError = screenState.value.emailValid == ValidField.INVALID,
+                    errorText = "Ви ввели некоректний email",
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.Email,
+                            contentDescription = null
+                        )
+                    }
+                )
+
+                Spacer(modifier = modifier.height(16.dp))
+
+                PasswordTextFieldWithError(
+                    modifier = modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 24.dp),
+                    password = screenState.value.password,
+                    onValueChange = { validatePassword(it) },
+                    isError = screenState.value.passwordValid == ValidField.INVALID
+                )
+
+                Spacer(modifier = modifier.height(8.dp))
+
+                Text(
+                    modifier = modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 24.dp)
+                        .clickable(
+                            indication = null,
+                            interactionSource = remember { MutableInteractionSource() }
+                        ) {
+                            onRestore()
+                        },
+                    text = getTextWithUnderline("", "Забули пароль?", false),
+                    textAlign = TextAlign.End,
+                    fontSize = 14.sp,
+                )
+
+                Spacer(modifier = modifier.height(48.dp))
+
+                Button(
+                    modifier = modifier
+                        .fillMaxWidth()
+                        .height(48.dp)
+                        .padding(horizontal = 24.dp),
+                    onClick = onLogin,
+                    enabled = screenState.value.passwordValid == ValidField.VALID &&
+                            screenState.value.emailValid == ValidField.VALID
                 ) {
-                    Spacer(modifier = modifier.height(16.dp))
-
-                    Text(
-                        modifier = modifier
-                            .fillMaxWidth(),
-                        text = "Увійти у свій профіль",
-                        fontSize = 20.sp,
-                        textAlign = TextAlign.Center,
-                        color = MaterialTheme.colorScheme.onBackground
-                    )
-
-                    Spacer(modifier = modifier.height(24.dp))
-
-                    OutlinedTextFieldWithError(
-                        modifier = modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 24.dp),
-                        text = screenState.value.email,
-                        label = "Введіть свій email",
-                        onValueChange = { validateEmail(it) },
-                        isError = screenState.value.emailValid == ValidField.INVALID,
-                        errorText = "Ви ввели некоректний email",
-                        leadingIcon = {
-                            Icon(
-                                imageVector = Icons.Default.Email,
-                                contentDescription = null
-                            )
-                        }
-                    )
-
-                    Spacer(modifier = modifier.height(16.dp))
-
-                    PasswordTextFieldWithError(
-                        modifier = modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 24.dp),
-                        password = screenState.value.password,
-                        onValueChange = { validatePassword(it) },
-                        isError = screenState.value.passwordValid == ValidField.INVALID
-                    )
-
-                    Spacer(modifier = modifier.height(8.dp))
-
-                    Text(
-                        modifier = modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 24.dp)
-                            .clickable(
-                                indication = null,
-                                interactionSource = remember { MutableInteractionSource() }
-                            ) {
-                                onRestore()
-                            },
-                        text = getTextWithUnderline("", "Забули пароль?", false),
-                        textAlign = TextAlign.End,
-                        fontSize = 14.sp,
-                    )
-
-                    Spacer(modifier = modifier.height(48.dp))
-
-                    Button(
-                        modifier = modifier
-                            .fillMaxWidth()
-                            .height(48.dp)
-                            .padding(horizontal = 24.dp),
-                        onClick = onLogin,
-                        enabled = screenState.value.passwordValid == ValidField.VALID &&
-                                screenState.value.emailValid == ValidField.VALID
-                    ) {
-                        Text(text = "Увійти")
-                    }
-
-                    Spacer(modifier = modifier.height(32.dp))
-
-                    ConstraintLayout(
-                        modifier = modifier.fillMaxWidth()
-                    ) {
-                        val (box1, text, box2) = createRefs()
-                        Box(
-                            modifier = modifier
-                                .height(height = 2.dp)
-                                .background(color = Gray)
-                                .constrainAs(box1) {
-                                    start.linkTo(parent.start, 24.dp)
-                                    end.linkTo(text.start, 16.dp)
-                                    top.linkTo(parent.top)
-                                    bottom.linkTo(parent.bottom)
-                                    width = Dimension.fillToConstraints
-                                }
-                        )
-                        Text(
-                            modifier = modifier
-                                .constrainAs(text) {
-                                    start.linkTo(box1.end, 16.dp)
-                                    end.linkTo(box2.start, 16.dp)
-                                    top.linkTo(parent.top)
-                                    bottom.linkTo(parent.bottom)
-                                    width = Dimension.wrapContent
-                                },
-                            text = "чи",
-                            fontSize = 14.sp,
-                        )
-                        Box(
-                            modifier = modifier
-                                .height(height = 2.dp)
-                                .background(color = Gray)
-                                .constrainAs(box2) {
-                                    start.linkTo(text.end, 16.dp)
-                                    end.linkTo(parent.end, 24.dp)
-                                    top.linkTo(parent.top)
-                                    bottom.linkTo(parent.bottom)
-                                    width = Dimension.fillToConstraints
-                                }
-                        )
-                    }
-
-                    Spacer(modifier = modifier.height(32.dp))
+                    Text(text = "Увійти")
                 }
 
-                SocialLoginBlock(
-                    modifier = modifier,
-                    horizontalPadding = 24.dp,
-                    getTextWithUnderline("Ще немає профілю? ", "Зареєструватись"),
-                    onCreateUser
-                )
+                Spacer(modifier = modifier.height(32.dp))
+
+                ConstraintLayout(
+                    modifier = modifier.fillMaxWidth()
+                ) {
+                    val (box1, text, box2) = createRefs()
+                    Box(
+                        modifier = modifier
+                            .height(height = 2.dp)
+                            .background(color = Gray)
+                            .constrainAs(box1) {
+                                start.linkTo(parent.start, 24.dp)
+                                end.linkTo(text.start, 16.dp)
+                                top.linkTo(parent.top)
+                                bottom.linkTo(parent.bottom)
+                                width = Dimension.fillToConstraints
+                            }
+                    )
+                    Text(
+                        modifier = modifier
+                            .constrainAs(text) {
+                                start.linkTo(box1.end, 16.dp)
+                                end.linkTo(box2.start, 16.dp)
+                                top.linkTo(parent.top)
+                                bottom.linkTo(parent.bottom)
+                                width = Dimension.wrapContent
+                            },
+                        text = "чи",
+                        fontSize = 14.sp,
+                    )
+                    Box(
+                        modifier = modifier
+                            .height(height = 2.dp)
+                            .background(color = Gray)
+                            .constrainAs(box2) {
+                                start.linkTo(text.end, 16.dp)
+                                end.linkTo(parent.end, 24.dp)
+                                top.linkTo(parent.top)
+                                bottom.linkTo(parent.bottom)
+                                width = Dimension.fillToConstraints
+                            }
+                    )
+                }
+
+                Spacer(modifier = modifier.height(32.dp))
             }
+
+            SocialLoginBlock(
+                modifier = modifier,
+                horizontalPadding = 24.dp,
+                getTextWithUnderline("Ще немає профілю? ", "Зареєструватись"),
+                onCreateUser
+            )
         }
     }
 }

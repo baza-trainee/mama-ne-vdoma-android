@@ -41,7 +41,6 @@ import androidx.constraintlayout.compose.Dimension
 import kotlinx.coroutines.delay
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.ChildScheduleModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.Gray
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.Mama_ne_vdomaTheme
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ChildScheduleGroup
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.rememberImeState
 
@@ -62,136 +61,134 @@ fun ChildSchedule(
     onNext: () -> Unit,
     onBack: () -> Unit
 ) {
-    Mama_ne_vdomaTheme {
-        Surface(
-            modifier = modifier
-                .windowInsetsPadding(WindowInsets.navigationBars)
-                .fillMaxSize()
-        ) {
-            val imeState = rememberImeState()
-            val scrollState = rememberScrollState()
-            val density = LocalDensity.current.density
-            val offset = (5000 * density).toInt()
+    Surface(
+        modifier = modifier
+            .windowInsetsPadding(WindowInsets.navigationBars)
+            .fillMaxSize()
+    ) {
+        val imeState = rememberImeState()
+        val scrollState = rememberScrollState()
+        val density = LocalDensity.current.density
+        val offset = (5000 * density).toInt()
 
-            LaunchedEffect(key1 = imeState.value) {
-                if (imeState.value) {
-                    delay(100)
-                    scrollState.scrollTo(offset)
-                }
+        LaunchedEffect(key1 = imeState.value) {
+            if (imeState.value) {
+                delay(100)
+                scrollState.scrollTo(offset)
             }
+        }
 
-            ConstraintLayout(
+        ConstraintLayout(
+            modifier = modifier
+                .verticalScroll(scrollState)
+                .imePadding()
+                .fillMaxWidth()
+        ) {
+            val (topBar, schedule, comment, btnNext) = createRefs()
+
+            val topGuideline = createGuidelineFromTop(0.2f)
+
+            Column(
                 modifier = modifier
-                    .verticalScroll(scrollState)
-                    .imePadding()
-                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.primary)
+                    .windowInsetsPadding(WindowInsets.statusBars)
+                    .constrainAs(topBar) {
+                        top.linkTo(parent.top)
+                        bottom.linkTo(topGuideline)
+                        height = Dimension.fillToConstraints
+                    }
+                    .fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.SpaceBetween
             ) {
-                val (topBar, schedule, comment, btnNext) = createRefs()
-
-                val topGuideline = createGuidelineFromTop(0.2f)
-
-                Column(
+                Row(
                     modifier = modifier
-                        .background(MaterialTheme.colorScheme.primary)
-                        .windowInsetsPadding(WindowInsets.statusBars)
-                        .constrainAs(topBar) {
-                            top.linkTo(parent.top)
-                            bottom.linkTo(topGuideline)
-                            height = Dimension.fillToConstraints
-                        }
-                        .fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.SpaceBetween
+                        .align(Alignment.Start)
+                        .fillMaxWidth()
                 ) {
-                    Row(
+                    Box(
                         modifier = modifier
-                            .align(Alignment.Start)
-                            .fillMaxWidth()
+                            .clickable {
+                                onBack()
+                            }
+                            .padding(start = 16.dp)
+                            .height(24.dp)
+                            .width(24.dp)
                     ) {
-                        Box(
-                            modifier = modifier
-                                .clickable {
-                                    onBack()
-                                }
-                                .padding(start = 16.dp)
-                                .height(24.dp)
-                                .width(24.dp)
-                        ) {
-                            Text(
-                                text = "<",
-                                fontSize = 20.sp,
-                                textAlign = TextAlign.Start,
-                                color = MaterialTheme.colorScheme.onPrimary
-                            )
-                        }
                         Text(
-                            modifier = modifier
-                                .weight(1f)
-                                .fillMaxWidth()
-                                .padding(bottom = 8.dp, end = 24.dp),
-                            text = "Визначіть графік",
+                            text = "<",
                             fontSize = 20.sp,
-                            textAlign = TextAlign.Center,
+                            textAlign = TextAlign.Start,
                             color = MaterialTheme.colorScheme.onPrimary
                         )
                     }
                     Text(
                         modifier = modifier
+                            .weight(1f)
                             .fillMaxWidth()
-                            .padding(horizontal = 24.dp)
-                            .padding(bottom = 8.dp),
-                        text = "Вкажіть, коли потрібно доглянути за вашою дитиною",
+                            .padding(bottom = 8.dp, end = 24.dp),
+                        text = "Визначіть графік",
+                        fontSize = 20.sp,
                         textAlign = TextAlign.Center,
                         color = MaterialTheme.colorScheme.onPrimary
                     )
                 }
-
-                val childScheduleState = remember { mutableStateOf(ChildScheduleModel()) }
-
-                ChildScheduleGroup(
-                    modifier = modifier
-                        .constrainAs(schedule) {
-                            top.linkTo(topGuideline, 24.dp)
-                        },
-                    schedule = childScheduleState
-                )
-
-                val commentText = remember { mutableStateOf(TextFieldValue("")) }
-
-                OutlinedTextField(
+                Text(
                     modifier = modifier
                         .fillMaxWidth()
                         .padding(horizontal = 24.dp)
-                        .constrainAs(comment) {
-                            top.linkTo(schedule.bottom, 16.dp)
-                            bottom.linkTo(btnNext.top, 16.dp)
-                        },
-                    value = commentText.value,
-                    label = { Text("Нотатка") },
-                    onValueChange = { commentText.value = it },
-                    minLines = 3,
-                    maxLines = 3,
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedContainerColor = Gray,
-                        unfocusedContainerColor = Gray,
-                        disabledContainerColor = Gray,
-                        focusedBorderColor = MaterialTheme.colorScheme.primary,
-                        unfocusedBorderColor = MaterialTheme.colorScheme.primary,
-                    )
+                        .padding(bottom = 8.dp),
+                    text = "Вкажіть, коли потрібно доглянути за вашою дитиною",
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onPrimary
                 )
+            }
 
-                Button(
-                    modifier = modifier
-                        .constrainAs(btnNext) {
-                            bottom.linkTo(parent.bottom, margin = 16.dp)
-                        }
-                        .fillMaxWidth()
-                        .padding(horizontal = 24.dp)
-                        .height(48.dp),
-                    onClick = onNext
-                ) {
-                    Text(text = "Встановити розклад")
-                }
+            val childScheduleState = remember { mutableStateOf(ChildScheduleModel()) }
+
+            ChildScheduleGroup(
+                modifier = modifier
+                    .constrainAs(schedule) {
+                        top.linkTo(topGuideline, 24.dp)
+                    },
+                schedule = childScheduleState
+            )
+
+            val commentText = remember { mutableStateOf(TextFieldValue("")) }
+
+            OutlinedTextField(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp)
+                    .constrainAs(comment) {
+                        top.linkTo(schedule.bottom, 16.dp)
+                        bottom.linkTo(btnNext.top, 16.dp)
+                    },
+                value = commentText.value,
+                label = { Text("Нотатка") },
+                onValueChange = { commentText.value = it },
+                minLines = 3,
+                maxLines = 3,
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedContainerColor = Gray,
+                    unfocusedContainerColor = Gray,
+                    disabledContainerColor = Gray,
+                    focusedBorderColor = MaterialTheme.colorScheme.primary,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.primary,
+                )
+            )
+
+            Button(
+                modifier = modifier
+                    .constrainAs(btnNext) {
+                        bottom.linkTo(parent.bottom, margin = 16.dp)
+                    }
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp)
+                    .height(48.dp),
+                onClick = onNext
+            ) {
+                Text(text = "Встановити розклад")
             }
         }
     }

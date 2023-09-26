@@ -18,6 +18,7 @@ import androidx.navigation.compose.rememberNavController
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.navigation.createUserNavGraph
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.navigation.loginNavGraph
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.navigation.startNavGraph
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.Mama_ne_vdomaTheme
 
 class MainActivity : ComponentActivity() {
 
@@ -30,14 +31,16 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         setContent {
-            val navController = rememberNavController()
-            NavHost(
-                navController = navController,
-                startDestination = "start_graph"
-            ) {
-                startNavGraph(navController = navController)
-                createUserNavGraph(navController = navController)
-                loginNavGraph(navController = navController)
+            Mama_ne_vdomaTheme {
+                val navController = rememberNavController()
+                NavHost(
+                    navController = navController,
+                    startDestination = "start_graph"
+                ) {
+                    startNavGraph(navController = navController)
+                    createUserNavGraph(navController = navController)
+                    loginNavGraph(navController = navController)
+                }
             }
         }
     }

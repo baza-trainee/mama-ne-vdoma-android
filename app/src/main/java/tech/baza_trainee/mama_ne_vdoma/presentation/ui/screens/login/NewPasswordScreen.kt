@@ -27,7 +27,6 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.model.NewPasswordViewState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.vm.NewPasswordScreenViewModel
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.Mama_ne_vdomaTheme
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.PasswordTextFieldWithError
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 
@@ -52,93 +51,91 @@ fun NewPassword(
     validateConfirmPassword: (String) -> Unit = {},
     onRestore: () -> Unit = {}
 ) {
-    Mama_ne_vdomaTheme {
-        Surface(
+    Surface(
+        modifier = modifier
+            .background(MaterialTheme.colorScheme.background)
+            .windowInsetsPadding(WindowInsets.systemBars)
+            .fillMaxSize()
+    ) {
+        Column(
             modifier = modifier
-                .background(MaterialTheme.colorScheme.background)
-                .windowInsetsPadding(WindowInsets.systemBars)
-                .fillMaxSize()
+                .imePadding()
+                .fillMaxWidth()
+                .padding(top = 16.dp),
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
             Column(
-                modifier = modifier
-                    .imePadding()
-                    .fillMaxWidth()
-                    .padding(top = 16.dp),
-                verticalArrangement = Arrangement.SpaceBetween
+                modifier = modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.Top
             ) {
-                Column(
-                    modifier = modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.Top
-                ) {
-                    Text(
-                        modifier = modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 24.dp),
-                        text = "Відновлення паролю",
-                        fontSize = 20.sp,
-                        textAlign = TextAlign.Center,
-                        color = MaterialTheme.colorScheme.onBackground
-                    )
-
-                    Spacer(modifier = modifier.height(4.dp))
-
-                    Text(
-                        modifier = modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 24.dp),
-                        text = "Будь ласка, створіть новий пароль нижче",
-                        fontSize = 14.sp,
-                        textAlign = TextAlign.Center,
-                        color = MaterialTheme.colorScheme.onBackground
-                    )
-
-                    Spacer(modifier = modifier.height(16.dp))
-
-                    PasswordTextFieldWithError(
-                        modifier = modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 24.dp),
-                        password = screenState.value.password,
-                        onValueChange = { validatePassword(it) },
-                        isError = screenState.value.passwordValid == ValidField.INVALID
-                    )
-
-                    Spacer(modifier = modifier.height(8.dp))
-
-                    Text(
-                        modifier = modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 24.dp),
-                        text = "Пароль має бути від 6 до 24 символів, обов’язково містити латинські букви, цифри, спеціальні знаки",
-                        fontSize = 14.sp,
-                    )
-
-                    Spacer(modifier = modifier.height(16.dp))
-
-                    PasswordTextFieldWithError(
-                        modifier = modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 24.dp),
-                        label = "Повторіть ваш пароль",
-                        password = screenState.value.confirmPassword,
-                        onValueChange = { validateConfirmPassword(it) },
-                        isError = screenState.value.confirmPasswordValid == ValidField.INVALID,
-                        errorText = "Паролі не співпадають"
-                    )
-                }
-
-                Button(
+                Text(
                     modifier = modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 24.dp)
-                        .padding(bottom = 16.dp)
-                        .height(48.dp),
-                    onClick = onRestore,
-                    enabled = screenState.value.passwordValid == ValidField.VALID &&
-                            screenState.value.confirmPasswordValid == ValidField.VALID
-                ) {
-                    Text(text = "Зберегти пароль")
-                }
+                        .padding(horizontal = 24.dp),
+                    text = "Відновлення паролю",
+                    fontSize = 20.sp,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+
+                Spacer(modifier = modifier.height(4.dp))
+
+                Text(
+                    modifier = modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 24.dp),
+                    text = "Будь ласка, створіть новий пароль нижче",
+                    fontSize = 14.sp,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+
+                Spacer(modifier = modifier.height(16.dp))
+
+                PasswordTextFieldWithError(
+                    modifier = modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 24.dp),
+                    password = screenState.value.password,
+                    onValueChange = { validatePassword(it) },
+                    isError = screenState.value.passwordValid == ValidField.INVALID
+                )
+
+                Spacer(modifier = modifier.height(8.dp))
+
+                Text(
+                    modifier = modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 24.dp),
+                    text = "Пароль має бути від 6 до 24 символів, обов’язково містити латинські букви, цифри, спеціальні знаки",
+                    fontSize = 14.sp,
+                )
+
+                Spacer(modifier = modifier.height(16.dp))
+
+                PasswordTextFieldWithError(
+                    modifier = modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 24.dp),
+                    label = "Повторіть ваш пароль",
+                    password = screenState.value.confirmPassword,
+                    onValueChange = { validateConfirmPassword(it) },
+                    isError = screenState.value.confirmPasswordValid == ValidField.INVALID,
+                    errorText = "Паролі не співпадають"
+                )
+            }
+
+            Button(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp)
+                    .padding(bottom = 16.dp)
+                    .height(48.dp),
+                onClick = onRestore,
+                enabled = screenState.value.passwordValid == ValidField.VALID &&
+                        screenState.value.confirmPasswordValid == ValidField.VALID
+            ) {
+                Text(text = "Зберегти пароль")
             }
         }
     }

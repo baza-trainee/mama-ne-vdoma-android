@@ -52,7 +52,6 @@ import com.google.maps.android.compose.rememberCameraPositionState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.UserLocationViewState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.vm.UserSettingsViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.Gray
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.Mama_ne_vdomaTheme
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.LocationPermissionTextProvider
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.PermissionDialog
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.findActivity
@@ -79,170 +78,172 @@ fun UserLocation(
     onSearchUserAddress: (String) -> Unit = {},
     onNext: () -> Unit = {}
 ) {
-    Mama_ne_vdomaTheme {
-        Surface(
+    Surface(
+        modifier = modifier
+            .windowInsetsPadding(WindowInsets.navigationBars)
+            .fillMaxSize()
+    ) {
+        val activity = LocalContext.current.findActivity()
+        val permissionDialogQueue = remember { mutableStateListOf<String>() }
+
+        val permissions = arrayOf(
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION
+        )
+
+        val multiplePermissionResultLauncher = rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.RequestMultiplePermissions(),
+            onResult = { perms ->
+                if (perms.values.contains(false)) {
+                    val permission = perms.filter { !it.value }.keys.first()
+                    if (activity.shouldShowRequestPermissionRationale(permission))
+                        permissionDialogQueue.add(permission)
+                }
+            }
+        )
+
+        LaunchedEffect(key1 = true) {
+            multiplePermissionResultLauncher.launch(permissions)
+        }
+
+        permissionDialogQueue.reversed().forEach {
+            PermissionDialog(
+                permissionTextProvider = LocationPermissionTextProvider(),
+                isPermanentlyDeclined = !shouldShowRequestPermissionRationale(
+                    activity,
+                    it
+                ),
+                onDismiss = { permissionDialogQueue.remove(it) },
+                onGranted = {
+                    permissionDialogQueue.remove(it)
+                    multiplePermissionResultLauncher.launch(permissions)
+                },
+                onGoToAppSettingsClick = { activity.openAppSettings() })
+        }
+
+        ConstraintLayout(
             modifier = modifier
-                .windowInsetsPadding(WindowInsets.navigationBars)
-                .fillMaxSize()
+                .imePadding()
+                .fillMaxWidth(),
         ) {
-            val activity = LocalContext.current.findActivity()
-            val permissionDialogQueue = remember { mutableStateListOf<String>() }
+            val (title, map, edit, btnNext) = createRefs()
 
-            val permissions = arrayOf(
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            )
+            val topGuideline = createGuidelineFromTop(0.2f)
 
-            val multiplePermissionResultLauncher = rememberLauncherForActivityResult(
-                contract = ActivityResultContracts.RequestMultiplePermissions(),
-                onResult = { perms ->
-                    if (perms.values.contains(false)) {
-                        val permission = perms.filter { !it.value }.keys.first()
-                        if (activity.shouldShowRequestPermissionRationale(permission))
-                            permissionDialogQueue.add(permission)
-                    }
-                }
-            )
-
-            LaunchedEffect(key1 = true) {
-                multiplePermissionResultLauncher.launch(permissions)
-            }
-
-            permissionDialogQueue.reversed().forEach {
-                PermissionDialog(
-                    permissionTextProvider = LocationPermissionTextProvider(),
-                    isPermanentlyDeclined = !shouldShowRequestPermissionRationale(
-                        activity,
-                        it
-                    ),
-                    onDismiss = { permissionDialogQueue.remove(it) },
-                    onGranted = {
-                        permissionDialogQueue.remove(it)
-                        multiplePermissionResultLauncher.launch(permissions)
-                    },
-                    onGoToAppSettingsClick = { activity.openAppSettings() })
-            }
-
-            ConstraintLayout(
+            Column(
                 modifier = modifier
-                    .imePadding()
-                    .fillMaxWidth(),
-            ) {
-                val (title, map, edit, btnNext) = createRefs()
-
-                val topGuideline = createGuidelineFromTop(0.2f)
-
-                Column(
-                    modifier = modifier
-                        .background(MaterialTheme.colorScheme.primary)
-                        .windowInsetsPadding(WindowInsets.statusBars)
-                        .constrainAs(title) {
-                            top.linkTo(parent.top)
-                            bottom.linkTo(topGuideline)
-                            height = Dimension.fillToConstraints
-                        }
-                        .fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(
-                        modifier = modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 24.dp)
-                            .padding(bottom = 8.dp),
-                        text = "Ваше місцезнаходження",
-                        fontSize = 20.sp,
-                        textAlign = TextAlign.Center,
-                        color = MaterialTheme.colorScheme.onPrimary
-                    )
-                    Text(
-                        modifier = modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 24.dp)
-                            .padding(bottom = 8.dp),
-                        text = "Будь ласка, оберіть ваше місцерозташування," +
-                                " щоб ви могли підібрати найближчі групи до вас",
-                        textAlign = TextAlign.Center,
-                        color = MaterialTheme.colorScheme.onPrimary
-                    )
-                }
-
-                val cameraPositionState = rememberCameraPositionState {
-                    val cameraPosition = CameraPosition.Builder()
-                        .target(viewState.value.currentLocation)
-                        .zoom(15f)
-                        .build()
-                    position = cameraPosition
-                }
-
-                LaunchedEffect(viewState.value.currentLocation) {
-                    val newCameraPosition = CameraPosition.fromLatLngZoom(viewState.value.currentLocation, 15f)
-                    cameraPositionState.animate(CameraUpdateFactory.newCameraPosition(newCameraPosition), 1_000)
-                }
-
-                GoogleMap(
-                    modifier = modifier
-                        .fillMaxWidth()
-                        .constrainAs(map) {
-                            top.linkTo(topGuideline)
-                            bottom.linkTo(edit.top, 16.dp)
-                            height = Dimension.fillToConstraints
-                        },
-                    cameraPositionState = cameraPositionState
-                ) {
-                    Marker(
-                        state = MarkerState(position = viewState.value.currentLocation),
-                        title = "Ви тут",
-                        snippet = "поточне місцезнаходження"
-                    )
-                }
-
-                val emailText = remember {
-                    mutableStateOf(TextFieldValue(viewState.value.userAddress))
-                }
-
-                OutlinedTextField(
-                    value = emailText.value,
-                    onValueChange = { emailText.value = it },
-                    modifier = modifier
-                        .constrainAs(edit) {
-                            bottom.linkTo(btnNext.top, 16.dp)
-                            height = Dimension.fillToConstraints
-                        }
-                        .fillMaxWidth()
-                        .padding(horizontal = 24.dp),
-                    label = { Text("Введіть вашу адресу") },
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedContainerColor = Gray,
-                        unfocusedContainerColor = Gray,
-                        disabledContainerColor = Gray,
-                        focusedBorderColor = MaterialTheme.colorScheme.background,
-                        unfocusedBorderColor = MaterialTheme.colorScheme.background,
-                    ),
-                    trailingIcon = {
-                        IconButton(
-                            onClick = { onSearchUserAddress(emailText.value.text) }
-                        ) {
-                            Icon(
-                                imageVector = Icons.Filled.Search,
-                                contentDescription = "search_location"
-                            )
-                        }
+                    .background(MaterialTheme.colorScheme.primary)
+                    .windowInsetsPadding(WindowInsets.statusBars)
+                    .constrainAs(title) {
+                        top.linkTo(parent.top)
+                        bottom.linkTo(topGuideline)
+                        height = Dimension.fillToConstraints
                     }
-                )
-
-                Button(
+                    .fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
                     modifier = modifier
-                        .constrainAs(btnNext) {
-                            bottom.linkTo(parent.bottom, margin = 16.dp)
-                        }
                         .fillMaxWidth()
                         .padding(horizontal = 24.dp)
-                        .height(48.dp),
-                    onClick = onNext
-                ) {
-                    Text(text = "Далі")
+                        .padding(bottom = 8.dp),
+                    text = "Ваше місцезнаходження",
+                    fontSize = 20.sp,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onPrimary
+                )
+                Text(
+                    modifier = modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 24.dp)
+                        .padding(bottom = 8.dp),
+                    text = "Будь ласка, оберіть ваше місцерозташування," +
+                            " щоб ви могли підібрати найближчі групи до вас",
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onPrimary
+                )
+            }
+
+            val cameraPositionState = rememberCameraPositionState {
+                val cameraPosition = CameraPosition.Builder()
+                    .target(viewState.value.currentLocation)
+                    .zoom(15f)
+                    .build()
+                position = cameraPosition
+            }
+
+            LaunchedEffect(viewState.value.currentLocation) {
+                val newCameraPosition =
+                    CameraPosition.fromLatLngZoom(viewState.value.currentLocation, 15f)
+                cameraPositionState.animate(
+                    CameraUpdateFactory.newCameraPosition(newCameraPosition),
+                    1_000
+                )
+            }
+
+            GoogleMap(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .constrainAs(map) {
+                        top.linkTo(topGuideline)
+                        bottom.linkTo(edit.top, 16.dp)
+                        height = Dimension.fillToConstraints
+                    },
+                cameraPositionState = cameraPositionState
+            ) {
+                Marker(
+                    state = MarkerState(position = viewState.value.currentLocation),
+                    title = "Ви тут",
+                    snippet = "поточне місцезнаходження"
+                )
+            }
+
+            val emailText = remember {
+                mutableStateOf(TextFieldValue(viewState.value.userAddress))
+            }
+
+            OutlinedTextField(
+                value = emailText.value,
+                onValueChange = { emailText.value = it },
+                modifier = modifier
+                    .constrainAs(edit) {
+                        bottom.linkTo(btnNext.top, 16.dp)
+                        height = Dimension.fillToConstraints
+                    }
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp),
+                label = { Text("Введіть вашу адресу") },
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedContainerColor = Gray,
+                    unfocusedContainerColor = Gray,
+                    disabledContainerColor = Gray,
+                    focusedBorderColor = MaterialTheme.colorScheme.background,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.background,
+                ),
+                trailingIcon = {
+                    IconButton(
+                        onClick = { onSearchUserAddress(emailText.value.text) }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Search,
+                            contentDescription = "search_location"
+                        )
+                    }
                 }
+            )
+
+            Button(
+                modifier = modifier
+                    .constrainAs(btnNext) {
+                        bottom.linkTo(parent.bottom, margin = 16.dp)
+                    }
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp)
+                    .height(48.dp),
+                onClick = onNext
+            ) {
+                Text(text = "Далі")
             }
         }
     }

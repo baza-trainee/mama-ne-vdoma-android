@@ -27,7 +27,6 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import tech.baza_trainee.mama_ne_vdoma.R
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.Mama_ne_vdomaTheme
 
 @Composable
 fun RestoreSuccessFunc(
@@ -43,78 +42,76 @@ fun RestoreSuccess(
     modifier: Modifier = Modifier,
     goToMain: () -> Unit
 ) {
-    Mama_ne_vdomaTheme {
-        Surface(
-            modifier = modifier
-                .windowInsetsPadding(WindowInsets.navigationBars)
-                .fillMaxSize()
+    Surface(
+        modifier = modifier
+            .windowInsetsPadding(WindowInsets.navigationBars)
+            .fillMaxSize()
+    ) {
+        ConstraintLayout(
+            modifier = modifier.fillMaxWidth()
         ) {
-            ConstraintLayout(
-                modifier = modifier.fillMaxWidth()
+            val (title, image, btnMain) = createRefs()
+
+            val topGuideline = createGuidelineFromTop(0.2f)
+
+            Column(
+                modifier = modifier
+                    .background(MaterialTheme.colorScheme.primary)
+                    .constrainAs(title) {
+                        top.linkTo(parent.top)
+                        bottom.linkTo(topGuideline)
+                        height = Dimension.fillToConstraints
+                    }
+                    .fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Bottom
             ) {
-                val (title, image, btnMain) = createRefs()
-
-                val topGuideline = createGuidelineFromTop(0.2f)
-
-                Column(
+                Text(
                     modifier = modifier
-                        .background(MaterialTheme.colorScheme.primary)
-                        .constrainAs(title) {
-                            top.linkTo(parent.top)
-                            bottom.linkTo(topGuideline)
-                            height = Dimension.fillToConstraints
-                        }
-                        .fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Bottom
-                ) {
-                    Text(
-                        modifier = modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 24.dp),
-                        text = "Пароль збережено",
-                        fontSize = 20.sp,
-                        textAlign = TextAlign.Center,
-                        color = MaterialTheme.colorScheme.onPrimary
-                    )
-                    Text(
-                        modifier = modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 24.dp)
-                            .padding(bottom = 8.dp),
-                        text = "Ви успішно змінили свій пароль. " +
-                                "Будь ласка, використовуйте цей новий пароль" +
-                                "при вході в додаток",
-                        textAlign = TextAlign.Center,
-                        color = MaterialTheme.colorScheme.onPrimary
-                    )
-                }
-
-                Image(
-                    modifier = modifier
-                        .constrainAs(image) {
-                            top.linkTo(topGuideline)
-                            bottom.linkTo(btnMain.top, 64.dp)
-                            height = Dimension.fillToConstraints
-                        }
-                        .fillMaxWidth(),
-                    painter = painterResource(id = R.drawable.restore_pass_end),
-                    contentDescription = null,
-                    contentScale = ContentScale.FillHeight
+                        .fillMaxWidth()
+                        .padding(horizontal = 24.dp),
+                    text = "Пароль збережено",
+                    fontSize = 20.sp,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onPrimary
                 )
-
-                Button(
+                Text(
                     modifier = modifier
-                        .constrainAs(btnMain) {
-                            bottom.linkTo(parent.bottom, margin = 16.dp)
-                        }
                         .fillMaxWidth()
                         .padding(horizontal = 24.dp)
-                        .height(48.dp),
-                    onClick = goToMain
-                ) {
-                    Text(text = "На головну сторінку")
-                }
+                        .padding(bottom = 8.dp),
+                    text = "Ви успішно змінили свій пароль. " +
+                            "Будь ласка, використовуйте цей новий пароль" +
+                            "при вході в додаток",
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onPrimary
+                )
+            }
+
+            Image(
+                modifier = modifier
+                    .constrainAs(image) {
+                        top.linkTo(topGuideline)
+                        bottom.linkTo(btnMain.top, 64.dp)
+                        height = Dimension.fillToConstraints
+                    }
+                    .fillMaxWidth(),
+                painter = painterResource(id = R.drawable.restore_pass_end),
+                contentDescription = null,
+                contentScale = ContentScale.FillHeight
+            )
+
+            Button(
+                modifier = modifier
+                    .constrainAs(btnMain) {
+                        bottom.linkTo(parent.bottom, margin = 16.dp)
+                    }
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp)
+                    .height(48.dp),
+                onClick = goToMain
+            ) {
+                Text(text = "На головну сторінку")
             }
         }
     }

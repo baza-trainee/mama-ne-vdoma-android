@@ -45,7 +45,6 @@ import com.canopas.campose.countrypicker.CountryPickerBottomSheet
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.UserPhoneViewState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.vm.UserSettingsViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.Gray
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.Mama_ne_vdomaTheme
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.SlateGray
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 
@@ -71,146 +70,143 @@ fun EnterPhone(
     validatePhone: (String) -> Unit = {},
     onCreateUser: () -> Unit
 ) {
-    Mama_ne_vdomaTheme {
-        Surface(
+    Surface(
+        modifier = modifier
+            .background(MaterialTheme.colorScheme.background)
+            .windowInsetsPadding(WindowInsets.systemBars)
+            .fillMaxSize()
+    ) {
+        ConstraintLayout(
             modifier = modifier
-                .background(MaterialTheme.colorScheme.background)
-                .windowInsetsPadding(WindowInsets.systemBars)
-                .fillMaxSize()
+                .imePadding()
+                .fillMaxWidth()
         ) {
-            ConstraintLayout(
-                modifier = modifier
-                    .imePadding()
-                    .fillMaxWidth()
-            ) {
-                val (title, input, error, next) = createRefs()
+            val (title, input, error, next) = createRefs()
 
-                Text(
+            Text(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .constrainAs(title) {
+                        top.linkTo(parent.top, 16.dp)
+                    },
+                text = "Заповнення профілю",
+                fontSize = 20.sp,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onBackground
+            )
+
+            var openBottomSheet by rememberSaveable { mutableStateOf(false) }
+
+            var isPhoneFocused by remember { mutableStateOf(false) }
+
+            Row(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .constrainAs(input) {
+                        top.linkTo(title.bottom, 24.dp)
+                    },
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                OutlinedTextField(
                     modifier = modifier
-                        .fillMaxWidth()
-                        .constrainAs(title) {
-                            top.linkTo(parent.top, 16.dp)
+                        .weight(.25f)
+                        .padding(start = 24.dp)
+                        .clickable {
+                            openBottomSheet = true
                         },
-                    text = "Заповнення профілю",
-                    fontSize = 20.sp,
-                    textAlign = TextAlign.Center,
-                    color = MaterialTheme.colorScheme.onBackground
+                    value = screenState.value.code,
+                    label = { Text("Код") },
+                    onValueChange = {},
+                    enabled = false,
+                    maxLines = 1,
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedContainerColor = SlateGray,
+                        unfocusedContainerColor = SlateGray,
+                        disabledContainerColor = SlateGray,
+                        focusedBorderColor = MaterialTheme.colorScheme.background,
+                        unfocusedBorderColor = MaterialTheme.colorScheme.background,
+                        disabledBorderColor = MaterialTheme.colorScheme.primary
+                    ),
+                    shape = RoundedCornerShape(topStart = 4.dp, bottomStart = 4.dp)
                 )
 
-                var openBottomSheet by rememberSaveable { mutableStateOf(false) }
+                val focusRequester = remember { FocusRequester() }
 
-                var isPhoneFocused by remember { mutableStateOf(false) }
-
-                Row(
+                OutlinedTextField(
                     modifier = modifier
-                        .fillMaxWidth()
-                        .constrainAs(input) {
-                            top.linkTo(title.bottom, 24.dp)
-                        },
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-
-                    OutlinedTextField(
-                        modifier = modifier
-                            .weight(.25f)
-                            .padding(start = 24.dp)
-                            .clickable {
-                                openBottomSheet = true
-                            },
-                        value = screenState.value.code,
-                        label = { Text("Код") },
-                        onValueChange = {},
-                        enabled = false,
-                        maxLines = 1,
-                        colors = OutlinedTextFieldDefaults.colors(
-                            focusedContainerColor = SlateGray,
-                            unfocusedContainerColor = SlateGray,
-                            disabledContainerColor = SlateGray,
-                            focusedBorderColor = MaterialTheme.colorScheme.background,
-                            unfocusedBorderColor = MaterialTheme.colorScheme.background,
-                            disabledBorderColor = MaterialTheme.colorScheme.primary
-                        ),
-                        shape = RoundedCornerShape(topStart = 4.dp, bottomStart = 4.dp)
-                    )
-
-                    val focusRequester = remember { FocusRequester() }
-
-                    OutlinedTextField(
-                        modifier = modifier
-                            .focusRequester(focusRequester)
-                            .onFocusChanged {
-                                isPhoneFocused = it.isFocused
-                            }
-                            .weight(.75f)
-                            .padding(end = 24.dp),
-                        value = screenState.value.userPhone,
-                        label = { Text("Введіть свій номер телефону") },
-                        onValueChange = { validatePhone(it) },
-                        isError = screenState.value.phoneValid == ValidField.INVALID && isPhoneFocused,
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
-                        maxLines = 1,
-                        colors = OutlinedTextFieldDefaults.colors(
-                            focusedContainerColor = Gray,
-                            unfocusedContainerColor = Gray,
-                            disabledContainerColor = Gray,
-                            focusedBorderColor = MaterialTheme.colorScheme.background,
-                            unfocusedBorderColor = MaterialTheme.colorScheme.background,
-                            disabledBorderColor = MaterialTheme.colorScheme.background
-                        ),
-                        shape = RoundedCornerShape(topEnd = 4.dp, bottomEnd = 4.dp),
-                        enabled = screenState.value.code.isNotEmpty()
-                    )
-                }
-                if (screenState.value.phoneValid == ValidField.INVALID && isPhoneFocused) {
-                    Text(
-                        text = "Ви ввели некоректний номер",
-                        color = Color.Red,
-                        modifier = modifier
-                            .constrainAs(error) {
-                                top.linkTo(input.bottom, 4.dp)
-                            }
-                            .padding(horizontal = 24.dp)
-                    )
-                }
-
-                Button(
-                    modifier = modifier
-                        .fillMaxWidth()
-                        .height(48.dp)
-                        .padding(horizontal = 24.dp)
-                        .constrainAs(next) {
-                            bottom.linkTo(parent.bottom, 16.dp)
-                        },
-                    onClick = onCreateUser,
-                    enabled = screenState.value.phoneValid == ValidField.VALID &&
-                            screenState.value.code.isNotEmpty()
-                ) {
-                    Text(text = "Далі")
-                }
-
-                if (openBottomSheet) {
-                    CountryPickerBottomSheet(
-                        bottomSheetTitle = {
-                            Text(
-                                modifier = Modifier
-                                    .imePadding()
-                                    .fillMaxWidth()
-                                    .padding(16.dp),
-                                text = "Виберіть код",
-                                textAlign = TextAlign.Center,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 20.sp
-                            )
-                        },
-                        containerColor = MaterialTheme.colorScheme.background,
-                        onItemSelected = {
-                            setCode(it.dial_code)
-                            openBottomSheet = false
-                        }, onDismissRequest = {
-                            openBottomSheet = false
+                        .focusRequester(focusRequester)
+                        .onFocusChanged {
+                            isPhoneFocused = it.isFocused
                         }
-                    )
-                }
+                        .weight(.75f)
+                        .padding(end = 24.dp),
+                    value = screenState.value.userPhone,
+                    label = { Text("Введіть свій номер телефону") },
+                    onValueChange = { validatePhone(it) },
+                    isError = screenState.value.phoneValid == ValidField.INVALID && isPhoneFocused,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+                    maxLines = 1,
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedContainerColor = Gray,
+                        unfocusedContainerColor = Gray,
+                        disabledContainerColor = Gray,
+                        focusedBorderColor = MaterialTheme.colorScheme.background,
+                        unfocusedBorderColor = MaterialTheme.colorScheme.background,
+                        disabledBorderColor = MaterialTheme.colorScheme.background
+                    ),
+                    shape = RoundedCornerShape(topEnd = 4.dp, bottomEnd = 4.dp),
+                    enabled = screenState.value.code.isNotEmpty()
+                )
+            }
+            if (screenState.value.phoneValid == ValidField.INVALID && isPhoneFocused) {
+                Text(
+                    text = "Ви ввели некоректний номер",
+                    color = Color.Red,
+                    modifier = modifier
+                        .constrainAs(error) {
+                            top.linkTo(input.bottom, 4.dp)
+                        }
+                        .padding(horizontal = 24.dp)
+                )
+            }
+
+            Button(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .height(48.dp)
+                    .padding(horizontal = 24.dp)
+                    .constrainAs(next) {
+                        bottom.linkTo(parent.bottom, 16.dp)
+                    },
+                onClick = onCreateUser,
+                enabled = screenState.value.phoneValid == ValidField.VALID &&
+                        screenState.value.code.isNotEmpty()
+            ) {
+                Text(text = "Далі")
+            }
+
+            if (openBottomSheet) {
+                CountryPickerBottomSheet(
+                    bottomSheetTitle = {
+                        Text(
+                            modifier = Modifier
+                                .imePadding()
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            text = "Виберіть код",
+                            textAlign = TextAlign.Center,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 20.sp
+                        )
+                    },
+                    containerColor = MaterialTheme.colorScheme.background,
+                    onItemSelected = {
+                        setCode(it.dial_code)
+                        openBottomSheet = false
+                    }, onDismissRequest = {
+                        openBottomSheet = false
+                    }
+                )
             }
         }
     }

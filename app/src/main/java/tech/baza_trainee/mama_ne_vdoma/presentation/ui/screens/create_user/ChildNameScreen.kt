@@ -38,7 +38,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.ChildNameViewState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.Gender
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.vm.UserSettingsViewModel
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.Mama_ne_vdomaTheme
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.OutlinedTextFieldWithError
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RadioGroup
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
@@ -69,145 +68,143 @@ fun ChildName(
     onNext: () -> Unit,
     onBack: () -> Unit
 ) {
-    Mama_ne_vdomaTheme {
-        Surface(
+    Surface(
+        modifier = modifier
+            .windowInsetsPadding(WindowInsets.navigationBars)
+            .fillMaxSize()
+    ) {
+        ConstraintLayout(
             modifier = modifier
-                .windowInsetsPadding(WindowInsets.navigationBars)
-                .fillMaxSize()
+                .imePadding()
+                .fillMaxWidth()
         ) {
-            ConstraintLayout(
+            val (topBar, content, btnNext) = createRefs()
+
+            val topGuideline = createGuidelineFromTop(0.2f)
+
+            Column(
                 modifier = modifier
-                    .imePadding()
-                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.primary)
+                    .windowInsetsPadding(WindowInsets.statusBars)
+                    .constrainAs(topBar) {
+                        top.linkTo(parent.top)
+                        bottom.linkTo(topGuideline)
+                        height = Dimension.fillToConstraints
+                    }
+                    .fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.SpaceBetween
             ) {
-                val (topBar, content, btnNext) = createRefs()
-
-                val topGuideline = createGuidelineFromTop(0.2f)
-
-                Column(
+                Row(
                     modifier = modifier
-                        .background(MaterialTheme.colorScheme.primary)
-                        .windowInsetsPadding(WindowInsets.statusBars)
-                        .constrainAs(topBar) {
-                            top.linkTo(parent.top)
-                            bottom.linkTo(topGuideline)
-                            height = Dimension.fillToConstraints
-                        }
-                        .fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.SpaceBetween
+                        .align(Alignment.Start)
+                        .fillMaxWidth()
                 ) {
-                    Row(
+                    Box(
                         modifier = modifier
-                            .align(Alignment.Start)
-                            .fillMaxWidth()
+                            .clickable {
+                                onBack()
+                            }
+                            .padding(start = 16.dp)
+                            .height(24.dp)
+                            .width(24.dp)
                     ) {
-                        Box(
-                            modifier = modifier
-                                .clickable {
-                                    onBack()
-                                }
-                                .padding(start = 16.dp)
-                                .height(24.dp)
-                                .width(24.dp)
-                        ) {
-                            Text(
-                                text = "<",
-                                fontSize = 20.sp,
-                                textAlign = TextAlign.Start,
-                                color = MaterialTheme.colorScheme.onPrimary
-                            )
-                        }
                         Text(
-                            modifier = modifier
-                                .weight(1f)
-                                .fillMaxWidth()
-                                .padding(bottom = 8.dp, end = 24.dp),
-                            text = "Розкажіть про свою дитину",
+                            text = "<",
                             fontSize = 20.sp,
-                            textAlign = TextAlign.Center,
+                            textAlign = TextAlign.Start,
                             color = MaterialTheme.colorScheme.onPrimary
                         )
                     }
                     Text(
                         modifier = modifier
+                            .weight(1f)
                             .fillMaxWidth()
-                            .padding(horizontal = 24.dp)
-                            .padding(bottom = 8.dp, top = 8.dp),
-                        text = "Це допоможе підібрати для вас групи " +
-                                "з дітьми приблизно одного віку",
+                            .padding(bottom = 8.dp, end = 24.dp),
+                        text = "Розкажіть про свою дитину",
+                        fontSize = 20.sp,
                         textAlign = TextAlign.Center,
                         color = MaterialTheme.colorScheme.onPrimary
                     )
                 }
-                Column(
+                Text(
                     modifier = modifier
                         .fillMaxWidth()
-                        .constrainAs(content) {
-                            top.linkTo(topGuideline)
-                            bottom.linkTo(btnNext.top, 16.dp)
-                            height = Dimension.fillToConstraints
-                        },
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Top
-                ) {
-                    Spacer(modifier = modifier.height(16.dp))
-
-                    OutlinedTextFieldWithError(
-                        modifier = modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 24.dp),
-                        text = screenState.value.name,
-                        label = "Вкажіть ім'я дитини",
-                        onValueChange = { validateName(it) },
-                        isError = screenState.value.nameValid == ValidField.INVALID,
-                        errorText = "Ви ввели некоректнe ім'я"
-                    )
-
-                    Spacer(modifier = modifier.height(16.dp))
-
-                    OutlinedTextFieldWithError(
-                        modifier = modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 24.dp),
-                        text = screenState.value.age,
-                        label = "Вкажіть вік дитини",
-                        onValueChange = { validateAge(it) },
-                        isError = screenState.value.ageValid == ValidField.INVALID,
-                        errorText = "Ви ввели некоректний вік",
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-                    )
-
-                    Spacer(modifier = modifier.height(16.dp))
-
-                    val genderOptions = listOf(Gender.BOY, Gender.GIRL)
-
-                    RadioGroup(
-                        modifier = modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 8.dp),
-                        radioGroupOptions = genderOptions,
-                        getText = { it.gender },
-                        selected = screenState.value.gender,
-                        onSelectedChange = { setGender(it) }
-                    )
-                }
-
-                Button(
-                    modifier = modifier
-                        .fillMaxWidth()
-                        .constrainAs(btnNext) {
-                            bottom.linkTo(parent.bottom, margin = 16.dp)
-                        }
                         .padding(horizontal = 24.dp)
-                        .height(48.dp),
-                    onClick = onNext,
-                    enabled = screenState.value.nameValid == ValidField.VALID &&
-                            screenState.value.ageValid == ValidField.VALID &&
-                            screenState.value.gender != Gender.NONE
-                ) {
-                    Text(text = "Зареєструвати дитину")
-                }
+                        .padding(bottom = 8.dp, top = 8.dp),
+                    text = "Це допоможе підібрати для вас групи " +
+                            "з дітьми приблизно одного віку",
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onPrimary
+                )
+            }
+            Column(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .constrainAs(content) {
+                        top.linkTo(topGuideline)
+                        bottom.linkTo(btnNext.top, 16.dp)
+                        height = Dimension.fillToConstraints
+                    },
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Top
+            ) {
+                Spacer(modifier = modifier.height(16.dp))
+
+                OutlinedTextFieldWithError(
+                    modifier = modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 24.dp),
+                    text = screenState.value.name,
+                    label = "Вкажіть ім'я дитини",
+                    onValueChange = { validateName(it) },
+                    isError = screenState.value.nameValid == ValidField.INVALID,
+                    errorText = "Ви ввели некоректнe ім'я"
+                )
+
+                Spacer(modifier = modifier.height(16.dp))
+
+                OutlinedTextFieldWithError(
+                    modifier = modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 24.dp),
+                    text = screenState.value.age,
+                    label = "Вкажіть вік дитини",
+                    onValueChange = { validateAge(it) },
+                    isError = screenState.value.ageValid == ValidField.INVALID,
+                    errorText = "Ви ввели некоректний вік",
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                )
+
+                Spacer(modifier = modifier.height(16.dp))
+
+                val genderOptions = listOf(Gender.BOY, Gender.GIRL)
+
+                RadioGroup(
+                    modifier = modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 8.dp),
+                    radioGroupOptions = genderOptions,
+                    getText = { it.gender },
+                    selected = screenState.value.gender,
+                    onSelectedChange = { setGender(it) }
+                )
+            }
+
+            Button(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .constrainAs(btnNext) {
+                        bottom.linkTo(parent.bottom, margin = 16.dp)
+                    }
+                    .padding(horizontal = 24.dp)
+                    .height(48.dp),
+                onClick = onNext,
+                enabled = screenState.value.nameValid == ValidField.VALID &&
+                        screenState.value.ageValid == ValidField.VALID &&
+                        screenState.value.gender != Gender.NONE
+            ) {
+                Text(text = "Зареєструвати дитину")
             }
         }
     }
