@@ -97,7 +97,7 @@ fun UserInfo(
     ) {
 
         var openBottomSheet by rememberSaveable { mutableStateOf(false) }
-        
+
         Column(
             modifier = modifier
                 .imePadding()
@@ -122,12 +122,13 @@ fun UserInfo(
                     color = MaterialTheme.colorScheme.onBackground
                 )
 
-                val launcher = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) {
-                    it?.let {
-                        setUriForCrop(it)
-                        onEditPhoto()
+                val launcher =
+                    rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) {
+                        it?.let {
+                            setUriForCrop(it)
+                            onEditPhoto()
+                        }
                     }
-                }
 
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
@@ -246,7 +247,8 @@ fun UserInfo(
                     .padding(horizontal = 24.dp)
                     .height(48.dp),
                 onClick = onCreateUser,
-                enabled = screenState.value.phoneValid == ValidField.VALID &&
+                enabled = screenState.value.nameValid == ValidField.VALID &&
+                        screenState.value.phoneValid == ValidField.VALID &&
                         screenState.value.code.isNotEmpty()
             ) {
                 Text(text = "Далі")
