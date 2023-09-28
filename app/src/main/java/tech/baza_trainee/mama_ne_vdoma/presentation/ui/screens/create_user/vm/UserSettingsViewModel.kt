@@ -1,5 +1,8 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.vm
 
+import android.content.ContentResolver
+import android.graphics.Bitmap
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -12,10 +15,11 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.Gender
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.Period
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.ScheduleScreenState
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.UserInfoViewState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.UserLocationViewState
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.UserPhoneViewState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.decodeBitmap
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.networkExecutor
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onError
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onLoading
@@ -29,8 +33,8 @@ class UserSettingsViewModel(
     private val _locationScreenState = MutableStateFlow(UserLocationViewState())
     val locationScreenState: StateFlow<UserLocationViewState> = _locationScreenState.asStateFlow()
 
-    private val _phoneScreenState = MutableStateFlow(UserPhoneViewState())
-    val phoneScreenState: StateFlow<UserPhoneViewState> = _phoneScreenState.asStateFlow()
+    private val _userInfoScreenState = MutableStateFlow(UserInfoViewState())
+    val userInfoScreenState: StateFlow<UserInfoViewState> = _userInfoScreenState.asStateFlow()
 
     private val _childNameScreenState = MutableStateFlow(ChildNameViewState())
     val childNameScreenState: StateFlow<ChildNameViewState> = _childNameScreenState.asStateFlow()
@@ -41,8 +45,35 @@ class UserSettingsViewModel(
     private val _parentScheduleScreenState = MutableStateFlow(ScheduleScreenState())
     val parentScheduleScreenState: StateFlow<ScheduleScreenState> = _parentScheduleScreenState.asStateFlow()
 
+    private var uriForCrop: Uri = Uri.EMPTY
+
+    fun setUriForCrop(uri: Uri) {
+        uriForCrop = uri
+    }
+
+    fun getBitmapForCrop(contentResolver: ContentResolver) = uriForCrop.decodeBitmap(contentResolver)
+
+    fun saveUserAvatar(image: Bitmap) {
+        _userInfoScreenState.update {
+            it.copy(
+                userAvatar = image
+            )
+        }
+//        val deferred = coroutineScope.async(Dispatchers.IO) {
+//            val filename = "cropped_avatar"
+//            context.openFileOutput(filename, Context.MODE_PRIVATE)
+//                .use {
+//                    croppedImage?.asAndroidBitmap()
+//                        ?.compress(Bitmap.CompressFormat.JPEG, 100, it)
+//                    it.flush()
+//                    it.close()
+//                }
+//            return@async File(context.filesDir, filename)
+//        }
+    }
+
     fun setCode(code: String) {
-        _phoneScreenState.update {
+        _userInfoScreenState.update {
             it.copy(
                 code = code
             )
@@ -52,7 +83,7 @@ class UserSettingsViewModel(
     fun validatePhone(phone: String) {
         val phoneValid = if (phone.length in PHONE_LENGTH && phone.none { !it.isDigit() }) ValidField.VALID
         else ValidField.INVALID
-        _phoneScreenState.update {
+        _userInfoScreenState.update {
             it.copy(
                 userPhone = phone,
                 phoneValid = phoneValid
@@ -60,7 +91,18 @@ class UserSettingsViewModel(
         }
     }
 
-    fun validateName(name: String) {
+    fun validateUserName(name: String) {
+        val nameValid = if (name.none { !it.isLetter() }) ValidField.VALID
+        else ValidField.INVALID
+        _userInfoScreenState.update {
+            it.copy(
+                userName = name,
+                nameValid = nameValid
+            )
+        }
+    }
+
+    fun validateChildName(name: String) {
         val nameValid = if (name.none { !it.isLetter() }) ValidField.VALID
         else ValidField.INVALID
         _childNameScreenState.update {
