@@ -104,3 +104,15 @@ class LocationPermissionTextProvider: PermissionTextProvider {
         }
     }
 }
+
+class CameraPermissionTextProvider: PermissionTextProvider {
+    override fun getDescription(isPermanentlyDeclined: Boolean): String {
+        return if(isPermanentlyDeclined) {
+            "Схоже, ви назавжди відхилили дозвіл на використання камери. " +
+                    "Ви можете перейти в налаштування додатку, щоб надати його"
+        } else {
+            "Цій програмі потрібен доступ на використання камери, щоб " +
+                    "працювати повноцінно"
+        }
+    }
+}

@@ -41,7 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import androidx.core.app.ActivityCompat.shouldShowRequestPermissionRationale
+import androidx.core.app.ActivityCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
@@ -109,10 +109,8 @@ fun UserLocation(
         permissionDialogQueue.reversed().forEach {
             PermissionDialog(
                 permissionTextProvider = LocationPermissionTextProvider(),
-                isPermanentlyDeclined = !shouldShowRequestPermissionRationale(
-                    activity,
-                    it
-                ),
+                isPermanentlyDeclined = !ActivityCompat
+                    .shouldShowRequestPermissionRationale(activity, it ),
                 onDismiss = { permissionDialogQueue.remove(it) },
                 onGranted = {
                     permissionDialogQueue.remove(it)
