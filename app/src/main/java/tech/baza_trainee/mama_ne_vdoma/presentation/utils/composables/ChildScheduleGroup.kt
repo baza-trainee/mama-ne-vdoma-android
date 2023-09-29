@@ -77,8 +77,7 @@ fun ChildScheduleGroup(
                     textAlign = TextAlign.Center
                 )
             }
-
-            scheduleModel.schedule.keys.forEach { day ->
+            scheduleModel.schedule.keys.sortedBy { it.value }.forEach { day ->
                 Row(
                     modifier = modifier
                         .fillMaxWidth()
