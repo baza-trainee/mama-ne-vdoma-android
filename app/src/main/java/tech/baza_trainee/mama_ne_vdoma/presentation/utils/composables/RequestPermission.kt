@@ -11,8 +11,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.AlertDialog
-import androidx.compose.material.Text
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -26,8 +26,7 @@ fun PermissionDialog(
     isPermanentlyDeclined: Boolean,
     onDismiss: () -> Unit,
     onGranted: () -> Unit,
-    onGoToAppSettingsClick: () -> Unit,
-    modifier: Modifier = Modifier
+    onGoToAppSettingsClick: () -> Unit
 ) {
     Mama_ne_vdomaTheme {
         AlertDialog(
@@ -82,7 +81,6 @@ fun PermissionDialog(
                     )
                 )
             },
-            modifier = modifier,
             shape = RoundedCornerShape(16.dp),
             backgroundColor = MaterialTheme.colorScheme.surface
         )

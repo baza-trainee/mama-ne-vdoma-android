@@ -1,4 +1,4 @@
-package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user
+package tech.baza_trainee.mama_ne_vdoma.presentation.utils.composables
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -26,10 +26,6 @@ import kotlinx.coroutines.delay
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.Period
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.ScheduleScreenState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.composables.ChildScheduleGroup
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.composables.SurfaceWithNavigationBars
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.composables.TopBarWithArrow
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.composables.rememberImeState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.ButtonText
 import java.time.DayOfWeek
 
