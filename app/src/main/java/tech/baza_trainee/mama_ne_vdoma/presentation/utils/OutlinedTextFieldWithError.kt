@@ -18,8 +18,10 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 
 @Composable
 fun PasswordTextFieldWithError(
@@ -96,6 +98,9 @@ fun OutlinedTextFieldWithError(
             leadingIcon = leadingIcon,
             trailingIcon = trailingIcon,
             keyboardOptions = keyboardOptions,
+            textStyle = TextStyle(
+                fontFamily = redHatDisplayFontFamily
+            )
         )
         if (isError && isEmailFocused) {
             Text(

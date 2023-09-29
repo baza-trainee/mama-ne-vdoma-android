@@ -27,6 +27,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -34,6 +35,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.model.RestorePasswordViewState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.vm.RestorePasswordScreenViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.OutlinedTextFieldWithError
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 
@@ -105,7 +107,8 @@ fun RestorePassword(
                         text = "Забули пароль?",
                         fontSize = 20.sp,
                         textAlign = TextAlign.Center,
-                        color = MaterialTheme.colorScheme.onBackground
+                        color = MaterialTheme.colorScheme.onBackground,
+                        fontFamily = redHatDisplayFontFamily
                     )
                 }
 
@@ -120,7 +123,8 @@ fun RestorePassword(
                             "щоб отримати лист з інструкціями",
                     fontSize = 14.sp,
                     textAlign = TextAlign.Center,
-                    color = MaterialTheme.colorScheme.onBackground
+                    color = MaterialTheme.colorScheme.onBackground,
+                    fontFamily = redHatDisplayFontFamily
                 )
 
                 Spacer(modifier = modifier.height(24.dp))
@@ -151,7 +155,11 @@ fun RestorePassword(
                 onClick = onRestore,
                 enabled = screenState.value.emailValid == ValidField.VALID
             ) {
-                Text(text = "Відправити")
+                Text(
+                    text = "Відправити",
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = redHatDisplayFontFamily
+                )
             }
         }
     }

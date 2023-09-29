@@ -26,8 +26,11 @@ import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.smarttoolfactory.cropper.ImageCropper
 import com.smarttoolfactory.cropper.model.AspectRatio
 import com.smarttoolfactory.cropper.model.OutlineType
@@ -35,6 +38,7 @@ import com.smarttoolfactory.cropper.model.OvalCropShape
 import com.smarttoolfactory.cropper.settings.CropDefaults
 import com.smarttoolfactory.cropper.settings.CropOutlineProperty
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.vm.UserSettingsViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 
 @Composable
 fun ImageCropFunc(
@@ -68,6 +72,18 @@ fun ImageCrop(
             verticalArrangement = Arrangement.SpaceBetween,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            Text(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp)
+                    .padding(top = 16.dp),
+                text = "Обрізати фото",
+                fontSize = 20.sp,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onBackground,
+                fontFamily = redHatDisplayFontFamily
+            )
+
             var crop by remember { mutableStateOf(false) }
             var isCropping by remember { mutableStateOf(false) }
             val croppedImage by remember { mutableStateOf(bitmapToCrop.asImageBitmap()) }
@@ -119,7 +135,11 @@ fun ImageCrop(
                     onImageCropped()
                 }
             ) {
-                Text(text = "Далі")
+                Text(
+                    text = "Зберегти",
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = redHatDisplayFontFamily
+                )
             }
         }
     }

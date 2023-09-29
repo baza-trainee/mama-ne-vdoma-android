@@ -32,6 +32,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -41,6 +42,8 @@ import androidx.constraintlayout.compose.Dimension
 import kotlinx.coroutines.delay
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.Period
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.ScheduleScreenState
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ButtonText
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ChildScheduleGroup
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.rememberImeState
 import java.time.DayOfWeek
@@ -117,7 +120,8 @@ fun ScheduleScreen(
                     text = "Вкажіть, коли потрібно доглядати дитину",
                     fontSize = 24.sp,
                     textAlign = TextAlign.Start,
-                    color = MaterialTheme.colorScheme.onPrimary
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    fontFamily = redHatDisplayFontFamily
                 )
             }
 
@@ -149,6 +153,9 @@ fun ScheduleScreen(
                     disabledContainerColor =  MaterialTheme.colorScheme.surface,
                     focusedBorderColor = MaterialTheme.colorScheme.primary,
                     unfocusedBorderColor = MaterialTheme.colorScheme.surface,
+                ),
+                textStyle = TextStyle(
+                    fontFamily = redHatDisplayFontFamily
                 )
             )
 
@@ -162,7 +169,9 @@ fun ScheduleScreen(
                     .height(48.dp),
                 onClick = onNext
             ) {
-                Text(text = "Встановити розклад")
+                ButtonText(
+                    text = "Встановити розклад"
+                )
             }
         }
     }

@@ -26,6 +26,8 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.model.NewPasswordViewState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.vm.NewPasswordScreenViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ButtonText
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.PasswordTextFieldWithError
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 
@@ -74,7 +76,8 @@ fun NewPassword(
                     text = "Відновлення паролю",
                     fontSize = 20.sp,
                     textAlign = TextAlign.Center,
-                    color = MaterialTheme.colorScheme.onBackground
+                    color = MaterialTheme.colorScheme.onBackground,
+                    fontFamily = redHatDisplayFontFamily
                 )
 
                 Spacer(modifier = modifier.height(4.dp))
@@ -86,7 +89,8 @@ fun NewPassword(
                     text = "Будь ласка, створіть новий пароль нижче",
                     fontSize = 14.sp,
                     textAlign = TextAlign.Center,
-                    color = MaterialTheme.colorScheme.onBackground
+                    color = MaterialTheme.colorScheme.onBackground,
+                    fontFamily = redHatDisplayFontFamily
                 )
 
                 Spacer(modifier = modifier.height(16.dp))
@@ -108,6 +112,7 @@ fun NewPassword(
                         .padding(horizontal = 24.dp),
                     text = "Ваш пароль повинен складатись з 6-24 символів і обов’язково містити латинські букви, цифри, спеціальні знаки",
                     fontSize = 14.sp,
+                    fontFamily = redHatDisplayFontFamily
                 )
 
                 Spacer(modifier = modifier.height(16.dp))
@@ -134,7 +139,9 @@ fun NewPassword(
                 enabled = screenState.value.passwordValid == ValidField.VALID &&
                         screenState.value.confirmPasswordValid == ValidField.VALID
             ) {
-                Text(text = "Зберегти пароль")
+                ButtonText(
+                    text = "Зберегти пароль"
+                )
             }
         }
     }

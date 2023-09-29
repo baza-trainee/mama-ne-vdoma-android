@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.Mama_ne_vdomaTheme
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 
 @Composable
 fun <T> RadioGroup(
@@ -45,7 +46,10 @@ fun <T> RadioGroup(
                         selected = (value == selected),
                         onClick = { onSelectedChange(value) }
                     )
-                    Text(text = getText(value))
+                    Text(
+                        text = getText(value),
+                        fontFamily = redHatDisplayFontFamily
+                    )
                 }
             }
         }

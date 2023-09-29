@@ -31,6 +31,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ButtonText
 
 @Composable
 fun RegisterSuccessFunc(
@@ -98,7 +100,8 @@ fun RegisterSuccess(
                     text = "Реєстрація пройшла успішно",
                     fontSize = 24.sp,
                     textAlign = TextAlign.Start,
-                    color = MaterialTheme.colorScheme.onPrimary
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    fontFamily = redHatDisplayFontFamily
                 )
             }
             
@@ -122,7 +125,8 @@ fun RegisterSuccess(
                         .padding(bottom = 8.dp, top = 8.dp),
                     text = "Це допоможе підібрати для вас групи " +
                             "з дітьми приблизно одного віку",
-                    textAlign = TextAlign.Start
+                    textAlign = TextAlign.Start,
+                    fontFamily = redHatDisplayFontFamily
                 )
             }
 
@@ -136,7 +140,9 @@ fun RegisterSuccess(
                     .height(48.dp),
                 onClick = onNext
             ) {
-                Text(text = "Далі")
+                ButtonText(
+                    text = "Далі"
+                )
             }
         }
     }

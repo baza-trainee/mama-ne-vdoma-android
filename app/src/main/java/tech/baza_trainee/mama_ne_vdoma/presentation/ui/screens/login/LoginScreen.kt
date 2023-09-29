@@ -1,10 +1,8 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -27,16 +25,15 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.model.LoginViewState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.vm.LoginScreenViewModel
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.Gray
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.OutlinedTextFieldWithError
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.PasswordTextFieldWithError
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.SocialLoginBlock
@@ -93,7 +90,8 @@ fun LoginUser(
                     text = "Увійти у свій профіль",
                     fontSize = 20.sp,
                     textAlign = TextAlign.Center,
-                    color = MaterialTheme.colorScheme.onBackground
+                    color = MaterialTheme.colorScheme.onBackground,
+                    fontFamily = redHatDisplayFontFamily
                 )
 
                 Spacer(modifier = modifier.height(24.dp))
@@ -141,6 +139,7 @@ fun LoginUser(
                     text = getTextWithUnderline("", "Забули пароль?", false),
                     textAlign = TextAlign.End,
                     fontSize = 14.sp,
+                    fontFamily = redHatDisplayFontFamily
                 )
 
                 Spacer(modifier = modifier.height(48.dp))
@@ -154,52 +153,57 @@ fun LoginUser(
                     enabled = screenState.value.passwordValid == ValidField.VALID &&
                             screenState.value.emailValid == ValidField.VALID
                 ) {
-                    Text(text = "Увійти")
+                    Text(
+                        text = "Увійти",
+                        fontFamily = redHatDisplayFontFamily,
+                        fontWeight = FontWeight.Bold
+                    )
                 }
 
                 Spacer(modifier = modifier.height(32.dp))
 
-                ConstraintLayout(
-                    modifier = modifier.fillMaxWidth()
-                ) {
-                    val (box1, text, box2) = createRefs()
-                    Box(
-                        modifier = modifier
-                            .height(height = 2.dp)
-                            .background(color = Gray)
-                            .constrainAs(box1) {
-                                start.linkTo(parent.start, 24.dp)
-                                end.linkTo(text.start, 16.dp)
-                                top.linkTo(parent.top)
-                                bottom.linkTo(parent.bottom)
-                                width = Dimension.fillToConstraints
-                            }
-                    )
-                    Text(
-                        modifier = modifier
-                            .constrainAs(text) {
-                                start.linkTo(box1.end, 16.dp)
-                                end.linkTo(box2.start, 16.dp)
-                                top.linkTo(parent.top)
-                                bottom.linkTo(parent.bottom)
-                                width = Dimension.wrapContent
-                            },
-                        text = "чи",
-                        fontSize = 14.sp,
-                    )
-                    Box(
-                        modifier = modifier
-                            .height(height = 2.dp)
-                            .background(color = Gray)
-                            .constrainAs(box2) {
-                                start.linkTo(text.end, 16.dp)
-                                end.linkTo(parent.end, 24.dp)
-                                top.linkTo(parent.top)
-                                bottom.linkTo(parent.bottom)
-                                width = Dimension.fillToConstraints
-                            }
-                    )
-                }
+//                ConstraintLayout(
+//                    modifier = modifier.fillMaxWidth()
+//                ) {
+//                    val (box1, text, box2) = createRefs()
+//                    Box(
+//                        modifier = modifier
+//                            .height(height = 2.dp)
+//                            .background(color = Gray)
+//                            .constrainAs(box1) {
+//                                start.linkTo(parent.start, 24.dp)
+//                                end.linkTo(text.start, 16.dp)
+//                                top.linkTo(parent.top)
+//                                bottom.linkTo(parent.bottom)
+//                                width = Dimension.fillToConstraints
+//                            }
+//                    )
+//                    Text(
+//                        modifier = modifier
+//                            .constrainAs(text) {
+//                                start.linkTo(box1.end, 16.dp)
+//                                end.linkTo(box2.start, 16.dp)
+//                                top.linkTo(parent.top)
+//                                bottom.linkTo(parent.bottom)
+//                                width = Dimension.wrapContent
+//                            },
+//                        text = "чи",
+//                        fontSize = 14.sp,
+//                        fontFamily = redHatDisplayFontFamily
+//                    )
+//                    Box(
+//                        modifier = modifier
+//                            .height(height = 2.dp)
+//                            .background(color = Gray)
+//                            .constrainAs(box2) {
+//                                start.linkTo(text.end, 16.dp)
+//                                end.linkTo(parent.end, 24.dp)
+//                                top.linkTo(parent.top)
+//                                bottom.linkTo(parent.bottom)
+//                                width = Dimension.fillToConstraints
+//                            }
+//                    )
+//                }
 
                 Spacer(modifier = modifier.height(32.dp))
             }

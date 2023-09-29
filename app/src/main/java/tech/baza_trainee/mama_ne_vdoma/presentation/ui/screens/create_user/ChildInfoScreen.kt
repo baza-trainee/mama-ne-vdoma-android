@@ -39,6 +39,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.ChildNameViewState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.Gender
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.vm.UserSettingsViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ButtonText
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.OutlinedTextFieldWithError
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RadioGroup
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
@@ -118,7 +120,8 @@ fun ChildInfo(
                     text = "Розкажіть про свою дитину",
                     fontSize = 24.sp,
                     textAlign = TextAlign.Start,
-                    color = MaterialTheme.colorScheme.onPrimary
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    fontFamily = redHatDisplayFontFamily
                 )
             }
             Column(
@@ -187,7 +190,9 @@ fun ChildInfo(
                         screenState.value.ageValid == ValidField.VALID &&
                         screenState.value.gender != Gender.NONE
             ) {
-                Text(text = "Зареєструвати дитину")
+                ButtonText(
+                    text = "Зареєструвати дитину"
+                )
             }
         }
     }

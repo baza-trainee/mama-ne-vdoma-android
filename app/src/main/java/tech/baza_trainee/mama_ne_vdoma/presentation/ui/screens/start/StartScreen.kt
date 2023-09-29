@@ -21,12 +21,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import tech.baza_trainee.mama_ne_vdoma.R
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.getTextWithUnderline
 
 @Composable
@@ -76,7 +78,11 @@ fun StartScreen(
                     .height(48.dp),
                 onClick = onStart
             ) {
-                Text(text = "Почати")
+                Text(
+                    text = "Почати",
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = redHatDisplayFontFamily
+                )
             }
             Text(
                 text = getTextWithUnderline("Вже є акаунт? ", "Увійти"),
@@ -92,7 +98,8 @@ fun StartScreen(
                     }
                     .fillMaxWidth()
                     .height(48.dp),
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                fontFamily = redHatDisplayFontFamily
             )
         }
     }

@@ -36,6 +36,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -44,6 +45,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import kotlinx.coroutines.launch
 import tech.baza_trainee.mama_ne_vdoma.R
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.Indicator
 
 @Composable
@@ -123,7 +125,9 @@ fun InfoScreen(
                                 height = Dimension.wrapContent
                             },
                         fontSize = 24.sp,
-                        textAlign = TextAlign.Center
+                        textAlign = TextAlign.Center,
+                        fontWeight = FontWeight.Bold,
+                        fontFamily = redHatDisplayFontFamily
                     )
                     Text(
                         text = pageTextContent[page],
@@ -136,7 +140,8 @@ fun InfoScreen(
                                 height = Dimension.wrapContent
                             },
                         fontSize = 16.sp,
-                        textAlign = TextAlign.Center
+                        textAlign = TextAlign.Center,
+                        fontFamily = redHatDisplayFontFamily
                     )
                 }
             }
@@ -194,7 +199,10 @@ fun InfoScreen(
                                     bottom.linkTo(parent.bottom)
                                     end.linkTo(btnNext.start, 24.dp)
                                 },
-                            text = "Пропустити"
+                            text = "Пропустити",
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.primary,
+                            fontFamily = redHatDisplayFontFamily
                         )
                         Button(
                             shape = CircleShape,
@@ -230,7 +238,11 @@ fun InfoScreen(
                             .padding(horizontal = 24.dp),
                         onClick = onCreate
                     ) {
-                        Text(text = "Почати")
+                        Text(
+                            text = "Почати",
+                            fontWeight = FontWeight.Bold,
+                            fontFamily = redHatDisplayFontFamily
+                        )
                     }
                 }
             }

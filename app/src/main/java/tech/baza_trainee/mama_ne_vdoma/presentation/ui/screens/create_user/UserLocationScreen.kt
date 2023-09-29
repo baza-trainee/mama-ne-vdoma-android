@@ -51,6 +51,8 @@ import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.UserLocationViewState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.vm.UserSettingsViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ButtonText
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.LocationPermissionTextProvider
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.PermissionDialog
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.findActivity
@@ -149,7 +151,8 @@ fun UserLocation(
                     text = "Ваше місцезнаходження",
                     fontSize = 20.sp,
                     textAlign = TextAlign.Center,
-                    color = MaterialTheme.colorScheme.onPrimary
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    fontFamily = redHatDisplayFontFamily
                 )
                 Text(
                     modifier = modifier
@@ -159,7 +162,8 @@ fun UserLocation(
                     text = "Будь ласка, оберіть ваше місцерозташування," +
                             " щоб ви могли підібрати найближчі групи до вас",
                     textAlign = TextAlign.Center,
-                    color = MaterialTheme.colorScheme.onPrimary
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    fontFamily = redHatDisplayFontFamily
                 )
             }
 
@@ -241,7 +245,9 @@ fun UserLocation(
                     .height(48.dp),
                 onClick = onNext
             ) {
-                Text(text = "Далі")
+                ButtonText(
+                    text = "Далі"
+                )
             }
         }
     }

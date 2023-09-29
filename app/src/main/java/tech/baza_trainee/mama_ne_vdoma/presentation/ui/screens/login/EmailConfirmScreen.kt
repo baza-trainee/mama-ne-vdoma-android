@@ -31,6 +31,8 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import tech.baza_trainee.mama_ne_vdoma.R
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ButtonText
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.getTextWithUnderline
 
 @Composable
@@ -84,7 +86,8 @@ fun EmailConfirm(
                     text = "Лист був відправлений",
                     fontSize = 20.sp,
                     textAlign = TextAlign.Center,
-                    color = MaterialTheme.colorScheme.onPrimary
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    fontFamily = redHatDisplayFontFamily
                 )
                 Text(
                     modifier = modifier
@@ -95,7 +98,8 @@ fun EmailConfirm(
                             "щоб отримати подальші інструкції з " +
                             "відновлення паролю",
                     textAlign = TextAlign.Center,
-                    color = MaterialTheme.colorScheme.onPrimary
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    fontFamily = redHatDisplayFontFamily
                 )
             }
 
@@ -122,7 +126,9 @@ fun EmailConfirm(
                     .height(48.dp),
                 onClick = onLogin
             ) {
-                Text(text = "Увійти")
+                ButtonText(
+                    text = "Увійти"
+                )
             }
             Text(
                 text = getTextWithUnderline("Не отримали листа? ", "Відправити ще раз"),
@@ -139,7 +145,8 @@ fun EmailConfirm(
                     .fillMaxWidth()
                     .padding(horizontal = 24.dp)
                     .height(48.dp),
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                fontFamily = redHatDisplayFontFamily
             )
         }
     }

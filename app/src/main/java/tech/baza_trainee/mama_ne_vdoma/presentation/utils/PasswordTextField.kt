@@ -17,9 +17,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 
 @Composable
 fun ShowHidePasswordTextField(
@@ -66,6 +68,9 @@ fun ShowHidePasswordTextField(
                     )
                 }
             }
-        }
+        },
+        textStyle = TextStyle(
+            fontFamily = redHatDisplayFontFamily
+        )
     )
 }

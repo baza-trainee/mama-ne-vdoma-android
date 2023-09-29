@@ -51,6 +51,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -69,6 +70,8 @@ import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.UserInfoViewState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.vm.UserSettingsViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.SlateGray
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ButtonText
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.CameraPermissionTextProvider
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.OutlinedTextFieldWithError
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.PermissionDialog
@@ -198,7 +201,8 @@ fun UserInfo(
                     text = "Заповнення профілю",
                     fontSize = 20.sp,
                     textAlign = TextAlign.Center,
-                    color = MaterialTheme.colorScheme.onBackground
+                    color = MaterialTheme.colorScheme.onBackground,
+                    fontFamily = redHatDisplayFontFamily
                 )
 
                 AsyncImage(
@@ -239,7 +243,8 @@ fun UserInfo(
                         .padding(horizontal = 24.dp)
                         .padding(top = 4.dp),
                     text = "Ваше ім’я повинне складатись із 6-18 символів і може містити букви та цифри",
-                    textAlign = TextAlign.Start
+                    textAlign = TextAlign.Start,
+                    fontFamily = redHatDisplayFontFamily
                 )
 
                 var isPhoneFocused by remember { mutableStateOf(false) }
@@ -298,7 +303,10 @@ fun UserInfo(
                             disabledBorderColor = MaterialTheme.colorScheme.surface
                         ),
                         shape = RoundedCornerShape(topEnd = 4.dp, bottomEnd = 4.dp),
-                        enabled = screenState.value.code.isNotEmpty()
+                        enabled = screenState.value.code.isNotEmpty(),
+                        textStyle = TextStyle(
+                            fontFamily = redHatDisplayFontFamily
+                        )
                     )
                 }
                 if (screenState.value.phoneValid == ValidField.INVALID && isPhoneFocused) {
@@ -306,7 +314,8 @@ fun UserInfo(
                         text = "Ви ввели некоректний номер",
                         color = Color.Red,
                         modifier = modifier
-                            .padding(horizontal = 24.dp)
+                            .padding(horizontal = 24.dp),
+                        fontFamily = redHatDisplayFontFamily
                     )
                 }
             }
@@ -322,7 +331,9 @@ fun UserInfo(
                         screenState.value.phoneValid == ValidField.VALID &&
                         screenState.value.code.isNotEmpty()
             ) {
-                Text(text = "Далі")
+                ButtonText(
+                    text = "Далі"
+                )
             }
 
             if (openBottomSheet) {
@@ -366,7 +377,8 @@ fun UserInfo(
                                 .padding(horizontal = 16.dp),
                             text = "Обрати фото",
                             fontSize = 24.sp,
-                            textAlign = TextAlign.Start
+                            textAlign = TextAlign.Start,
+                            fontFamily = redHatDisplayFontFamily
                         )
                         Text(
                             modifier = modifier
@@ -375,7 +387,8 @@ fun UserInfo(
                                 .padding(horizontal = 16.dp),
                             text = "Оберіть спосіб завантаження файлу",
                             fontSize = 14.sp,
-                            textAlign = TextAlign.Start
+                            textAlign = TextAlign.Start,
+                            fontFamily = redHatDisplayFontFamily
                         )
                         Row(
                             modifier = modifier
@@ -399,7 +412,8 @@ fun UserInfo(
                                     .fillMaxWidth(),
                                 text = "Камера",
                                 fontSize = 16.sp,
-                                textAlign = TextAlign.Start
+                                textAlign = TextAlign.Start,
+                                fontFamily = redHatDisplayFontFamily
                             )
                         }
                         Divider(
@@ -432,7 +446,8 @@ fun UserInfo(
                                     .fillMaxWidth(),
                                 text = "Галерея",
                                 fontSize = 16.sp,
-                                textAlign = TextAlign.Start
+                                textAlign = TextAlign.Start,
+                                fontFamily = redHatDisplayFontFamily
                             )
                         }
                     }

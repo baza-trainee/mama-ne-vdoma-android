@@ -74,6 +74,7 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
     implementation("androidx.compose.material:material:1.5.1")
     implementation("androidx.compose.material:material-icons-extended:1.5.1")
+    implementation("androidx.compose.ui:ui-text-google-fonts:1.5.1")
 
     //Google Maps
     implementation("com.google.maps.android:maps-compose:2.4.0")

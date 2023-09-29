@@ -27,6 +27,8 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import tech.baza_trainee.mama_ne_vdoma.R
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.ButtonText
 
 @Composable
 fun RestoreSuccessFunc(
@@ -74,7 +76,8 @@ fun RestoreSuccess(
                     text = "Пароль збережено",
                     fontSize = 20.sp,
                     textAlign = TextAlign.Center,
-                    color = MaterialTheme.colorScheme.onPrimary
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    fontFamily = redHatDisplayFontFamily
                 )
                 Text(
                     modifier = modifier
@@ -85,7 +88,8 @@ fun RestoreSuccess(
                             "Будь ласка, використовуйте цей новий пароль" +
                             "при вході в додаток",
                     textAlign = TextAlign.Center,
-                    color = MaterialTheme.colorScheme.onPrimary
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    fontFamily = redHatDisplayFontFamily
                 )
             }
 
@@ -112,7 +116,9 @@ fun RestoreSuccess(
                     .height(48.dp),
                 onClick = goToMain
             ) {
-                Text(text = "На головну сторінку")
+                ButtonText(
+                    text = "На головну сторінку"
+                )
             }
         }
     }
