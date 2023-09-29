@@ -218,8 +218,8 @@ fun UserInfo(
 
             Button(
                 modifier = modifier
-                    .fillMaxWidth()
                     .padding(horizontal = 24.dp, vertical = 16.dp)
+                    .fillMaxWidth()
                     .height(48.dp),
                 onClick = onCreateUser,
                 enabled = screenState.value.nameValid == ValidField.VALID &&

@@ -119,11 +119,11 @@ fun  ChildrenInfo(
 
             Button(
                 modifier = modifier
+                    .padding(horizontal = 24.dp, vertical = 16.dp)
                     .fillMaxWidth()
                     .constrainAs(btnNext) {
                         bottom.linkTo(parent.bottom)
                     }
-                    .padding(horizontal = 24.dp, vertical = 16.dp)
                     .height(48.dp),
                 onClick = onNext
             ) {

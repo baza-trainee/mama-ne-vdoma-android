@@ -30,8 +30,8 @@ fun SocialLoginBlock(
 ) {
     Column(
         modifier = modifier
-            .fillMaxWidth()
             .padding(horizontal = horizontalPadding)
+            .fillMaxWidth()
             .wrapContentHeight()
     ) {
 //        OutlinedButton(

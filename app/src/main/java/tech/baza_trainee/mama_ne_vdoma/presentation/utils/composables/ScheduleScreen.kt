@@ -87,8 +87,8 @@ fun ScheduleScreen(
 
             OutlinedTextField(
                 modifier = modifier
-                    .fillMaxWidth()
                     .padding(horizontal = 24.dp)
+                    .fillMaxWidth()
                     .constrainAs(comment) {
                         top.linkTo(schedule.bottom, 16.dp)
                         bottom.linkTo(btnNext.top, 16.dp)
@@ -112,11 +112,11 @@ fun ScheduleScreen(
 
             Button(
                 modifier = modifier
+                    .padding(horizontal = 24.dp, vertical = 16.dp)
+                    .fillMaxWidth()
                     .constrainAs(btnNext) {
                         bottom.linkTo(parent.bottom)
                     }
-                    .fillMaxWidth()
-                    .padding(horizontal = 24.dp, vertical = 16.dp)
                     .height(48.dp),
                 onClick = onNext
             ) {

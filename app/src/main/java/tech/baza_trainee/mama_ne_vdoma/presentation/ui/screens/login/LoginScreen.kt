@@ -146,9 +146,9 @@ fun LoginUser(
 
                 Button(
                     modifier = modifier
+                        .padding(horizontal = 24.dp, vertical = 16.dp)
                         .fillMaxWidth()
-                        .height(48.dp)
-                        .padding(horizontal = 24.dp, vertical = 16.dp),
+                        .height(48.dp),
                     onClick = onLogin,
                     enabled = screenState.value.passwordValid == ValidField.VALID &&
                             screenState.value.emailValid == ValidField.VALID

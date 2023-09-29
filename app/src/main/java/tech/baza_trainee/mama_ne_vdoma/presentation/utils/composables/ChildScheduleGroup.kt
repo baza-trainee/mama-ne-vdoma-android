@@ -44,17 +44,17 @@ fun ChildScheduleGroup(
         ) {
             Row(
                 modifier = modifier
-                    .fillMaxWidth()
-                    .height(48.dp)
                     .weight(1f)
-                    .padding(vertical = 8.dp),
+                    .padding(vertical = 8.dp)
+                    .fillMaxWidth()
+                    .height(48.dp),
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
                     modifier = modifier
-                        .width(128.dp)
-                        .padding(horizontal = 8.dp),
+                        .padding(horizontal = 8.dp)
+                        .width(128.dp),
                     text = Period.WHOLE_DAY.period,
                     textAlign = TextAlign.Center
                 )
@@ -80,10 +80,10 @@ fun ChildScheduleGroup(
             scheduleModel.schedule.keys.sortedBy { it.value }.forEach { day ->
                 Row(
                     modifier = modifier
+                        .padding(vertical = 8.dp)
                         .fillMaxWidth()
                         .wrapContentHeight()
-                        .weight(1f)
-                        .padding(vertical = 8.dp),
+                        .weight(1f),
                     horizontalArrangement = Arrangement.SpaceEvenly,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -92,17 +92,17 @@ fun ChildScheduleGroup(
 
                     Box(
                         modifier = modifier
+                            .padding(horizontal = 8.dp)
+                            .height(48.dp)
+                            .width(128.dp)
                             .background(
                                 color = if (scheduleModel.schedule[day]?.wholeDay == true) MaterialTheme.colorScheme.primary
                                 else MaterialTheme.colorScheme.surface,
                                 shape = RoundedCornerShape(8.dp)
                             )
-                            .height(48.dp)
-                            .width(128.dp)
                             .clickable {
                                 onValueChange(day, Period.WHOLE_DAY)
-                            }
-                            .padding(horizontal = 8.dp),
+                            },
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
@@ -114,8 +114,8 @@ fun ChildScheduleGroup(
                     }
                     Box(
                         modifier = modifier
-                            .height(48.dp)
-                            .padding(horizontal = 8.dp),
+                            .padding(horizontal = 8.dp)
+                            .height(48.dp),
                         contentAlignment = Alignment.Center
                     ) {
                         Checkbox(
@@ -128,8 +128,8 @@ fun ChildScheduleGroup(
 
                     Box(
                         modifier = modifier
-                            .height(48.dp)
-                            .padding(horizontal = 8.dp),
+                            .padding(horizontal = 8.dp)
+                            .height(48.dp),
                         contentAlignment = Alignment.Center
                     ) {
                         Checkbox(
@@ -142,8 +142,8 @@ fun ChildScheduleGroup(
 
                     Box(
                         modifier = modifier
-                            .height(48.dp)
-                            .padding(horizontal = 8.dp),
+                            .padding(horizontal = 8.dp)
+                            .height(48.dp),
                         contentAlignment = Alignment.Center
                     ) {
                         Checkbox(

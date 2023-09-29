@@ -35,9 +35,9 @@ fun TopBarWithoutArrow(
     ) {
         Text(
             modifier = modifier
-                .fillMaxWidth()
                 .padding(top = 16.dp)
-                .padding(horizontal = 24.dp),
+                .padding(horizontal = 24.dp)
+                .fillMaxWidth(),
             text = title,
             fontSize = 24.sp,
             textAlign = TextAlign.Center,
@@ -48,9 +48,9 @@ fun TopBarWithoutArrow(
         if (info.isNotEmpty())
             Text(
                 modifier = modifier
-                    .fillMaxWidth()
                     .padding(horizontal = 24.dp)
-                    .padding(bottom = 8.dp),
+                    .padding(bottom = 8.dp)
+                    .fillMaxWidth(),
                 text = info,
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.onPrimary,

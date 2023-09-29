@@ -184,9 +184,9 @@ fun CreateUser(
 
                 Button(
                     modifier = modifier
+                        .padding(horizontal = 24.dp)
                         .fillMaxWidth()
-                        .height(48.dp)
-                        .padding(horizontal = 24.dp),
+                        .height(48.dp),
                     onClick = onCreateUser,
                     enabled = screenState.value.isAllConform
                 ) {

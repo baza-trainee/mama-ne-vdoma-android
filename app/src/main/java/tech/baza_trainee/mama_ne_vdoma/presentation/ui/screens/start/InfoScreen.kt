@@ -230,9 +230,9 @@ fun InfoScreen(
                 ) {
                     Button(
                         modifier = modifier
-                            .height(48.dp)
+                            .padding(horizontal = 24.dp)
                             .fillMaxWidth()
-                            .padding(horizontal = 24.dp),
+                            .height(48.dp),
                         onClick = onCreate
                     ) {
                         Text(

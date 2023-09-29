@@ -81,11 +81,11 @@ fun EmailConfirm(
 
             Button(
                 modifier = modifier
+                    .padding(horizontal = 24.dp, vertical = 16.dp)
+                    .fillMaxWidth()
                     .constrainAs(btnStart) {
                         bottom.linkTo(btnLogin.top)
                     }
-                    .fillMaxWidth()
-                    .padding(horizontal = 24.dp, vertical = 16.dp)
                     .height(48.dp),
                 onClick = onLogin
             ) {

@@ -71,11 +71,11 @@ fun RestoreSuccess(
 
             Button(
                 modifier = modifier
+                    .padding(horizontal = 24.dp, vertical = 16.dp)
+                    .fillMaxWidth()
                     .constrainAs(btnMain) {
                         bottom.linkTo(parent.bottom)
                     }
-                    .fillMaxWidth()
-                    .padding(horizontal = 24.dp, vertical = 16.dp)
                     .height(48.dp),
                 onClick = goToMain
             ) {

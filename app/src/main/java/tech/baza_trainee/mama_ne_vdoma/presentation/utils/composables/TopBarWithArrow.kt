@@ -61,9 +61,9 @@ fun TopBarWithArrow(
         }
         Text(
             modifier = modifier
-                .fillMaxWidth()
                 .padding(top = 16.dp)
-                .padding(horizontal = 24.dp),
+                .padding(horizontal = 24.dp)
+                .fillMaxWidth(),
             text = title,
             fontSize = 24.sp,
             textAlign = TextAlign.Start,
