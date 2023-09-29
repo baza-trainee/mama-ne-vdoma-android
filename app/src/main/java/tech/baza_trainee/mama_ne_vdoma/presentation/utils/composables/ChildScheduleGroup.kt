@@ -21,8 +21,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.Period
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.ScheduleModel
+import tech.baza_trainee.mama_ne_vdoma.domain.model.Period
+import tech.baza_trainee.mama_ne_vdoma.domain.model.ScheduleModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.Mama_ne_vdomaTheme
 import java.time.DayOfWeek
 import java.time.format.TextStyle
@@ -33,7 +33,7 @@ import java.util.Locale
 fun ChildScheduleGroup(
     modifier: Modifier = Modifier,
     scheduleModel: ScheduleModel = ScheduleModel(),
-    onValueChange: (DayOfWeek, Period) -> Unit = { _,_ -> }
+    onValueChange: (DayOfWeek, Period) -> Unit = { _, _ -> }
 ) {
     Mama_ne_vdomaTheme {
         Column(

@@ -9,11 +9,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import tech.baza_trainee.mama_ne_vdoma.domain.model.DayPeriod
+import tech.baza_trainee.mama_ne_vdoma.domain.model.Period
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.LocationRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.ChildNameViewState
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.DayPeriod
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.Gender
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.Period
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.ScheduleScreenState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.UserInfoViewState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.UserLocationViewState

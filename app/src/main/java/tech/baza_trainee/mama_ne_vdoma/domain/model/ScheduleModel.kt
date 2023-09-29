@@ -1,4 +1,4 @@
-package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model
+package tech.baza_trainee.mama_ne_vdoma.domain.model
 
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.snapshots.SnapshotStateMap
@@ -20,5 +20,5 @@ data class DayPeriod(
 )
 
 enum class Period(val period: String) {
-    MORNING("Ранок"), NOON("День"), AFTERNOON("Вечір"), WHOLE_DAY("Цілий день")
+    MORNING("Ранок"), NOON("Обід"), AFTERNOON("Вечір"), WHOLE_DAY("Цілий день")
 }
