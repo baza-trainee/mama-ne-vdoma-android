@@ -42,9 +42,8 @@ fun NavGraphBuilder.createUserNavGraph(
         composable("image_crop_screen") {
             val userSettingsViewModel: UserSettingsViewModel = it.sharedViewModel(navController)
             ImageCropFunc(
-                userSettingsViewModel,
-                { navController.navigate("enter_phone_screen") }
-            )
+                userSettingsViewModel
+            ) { navController.navigate("user_info_screen") }
         }
         composable("user_location_screen") {
             val userSettingsViewModel: UserSettingsViewModel = it.sharedViewModel(navController)
