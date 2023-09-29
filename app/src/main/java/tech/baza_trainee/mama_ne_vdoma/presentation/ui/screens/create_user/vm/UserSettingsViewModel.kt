@@ -92,7 +92,7 @@ class UserSettingsViewModel(
     }
 
     fun validateUserName(name: String) {
-        val nameValid = if (name.none { !it.isLetter() }) ValidField.VALID
+        val nameValid = if (name.length in NAME_LENGTH && name.all { it.isLetter() || it.isDigit() }) ValidField.VALID
         else ValidField.INVALID
         _userInfoScreenState.update {
             it.copy(
@@ -287,6 +287,7 @@ class UserSettingsViewModel(
     companion object {
 
         private val PHONE_LENGTH = 9..12
+        private val NAME_LENGTH = 6..18
         private const val MAX_AGE = 18f
     }
 }
