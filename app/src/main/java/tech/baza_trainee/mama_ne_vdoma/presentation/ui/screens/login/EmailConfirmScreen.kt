@@ -1,39 +1,29 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBars
-import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ButtonText
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.getTextWithUnderline
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.composables.SurfaceWithNavigationBars
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.composables.TopBarWithoutArrow
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.composables.getTextWithUnderline
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.ButtonText
 
 @Composable
 fun EmailConfirmFunc(
@@ -52,11 +42,8 @@ fun EmailConfirm(
     onLogin: () -> Unit,
     onSendAgain: () -> Unit
 ) {
-    Surface(
+    SurfaceWithNavigationBars(
         modifier = modifier
-            .windowInsetsPadding(WindowInsets.navigationBars)
-            .fillMaxSize(),
-        color = MaterialTheme.colorScheme.background
     ) {
         ConstraintLayout(
             modifier = modifier.fillMaxWidth()
@@ -65,43 +52,19 @@ fun EmailConfirm(
 
             val topGuideline = createGuidelineFromTop(0.2f)
 
-            Column(
+            TopBarWithoutArrow(
                 modifier = modifier
-                    .background(MaterialTheme.colorScheme.primary)
-                    .windowInsetsPadding(WindowInsets.statusBars)
+                    .fillMaxWidth()
                     .constrainAs(title) {
                         top.linkTo(parent.top)
                         bottom.linkTo(topGuideline)
                         height = Dimension.fillToConstraints
-                    }
-                    .fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    modifier = modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 24.dp)
-                        .padding(bottom = 8.dp),
-                    text = "Лист був відправлений",
-                    fontSize = 20.sp,
-                    textAlign = TextAlign.Center,
-                    color = MaterialTheme.colorScheme.onPrimary,
-                    fontFamily = redHatDisplayFontFamily
-                )
-                Text(
-                    modifier = modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 24.dp)
-                        .padding(bottom = 8.dp),
-                    text = "Перевірте свою пошту email@gmail.com, " +
-                            "щоб отримати подальші інструкції з " +
-                            "відновлення паролю",
-                    textAlign = TextAlign.Center,
-                    color = MaterialTheme.colorScheme.onPrimary,
-                    fontFamily = redHatDisplayFontFamily
-                )
-            }
+                    },
+                title = "Лист був відправлений",
+                info = "Перевірте свою пошту email@gmail.com, " +
+                        "щоб отримати подальші інструкції з " +
+                        "відновлення паролю"
+            )
 
             Image(
                 modifier = modifier

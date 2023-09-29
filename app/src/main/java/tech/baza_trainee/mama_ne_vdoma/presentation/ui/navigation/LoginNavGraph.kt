@@ -12,7 +12,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.RestoreSucc
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.vm.LoginScreenViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.vm.NewPasswordScreenViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.vm.RestorePasswordScreenViewModel
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.sharedViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.sharedViewModel
 
 fun NavGraphBuilder.loginNavGraph(
     navController: NavHostController

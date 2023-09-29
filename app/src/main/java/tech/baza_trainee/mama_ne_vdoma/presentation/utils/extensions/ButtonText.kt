@@ -1,4 +1,4 @@
-package tech.baza_trainee.mama_ne_vdoma.presentation.utils
+package tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable

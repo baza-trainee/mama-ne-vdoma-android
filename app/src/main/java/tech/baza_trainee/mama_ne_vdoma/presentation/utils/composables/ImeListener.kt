@@ -1,4 +1,4 @@
-package tech.baza_trainee.mama_ne_vdoma.presentation.utils
+package tech.baza_trainee.mama_ne_vdoma.presentation.utils.composables
 
 import android.view.ViewTreeObserver
 import androidx.compose.runtime.Composable

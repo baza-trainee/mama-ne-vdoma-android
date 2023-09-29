@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.model.NewPasswordViewState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.validatePassword
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.validatePassword
 
 class NewPasswordScreenViewModel: ViewModel() {
 

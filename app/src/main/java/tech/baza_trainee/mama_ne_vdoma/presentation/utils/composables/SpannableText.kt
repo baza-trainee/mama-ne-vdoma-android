@@ -1,4 +1,4 @@
-package tech.baza_trainee.mama_ne_vdoma.presentation.utils
+package tech.baza_trainee.mama_ne_vdoma.presentation.utils.composables
 
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString

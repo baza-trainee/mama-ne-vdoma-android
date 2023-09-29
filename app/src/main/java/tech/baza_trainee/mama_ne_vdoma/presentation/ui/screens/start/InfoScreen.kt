@@ -46,7 +46,7 @@ import androidx.constraintlayout.compose.Dimension
 import kotlinx.coroutines.launch
 import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.Indicator
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.composables.Indicator
 
 @Composable
 fun InfoScreenFunc(onCreate: () -> Unit) {

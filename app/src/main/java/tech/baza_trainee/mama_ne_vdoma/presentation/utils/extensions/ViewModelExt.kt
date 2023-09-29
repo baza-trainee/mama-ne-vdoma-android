@@ -1,4 +1,4 @@
-package tech.baza_trainee.mama_ne_vdoma.presentation.utils
+package tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -6,6 +6,8 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.NetworkRequestBuilder
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestResult
 
 fun <T> ViewModel.networkExecutor(networkBuilder: NetworkRequestBuilder<T>.() -> Unit) {
     viewModelScope.networkOperation(networkBuilder)

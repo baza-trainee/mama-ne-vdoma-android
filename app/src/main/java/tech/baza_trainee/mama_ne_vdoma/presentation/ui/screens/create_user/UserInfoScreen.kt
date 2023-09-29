@@ -11,15 +11,11 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -30,7 +26,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -71,13 +66,14 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.vm.UserSettingsViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.SlateGray
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ButtonText
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.CameraPermissionTextProvider
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.OutlinedTextFieldWithError
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.PermissionDialog
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.findActivity
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.openAppSettings
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.composables.CameraPermissionTextProvider
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.composables.OutlinedTextFieldWithError
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.composables.PermissionDialog
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.composables.SurfaceWithSystemBars
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.ButtonText
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.findActivity
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.openAppSettings
 import java.io.File
 
 @Composable
@@ -109,13 +105,9 @@ fun UserInfo(
     onCreateUser: () -> Unit,
     onEditPhoto: () -> Unit
 ) {
-    Surface(
+    SurfaceWithSystemBars(
         modifier = modifier
-            .windowInsetsPadding(WindowInsets.systemBars)
-            .fillMaxSize(),
-        color = MaterialTheme.colorScheme.background
     ) {
-
         var openBottomSheet by rememberSaveable { mutableStateOf(false) }
 
         var showPickerDialog by rememberSaveable { mutableStateOf(false) }

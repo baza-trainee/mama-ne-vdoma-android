@@ -10,12 +10,11 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.Child
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.CreateUserFunc
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.ImageCropFunc
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.ParentScheduleFunc
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.RegisterSuccessFunc
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.UserInfoFunc
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.UserLocationFunc
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.vm.UserCreateViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.vm.UserSettingsViewModel
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.sharedViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.sharedViewModel
 
 fun NavGraphBuilder.createUserNavGraph(
     navController: NavHostController
@@ -28,17 +27,11 @@ fun NavGraphBuilder.createUserNavGraph(
             val userCreateViewModel: UserCreateViewModel = it.sharedViewModel(navController)
             CreateUserFunc(
                 userCreateViewModel,
-                { navController.navigate("register_success_screen") }, //temp need replace with logic
+                { navController.navigate("user_info_screen") }, //temp need replace with logic
                 { navController.navigate("login_screen") }
             )
         }
-        composable("register_success_screen") {
-            RegisterSuccessFunc(
-                { navController.navigate("enter_phone_screen") },
-                { navController.popBackStack() }
-            )
-        }
-        composable("enter_phone_screen") {
+        composable("user_info_screen") {
             val userSettingsViewModel: UserSettingsViewModel = it.sharedViewModel(navController)
             UserInfoFunc(
                 userSettingsViewModel,

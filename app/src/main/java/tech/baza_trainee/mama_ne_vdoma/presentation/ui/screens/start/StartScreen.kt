@@ -29,7 +29,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.getTextWithUnderline
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.composables.getTextWithUnderline
 
 @Composable
 fun StartScreenFunc(
