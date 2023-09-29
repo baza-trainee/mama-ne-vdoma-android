@@ -53,7 +53,7 @@ fun DayScheduleRow(
     Row(
         modifier = localModifier
             .fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceEvenly,
+        horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
         FilterChip(
@@ -153,7 +153,7 @@ fun DayScheduleRow(
     Row(
         modifier = localModifier
             .fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceEvenly,
+        horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
         FilterChip(
