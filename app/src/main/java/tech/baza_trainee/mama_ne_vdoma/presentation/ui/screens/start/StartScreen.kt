@@ -57,6 +57,7 @@ fun StartScreen(
                 .padding(horizontal = 24.dp)
         ) {
             val (image, btnStart, btnLogin) = createRefs()
+
             Image(
                 modifier = modifier
                     .constrainAs(image) {
@@ -69,11 +70,13 @@ fun StartScreen(
                 alignment = Alignment.TopCenter,
                 contentScale = ContentScale.Fit
             )
+
             Button(
                 modifier = modifier
                     .constrainAs(btnStart) {
-                        bottom.linkTo(btnLogin.top, margin = 16.dp)
+                        bottom.linkTo(btnLogin.top)
                     }
+                    .padding(vertical = 16.dp)
                     .fillMaxWidth()
                     .height(48.dp),
                 onClick = onStart
@@ -84,11 +87,12 @@ fun StartScreen(
                     fontFamily = redHatDisplayFontFamily
                 )
             }
+
             Text(
                 text = getTextWithUnderline("Вже є акаунт? ", "Увійти"),
                 modifier = modifier
                     .constrainAs(btnLogin) {
-                        bottom.linkTo(parent.bottom, margin = 16.dp)
+                        bottom.linkTo(parent.bottom)
                     }
                     .clickable(
                         indication = null,
@@ -97,7 +101,7 @@ fun StartScreen(
                         onLogin()
                     }
                     .fillMaxWidth()
-                    .height(48.dp),
+                    .padding(horizontal = 24.dp, vertical = 16.dp),
                 textAlign = TextAlign.Center,
                 fontFamily = redHatDisplayFontFamily
             )

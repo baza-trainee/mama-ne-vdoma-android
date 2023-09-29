@@ -151,7 +151,7 @@ fun RestorePassword(
                 modifier = modifier
                     .fillMaxWidth()
                     .height(48.dp)
-                    .padding(horizontal = 24.dp),
+                    .padding(horizontal = 24.dp, vertical = 16.dp),
                 onClick = onRestore,
                 enabled = screenState.value.emailValid == ValidField.VALID
             ) {

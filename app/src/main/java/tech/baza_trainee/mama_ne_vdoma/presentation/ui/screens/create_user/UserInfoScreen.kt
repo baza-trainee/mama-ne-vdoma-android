@@ -9,8 +9,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -82,9 +84,11 @@ fun UserInfo(
         modifier = modifier
     ) {
         var openBottomSheet by rememberSaveable { mutableStateOf(false) }
+        val scrollState = rememberScrollState()
 
         Column(
             modifier = modifier
+                .verticalScroll(scrollState)
                 .imePadding()
                 .fillMaxWidth(),
             verticalArrangement = Arrangement.SpaceBetween,
@@ -215,8 +219,7 @@ fun UserInfo(
             Button(
                 modifier = modifier
                     .fillMaxWidth()
-                    .padding(bottom = 16.dp)
-                    .padding(horizontal = 24.dp)
+                    .padding(horizontal = 24.dp, vertical = 16.dp)
                     .height(48.dp),
                 onClick = onCreateUser,
                 enabled = screenState.value.nameValid == ValidField.VALID &&

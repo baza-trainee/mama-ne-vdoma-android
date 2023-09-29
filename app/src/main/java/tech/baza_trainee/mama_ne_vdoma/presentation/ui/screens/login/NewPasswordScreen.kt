@@ -132,8 +132,7 @@ fun NewPassword(
             Button(
                 modifier = modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 24.dp)
-                    .padding(bottom = 16.dp)
+                    .padding(horizontal = 24.dp, vertical = 16.dp)
                     .height(48.dp),
                 onClick = onRestore,
                 enabled = screenState.value.passwordValid == ValidField.VALID &&

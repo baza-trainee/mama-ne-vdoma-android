@@ -20,9 +20,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -64,7 +62,7 @@ fun InfoScreen(
 
     val pageTextContent = listOf(
         "Тобі треба йти на роботу? Ти шукаєш дитячий садочок для своїх дітей, але більшість недоступні для тебе або занадто дорогі?",
-        "Ми домоможемо тобі знайти поруч мам з такими ж проблемами! Організуйте своїх дітей у дитячі групи та по черзі доглядайте за ними у вільний час!",
+        "Ми допоможемо тобі знайти поруч мам з такими ж проблемами! Організуйте своїх дітей у дитячі групи та по черзі доглядайте за ними у вільний час!",
         "Насолоджуйся своєю роботою, поки твої діти щасливі та у безпеці!"
     )
 
@@ -107,8 +105,7 @@ fun InfoScreen(
                                 top.linkTo(parent.top)
                             }
                             .fillMaxWidth()
-                            .fillMaxHeight(0.7f)
-                            .verticalScroll(rememberScrollState()),
+                            .fillMaxHeight(0.7f),
                         alignment = Alignment.TopCenter,
                         painter = painterResource(id = pagerImageContent[page]),
                         contentDescription = pageTextContent[page],

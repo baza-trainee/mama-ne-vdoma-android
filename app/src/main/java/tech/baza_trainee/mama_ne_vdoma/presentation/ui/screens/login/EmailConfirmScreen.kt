@@ -82,10 +82,10 @@ fun EmailConfirm(
             Button(
                 modifier = modifier
                     .constrainAs(btnStart) {
-                        bottom.linkTo(btnLogin.top, margin = 16.dp)
+                        bottom.linkTo(btnLogin.top)
                     }
                     .fillMaxWidth()
-                    .padding(horizontal = 24.dp)
+                    .padding(horizontal = 24.dp, vertical = 16.dp)
                     .height(48.dp),
                 onClick = onLogin
             ) {
@@ -97,7 +97,7 @@ fun EmailConfirm(
                 text = getTextWithUnderline("Не отримали листа? ", "Відправити ще раз"),
                 modifier = modifier
                     .constrainAs(btnLogin) {
-                        bottom.linkTo(parent.bottom, margin = 16.dp)
+                        bottom.linkTo(parent.bottom)
                     }
                     .clickable(
                         indication = null,
@@ -106,8 +106,7 @@ fun EmailConfirm(
                         onSendAgain()
                     }
                     .fillMaxWidth()
-                    .padding(horizontal = 24.dp)
-                    .height(48.dp),
+                    .padding(horizontal = 24.dp, vertical = 16.dp),
                 textAlign = TextAlign.Center,
                 fontFamily = redHatDisplayFontFamily
             )

@@ -33,10 +33,17 @@ fun Indicator(
     )
     Box(
         modifier = modifier
+            .clip(CircleShape)
             .height(defaultRadius)
             .width(width)
-            .clip(CircleShape)
-            .border(if (isSelected) 0.dp else 2.dp, selectedColor)
-            .background(color = if (isSelected) selectedColor else backgroundColor)
+            .background(
+                color = if (isSelected) selectedColor else backgroundColor,
+                shape = CircleShape
+            )
+            .border(
+                width = if (isSelected) 0.dp else 1.dp,
+                color = selectedColor,
+                shape = CircleShape
+            )
     )
 }

@@ -144,9 +144,9 @@ fun ChildInfo(
                 modifier = modifier
                     .fillMaxWidth()
                     .constrainAs(btnNext) {
-                        bottom.linkTo(parent.bottom, margin = 16.dp)
+                        bottom.linkTo(parent.bottom)
                     }
-                    .padding(horizontal = 24.dp)
+                    .padding(horizontal = 24.dp, vertical = 16.dp)
                     .height(48.dp),
                 onClick = onNext,
                 enabled = screenState.value.nameValid == ValidField.VALID &&

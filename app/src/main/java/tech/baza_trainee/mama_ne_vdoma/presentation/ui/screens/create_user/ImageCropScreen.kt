@@ -120,8 +120,7 @@ fun ImageCrop(
             Button(
                 modifier = modifier
                     .fillMaxWidth()
-                    .padding(bottom = 16.dp)
-                    .padding(horizontal = 24.dp)
+                    .padding(horizontal = 24.dp, vertical = 16.dp)
                     .height(48.dp),
                 onClick = {
                     saveAvatar(croppedImage.asAndroidBitmap())
