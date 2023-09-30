@@ -25,7 +25,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -64,8 +63,8 @@ fun UserAvatarWithCameraAndGallery(
     var photoUri by remember { mutableStateOf(Uri.EMPTY) }
     val context = LocalContext.current
     val activity = context.findActivity()
-    val permissionDialogQueue = remember { mutableStateListOf<String>() }
     val permission = Manifest.permission.CAMERA
+    var showRationale by rememberSaveable { mutableStateOf(false) }
 
     val photoPickerLauncher = rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) { isSuccessful ->
         if (isSuccessful) {
@@ -81,7 +80,7 @@ fun UserAvatarWithCameraAndGallery(
         onResult = { isGranted ->
             if (!isGranted) {
                 if (activity.shouldShowRequestPermissionRationale(permission))
-                    permissionDialogQueue.add(permission)
+                    showRationale = true
             } else isCameraPermissionGranted = true
         }
     )
@@ -104,13 +103,13 @@ fun UserAvatarWithCameraAndGallery(
         }
     }
 
-    permissionDialogQueue.reversed().forEach {
+    if (showRationale) {
         PermissionDialog(
             permissionTextProvider = CameraPermissionTextProvider(),
             isPermanentlyDeclined = !ActivityCompat
-                .shouldShowRequestPermissionRationale(activity, it ),
-            onDismiss = { permissionDialogQueue.remove(it) },
-            onGranted = { permissionDialogQueue.remove(it) },
+                .shouldShowRequestPermissionRationale(activity, permission),
+            onDismiss = { showRationale = false },
+            onGranted = { showRationale = false },
             onGoToAppSettingsClick = { activity.openAppSettings() })
     }
 
