@@ -4,6 +4,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.navigation.routes.CreateUserRoute
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.ChildInfoFunc
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.ChildScheduleFunc
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.ChildrenInfoFunc
@@ -14,68 +15,71 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.UserI
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.UserLocationFunc
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.vm.UserCreateViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.vm.UserSettingsViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.navigateWithArgs
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.sharedViewModel
 
 fun NavGraphBuilder.createUserNavGraph(
     navController: NavHostController
 ) {
+
     navigation(
         route = "create_user_graph",
-        startDestination = "create_user_screen"
+        startDestination = CreateUserRoute.CreateUser.route
     ) {
-        composable("create_user_screen") {
+        composable(CreateUserRoute.CreateUser.route) {
             val userCreateViewModel: UserCreateViewModel = it.sharedViewModel(navController)
             CreateUserFunc(
                 userCreateViewModel,
-                { navController.navigate("user_info_screen") }, //temp need replace with logic
+                { navController.navigate(CreateUserRoute.UserInfo.route) }, //temp need replace with logic
                 { navController.navigate("login_screen") }
             )
         }
-        composable("user_info_screen") {
+        composable(CreateUserRoute.UserInfo.route) {
             val userSettingsViewModel: UserSettingsViewModel = it.sharedViewModel(navController)
             UserInfoFunc(
                 userSettingsViewModel,
-                { navController.navigate("user_location_screen") },
-                { navController.navigate("image_crop_screen") }
+                { navController.navigate(CreateUserRoute.UserLocation.route) },
+                { navController.navigate(CreateUserRoute.ImageCrop.route) }
             )
         }
-        composable("image_crop_screen") {
+        composable(CreateUserRoute.ImageCrop.route) {
             val userSettingsViewModel: UserSettingsViewModel = it.sharedViewModel(navController)
             ImageCropFunc(
                 userSettingsViewModel
-            ) { navController.navigate("user_info_screen") }
+            ) { navController.navigate(CreateUserRoute.UserInfo.route) }
         }
-        composable("user_location_screen") {
+        composable(CreateUserRoute.UserLocation.route) {
             val userSettingsViewModel: UserSettingsViewModel = it.sharedViewModel(navController)
             UserLocationFunc(userSettingsViewModel) {
-                navController.navigate("child_name_screen")
+                navController.navigateWithArgs(CreateUserRoute.ChildInfo.route)
             }
         }
-        composable("child_name_screen") {
+        composable(CreateUserRoute.ChildInfo.route) {
             val userSettingsViewModel: UserSettingsViewModel = it.sharedViewModel(navController)
             ChildInfoFunc(
                 userSettingsViewModel,
-                { navController.navigate("child_schedule_screen") },
+                { navController.navigate(CreateUserRoute.ChildSchedule.route,) },
                 { navController.popBackStack() }
             )
         }
-        composable("child_schedule_screen") {
+        composable(CreateUserRoute.ChildSchedule.route) {
             val userSettingsViewModel: UserSettingsViewModel = it.sharedViewModel(navController)
             ChildScheduleFunc(
                 userSettingsViewModel,
-                { navController.navigate("child_info_screen") },
+                { navController.navigate(CreateUserRoute.ChildrenInfo.route) },
                 { navController.popBackStack() }
             )
         }
-        composable("child_info_screen") {
-            val userSettingsViewModel: UserSettingsViewModel = it.sharedViewModel(navController)
+        composable(CreateUserRoute.ChildrenInfo.route) { entry ->
+            val userSettingsViewModel: UserSettingsViewModel = entry.sharedViewModel(navController)
             ChildrenInfoFunc(
                 userSettingsViewModel,
-                { navController.navigate("parent_schedule_screen") },
-                { navController.popBackStack() }
+                { navController.navigate(CreateUserRoute.ParentSchedule.route) },
+                { navController.popBackStack() },
+                { navController.navigate(CreateUserRoute.ChildInfo.route) }
             )
         }
-        composable("parent_schedule_screen") {
+        composable(CreateUserRoute.ParentSchedule.route) {
             val userSettingsViewModel: UserSettingsViewModel = it.sharedViewModel(navController)
             ParentScheduleFunc(
                 userSettingsViewModel,

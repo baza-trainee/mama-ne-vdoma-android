@@ -27,7 +27,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import tech.baza_trainee.mama_ne_vdoma.domain.model.Gender
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.ChildNameViewState
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.ChildInfoViewState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.vm.UserSettingsViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.composables.OutlinedTextFieldWithError
@@ -41,11 +41,13 @@ fun ChildInfoFunc(
     onNext: () -> Unit,
     onBack: () -> Unit
 ) {
+    viewModel.setCurrentChild()
     ChildInfo(
-        screenState = viewModel.childNameScreenState.collectAsStateWithLifecycle(),
+        screenState = viewModel.childInfoScreenState.collectAsStateWithLifecycle(),
         validateName = { viewModel.validateChildName(it) },
         validateAge = { viewModel.validateAge(it) },
         setGender = { viewModel.setGender(it) },
+        saveChild = { viewModel.saveCurrentChild() },
         onNext = onNext,
         onBack = onBack
     )
@@ -54,12 +56,13 @@ fun ChildInfoFunc(
 @Composable
 fun ChildInfo(
     modifier: Modifier = Modifier,
-    screenState: State<ChildNameViewState> = mutableStateOf(ChildNameViewState()),
+    screenState: State<ChildInfoViewState> = mutableStateOf(ChildInfoViewState()),
     validateName: (String) -> Unit = { },
     validateAge: (String) -> Unit = { },
     setGender: (Gender) -> Unit = { },
-    onNext: () -> Unit,
-    onBack: () -> Unit
+    saveChild: () -> Unit = { },
+    onNext: () -> Unit = { },
+    onBack: () -> Unit = { }
 ) {
     Surface(
         modifier = modifier
@@ -148,7 +151,10 @@ fun ChildInfo(
                         bottom.linkTo(parent.bottom)
                     }
                     .height(48.dp),
-                onClick = onNext,
+                onClick = {
+                    saveChild()
+                    onNext()
+                },
                 enabled = screenState.value.nameValid == ValidField.VALID &&
                         screenState.value.ageValid == ValidField.VALID &&
                         screenState.value.gender != Gender.NONE
@@ -164,8 +170,5 @@ fun ChildInfo(
 @Composable
 @Preview
 fun ChildInfoPreview() {
-    ChildInfo(
-        onBack = {},
-        onNext = {}
-    )
+    ChildInfo()
 }

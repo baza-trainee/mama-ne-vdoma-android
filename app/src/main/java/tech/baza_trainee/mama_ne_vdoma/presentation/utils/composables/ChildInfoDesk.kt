@@ -30,11 +30,13 @@ import tech.baza_trainee.mama_ne_vdoma.domain.model.Period
 import tech.baza_trainee.mama_ne_vdoma.domain.model.ScheduleModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 import java.time.DayOfWeek
+import java.util.UUID
 
 @Composable
 @Preview
 fun ChildInfoDesk(
     child: Child = Child(
+        UUID.randomUUID().toString(),
         "Іванко",
         "5",
         Gender.BOY,
@@ -50,8 +52,8 @@ fun ChildInfoDesk(
             )
         )
     ),
-    onEdit: (Child) -> Unit = {},
-    onDelete: (Child) -> Unit = {}
+    onEdit: (String) -> Unit = {},
+    onDelete: (String) -> Unit = {}
 ) {
     val localModifier = Modifier
 
@@ -72,7 +74,7 @@ fun ChildInfoDesk(
             horizontalArrangement = Arrangement.End
         ) {
             Icon(
-                painter = painterResource(id = R.drawable.ic_boy),
+                painter = painterResource(id = if (child.gender == Gender.BOY) R.drawable.ic_boy else R.drawable.ic_girl),
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.primary
             )
@@ -94,14 +96,14 @@ fun ChildInfoDesk(
                     fontSize = 14.sp,
                 )
             }
-            IconButton(onClick = { onEdit(child) }) {
+            IconButton(onClick = { onEdit(child.id) }) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_edit),
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.primary
                 )
             }
-            IconButton(onClick = { onDelete(child) }) {
+            IconButton(onClick = { onDelete(child.id) }) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_delete),
                     contentDescription = null,

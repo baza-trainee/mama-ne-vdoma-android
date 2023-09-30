@@ -14,7 +14,7 @@ fun ParentScheduleFunc(
     ScheduleScreen(
         title = "Визначіть свій графік, коли можете доглядати дітей",
         screenState = viewModel.parentScheduleScreenState.collectAsStateWithLifecycle(),
-        onUpdateSchedule = { day, period -> viewModel.updateChildSchedule(day, period) },
+        onUpdateSchedule = { day, period ->  },
         onNext = onNext,
         onBack = onBack
     )

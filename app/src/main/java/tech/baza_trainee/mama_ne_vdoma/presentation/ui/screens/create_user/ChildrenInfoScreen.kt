@@ -40,12 +40,22 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.ButtonText
 fun ChildrenInfoFunc(
     viewModel: UserSettingsViewModel,
     onNext: () -> Unit,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    onEdit: () -> Unit
 ) {
     ChildrenInfo(
         screenState = viewModel.childrenInfoScreenState.collectAsStateWithLifecycle(),
         onNext = onNext,
-        onBack = onBack
+        onBack = onBack,
+        onEdit = {
+            viewModel.setCurrentChild(it)
+            onEdit()
+        },
+        onDelete = { viewModel.deleteChild(it) },
+        onAdd = {
+            viewModel.resetCurrentChild()
+            onEdit()
+        }
     )
 }
 
@@ -53,8 +63,11 @@ fun ChildrenInfoFunc(
 fun  ChildrenInfo(
     modifier: Modifier = Modifier,
     screenState: State<ChildrenInfoScreenState> = mutableStateOf(ChildrenInfoScreenState()),
-    onNext: () -> Unit,
-    onBack: () -> Unit
+    onNext: () -> Unit = {},
+    onBack: () -> Unit = {},
+    onEdit: (String) -> Unit = {},
+    onDelete: (String) -> Unit = {},
+    onAdd: () -> Unit = {}
 ) {
     SurfaceWithNavigationBars(
         modifier = modifier
@@ -96,7 +109,7 @@ fun  ChildrenInfo(
                 Spacer(modifier = modifier.height(16.dp))
 
                 screenState.value.children.forEach {
-                    ChildInfoDesk(it)
+                    ChildInfoDesk(it, onEdit, onDelete)
                     Spacer(modifier = modifier.height(16.dp))
                 }
 
@@ -105,7 +118,7 @@ fun  ChildrenInfo(
                         .padding(horizontal = 24.dp)
                         .fillMaxWidth()
                         .clickable {
-
+                            onAdd()
                         },
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Start
@@ -147,8 +160,5 @@ fun  ChildrenInfo(
 @Composable
 @Preview
 fun ChildrenInfoPreview() {
-    ChildrenInfo(
-        onBack = {},
-        onNext = {}
-    )
+    ChildrenInfo()
 }

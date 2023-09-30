@@ -17,3 +17,8 @@ inline fun <reified T : ViewModel> NavBackStackEntry.sharedViewModel(
     val parentEntry = remember(this) { navController.getBackStackEntry(navGraphRoute) }
     return koinNavViewModel(viewModelStoreOwner = parentEntry)
 }
+
+fun NavHostController.navigateWithArgs(route: String, argument: String? = null) {
+    val newRoute = argument?.let { route.plus(it) } ?: route
+    navigate(newRoute)
+}

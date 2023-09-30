@@ -11,6 +11,7 @@ fun ChildScheduleFunc(
     onNext: () -> Unit,
     onBack: () -> Unit
 ) {
+    viewModel.setCurrentChildSchedule()
     ScheduleScreen(
         title = "Вкажіть, коли потрібно доглядати дитину",
         screenState = viewModel.childScheduleScreenState.collectAsStateWithLifecycle(),

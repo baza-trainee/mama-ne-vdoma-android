@@ -13,8 +13,9 @@ import tech.baza_trainee.mama_ne_vdoma.domain.model.Child
 import tech.baza_trainee.mama_ne_vdoma.domain.model.DayPeriod
 import tech.baza_trainee.mama_ne_vdoma.domain.model.Gender
 import tech.baza_trainee.mama_ne_vdoma.domain.model.Period
+import tech.baza_trainee.mama_ne_vdoma.domain.model.ScheduleModel
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.LocationRepository
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.ChildNameViewState
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.ChildInfoViewState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.ChildrenInfoScreenState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.ScheduleScreenState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.UserInfoViewState
@@ -27,6 +28,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onError
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onLoading
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onSuccess
 import java.time.DayOfWeek
+import java.util.UUID
 
 class UserSettingsViewModel(
     private val locationRepository: LocationRepository
@@ -38,8 +40,8 @@ class UserSettingsViewModel(
     private val _userInfoScreenState = MutableStateFlow(UserInfoViewState())
     val userInfoScreenState: StateFlow<UserInfoViewState> = _userInfoScreenState.asStateFlow()
 
-    private val _childNameScreenState = MutableStateFlow(ChildNameViewState())
-    val childNameScreenState: StateFlow<ChildNameViewState> = _childNameScreenState.asStateFlow()
+    private val _childInfoScreenState = MutableStateFlow(ChildInfoViewState())
+    val childInfoScreenState: StateFlow<ChildInfoViewState> = _childInfoScreenState.asStateFlow()
 
     private val _childScheduleScreenState = MutableStateFlow(ScheduleScreenState())
     val childScheduleScreenState: StateFlow<ScheduleScreenState> = _childScheduleScreenState.asStateFlow()
@@ -51,6 +53,8 @@ class UserSettingsViewModel(
     val childrenInfoScreenState: StateFlow<ChildrenInfoScreenState> = _childrenInfoScreenState.asStateFlow()
 
     private var uriForCrop: Uri = Uri.EMPTY
+
+    private var currentChildId = ""
 
     fun setUriForCrop(uri: Uri) {
         uriForCrop = uri
@@ -110,7 +114,7 @@ class UserSettingsViewModel(
     fun validateChildName(name: String) {
         val nameValid = if (name.none { !it.isLetter() }) ValidField.VALID
         else ValidField.INVALID
-        _childNameScreenState.update {
+        _childInfoScreenState.update {
             it.copy(
                 name = name,
                 nameValid = nameValid
@@ -124,7 +128,7 @@ class UserSettingsViewModel(
         val ageValid = if (intAge != null && intAge in 0f..MAX_AGE) ValidField.VALID
         else ValidField.INVALID
 
-        _childNameScreenState.update {
+        _childInfoScreenState.update {
             it.copy(
                 age = age,
                 ageValid = ageValid
@@ -133,7 +137,7 @@ class UserSettingsViewModel(
     }
 
     fun setGender(gender: Gender) {
-        _childNameScreenState.update {
+        _childInfoScreenState.update {
             it.copy( gender = gender)
         }
     }
@@ -238,21 +242,32 @@ class UserSettingsViewModel(
                 }
             }
         }
-        val childrenList = mutableListOf<Child>().apply {
-            add(
-                Child(
-                    name = _childNameScreenState.value.name,
-                    age = _childNameScreenState.value.age,
-                    gender = _childNameScreenState.value.gender,
+
+        with(_childrenInfoScreenState.value.children.toMutableList()) {
+            val child = firstOrNull { it.id == currentChildId }
+            if (child != null) {
+                val index = indexOf(child)
+                val newChild = child.copy(
                     schedule = _childScheduleScreenState.value.schedule,
                     comment = _childScheduleScreenState.value.comment
                 )
-            )
-        }
-        _childrenInfoScreenState.update {
-            it.copy(
-                children = childrenList
-            )
+                this[index] = newChild
+            } else
+                add(
+                    Child(
+                        id = currentChildId,
+                        name = _childInfoScreenState.value.name,
+                        age = _childInfoScreenState.value.age,
+                        gender = _childInfoScreenState.value.gender,
+                        schedule = _childScheduleScreenState.value.schedule,
+                        comment = _childScheduleScreenState.value.comment
+                    )
+                )
+            _childrenInfoScreenState.update {
+                it.copy(
+                    children = this
+                )
+            }
         }
     }
 
@@ -302,6 +317,83 @@ class UserSettingsViewModel(
             onSuccess {  }
             onError {  }
             onLoading {  }
+        }
+    }
+
+    fun resetCurrentChild() {
+        currentChildId = ""
+    }
+
+    fun deleteChild(childId: String) {
+        with(_childrenInfoScreenState.value.children.toMutableList()) {
+            val child = firstOrNull { it.id == childId }
+            remove(child)
+            _childrenInfoScreenState.update {
+                it.copy(
+                    children = this
+                )
+            }
+        }
+    }
+
+    fun setCurrentChild(childId: String = "") {
+        currentChildId = when {
+            childId.isNotEmpty() -> childId
+            currentChildId.isEmpty() -> UUID.randomUUID().toString()
+            else -> currentChildId
+        }
+        val currentChild =
+            _childrenInfoScreenState.value.children.firstOrNull() { it.id == currentChildId }
+                ?: Child(
+                    id = currentChildId
+                )
+        _childInfoScreenState.update {
+            it.copy(
+                name = currentChild.name,
+                nameValid = ValidField.VALID,
+                age = currentChild.age,
+                ageValid = ValidField.VALID,
+                gender = currentChild.gender
+            )
+        }
+    }
+
+    fun saveCurrentChild() {
+        val list = _childrenInfoScreenState.value.children.toMutableList()
+        val child = list.firstOrNull { it.id == currentChildId }
+        if (child != null) {
+            val index = list.indexOf(child)
+            val newChild = child.copy(
+                name = _childInfoScreenState.value.name,
+                age = _childInfoScreenState.value.age,
+                gender = _childInfoScreenState.value.gender
+            )
+            list[index] = newChild
+        } else
+            list.add(
+                Child(
+                    id = currentChildId,
+                    name = _childInfoScreenState.value.name,
+                    age = _childInfoScreenState.value.age,
+                    gender = _childInfoScreenState.value.gender
+                )
+            )
+        _childrenInfoScreenState.update {
+            it.copy(
+                children = list
+            )
+        }
+    }
+
+    fun setCurrentChildSchedule() {
+        with(_childrenInfoScreenState.value.children.toMutableList()) {
+            val child = firstOrNull { it.id == currentChildId }
+            _childScheduleScreenState.update {
+                it.copy(
+                    schedule = child?.schedule ?: ScheduleModel(),
+                    comment = child?.comment.orEmpty()
+                )
+            }
         }
     }
 
