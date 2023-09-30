@@ -78,4 +78,8 @@ class UserCreateViewModel: ViewModel() {
             )
         }
     }
+
+    fun verifyEmail(otp: String, onSuccess: () -> Unit) {
+        onSuccess()
+    }
 }

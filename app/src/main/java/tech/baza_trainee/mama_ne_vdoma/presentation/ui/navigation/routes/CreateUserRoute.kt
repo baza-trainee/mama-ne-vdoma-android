@@ -2,6 +2,7 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.ui.navigation.routes
 
 sealed class CreateUserRoute(val route: String) {
     object CreateUser: CreateUserRoute("create_user_screen")
+    object VerifyEmail: CreateUserRoute("verify_email_screen")
     object UserInfo: CreateUserRoute("user_info_screen")
     object ImageCrop: CreateUserRoute("image_crop_screen")
     object UserLocation: CreateUserRoute("user_location_screen")

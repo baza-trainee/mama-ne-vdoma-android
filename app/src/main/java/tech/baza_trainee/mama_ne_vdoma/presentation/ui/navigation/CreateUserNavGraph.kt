@@ -13,6 +13,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.Image
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.ParentScheduleFunc
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.UserInfoFunc
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.UserLocationFunc
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.VerifyEmailFunc
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.vm.UserCreateViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.vm.UserSettingsViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.navigateWithArgs
@@ -30,8 +31,15 @@ fun NavGraphBuilder.createUserNavGraph(
             val userCreateViewModel: UserCreateViewModel = it.sharedViewModel(navController)
             CreateUserFunc(
                 userCreateViewModel,
-                { navController.navigate(CreateUserRoute.UserInfo.route) }, //temp need replace with logic
+                { navController.navigate(CreateUserRoute.VerifyEmail.route) }, //temp need replace with logic
                 { navController.navigate("login_screen") }
+            )
+        }
+        composable(CreateUserRoute.VerifyEmail.route) {
+            val userCreateViewModel: UserCreateViewModel = it.sharedViewModel(navController)
+            VerifyEmailFunc(
+                userCreateViewModel,
+                { navController.navigate(CreateUserRoute.UserInfo.route) }
             )
         }
         composable(CreateUserRoute.UserInfo.route) {
