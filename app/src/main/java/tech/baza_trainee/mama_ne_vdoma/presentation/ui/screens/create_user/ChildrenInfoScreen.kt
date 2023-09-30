@@ -16,6 +16,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -24,7 +26,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import tech.baza_trainee.mama_ne_vdoma.R
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.ChildrenInfoScreenState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.vm.UserSettingsViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.composables.ChildInfoDesk
@@ -39,6 +43,7 @@ fun ChildrenInfoFunc(
     onBack: () -> Unit
 ) {
     ChildrenInfo(
+        screenState = viewModel.childrenInfoScreenState.collectAsStateWithLifecycle(),
         onNext = onNext,
         onBack = onBack
     )
@@ -47,6 +52,7 @@ fun ChildrenInfoFunc(
 @Composable
 fun  ChildrenInfo(
     modifier: Modifier = Modifier,
+    screenState: State<ChildrenInfoScreenState> = mutableStateOf(ChildrenInfoScreenState()),
     onNext: () -> Unit,
     onBack: () -> Unit
 ) {
@@ -89,7 +95,10 @@ fun  ChildrenInfo(
             ) {
                 Spacer(modifier = modifier.height(16.dp))
 
-                ChildInfoDesk()
+                screenState.value.children.forEach {
+                    ChildInfoDesk(it)
+                    Spacer(modifier = modifier.height(16.dp))
+                }
 
                 Row(
                     modifier = modifier

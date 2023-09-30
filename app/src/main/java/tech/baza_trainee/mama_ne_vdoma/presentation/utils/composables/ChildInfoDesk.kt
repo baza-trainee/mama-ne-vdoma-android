@@ -25,9 +25,9 @@ import androidx.compose.ui.unit.sp
 import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.domain.model.Child
 import tech.baza_trainee.mama_ne_vdoma.domain.model.DayPeriod
+import tech.baza_trainee.mama_ne_vdoma.domain.model.Gender
 import tech.baza_trainee.mama_ne_vdoma.domain.model.Period
 import tech.baza_trainee.mama_ne_vdoma.domain.model.ScheduleModel
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.Gender
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 import java.time.DayOfWeek
 
@@ -36,7 +36,7 @@ import java.time.DayOfWeek
 fun ChildInfoDesk(
     child: Child = Child(
         "Іванко",
-        5,
+        "5",
         Gender.BOY,
         ScheduleModel(
             mutableStateMapOf(
@@ -89,7 +89,7 @@ fun ChildInfoDesk(
                     fontWeight = FontWeight.Bold
                 )
                 Text(
-                    text = String.format("%d р.", child.age),
+                    text = String.format("%s р.", child.age),
                     fontFamily = redHatDisplayFontFamily,
                     fontSize = 14.sp,
                 )

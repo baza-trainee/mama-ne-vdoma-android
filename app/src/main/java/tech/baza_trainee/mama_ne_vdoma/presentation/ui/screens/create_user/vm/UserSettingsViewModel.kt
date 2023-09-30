@@ -9,11 +9,13 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import tech.baza_trainee.mama_ne_vdoma.domain.model.Child
 import tech.baza_trainee.mama_ne_vdoma.domain.model.DayPeriod
+import tech.baza_trainee.mama_ne_vdoma.domain.model.Gender
 import tech.baza_trainee.mama_ne_vdoma.domain.model.Period
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.LocationRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.ChildNameViewState
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.Gender
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.ChildrenInfoScreenState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.ScheduleScreenState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.UserInfoViewState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.UserLocationViewState
@@ -44,6 +46,9 @@ class UserSettingsViewModel(
 
     private val _parentScheduleScreenState = MutableStateFlow(ScheduleScreenState())
     val parentScheduleScreenState: StateFlow<ScheduleScreenState> = _parentScheduleScreenState.asStateFlow()
+
+    private val _childrenInfoScreenState = MutableStateFlow(ChildrenInfoScreenState())
+    val childrenInfoScreenState: StateFlow<ChildrenInfoScreenState> = _childrenInfoScreenState.asStateFlow()
 
     private var uriForCrop: Uri = Uri.EMPTY
 
@@ -232,6 +237,22 @@ class UserSettingsViewModel(
                     )
                 }
             }
+        }
+        val childrenList = mutableListOf<Child>().apply {
+            add(
+                Child(
+                    name = _childNameScreenState.value.name,
+                    age = _childNameScreenState.value.age,
+                    gender = _childNameScreenState.value.gender,
+                    schedule = _childScheduleScreenState.value.schedule,
+                    comment = _childScheduleScreenState.value.comment
+                )
+            )
+        }
+        _childrenInfoScreenState.update {
+            it.copy(
+                children = childrenList
+            )
         }
     }
 
