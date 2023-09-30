@@ -112,7 +112,7 @@ fun UserLocation(
                 .imePadding()
                 .fillMaxWidth(),
         ) {
-            val (title, map, edit, btnNext) = createRefs()
+            val (title, content, btnNext) = createRefs()
 
             val topGuideline = createGuidelineFromTop(0.2f)
 
@@ -129,73 +129,84 @@ fun UserLocation(
                         " щоб ви могли підібрати найближчі групи до вас"
             )
 
-            val cameraPositionState = rememberCameraPositionState {
-                val cameraPosition = CameraPosition.Builder()
-                    .target(viewState.value.currentLocation)
-                    .zoom(15f)
-                    .build()
-                position = cameraPosition
-            }
-
-            LaunchedEffect(viewState.value.currentLocation) {
-                val newCameraPosition =
-                    CameraPosition.fromLatLngZoom(viewState.value.currentLocation, 15f)
-                cameraPositionState.animate(
-                    CameraUpdateFactory.newCameraPosition(newCameraPosition),
-                    1_000
-                )
-            }
-
-            GoogleMap(
+            ConstraintLayout(
                 modifier = modifier
                     .fillMaxWidth()
-                    .constrainAs(map) {
+                    .constrainAs(content) {
                         top.linkTo(topGuideline)
-                        bottom.linkTo(edit.top, 16.dp)
-                        height = Dimension.fillToConstraints
-                    },
-                cameraPositionState = cameraPositionState
-            ) {
-                Marker(
-                    state = MarkerState(position = viewState.value.currentLocation),
-                    title = "Ви тут",
-                    snippet = "поточне місцезнаходження"
-                )
-            }
-
-            val emailText = remember {
-                mutableStateOf(TextFieldValue(viewState.value.userAddress))
-            }
-
-            OutlinedTextField(
-                value = emailText.value,
-                onValueChange = { emailText.value = it },
-                modifier = modifier
-                    .constrainAs(edit) {
                         bottom.linkTo(btnNext.top, 16.dp)
                         height = Dimension.fillToConstraints
                     }
-                    .fillMaxWidth()
-                    .padding(horizontal = 24.dp),
-                label = { Text("Введіть вашу адресу") },
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedContainerColor = MaterialTheme.colorScheme.surface,
-                    unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-                    disabledContainerColor = MaterialTheme.colorScheme.surface,
-                    focusedBorderColor = MaterialTheme.colorScheme.primary,
-                    unfocusedBorderColor = MaterialTheme.colorScheme.surface,
-                ),
-                trailingIcon = {
-                    IconButton(
-                        onClick = { onSearchUserAddress(emailText.value.text) }
-                    ) {
-                        Icon(
-                            imageVector = Icons.Filled.Search,
-                            contentDescription = "search_location"
-                        )
-                    }
+            ) {
+                val cameraPositionState = rememberCameraPositionState {
+                    val cameraPosition = CameraPosition.Builder()
+                        .target(viewState.value.currentLocation)
+                        .zoom(15f)
+                        .build()
+                    position = cameraPosition
                 }
-            )
+
+                LaunchedEffect(viewState.value.currentLocation) {
+                    val newCameraPosition =
+                        CameraPosition.fromLatLngZoom(viewState.value.currentLocation, 15f)
+                    cameraPositionState.animate(
+                        CameraUpdateFactory.newCameraPosition(newCameraPosition),
+                        1_000
+                    )
+                }
+
+                val (map, edit) = createRefs()
+
+                GoogleMap(
+                    modifier = modifier
+                        .fillMaxWidth()
+                        .constrainAs(map) {
+                            top.linkTo(parent.top)
+                            bottom.linkTo(edit.top, 16.dp)
+                            height = Dimension.fillToConstraints
+                        },
+                    cameraPositionState = cameraPositionState
+                ) {
+                    Marker(
+                        state = MarkerState(position = viewState.value.currentLocation),
+                        title = "Ви тут",
+                        snippet = "поточне місцезнаходження"
+                    )
+                }
+
+                val userAddress = remember {
+                    mutableStateOf(TextFieldValue(viewState.value.userAddress))
+                }
+
+                OutlinedTextField(
+                    value = userAddress.value,
+                    onValueChange = { userAddress.value = it },
+                    modifier = modifier
+                        .constrainAs(edit) {
+                            bottom.linkTo(parent.bottom, 16.dp)
+                        }
+                        .fillMaxWidth()
+                        .padding(horizontal = 24.dp),
+                    label = { Text("Введіть вашу адресу") },
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedContainerColor = MaterialTheme.colorScheme.surface,
+                        unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                        disabledContainerColor = MaterialTheme.colorScheme.surface,
+                        focusedBorderColor = MaterialTheme.colorScheme.primary,
+                        unfocusedBorderColor = MaterialTheme.colorScheme.surface,
+                    ),
+                    trailingIcon = {
+                        IconButton(
+                            onClick = { onSearchUserAddress(userAddress.value.text) }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.Search,
+                                contentDescription = "search_location"
+                            )
+                        }
+                    }
+                )
+            }
 
             Button(
                 modifier = modifier

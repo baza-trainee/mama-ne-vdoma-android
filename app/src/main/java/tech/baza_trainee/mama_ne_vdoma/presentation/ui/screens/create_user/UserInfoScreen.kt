@@ -211,7 +211,11 @@ fun UserInfo(
                         color = Color.Red,
                         modifier = modifier
                             .padding(horizontal = 24.dp),
-                        fontFamily = redHatDisplayFontFamily
+                        fontFamily = redHatDisplayFontFamily,
+                        style = TextStyle(
+                            fontFamily = redHatDisplayFontFamily
+                        ),
+                        fontSize = 14.sp
                     )
                 }
             }

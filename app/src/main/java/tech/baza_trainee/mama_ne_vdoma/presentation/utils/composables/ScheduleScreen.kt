@@ -12,17 +12,14 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import kotlinx.coroutines.delay
 import tech.baza_trainee.mama_ne_vdoma.domain.model.Period
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.ScheduleScreenState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
@@ -43,25 +40,12 @@ fun ScheduleScreen(
     SurfaceWithNavigationBars(
         modifier = modifier
     ) {
-        val imeState = rememberImeState()
-        val scrollState = rememberScrollState()
-        val density = LocalDensity.current.density
-        val offset = (5000 * density).toInt()
-
-        LaunchedEffect(key1 = imeState.value) {
-            if (imeState.value) {
-                delay(100)
-                scrollState.scrollTo(offset)
-            }
-        }
-
         ConstraintLayout(
             modifier = modifier
-                .verticalScroll(scrollState)
                 .imePadding()
                 .fillMaxWidth()
         ) {
-            val (topBar, schedule, comment, btnNext) = createRefs()
+            val (topBar, content, btnNext) = createRefs()
 
             val topGuideline = createGuidelineFromTop(0.2f)
 
@@ -76,39 +60,51 @@ fun ScheduleScreen(
                 onBack = onBack
             )
 
-            ChildScheduleGroup(
+            ConstraintLayout(
                 modifier = modifier
-                    .constrainAs(schedule) {
+                    .verticalScroll(rememberScrollState())
+                    .constrainAs(content) {
                         top.linkTo(topGuideline, 24.dp)
-                    },
-                scheduleModel = screenState.value.schedule,
-                onValueChange = { day, period -> onUpdateSchedule(day, period) }
-            )
-
-            OutlinedTextField(
-                modifier = modifier
-                    .padding(horizontal = 24.dp)
-                    .fillMaxWidth()
-                    .constrainAs(comment) {
-                        top.linkTo(schedule.bottom, 16.dp)
                         bottom.linkTo(btnNext.top, 16.dp)
-                    },
-                value = screenState.value.comment,
-                label = { Text("Нотатка") },
-                onValueChange = { onUpdateComment(it) },
-                minLines = 3,
-                maxLines = 3,
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedContainerColor =  MaterialTheme.colorScheme.surface,
-                    unfocusedContainerColor =  MaterialTheme.colorScheme.surface,
-                    disabledContainerColor =  MaterialTheme.colorScheme.surface,
-                    focusedBorderColor = MaterialTheme.colorScheme.primary,
-                    unfocusedBorderColor = MaterialTheme.colorScheme.surface,
-                ),
-                textStyle = TextStyle(
-                    fontFamily = redHatDisplayFontFamily
+                        height = Dimension.fillToConstraints
+                    }
+            ) {
+                val (schedule, comment) = createRefs()
+
+                ChildScheduleGroup(
+                    modifier = modifier
+                        .constrainAs(schedule) {
+                            top.linkTo(parent.top)
+                        },
+                    scheduleModel = screenState.value.schedule,
+                    onValueChange = { day, period -> onUpdateSchedule(day, period) }
                 )
-            )
+
+                OutlinedTextField(
+                    modifier = modifier
+                        .padding(horizontal = 24.dp)
+                        .fillMaxWidth()
+                        .constrainAs(comment) {
+                            top.linkTo(schedule.bottom, 16.dp)
+                            bottom.linkTo(parent.bottom, 16.dp)
+                        },
+                    value = screenState.value.comment,
+                    label = { Text("Нотатка") },
+                    onValueChange = { onUpdateComment(it) },
+                    minLines = 3,
+                    maxLines = 3,
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedContainerColor =  MaterialTheme.colorScheme.surface,
+                        unfocusedContainerColor =  MaterialTheme.colorScheme.surface,
+                        disabledContainerColor =  MaterialTheme.colorScheme.surface,
+                        focusedBorderColor = MaterialTheme.colorScheme.primary,
+                        unfocusedBorderColor = MaterialTheme.colorScheme.surface,
+                    ),
+                    textStyle = TextStyle(
+                        fontFamily = redHatDisplayFontFamily
+                    )
+                )
+            }
 
             Button(
                 modifier = modifier

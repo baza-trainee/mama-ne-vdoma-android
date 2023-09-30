@@ -4,6 +4,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Error
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -21,6 +24,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 
 @Composable
@@ -54,7 +58,11 @@ fun PasswordTextFieldWithError(
             Text(
                 text = errorText,
                 color = Color.Red,
-                modifier = modifier.padding(top = 4.dp)
+                modifier = modifier.padding(top = 4.dp),
+                style = TextStyle(
+                    fontFamily = redHatDisplayFontFamily
+                ),
+                fontSize = 14.sp
             )
         }
     }
@@ -96,7 +104,14 @@ fun OutlinedTextFieldWithError(
                 unfocusedBorderColor = MaterialTheme.colorScheme.surface,
             ),
             leadingIcon = leadingIcon,
-            trailingIcon = trailingIcon,
+            trailingIcon = trailingIcon ?: {
+                if (isError)
+                    Icon(
+                        imageVector = Icons.Filled.Error,
+                        contentDescription = "error",
+                        tint = Color.Red
+                    )
+            },
             keyboardOptions = keyboardOptions,
             textStyle = TextStyle(
                 fontFamily = redHatDisplayFontFamily
@@ -106,7 +121,11 @@ fun OutlinedTextFieldWithError(
             Text(
                 text = errorText,
                 color = Color.Red,
-                modifier = modifier.padding(top = 4.dp)
+                modifier = modifier.padding(top = 4.dp),
+                style = TextStyle(
+                    fontFamily = redHatDisplayFontFamily
+                ),
+                fontSize = 14.sp
             )
         }
     }
