@@ -1,6 +1,5 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user
 
-import android.net.Uri
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -20,7 +19,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -41,48 +39,29 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.canopas.campose.countrypicker.CountryPickerBottomSheet
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.UserInfoViewState
+import org.koin.androidx.compose.getViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.OutlinedTextFieldWithError
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.SurfaceWithSystemBars
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.UserAvatarWithCameraAndGallery
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.vm.UserSettingsViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.SlateGray
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.composables.OutlinedTextFieldWithError
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.composables.SurfaceWithSystemBars
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.composables.UserAvatarWithCameraAndGallery
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.ButtonText
-
-@Composable
-fun UserInfoFunc(
-    viewModel: UserSettingsViewModel,
-    onCreateUser: () -> Unit,
-    onEditPhoto: () -> Unit
-) {
-    UserInfo(
-        screenState = viewModel.userInfoScreenState.collectAsStateWithLifecycle(),
-        validateName = { viewModel.validateUserName(it) },
-        setCode = { viewModel.setCode(it) },
-        validatePhone = { viewModel.validatePhone(it) },
-        setUriForCrop = { viewModel.setUriForCrop(it) },
-        onCreateUser = onCreateUser,
-        onEditPhoto = onEditPhoto
-    )
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun UserInfo(
+fun UserInfoScreen(
     modifier: Modifier = Modifier,
-    screenState: State<UserInfoViewState> = mutableStateOf(UserInfoViewState()),
-    validateName: (String) -> Unit = {},
-    setCode: (String) -> Unit = {},
-    validatePhone: (String) -> Unit = {},
-    setUriForCrop: (Uri) -> Unit = {},
+    viewModel: UserSettingsViewModel,
     onCreateUser: () -> Unit = {},
     onEditPhoto: () -> Unit = {}
 ) {
     SurfaceWithSystemBars(
         modifier = modifier
     ) {
+        val screenState = viewModel.userInfoScreenState.collectAsStateWithLifecycle()
+
         var openBottomSheet by rememberSaveable { mutableStateOf(false) }
         val scrollState = rememberScrollState()
 
@@ -116,8 +95,8 @@ fun UserInfo(
                     modifier = modifier
                         .padding(horizontal = 24.dp)
                         .padding(top = 32.dp),
-                    avatar = screenState.value.userAvatar,
-                    setUriForCrop = setUriForCrop,
+                    avatar = viewModel.userAvatar,
+                    setUriForCrop = { viewModel.setUriForCrop(it) },
                     onEditPhoto = onEditPhoto
                 )
 
@@ -126,9 +105,9 @@ fun UserInfo(
                         .fillMaxWidth()
                         .padding(horizontal = 24.dp)
                         .padding(top = 32.dp),
-                    text = screenState.value.userName,
+                    text = viewModel.userName,
                     label = "Вкажіть своє ім'я",
-                    onValueChange = { validateName(it) },
+                    onValueChange = { viewModel.validateUserName(it) },
                     isError = screenState.value.nameValid == ValidField.INVALID,
                     errorText = "Ви ввели некоректнe ім'я"
                 )
@@ -158,7 +137,7 @@ fun UserInfo(
                             .clickable {
                                 openBottomSheet = true
                             },
-                        value = screenState.value.code,
+                        value = viewModel.countryCode,
                         label = { Text("Код") },
                         onValueChange = {},
                         enabled = false,
@@ -184,9 +163,9 @@ fun UserInfo(
                             }
                             .weight(.75f)
                             .padding(end = 24.dp),
-                        value = screenState.value.userPhone,
+                        value = viewModel.userPhone,
                         label = { Text("Введіть свій номер телефону") },
-                        onValueChange = { validatePhone(it) },
+                        onValueChange = { viewModel.validatePhone(it) },
                         isError = screenState.value.phoneValid == ValidField.INVALID && isPhoneFocused,
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
                         maxLines = 1,
@@ -199,7 +178,7 @@ fun UserInfo(
                             disabledBorderColor = MaterialTheme.colorScheme.surface
                         ),
                         shape = RoundedCornerShape(topEnd = 4.dp, bottomEnd = 4.dp),
-                        enabled = screenState.value.code.isNotEmpty(),
+                        enabled = viewModel.countryCode.isNotEmpty(),
                         textStyle = TextStyle(
                             fontFamily = redHatDisplayFontFamily
                         )
@@ -228,7 +207,7 @@ fun UserInfo(
                 onClick = onCreateUser,
                 enabled = screenState.value.nameValid == ValidField.VALID &&
                         screenState.value.phoneValid == ValidField.VALID &&
-                        screenState.value.code.isNotEmpty()
+                        viewModel.countryCode.isNotEmpty()
             ) {
                 ButtonText(
                     text = "Далі"
@@ -251,7 +230,7 @@ fun UserInfo(
                     },
                     containerColor = MaterialTheme.colorScheme.surface,
                     onItemSelected = {
-                        setCode(it.dial_code)
+                        viewModel.setCode(it.dial_code)
                         openBottomSheet = false
                     }, onDismissRequest = {
                         openBottomSheet = false
@@ -265,8 +244,7 @@ fun UserInfo(
 @Composable
 @Preview
 fun UserInfoPreview() {
-    UserInfo(
-        onCreateUser = {},
-        onEditPhoto = {}
+    UserInfoScreen(
+        viewModel = getViewModel()
     )
 }

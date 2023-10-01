@@ -28,19 +28,11 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import tech.baza_trainee.mama_ne_vdoma.R
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.getTextWithUnderline
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.composables.getTextWithUnderline
 
 @Composable
-fun StartScreenFunc(
-    onStart: () -> Unit,
-    onLogin: () -> Unit
-) {
-    StartScreen(onStart = onStart, onLogin = onLogin)
-}
-
-@Composable
-fun StartScreen(
+fun Start(
     modifier: Modifier = Modifier,
     onStart: () -> Unit = {},
     onLogin: () -> Unit = {}
@@ -112,5 +104,5 @@ fun StartScreen(
 @Composable
 @Preview
 fun StartScreenPreview() {
-    StartScreen()
+    Start()
 }

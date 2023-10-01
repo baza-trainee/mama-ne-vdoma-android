@@ -19,25 +19,14 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import tech.baza_trainee.mama_ne_vdoma.R
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.SurfaceWithNavigationBars
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.TopBarWithoutArrow
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.getTextWithUnderline
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.composables.SurfaceWithNavigationBars
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.composables.TopBarWithoutArrow
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.composables.getTextWithUnderline
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.ButtonText
 
 @Composable
-fun EmailConfirmFunc(
-    onLogin: () -> Unit,
-    onSendAgain: () -> Unit
-) {
-    EmailConfirm(
-        onLogin = onLogin,
-        onSendAgain = onSendAgain
-    )
-}
-
-@Composable
-fun EmailConfirm(
+fun EmailConfirmScreen(
     modifier: Modifier = Modifier,
     onLogin: () -> Unit,
     onSendAgain: () -> Unit
@@ -117,7 +106,7 @@ fun EmailConfirm(
 @Composable
 @Preview
 fun EmailConfirmPreview() {
-    EmailConfirm(
+    EmailConfirmScreen(
         onLogin = {},
         onSendAgain = {}
     )

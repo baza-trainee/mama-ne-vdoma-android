@@ -21,8 +21,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -31,38 +29,19 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.model.LoginViewState
+import org.koin.androidx.compose.getViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.OutlinedTextFieldWithError
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.PasswordTextFieldWithError
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.SocialLoginBlock
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.getTextWithUnderline
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.vm.LoginScreenViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.composables.OutlinedTextFieldWithError
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.composables.PasswordTextFieldWithError
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.composables.SocialLoginBlock
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.composables.getTextWithUnderline
 
 @Composable
-fun LoginUserFunc(
-    viewModel: LoginScreenViewModel,
-    onCreateUser: () -> Unit,
-    onRestore: () -> Unit,
-    onLogin: () -> Unit
-) {
-    LoginUser(
-        screenState = viewModel.viewState.collectAsStateWithLifecycle(),
-        validateEmail = { viewModel.validateEmail(it) },
-        validatePassword = { viewModel.validatePassword(it) },
-        onCreateUser = onCreateUser,
-        onRestore = onRestore,
-        onLogin = onLogin,
-    )
-}
-
-@Composable
-fun LoginUser(
+fun LoginUserScreen(
     modifier: Modifier = Modifier,
-    screenState: State<LoginViewState> = mutableStateOf(LoginViewState()),
-    validateEmail: (String) -> Unit = {},
-    validatePassword: (String) -> Unit = {},
+    viewModel: LoginScreenViewModel,
     onCreateUser: () -> Unit = {},
     onRestore: () -> Unit = {},
     onLogin: () -> Unit = {}
@@ -73,6 +52,8 @@ fun LoginUser(
             .fillMaxSize(),
         color = MaterialTheme.colorScheme.background
     ) {
+        val screenState = viewModel.viewState.collectAsStateWithLifecycle()
+
         Column(
             modifier = modifier
                 .imePadding()
@@ -100,9 +81,9 @@ fun LoginUser(
                     modifier = modifier
                         .fillMaxWidth()
                         .padding(horizontal = 24.dp),
-                    text = screenState.value.email,
+                    text = viewModel.email,
                     label = "Введіть свій email",
-                    onValueChange = { validateEmail(it) },
+                    onValueChange = { viewModel.validateEmail(it) },
                     isError = screenState.value.emailValid == ValidField.INVALID,
                     errorText = "Ви ввели некоректний email",
                     leadingIcon = {
@@ -119,8 +100,8 @@ fun LoginUser(
                     modifier = modifier
                         .fillMaxWidth()
                         .padding(horizontal = 24.dp),
-                    password = screenState.value.password,
-                    onValueChange = { validatePassword(it) },
+                    password = viewModel.password,
+                    onValueChange = { viewModel.validatePassword(it) },
                     isError = screenState.value.passwordValid == ValidField.INVALID
                 )
 
@@ -221,5 +202,7 @@ fun LoginUser(
 @Composable
 @Preview
 fun LoginUserPreview() {
-    LoginUser()
+    LoginUserScreen(
+        viewModel = getViewModel()
+    )
 }

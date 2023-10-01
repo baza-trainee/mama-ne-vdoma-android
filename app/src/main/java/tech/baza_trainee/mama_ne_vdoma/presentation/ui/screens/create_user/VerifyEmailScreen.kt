@@ -12,47 +12,32 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.VerifyEmailViewState
+import org.koin.androidx.compose.getViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.OtpTextField
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.SurfaceWithSystemBars
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.vm.UserCreateViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.composables.OtpTextField
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.composables.SurfaceWithSystemBars
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.ButtonText
 
 @Composable
-fun VerifyEmailFunc(
-    viewModel: UserCreateViewModel,
-    onNext: () -> Unit
-) {
-    VerifyEmail(
-        screenState = viewModel.verifyEmailViewState.collectAsStateWithLifecycle(),
-        onVerify = { otp, isLastDigit ->
-            viewModel.verifyEmail(otp, isLastDigit) {
-                onNext()
-            }
-        }
-    )
-}
-
-@Composable
-fun VerifyEmail(
+fun VerifyEmailScreen(
     modifier: Modifier = Modifier,
-    screenState: State<VerifyEmailViewState> = mutableStateOf(VerifyEmailViewState()),
-    onVerify: (String, Boolean) -> Unit = { _,_ -> }
+    viewModel: UserCreateViewModel,
+    onVerify: () -> Unit = {}
 ) {
     SurfaceWithSystemBars {
         Column(
             modifier = modifier.fillMaxSize(),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
+            val screenState = viewModel.verifyEmailViewState.collectAsStateWithLifecycle()
+
             Column(
                 modifier = modifier
                     .imePadding()
@@ -87,9 +72,11 @@ fun VerifyEmail(
                 Spacer(modifier = modifier.height(32.dp))
 
                 OtpTextField(
-                    otpText = screenState.value.otp,
+                    otpText = viewModel.otp,
                     onOtpTextChange = { value, otpInputFilled ->
-                        onVerify(value, otpInputFilled)
+                        viewModel.verifyEmail(value, otpInputFilled) {
+                            onVerify()
+                        }
                     }
                 )
             }
@@ -112,5 +99,7 @@ fun VerifyEmail(
 @Composable
 @Preview
 fun VerifyEmailPreview() {
-    VerifyEmail()
+    VerifyEmailScreen(
+        viewModel = getViewModel()
+    )
 }

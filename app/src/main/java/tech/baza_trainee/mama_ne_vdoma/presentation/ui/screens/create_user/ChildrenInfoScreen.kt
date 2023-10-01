@@ -16,8 +16,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -27,51 +25,28 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import org.koin.androidx.compose.getViewModel
 import tech.baza_trainee.mama_ne_vdoma.R
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.ChildrenInfoScreenState
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.ChildInfoDesk
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.SurfaceWithNavigationBars
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.TopBarWithArrow
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.vm.UserSettingsViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.composables.ChildInfoDesk
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.composables.SurfaceWithNavigationBars
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.composables.TopBarWithArrow
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.ButtonText
 
 @Composable
-fun ChildrenInfoFunc(
-    viewModel: UserSettingsViewModel,
-    onNext: () -> Unit,
-    onBack: () -> Unit,
-    onEdit: () -> Unit
-) {
-    ChildrenInfo(
-        screenState = viewModel.childrenInfoScreenState.collectAsStateWithLifecycle(),
-        onNext = onNext,
-        onBack = onBack,
-        onEdit = {
-            viewModel.setCurrentChild(it)
-            onEdit()
-        },
-        onDelete = { viewModel.deleteChild(it) },
-        onAdd = {
-            viewModel.resetCurrentChild()
-            onEdit()
-        }
-    )
-}
-
-@Composable
-fun  ChildrenInfo(
+fun  ChildrenInfoScreen(
     modifier: Modifier = Modifier,
-    screenState: State<ChildrenInfoScreenState> = mutableStateOf(ChildrenInfoScreenState()),
+    viewModel: UserSettingsViewModel,
     onNext: () -> Unit = {},
     onBack: () -> Unit = {},
-    onEdit: (String) -> Unit = {},
-    onDelete: (String) -> Unit = {},
-    onAdd: () -> Unit = {}
+    onEdit: () -> Unit = {}
 ) {
     SurfaceWithNavigationBars(
         modifier = modifier
     ) {
+        val screenState = viewModel.childrenInfoScreenState.collectAsStateWithLifecycle()
+
         ConstraintLayout(
             modifier = modifier
                 .imePadding()
@@ -108,8 +83,17 @@ fun  ChildrenInfo(
             ) {
                 Spacer(modifier = modifier.height(16.dp))
 
-                screenState.value.children.forEach {
-                    ChildInfoDesk(it, onEdit, onDelete)
+                screenState.value.children.forEach { child ->
+                    ChildInfoDesk(
+                        child,
+                        onEdit = {
+                            viewModel.setCurrentChild(it)
+                            onEdit()
+                        },
+                        onDelete = {
+                            viewModel.deleteChild(it)
+                        }
+                    )
                     Spacer(modifier = modifier.height(16.dp))
                 }
 
@@ -118,7 +102,8 @@ fun  ChildrenInfo(
                         .padding(horizontal = 24.dp)
                         .fillMaxWidth()
                         .clickable {
-                            onAdd()
+                            viewModel.resetCurrentChild()
+                            onEdit()
                         },
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Start
@@ -160,5 +145,7 @@ fun  ChildrenInfo(
 @Composable
 @Preview
 fun ChildrenInfoPreview() {
-    ChildrenInfo()
+    ChildrenInfoScreen(
+        viewModel = getViewModel()
+    )
 }

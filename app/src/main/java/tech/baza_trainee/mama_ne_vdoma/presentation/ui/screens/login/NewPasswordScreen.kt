@@ -16,40 +16,23 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.model.NewPasswordViewState
+import org.koin.androidx.compose.getViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.PasswordTextFieldWithError
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.vm.NewPasswordScreenViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.composables.PasswordTextFieldWithError
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.ButtonText
 
 @Composable
-fun NewPasswordFunc(
-    viewModel: NewPasswordScreenViewModel,
-    onRestore: () -> Unit
-) {
-    NewPassword(
-        screenState = viewModel.viewState.collectAsStateWithLifecycle(),
-        validatePassword = { viewModel.validatePassword(it) },
-        validateConfirmPassword = { viewModel.validateConfirmPassword(it) },
-        onRestore = onRestore
-    )
-}
-
-@Composable
-fun NewPassword(
+fun NewPasswordScreen(
     modifier: Modifier = Modifier,
-    screenState: State<NewPasswordViewState> = mutableStateOf(NewPasswordViewState()),
-    validatePassword: (String) -> Unit = {},
-    validateConfirmPassword: (String) -> Unit = {},
+    viewModel: NewPasswordScreenViewModel,
     onRestore: () -> Unit = {}
 ) {
     Surface(
@@ -58,6 +41,8 @@ fun NewPassword(
             .fillMaxSize(),
         color = MaterialTheme.colorScheme.background
     ) {
+        val screenState = viewModel.viewState.collectAsStateWithLifecycle()
+
         Column(
             modifier = modifier
                 .imePadding()
@@ -99,8 +84,8 @@ fun NewPassword(
                     modifier = modifier
                         .fillMaxWidth()
                         .padding(horizontal = 24.dp),
-                    password = screenState.value.password,
-                    onValueChange = { validatePassword(it) },
+                    password = viewModel.password,
+                    onValueChange = { viewModel.validatePassword(it) },
                     isError = screenState.value.passwordValid == ValidField.INVALID
                 )
 
@@ -122,8 +107,8 @@ fun NewPassword(
                         .fillMaxWidth()
                         .padding(horizontal = 24.dp),
                     label = "Повторіть ваш пароль",
-                    password = screenState.value.confirmPassword,
-                    onValueChange = { validateConfirmPassword(it) },
+                    password = viewModel.confirmPassword,
+                    onValueChange = { viewModel.validateConfirmPassword(it) },
                     isError = screenState.value.confirmPasswordValid == ValidField.INVALID,
                     errorText = "Паролі не співпадають"
                 )
@@ -149,5 +134,7 @@ fun NewPassword(
 @Composable
 @Preview
 fun NewPasswordPreview() {
-    NewPassword()
+    NewPasswordScreen(
+        viewModel = getViewModel()
+    )
 }

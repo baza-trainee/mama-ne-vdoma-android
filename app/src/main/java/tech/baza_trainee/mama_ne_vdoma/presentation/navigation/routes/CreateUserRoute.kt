@@ -1,4 +1,4 @@
-package tech.baza_trainee.mama_ne_vdoma.presentation.ui.navigation.routes
+package tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes
 
 sealed class CreateUserRoute(val route: String) {
     object CreateUser: CreateUserRoute("create_user_screen")

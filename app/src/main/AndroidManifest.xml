@@ -24,7 +24,7 @@
         android:theme="@style/Theme.Mama_ne_vdoma"
         tools:targetApi="31">
         <activity
-            android:name=".presentation.MainActivity"
+            android:name=".presentation.ui.MainActivity"
             android:exported="true"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"

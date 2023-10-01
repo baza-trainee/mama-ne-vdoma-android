@@ -1,4 +1,4 @@
-package tech.baza_trainee.mama_ne_vdoma.presentation.utils.composables
+package tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -32,6 +32,7 @@ fun ScheduleScreen(
     modifier: Modifier = Modifier,
     title: String = "Title",
     screenState: State<ScheduleScreenState> = mutableStateOf(ScheduleScreenState()),
+    comment: State<String> = mutableStateOf(""),
     onUpdateSchedule: (DayOfWeek, Period) -> Unit = { _, _ -> },
     onUpdateComment: (String) -> Unit = {},
     onNext: () -> Unit = {},
@@ -69,7 +70,7 @@ fun ScheduleScreen(
                         height = Dimension.fillToConstraints
                     }
             ) {
-                val (schedule, comment) = createRefs()
+                val (schedule, commentField) = createRefs()
 
                 ChildScheduleGroup(
                     modifier = modifier
@@ -84,11 +85,11 @@ fun ScheduleScreen(
                     modifier = modifier
                         .padding(horizontal = 24.dp)
                         .fillMaxWidth()
-                        .constrainAs(comment) {
+                        .constrainAs(commentField) {
                             top.linkTo(schedule.bottom, 16.dp)
                             bottom.linkTo(parent.bottom, 16.dp)
                         },
-                    value = screenState.value.comment,
+                    value = comment.value,
                     label = { Text("Нотатка") },
                     onValueChange = { onUpdateComment(it) },
                     minLines = 3,

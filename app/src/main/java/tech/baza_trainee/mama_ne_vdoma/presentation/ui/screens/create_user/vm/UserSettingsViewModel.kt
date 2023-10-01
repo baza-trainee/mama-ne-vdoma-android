@@ -3,6 +3,9 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.vm
 import android.content.ContentResolver
 import android.graphics.Bitmap
 import android.net.Uri
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -52,6 +55,30 @@ class UserSettingsViewModel(
     private val _childrenInfoScreenState = MutableStateFlow(ChildrenInfoScreenState())
     val childrenInfoScreenState: StateFlow<ChildrenInfoScreenState> = _childrenInfoScreenState.asStateFlow()
 
+    var userAddress by mutableStateOf("")
+        private set
+
+    var userName by mutableStateOf("")
+        private set
+
+    var userPhone by mutableStateOf("")
+        private set
+
+    var userAvatar by mutableStateOf<Bitmap?>(null)
+        private set
+
+    var countryCode by mutableStateOf("")
+        private set
+
+    var childName by mutableStateOf("")
+        private set
+
+    var childAge by mutableStateOf("")
+        private set
+
+    var childComment = mutableStateOf("")
+        private set
+
     private var uriForCrop: Uri = Uri.EMPTY
 
     private var currentChildId = ""
@@ -63,11 +90,7 @@ class UserSettingsViewModel(
     fun getBitmapForCrop(contentResolver: ContentResolver) = uriForCrop.decodeBitmap(contentResolver)
 
     fun saveUserAvatar(image: Bitmap) {
-        _userInfoScreenState.update {
-            it.copy(
-                userAvatar = image
-            )
-        }
+        userAvatar = image
 //        val deferred = coroutineScope.async(Dispatchers.IO) {
 //            val filename = "cropped_avatar"
 //            context.openFileOutput(filename, Context.MODE_PRIVATE)
@@ -82,47 +105,45 @@ class UserSettingsViewModel(
     }
 
     fun setCode(code: String) {
-        _userInfoScreenState.update {
-            it.copy(
-                code = code
-            )
-        }
+        countryCode = code
     }
 
     fun validatePhone(phone: String) {
+        userPhone = phone
         val phoneValid = if (phone.length in PHONE_LENGTH && phone.none { !it.isDigit() }) ValidField.VALID
         else ValidField.INVALID
         _userInfoScreenState.update {
             it.copy(
-                userPhone = phone,
                 phoneValid = phoneValid
             )
         }
     }
 
     fun validateUserName(name: String) {
+        userName = name
         val nameValid = if (name.length in NAME_LENGTH && name.all { it.isLetter() || it.isDigit() }) ValidField.VALID
         else ValidField.INVALID
         _userInfoScreenState.update {
             it.copy(
-                userName = name,
                 nameValid = nameValid
             )
         }
     }
 
     fun validateChildName(name: String) {
+        childName = name
         val nameValid = if (name.none { !it.isLetter() }) ValidField.VALID
         else ValidField.INVALID
         _childInfoScreenState.update {
             it.copy(
-                name = name,
                 nameValid = nameValid
             )
         }
     }
 
     fun validateAge(age: String) {
+        childAge =  age
+
         val intAge = age.toFloatOrNull()
 
         val ageValid = if (intAge != null && intAge in 0f..MAX_AGE) ValidField.VALID
@@ -130,7 +151,6 @@ class UserSettingsViewModel(
 
         _childInfoScreenState.update {
             it.copy(
-                age = age,
                 ageValid = ageValid
             )
         }
@@ -249,18 +269,17 @@ class UserSettingsViewModel(
                 val index = indexOf(child)
                 val newChild = child.copy(
                     schedule = _childScheduleScreenState.value.schedule,
-                    comment = _childScheduleScreenState.value.comment
                 )
                 this[index] = newChild
             } else
                 add(
                     Child(
                         id = currentChildId,
-                        name = _childInfoScreenState.value.name,
-                        age = _childInfoScreenState.value.age,
+                        name = childName,
+                        age = childAge,
                         gender = _childInfoScreenState.value.gender,
                         schedule = _childScheduleScreenState.value.schedule,
-                        comment = _childScheduleScreenState.value.comment
+                        comment = childComment.value
                     )
                 )
             _childrenInfoScreenState.update {
@@ -269,6 +288,10 @@ class UserSettingsViewModel(
                 )
             }
         }
+    }
+
+    fun updateChildComment(comment: String) {
+        this.childComment.value = comment
     }
 
     fun requestCurrentLocation() {
@@ -290,10 +313,14 @@ class UserSettingsViewModel(
         }
     }
 
-    fun getLocationFromAddress(address: String) {
+    fun updateUserAddress(address: String) {
+        this.userAddress = address
+    }
+
+    fun getLocationFromAddress() {
         networkExecutor<LatLng?> {
             execute {
-                locationRepository.getLocationFromAddress(address)
+                locationRepository.getLocationFromAddress(userAddress)
             }
             onSuccess { location ->
                 location?.let {
@@ -347,11 +374,11 @@ class UserSettingsViewModel(
                 ?: Child(
                     id = currentChildId
                 )
+        childName = currentChild.name
+        childAge= currentChild.age
         _childInfoScreenState.update {
             it.copy(
-                name = currentChild.name,
                 nameValid = ValidField.VALID,
-                age = currentChild.age,
                 ageValid = ValidField.VALID,
                 gender = currentChild.gender
             )
@@ -364,8 +391,8 @@ class UserSettingsViewModel(
         if (child != null) {
             val index = list.indexOf(child)
             val newChild = child.copy(
-                name = _childInfoScreenState.value.name,
-                age = _childInfoScreenState.value.age,
+                name = childName,
+                age = childAge,
                 gender = _childInfoScreenState.value.gender
             )
             list[index] = newChild
@@ -373,8 +400,8 @@ class UserSettingsViewModel(
             list.add(
                 Child(
                     id = currentChildId,
-                    name = _childInfoScreenState.value.name,
-                    age = _childInfoScreenState.value.age,
+                    name = childName,
+                    age = childAge,
                     gender = _childInfoScreenState.value.gender
                 )
             )
@@ -388,10 +415,10 @@ class UserSettingsViewModel(
     fun setCurrentChildSchedule() {
         with(_childrenInfoScreenState.value.children.toMutableList()) {
             val child = firstOrNull { it.id == currentChildId }
+            childComment.value = child?.comment.orEmpty()
             _childScheduleScreenState.update {
                 it.copy(
-                    schedule = child?.schedule ?: ScheduleModel(),
-                    comment = child?.comment.orEmpty()
+                    schedule = child?.schedule ?: ScheduleModel()
                 )
             }
         }

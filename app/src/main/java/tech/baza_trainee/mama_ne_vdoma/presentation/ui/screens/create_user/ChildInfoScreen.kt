@@ -16,8 +16,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
@@ -26,41 +24,19 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import org.koin.androidx.compose.getViewModel
 import tech.baza_trainee.mama_ne_vdoma.domain.model.Gender
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.ChildInfoViewState
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.OutlinedTextFieldWithError
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.RadioGroup
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.TopBarWithArrow
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.vm.UserSettingsViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.composables.OutlinedTextFieldWithError
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.composables.RadioGroup
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.composables.TopBarWithArrow
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.ButtonText
 
 @Composable
-fun ChildInfoFunc(
-    viewModel: UserSettingsViewModel,
-    onNext: () -> Unit,
-    onBack: () -> Unit
-) {
-    viewModel.setCurrentChild()
-    ChildInfo(
-        screenState = viewModel.childInfoScreenState.collectAsStateWithLifecycle(),
-        validateName = { viewModel.validateChildName(it) },
-        validateAge = { viewModel.validateAge(it) },
-        setGender = { viewModel.setGender(it) },
-        saveChild = { viewModel.saveCurrentChild() },
-        onNext = onNext,
-        onBack = onBack
-    )
-}
-
-@Composable
-fun ChildInfo(
+fun ChildInfoScreen(
     modifier: Modifier = Modifier,
-    screenState: State<ChildInfoViewState> = mutableStateOf(ChildInfoViewState()),
-    validateName: (String) -> Unit = { },
-    validateAge: (String) -> Unit = { },
-    setGender: (Gender) -> Unit = { },
-    saveChild: () -> Unit = { },
+    viewModel: UserSettingsViewModel,
     onNext: () -> Unit = { },
     onBack: () -> Unit = { }
 ) {
@@ -70,6 +46,8 @@ fun ChildInfo(
             .fillMaxSize(),
         color = MaterialTheme.colorScheme.background
     ) {
+        val screenState = viewModel.childInfoScreenState.collectAsStateWithLifecycle()
+
         ConstraintLayout(
             modifier = modifier
                 .imePadding()
@@ -107,9 +85,9 @@ fun ChildInfo(
                     modifier = modifier
                         .fillMaxWidth()
                         .padding(horizontal = 24.dp),
-                    text = screenState.value.name,
+                    text = viewModel.childName,
                     label = "Вкажіть ім'я дитини",
-                    onValueChange = { validateName(it) },
+                    onValueChange = { viewModel.validateChildName(it) },
                     isError = screenState.value.nameValid == ValidField.INVALID,
                     errorText = "Ви ввели некоректнe ім'я"
                 )
@@ -120,9 +98,9 @@ fun ChildInfo(
                     modifier = modifier
                         .fillMaxWidth()
                         .padding(horizontal = 24.dp),
-                    text = screenState.value.age,
+                    text = viewModel.childAge,
                     label = "Вкажіть вік дитини",
-                    onValueChange = { validateAge(it) },
+                    onValueChange = { viewModel.validateAge(it) },
                     isError = screenState.value.ageValid == ValidField.INVALID,
                     errorText = "Ви ввели некоректний вік",
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
@@ -139,7 +117,7 @@ fun ChildInfo(
                     radioGroupOptions = genderOptions,
                     getText = { it.gender },
                     selected = screenState.value.gender,
-                    onSelectedChange = { setGender(it) }
+                    onSelectedChange = { viewModel.setGender(it) }
                 )
             }
 
@@ -152,7 +130,7 @@ fun ChildInfo(
                     }
                     .height(48.dp),
                 onClick = {
-                    saveChild()
+                    viewModel.saveCurrentChild()
                     onNext()
                 },
                 enabled = screenState.value.nameValid == ValidField.VALID &&
@@ -170,5 +148,7 @@ fun ChildInfo(
 @Composable
 @Preview
 fun ChildInfoPreview() {
-    ChildInfo()
+    ChildInfoScreen(
+        viewModel = getViewModel()
+    )
 }

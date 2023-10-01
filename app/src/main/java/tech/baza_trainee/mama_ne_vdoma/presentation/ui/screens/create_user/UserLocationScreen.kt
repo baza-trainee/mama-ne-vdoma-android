@@ -18,13 +18,10 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -37,40 +34,32 @@ import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.UserLocationViewState
+import org.koin.androidx.compose.getViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.LocationPermissionTextProvider
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.PermissionDialog
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.SurfaceWithNavigationBars
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.TopBarWithoutArrow
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.vm.UserSettingsViewModel
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.composables.LocationPermissionTextProvider
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.composables.PermissionDialog
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.composables.SurfaceWithNavigationBars
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.composables.TopBarWithoutArrow
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.ButtonText
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.findActivity
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.openAppSettings
 
 @Composable
-fun UserLocationFunc(
-    viewModel: UserSettingsViewModel,
-    onNext: () -> Unit
-) {
-    viewModel.requestCurrentLocation()
-
-    UserLocation(
-        viewState = viewModel.locationScreenState.collectAsStateWithLifecycle(),
-        onSearchUserAddress = { viewModel.getLocationFromAddress(it) },
-        onNext = onNext
-    )
-}
-
-@Composable
-fun UserLocation(
+fun UserLocationScreen(
     modifier: Modifier = Modifier,
-    viewState: State<UserLocationViewState> = mutableStateOf(UserLocationViewState()),
-    onSearchUserAddress: (String) -> Unit = {},
+    viewModel: UserSettingsViewModel,
     onNext: () -> Unit = {}
 ) {
     SurfaceWithNavigationBars(
         modifier = modifier
     ) {
+
+        LaunchedEffect(key1 = true) {
+            viewModel.requestCurrentLocation()
+        }
+
+        val screenState = viewModel.locationScreenState.collectAsStateWithLifecycle()
+
         val activity = LocalContext.current.findActivity()
         val permissionDialogQueue = remember { mutableStateListOf<String>() }
 
@@ -140,15 +129,15 @@ fun UserLocation(
             ) {
                 val cameraPositionState = rememberCameraPositionState {
                     val cameraPosition = CameraPosition.Builder()
-                        .target(viewState.value.currentLocation)
+                        .target(screenState.value.currentLocation)
                         .zoom(15f)
                         .build()
                     position = cameraPosition
                 }
 
-                LaunchedEffect(viewState.value.currentLocation) {
+                LaunchedEffect(screenState.value.currentLocation) {
                     val newCameraPosition =
-                        CameraPosition.fromLatLngZoom(viewState.value.currentLocation, 15f)
+                        CameraPosition.fromLatLngZoom(screenState.value.currentLocation, 15f)
                     cameraPositionState.animate(
                         CameraUpdateFactory.newCameraPosition(newCameraPosition),
                         1_000
@@ -168,19 +157,15 @@ fun UserLocation(
                     cameraPositionState = cameraPositionState
                 ) {
                     Marker(
-                        state = MarkerState(position = viewState.value.currentLocation),
+                        state = MarkerState(position = screenState.value.currentLocation),
                         title = "Ви тут",
                         snippet = "поточне місцезнаходження"
                     )
                 }
 
-                val userAddress = remember {
-                    mutableStateOf(TextFieldValue(viewState.value.userAddress))
-                }
-
                 OutlinedTextField(
-                    value = userAddress.value,
-                    onValueChange = { userAddress.value = it },
+                    value = viewModel.userAddress,
+                    onValueChange = { viewModel.updateUserAddress(it) },
                     modifier = modifier
                         .constrainAs(edit) {
                             bottom.linkTo(parent.bottom, 16.dp)
@@ -197,7 +182,7 @@ fun UserLocation(
                     ),
                     trailingIcon = {
                         IconButton(
-                            onClick = { onSearchUserAddress(userAddress.value.text) }
+                            onClick = { viewModel.getLocationFromAddress() }
                         ) {
                             Icon(
                                 imageVector = Icons.Filled.Search,
@@ -229,5 +214,7 @@ fun UserLocation(
 @Composable
 @Preview
 fun UserLocationPreview() {
-    UserLocation()
+    UserLocationScreen(
+        viewModel = getViewModel()
+    )
 }

@@ -1,5 +1,8 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.vm
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import de.palm.composestateevents.consumed
 import de.palm.composestateevents.triggered
@@ -31,12 +34,24 @@ class UserCreateViewModel(
     private val _verifyEmailViewState = MutableStateFlow(VerifyEmailViewState())
     val verifyEmailViewState: StateFlow<VerifyEmailViewState> = _verifyEmailViewState.asStateFlow()
 
+    var email by mutableStateOf("")
+        private set
+
+    var password by mutableStateOf("")
+        private set
+
+    var confirmPassword by mutableStateOf("")
+        private set
+
+    var otp by mutableStateOf("")
+        private set
+
     fun validateEmail(email: String) {
+        this.email = email
         val emailValid = if (email.validateEmail()) ValidField.VALID
         else ValidField.INVALID
         _userCreateViewState.update {
             it.copy(
-                email = email,
                 emailValid = emailValid
             )
         }
@@ -44,24 +59,20 @@ class UserCreateViewModel(
     }
 
     fun validatePassword(password: String) {
+        this.password = password
         val passwordValid = if (password.validatePassword()) ValidField.VALID
         else ValidField.INVALID
         _userCreateViewState.update {
             it.copy(
-                password = password,
                 passwordValid = passwordValid
             )
         }
-        checkPasswords(password, _userCreateViewState.value.confirmPassword)
+        checkPasswords(password, confirmPassword)
     }
 
     fun validateConfirmPassword(confirmPassword: String) {
-        checkPasswords(_userCreateViewState.value.password, confirmPassword)
-        _userCreateViewState.update {
-            it.copy(
-                confirmPassword = confirmPassword
-            )
-        }
+        this.confirmPassword = confirmPassword
+        checkPasswords(password, confirmPassword)
         updateConform()
     }
 
@@ -100,8 +111,8 @@ class UserCreateViewModel(
             execute {
                 authRepository.registerUser(
                     AuthUserEntity(
-                        email = _userCreateViewState.value.email,
-                        password = _userCreateViewState.value.password
+                        email = email,
+                        password = password
                     )
                 )
             }
@@ -138,14 +149,10 @@ class UserCreateViewModel(
     }
 
     fun verifyEmail(otp: String, isLastDigit: Boolean, onSuccess: () -> Unit) {
-        _verifyEmailViewState.update {
-            it.copy(
-                otp = otp
-            )
-        }
+        this.otp = otp
         if (isLastDigit) {
-            onSuccess() //for test
-//            confirmUser { onSuccess() }
+//            onSuccess() //for test
+            confirmUser { onSuccess() }
         }
     }
 
@@ -154,8 +161,8 @@ class UserCreateViewModel(
             execute {
                 authRepository.confirmEmail(
                     ConfirmEmailEntity(
-                        email = _userCreateViewState.value.email,
-                        code = _verifyEmailViewState.value.otp
+                        email = email,
+                        code = otp
                     )
                 )
             }

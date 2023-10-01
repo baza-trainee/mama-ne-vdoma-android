@@ -1,19 +1,19 @@
-package tech.baza_trainee.mama_ne_vdoma.presentation.ui.navigation
+package tech.baza_trainee.mama_ne_vdoma.presentation.navigation
 
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.navigation.routes.CreateUserRoute
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.ChildInfoFunc
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.ChildScheduleFunc
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.ChildrenInfoFunc
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.CreateUserFunc
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.ImageCropFunc
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.ParentScheduleFunc
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.UserInfoFunc
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.UserLocationFunc
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.VerifyEmailFunc
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.CreateUserRoute
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.ChildInfoScreen
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.ChildScheduleScreen
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.ChildrenInfoScreen
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.CreateUserScreen
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.ImageCropScreen
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.ParentScheduleScreen
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.UserInfoScreen
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.UserLocationScreen
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.VerifyEmailScreen
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.vm.UserCreateViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.vm.UserSettingsViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.navigateWithArgs
@@ -22,57 +22,58 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.sharedViewM
 fun NavGraphBuilder.createUserNavGraph(
     navController: NavHostController
 ) {
-
     navigation(
         route = "create_user_graph",
         startDestination = CreateUserRoute.CreateUser.route
     ) {
         composable(CreateUserRoute.CreateUser.route) {
             val userCreateViewModel: UserCreateViewModel = it.sharedViewModel(navController)
-            CreateUserFunc(
-                userCreateViewModel,
-                { navController.navigate(CreateUserRoute.VerifyEmail.route) }, //temp need replace with logic
-                { navController.navigate("login_screen") }
+            CreateUserScreen(
+               viewModel =  userCreateViewModel,
+                onCreateUser = { navController.navigate(CreateUserRoute.VerifyEmail.route) }, //temp need replace with logic
+                onLogin = { navController.navigate("login_screen") }
             )
         }
         composable(CreateUserRoute.VerifyEmail.route) {
             val userCreateViewModel: UserCreateViewModel = it.sharedViewModel(navController)
-            VerifyEmailFunc(
-                userCreateViewModel,
-                { navController.navigate(CreateUserRoute.UserInfo.route) }
+            VerifyEmailScreen(
+                viewModel = userCreateViewModel,
+                onVerify = { navController.navigate(CreateUserRoute.UserInfo.route) }
             )
         }
         composable(CreateUserRoute.UserInfo.route) {
             val userSettingsViewModel: UserSettingsViewModel = it.sharedViewModel(navController)
-            UserInfoFunc(
-                userSettingsViewModel,
-                { navController.navigate(CreateUserRoute.UserLocation.route) },
-                { navController.navigate(CreateUserRoute.ImageCrop.route) }
+            UserInfoScreen(
+                viewModel = userSettingsViewModel,
+                onCreateUser = { navController.navigate(CreateUserRoute.UserLocation.route) },
+                onEditPhoto = { navController.navigate(CreateUserRoute.ImageCrop.route) }
             )
         }
         composable(CreateUserRoute.ImageCrop.route) {
             val userSettingsViewModel: UserSettingsViewModel = it.sharedViewModel(navController)
-            ImageCropFunc(
-                userSettingsViewModel
+            ImageCropScreen(
+                viewModel = userSettingsViewModel
             ) { navController.navigate(CreateUserRoute.UserInfo.route) }
         }
         composable(CreateUserRoute.UserLocation.route) {
             val userSettingsViewModel: UserSettingsViewModel = it.sharedViewModel(navController)
-            UserLocationFunc(userSettingsViewModel) {
+            UserLocationScreen(
+                viewModel = userSettingsViewModel
+            ) {
                 navController.navigateWithArgs(CreateUserRoute.ChildInfo.route)
             }
         }
         composable(CreateUserRoute.ChildInfo.route) {
             val userSettingsViewModel: UserSettingsViewModel = it.sharedViewModel(navController)
-            ChildInfoFunc(
-                userSettingsViewModel,
-                { navController.navigate(CreateUserRoute.ChildSchedule.route,) },
-                { navController.popBackStack() }
+            ChildInfoScreen(
+                viewModel = userSettingsViewModel,
+                onNext = { navController.navigate(CreateUserRoute.ChildSchedule.route,) },
+                onBack = { navController.popBackStack() }
             )
         }
         composable(CreateUserRoute.ChildSchedule.route) {
             val userSettingsViewModel: UserSettingsViewModel = it.sharedViewModel(navController)
-            ChildScheduleFunc(
+            ChildScheduleScreen(
                 userSettingsViewModel,
                 { navController.navigate(CreateUserRoute.ChildrenInfo.route) },
                 { navController.popBackStack() }
@@ -80,16 +81,16 @@ fun NavGraphBuilder.createUserNavGraph(
         }
         composable(CreateUserRoute.ChildrenInfo.route) { entry ->
             val userSettingsViewModel: UserSettingsViewModel = entry.sharedViewModel(navController)
-            ChildrenInfoFunc(
-                userSettingsViewModel,
-                { navController.navigate(CreateUserRoute.ParentSchedule.route) },
-                { navController.popBackStack() },
-                { navController.navigate(CreateUserRoute.ChildInfo.route) }
+            ChildrenInfoScreen(
+                viewModel = userSettingsViewModel,
+                onNext = { navController.navigate(CreateUserRoute.ParentSchedule.route) },
+                onBack = { navController.popBackStack() },
+                onEdit = { navController.navigate(CreateUserRoute.ChildInfo.route) }
             )
         }
         composable(CreateUserRoute.ParentSchedule.route) {
             val userSettingsViewModel: UserSettingsViewModel = it.sharedViewModel(navController)
-            ParentScheduleFunc(
+            ParentScheduleScreen(
                 userSettingsViewModel,
                 {  },
                 { navController.popBackStack() }

@@ -1,4 +1,4 @@
-package tech.baza_trainee.mama_ne_vdoma.presentation
+package tech.baza_trainee.mama_ne_vdoma.presentation.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -15,9 +15,9 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.navigation.createUserNavGraph
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.navigation.loginNavGraph
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.navigation.startNavGraph
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.createUserNavGraph
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.loginNavGraph
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.startNavGraph
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.Mama_ne_vdomaTheme
 
 class MainActivity : ComponentActivity() {

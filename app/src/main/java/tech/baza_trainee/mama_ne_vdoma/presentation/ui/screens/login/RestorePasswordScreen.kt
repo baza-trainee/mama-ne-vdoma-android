@@ -23,8 +23,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -33,31 +31,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.model.RestorePasswordViewState
+import org.koin.androidx.compose.getViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.OutlinedTextFieldWithError
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.vm.RestorePasswordScreenViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.composables.OutlinedTextFieldWithError
 
 @Composable
-fun RestorePasswordFunc(
-    viewModel: RestorePasswordScreenViewModel,
-    onBack: () -> Unit,
-    onRestore: () -> Unit
-) {
-    RestorePassword(
-        screenState = viewModel.viewState.collectAsStateWithLifecycle(),
-        validateEmail = { viewModel.validateEmail(it) },
-        onBack = onBack,
-        onRestore = onRestore
-    )
-}
-
-@Composable
-fun RestorePassword(
+fun RestorePasswordScreen(
     modifier: Modifier = Modifier,
-    screenState: State<RestorePasswordViewState> = mutableStateOf(RestorePasswordViewState()),
-    validateEmail: (String) -> Unit = {},
+    viewModel: RestorePasswordScreenViewModel,
     onBack: () -> Unit = {},
     onRestore: () -> Unit = {}
 ) {
@@ -67,6 +50,7 @@ fun RestorePassword(
             .fillMaxSize(),
         color = MaterialTheme.colorScheme.background
     ) {
+        val screenState = viewModel.viewState.collectAsStateWithLifecycle()
         Column(
             modifier = modifier
                 .imePadding()
@@ -133,9 +117,9 @@ fun RestorePassword(
                     modifier = modifier
                         .fillMaxWidth()
                         .padding(horizontal = 24.dp),
-                    text = screenState.value.email,
+                    text = viewModel.email,
                     label = "Введіть свій email",
-                    onValueChange = { validateEmail(it) },
+                    onValueChange = { viewModel.validateEmail(it) },
                     isError = screenState.value.emailValid == ValidField.INVALID,
                     errorText = "Ви ввели некоректний email",
                     leadingIcon = {
@@ -168,5 +152,7 @@ fun RestorePassword(
 @Composable
 @Preview
 fun RestorePasswordPreview() {
-    RestorePassword()
+    RestorePasswordScreen(
+        viewModel = getViewModel()
+    )
 }

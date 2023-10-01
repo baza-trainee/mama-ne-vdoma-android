@@ -1,6 +1,5 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user
 
-import android.graphics.Bitmap
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -32,28 +31,15 @@ import com.smarttoolfactory.cropper.model.OutlineType
 import com.smarttoolfactory.cropper.model.OvalCropShape
 import com.smarttoolfactory.cropper.settings.CropDefaults
 import com.smarttoolfactory.cropper.settings.CropOutlineProperty
+import org.koin.androidx.compose.getViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.SurfaceWithSystemBars
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.vm.UserSettingsViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.composables.SurfaceWithSystemBars
 
 @Composable
-fun ImageCropFunc(
-    viewModel: UserSettingsViewModel,
-    onImageCropped: () -> Unit
-) {
-    val context = LocalContext.current
-    ImageCrop(
-        bitmapToCrop = viewModel.getBitmapForCrop(context.contentResolver),
-        saveAvatar = { viewModel.saveUserAvatar(it) },
-        onImageCropped = onImageCropped
-    )
-}
-
-@Composable
-fun ImageCrop(
+fun ImageCropScreen(
     modifier: Modifier = Modifier,
-    bitmapToCrop: Bitmap = Bitmap.createBitmap(200, 200, Bitmap.Config.ARGB_8888),
-    saveAvatar: (Bitmap) -> Unit = {},
+    viewModel: UserSettingsViewModel,
     onImageCropped: () -> Unit = {}
 ) {
     SurfaceWithSystemBars(
@@ -79,7 +65,11 @@ fun ImageCrop(
 
             var crop by remember { mutableStateOf(false) }
             var isCropping by remember { mutableStateOf(false) }
+
+            val context = LocalContext.current
+            val bitmapToCrop = viewModel.getBitmapForCrop(context.contentResolver)
             val croppedImage by remember { mutableStateOf(bitmapToCrop.asImageBitmap()) }
+
             val handleSize: Float = LocalDensity.current.run { 20.dp.toPx() }
             val cropProperties by remember {
                 mutableStateOf(
@@ -123,7 +113,7 @@ fun ImageCrop(
                     .fillMaxWidth()
                     .height(48.dp),
                 onClick = {
-                    saveAvatar(croppedImage.asAndroidBitmap())
+                    viewModel.saveUserAvatar(croppedImage.asAndroidBitmap())
                     onImageCropped()
                 }
             ) {
@@ -140,5 +130,7 @@ fun ImageCrop(
 @Composable
 @Preview
 fun ImageCropPreview() {
-    ImageCrop()
+    ImageCropScreen(
+        viewModel = getViewModel()
+    )
 }

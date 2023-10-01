@@ -14,21 +14,12 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import tech.baza_trainee.mama_ne_vdoma.R
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.composables.SurfaceWithNavigationBars
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.composables.TopBarWithoutArrow
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.SurfaceWithNavigationBars
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.TopBarWithoutArrow
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.ButtonText
 
 @Composable
-fun RestoreSuccessFunc(
-    goToMain: () -> Unit
-) {
-    RestoreSuccess(
-        goToMain = goToMain
-    )
-}
-
-@Composable
-fun RestoreSuccess(
+fun RestoreSuccessScreen(
     modifier: Modifier = Modifier,
     goToMain: () -> Unit
 ) {
@@ -90,7 +81,7 @@ fun RestoreSuccess(
 @Composable
 @Preview
 fun RestoreSuccessPreview() {
-    RestoreSuccess(
+    RestoreSuccessScreen(
         goToMain = {}
     )
 }
