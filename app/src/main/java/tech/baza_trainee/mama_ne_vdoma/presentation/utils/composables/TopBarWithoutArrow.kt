@@ -1,6 +1,8 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.utils.composables
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
@@ -14,11 +16,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun TopBarWithoutArrow(
     modifier: Modifier = Modifier,
@@ -50,12 +52,12 @@ fun TopBarWithoutArrow(
                 modifier = modifier
                     .padding(horizontal = 24.dp)
                     .padding(bottom = 8.dp)
-                    .fillMaxWidth(),
+                    .fillMaxWidth()
+                    .basicMarquee(),
                 text = info,
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.onPrimary,
-                fontFamily = redHatDisplayFontFamily,
-                overflow = TextOverflow.Ellipsis
+                fontFamily = redHatDisplayFontFamily
             )
     }
 }
