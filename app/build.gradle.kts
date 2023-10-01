@@ -64,7 +64,7 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3:1.2.0-alpha08")
     implementation("androidx.navigation:navigation-compose:2.7.3")
-    implementation("androidx.compose.ui:ui-viewbinding:1.5.1")
+    implementation("androidx.compose.ui:ui-viewbinding:1.5.2")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0-alpha02")
     implementation("androidx.core:core-splashscreen:1.0.1")
@@ -73,9 +73,9 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.2")
     implementation("androidx.navigation:navigation-ui-ktx:2.7.3")
     implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
-    implementation("androidx.compose.material:material:1.5.1")
-    implementation("androidx.compose.material:material-icons-extended:1.5.1")
-    implementation("androidx.compose.ui:ui-text-google-fonts:1.5.1")
+    implementation("androidx.compose.material:material:1.5.2")
+    implementation("androidx.compose.material:material-icons-extended:1.5.2")
+    implementation("androidx.compose.ui:ui-text-google-fonts:1.5.2")
 
     //Google Maps
     implementation("com.google.maps.android:maps-compose:2.4.0")
