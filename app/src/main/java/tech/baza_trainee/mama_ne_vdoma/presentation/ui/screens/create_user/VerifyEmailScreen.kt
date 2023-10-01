@@ -12,15 +12,15 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.VerifyEmailViewState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.vm.UserCreateViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.composables.OtpTextField
@@ -33,8 +33,9 @@ fun VerifyEmailFunc(
     onNext: () -> Unit
 ) {
     VerifyEmail(
-        onVerify = {
-            viewModel.verifyEmail(it) {
+        screenState = viewModel.verifyEmailViewState.collectAsStateWithLifecycle(),
+        onVerify = { otp, isLastDigit ->
+            viewModel.verifyEmail(otp, isLastDigit) {
                 onNext()
             }
         }
@@ -44,7 +45,8 @@ fun VerifyEmailFunc(
 @Composable
 fun VerifyEmail(
     modifier: Modifier = Modifier,
-    onVerify: (String, ) -> Unit = {}
+    screenState: State<VerifyEmailViewState> = mutableStateOf(VerifyEmailViewState()),
+    onVerify: (String, Boolean) -> Unit = { _,_ -> }
 ) {
     SurfaceWithSystemBars {
         Column(
@@ -84,14 +86,10 @@ fun VerifyEmail(
 
                 Spacer(modifier = modifier.height(32.dp))
 
-                var otpValue by remember { mutableStateOf("") }
-
                 OtpTextField(
-                    otpText = otpValue,
+                    otpText = screenState.value.otp,
                     onOtpTextChange = { value, otpInputFilled ->
-                        otpValue = value
-                        if (otpInputFilled)
-                            onVerify(value)
+                        onVerify(value, otpInputFilled)
                     }
                 )
             }

@@ -110,7 +110,7 @@ fun NewPassword(
                     modifier = modifier
                         .fillMaxWidth()
                         .padding(horizontal = 24.dp),
-                    text = "Ваш пароль повинен складатись з 6-24 символів і обов’язково містити латинські букви, цифри, спеціальні знаки",
+                    text = "Ваш пароль повинен складатись з 6-24 символів і обов’язково містити великі та малі латинські букви, цифри, спеціальні знаки",
                     fontSize = 14.sp,
                     fontFamily = redHatDisplayFontFamily
                 )

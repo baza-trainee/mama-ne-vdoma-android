@@ -1,9 +1,13 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user
 
+import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
@@ -14,6 +18,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -22,13 +27,16 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import de.palm.composestateevents.EventEffect
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.UserCreateViewState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.vm.UserCreateViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.SemiTransparent
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.composables.OutlinedTextFieldWithError
@@ -45,12 +53,16 @@ fun CreateUserFunc(
     onLogin: () -> Unit
 ) {
     CreateUser(
-        screenState = viewModel.viewState.collectAsStateWithLifecycle(),
+        screenState = viewModel.userCreateViewState.collectAsStateWithLifecycle(),
         validateEmail = { viewModel.validateEmail(it) },
         validatePassword = { viewModel.validatePassword(it) },
         validateConfirmPassword = { viewModel.validateConfirmPassword(it) },
         updatePolicyCheck = { viewModel.updatePolicyCheck(it) },
-        onCreateUser = onCreateUser,
+        consumeError = { viewModel.consumeRegisterError() },
+        onCreateUser = {
+//            onCreateUser() //for test
+            viewModel.registerUser()
+        },
         onLogin = onLogin
     )
 }
@@ -63,12 +75,25 @@ fun CreateUser(
     validatePassword: (String) -> Unit = {},
     validateConfirmPassword: (String) -> Unit = {},
     updatePolicyCheck: (Boolean) -> Unit = {},
+    consumeError: () -> Unit = {},
     onCreateUser: () -> Unit = {},
     onLogin: () -> Unit = {}
 ) {
     SurfaceWithSystemBars(
         modifier = modifier
     ) {
+        val context = LocalContext.current
+
+        EventEffect(
+            event = screenState.value.registerSuccess,
+            onConsumed = {}
+        ) { onCreateUser() }
+
+        EventEffect(
+            event = screenState.value.registerError,
+            onConsumed = consumeError
+        ) { if (it.isNotBlank()) Toast.makeText(context, it, Toast.LENGTH_LONG).show() }
+
         val scrollState = rememberScrollState()
 
         Column(
@@ -130,7 +155,7 @@ fun CreateUser(
                         .fillMaxWidth()
                         .padding(horizontal = 24.dp),
                     text =
-                    "Ваш пароль повинен складатись з 6-24 символів і обов’язково містити латинські букви, цифри, спеціальні знаки",
+                    "Ваш пароль повинен складатись з 6-24 символів і обов’язково містити великі та малі латинські букви, цифри, спеціальні знаки",
                     fontSize = 14.sp,
                     fontFamily = redHatDisplayFontFamily
                 )
@@ -241,6 +266,17 @@ fun CreateUser(
                 getTextWithUnderline("Вже є акаунт? ", "Увійти"),
                 onLogin
             )
+        }
+
+        if (screenState.value.isLoading) {
+            Box(
+                modifier = modifier
+                    .fillMaxSize()
+                    .background(SemiTransparent),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
+            }
         }
     }
 }
