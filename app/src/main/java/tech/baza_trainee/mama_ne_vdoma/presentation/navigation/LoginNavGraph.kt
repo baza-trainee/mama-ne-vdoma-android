@@ -1,5 +1,6 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.navigation
 
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
@@ -24,10 +25,12 @@ fun NavGraphBuilder.loginNavGraph(
         composable("login_screen") {
             val loginViewModel: LoginScreenViewModel = it.sharedViewModel(navController)
             LoginUserScreen(
-                viewModel = loginViewModel,
+                screenState = loginViewModel.viewState.collectAsStateWithLifecycle(),
+                email = loginViewModel.email,
+                password = loginViewModel.password,
                 onCreateUser = { navController.navigate("create_user_screen") },
                 onRestore = { navController.navigate("restore_password_screen") },
-                onLogin = {}
+                onLogin = { navController.navigate("user_profile_graph") }
             )
         }
         composable("restore_password_screen") {

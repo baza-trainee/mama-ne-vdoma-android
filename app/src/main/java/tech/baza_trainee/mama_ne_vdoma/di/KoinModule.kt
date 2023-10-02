@@ -43,7 +43,7 @@ val userKoinModule = module {
 }
 
 val loginKoinModule = module {
-    viewModel { LoginScreenViewModel() }
+    viewModel { LoginScreenViewModel(get()) }
     viewModel { NewPasswordScreenViewModel() }
     viewModel { RestorePasswordScreenViewModel() }
 }

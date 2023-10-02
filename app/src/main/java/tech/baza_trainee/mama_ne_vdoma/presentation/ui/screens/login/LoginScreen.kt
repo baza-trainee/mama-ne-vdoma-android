@@ -1,5 +1,6 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login
 
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -21,27 +22,34 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import org.koin.androidx.compose.getViewModel
+import de.palm.composestateevents.EventEffect
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.LoadingIndicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.OutlinedTextFieldWithError
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.PasswordTextFieldWithError
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.SocialLoginBlock
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.getTextWithUnderline
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.vm.LoginScreenViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.model.LoginEvent
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.model.LoginViewState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 
 @Composable
 fun LoginUserScreen(
     modifier: Modifier = Modifier,
-    viewModel: LoginScreenViewModel,
+    screenState: State<LoginViewState> = mutableStateOf(LoginViewState()),
+    email: String = "",
+    password: String = "",
+    onHandleEvent: (LoginEvent) -> Unit = { _ -> },
     onCreateUser: () -> Unit = {},
     onRestore: () -> Unit = {},
     onLogin: () -> Unit = {}
@@ -52,8 +60,18 @@ fun LoginUserScreen(
             .fillMaxSize(),
         color = MaterialTheme.colorScheme.background
     ) {
-        val screenState = viewModel.viewState.collectAsStateWithLifecycle()
+        val context = LocalContext.current
 
+        EventEffect(
+            event = screenState.value.loginSuccess,
+            onConsumed = {}
+        ) { onLogin() }
+
+        EventEffect(
+            event = screenState.value.requestError,
+            onConsumed = { onHandleEvent(LoginEvent.ConsumeRequestError) }
+        ) { if (it.isNotBlank()) Toast.makeText(context, it, Toast.LENGTH_LONG).show() }
+        
         Column(
             modifier = modifier
                 .imePadding()
@@ -81,9 +99,9 @@ fun LoginUserScreen(
                     modifier = modifier
                         .fillMaxWidth()
                         .padding(horizontal = 24.dp),
-                    text = viewModel.email,
+                    text = email,
                     label = "Введіть свій email",
-                    onValueChange = { viewModel.validateEmail(it) },
+                    onValueChange = { onHandleEvent(LoginEvent.ValidateEmail(it)) },
                     isError = screenState.value.emailValid == ValidField.INVALID,
                     errorText = "Ви ввели некоректний email",
                     leadingIcon = {
@@ -100,8 +118,8 @@ fun LoginUserScreen(
                     modifier = modifier
                         .fillMaxWidth()
                         .padding(horizontal = 24.dp),
-                    password = viewModel.password,
-                    onValueChange = { viewModel.validatePassword(it) },
+                    password = password,
+                    onValueChange = { onHandleEvent(LoginEvent.ValidatePassword(it)) },
                     isError = screenState.value.passwordValid == ValidField.INVALID
                 )
 
@@ -130,7 +148,7 @@ fun LoginUserScreen(
                         .padding(horizontal = 24.dp, vertical = 16.dp)
                         .fillMaxWidth()
                         .height(48.dp),
-                    onClick = onLogin,
+                    onClick = { onHandleEvent(LoginEvent.LoginUser) },
                     enabled = screenState.value.passwordValid == ValidField.VALID &&
                             screenState.value.emailValid == ValidField.VALID
                 ) {
@@ -196,13 +214,13 @@ fun LoginUserScreen(
                 onCreateUser
             )
         }
+
+        if (screenState.value.isLoading) LoadingIndicator()
     }
 }
 
 @Composable
 @Preview
 fun LoginUserPreview() {
-    LoginUserScreen(
-        viewModel = getViewModel()
-    )
+    LoginUserScreen()
 }
