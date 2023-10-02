@@ -47,7 +47,10 @@ fun VerifyEmailScreen(
         EventEffect(
             event = screenState.value.loginSuccess,
             onConsumed = {}
-        ) { onSuccess() }
+        ) {
+            onHandleEvent(VerifyEmailEvent.OnSuccessfulLogin)
+            onSuccess()
+        }
 
         EventEffect(
             event = screenState.value.requestError,

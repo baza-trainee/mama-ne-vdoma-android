@@ -1,5 +1,6 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile
 
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -31,6 +32,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -39,6 +41,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.canopas.campose.countrypicker.CountryPickerBottomSheet
+import de.palm.composestateevents.EventEffect
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.LoadingIndicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.OutlinedTextFieldWithError
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.SurfaceWithSystemBars
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.UserAvatarWithCameraAndGallery
@@ -63,6 +67,17 @@ fun UserInfoScreen(
     SurfaceWithSystemBars(
         modifier = modifier
     ) {
+        val context = LocalContext.current
+
+        EventEffect(
+            event = screenState.value.requestSuccess,
+            onConsumed = {}
+        ) { onCreateUser() }
+
+        EventEffect(
+            event = screenState.value.requestError,
+            onConsumed = { onHandleUserInfoEvent(UserInfoEvent.ConsumeRequestError) }
+        ) { if (it.isNotBlank()) Toast.makeText(context, it, Toast.LENGTH_LONG).show() }
 
         var openBottomSheet by rememberSaveable { mutableStateOf(false) }
         val scrollState = rememberScrollState()
@@ -206,7 +221,7 @@ fun UserInfoScreen(
                     .padding(horizontal = 24.dp, vertical = 16.dp)
                     .fillMaxWidth()
                     .height(48.dp),
-                onClick = onCreateUser,
+                onClick = { onHandleUserInfoEvent(UserInfoEvent.SaveInfo) },
                 enabled = screenState.value.nameValid == ValidField.VALID &&
                         screenState.value.phoneValid == ValidField.VALID &&
                         screenState.value.code.isNotEmpty()
@@ -240,6 +255,8 @@ fun UserInfoScreen(
                 )
             }
         }
+
+        if (screenState.value.isLoading) LoadingIndicator()
     }
 }
 

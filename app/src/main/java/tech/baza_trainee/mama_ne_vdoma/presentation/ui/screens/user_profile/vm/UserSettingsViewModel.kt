@@ -8,6 +8,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.google.android.gms.maps.model.LatLng
+import de.palm.composestateevents.consumed
+import de.palm.composestateevents.triggered
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -17,7 +19,11 @@ import tech.baza_trainee.mama_ne_vdoma.domain.model.DayPeriod
 import tech.baza_trainee.mama_ne_vdoma.domain.model.Gender
 import tech.baza_trainee.mama_ne_vdoma.domain.model.Period
 import tech.baza_trainee.mama_ne_vdoma.domain.model.ScheduleModel
+import tech.baza_trainee.mama_ne_vdoma.domain.model.UserInfoEntity
+import tech.baza_trainee.mama_ne_vdoma.domain.model.UserLocationEntity
+import tech.baza_trainee.mama_ne_vdoma.domain.model.UserProfileEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.LocationRepository
+import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.model.ChildInfoEvent
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.model.ChildInfoViewState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.model.ChildrenInfoEvent
@@ -30,7 +36,9 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.mode
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.model.UserLocationViewState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.decodeBase64
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.decodeBitmap
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.encodeToBase64
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.networkExecutor
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onError
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onLoading
@@ -39,6 +47,7 @@ import java.time.DayOfWeek
 import java.util.UUID
 
 class UserSettingsViewModel(
+    private val userProfileRepository: UserProfileRepository,
     private val locationRepository: LocationRepository
 ): ViewModel() {
 
@@ -82,12 +91,18 @@ class UserSettingsViewModel(
 
     private var currentChildId = ""
 
+    init {
+        getUserInfo()
+    }
+
     fun handleUserInfoEvent(event: UserInfoEvent) {
         when(event) {
             is UserInfoEvent.SetUriForCrop -> setUriForCrop(event.uri)
             is UserInfoEvent.ValidateUserName -> validateUserName(event.name)
             is UserInfoEvent.ValidatePhone -> validatePhone(event.phone)
             is UserInfoEvent.SetCode -> setCode(event.code)
+            UserInfoEvent.SaveInfo -> saveUserInfo()
+            UserInfoEvent.ConsumeRequestError -> consumeUserInfoRequestError()
         }
     }
 
@@ -96,6 +111,8 @@ class UserSettingsViewModel(
             UserLocationEvent.GetLocationFromAddress -> getLocationFromAddress()
             UserLocationEvent.RequestUserLocation -> requestCurrentLocation()
             is UserLocationEvent.UpdateUserAddress -> updateUserAddress(event.address)
+            UserLocationEvent.ConsumeRequestError -> consumeUserLocationRequestError()
+            UserLocationEvent.SaveUserLocation -> saveUserLocation()
         }
     }
 
@@ -145,6 +162,49 @@ class UserSettingsViewModel(
 //        }
     }
 
+    private fun getUserInfo() {
+        networkExecutor<UserProfileEntity?> {
+            execute {
+                userProfileRepository.getUserInfo()
+            }
+            onSuccess { entity ->
+                userName = entity?.name.orEmpty()
+                userPhone = entity?.phone.orEmpty()
+                _userInfoScreenState.update {
+                    it.copy(
+                        code = entity?.countryCode.orEmpty(),
+                        userAvatar = entity?.avatar.orEmpty().decodeBase64(),
+                        nameValid = if (userName.isNotEmpty()) ValidField.VALID else ValidField.EMPTY,
+                        phoneValid = if (userPhone.isNotEmpty()) ValidField.VALID else ValidField.EMPTY,
+                    )
+                }
+                _locationScreenState.update {
+                    it.copy(
+                        currentLocation = LatLng(
+                            entity?.location?.coordinates?.get(1) ?: 0.00,
+                            entity?.location?.coordinates?.get(0) ?: 0.00
+                        )
+                    )
+                }
+                getAddressFromLocation(_locationScreenState.value.currentLocation)
+            }
+            onError { error ->
+                _userInfoScreenState.update {
+                    it.copy(
+                        requestError = triggered(error)
+                    )
+                }
+            }
+            onLoading { isLoading ->
+                _userInfoScreenState.update {
+                    it.copy(
+                        isLoading = isLoading
+                    )
+                }
+            }
+        }
+    }
+
     private fun setUriForCrop(uri: Uri) {
         uriForCrop = uri
     }
@@ -175,6 +235,92 @@ class UserSettingsViewModel(
         _userInfoScreenState.update {
             it.copy(
                 nameValid = nameValid
+            )
+        }
+    }
+
+    private fun saveUserInfo() {
+        networkExecutor {
+            execute {
+                userProfileRepository.saveUserInfo(
+                    UserInfoEntity(
+                        name = userName,
+                        phone = userPhone,
+                        countryCode = _userInfoScreenState.value.code,
+                        avatar = _userInfoScreenState.value.userAvatar?.encodeToBase64().orEmpty()
+                    )
+                )
+            }
+            onSuccess {
+                _userInfoScreenState.update {
+                    it.copy(
+                        requestSuccess = triggered
+                    )
+                }
+            }
+            onError { error ->
+                _userInfoScreenState.update {
+                    it.copy(
+                        requestError = triggered(error)
+                    )
+                }
+            }
+            onLoading { isLoading ->
+                _userInfoScreenState.update {
+                    it.copy(
+                        isLoading = isLoading
+                    )
+                }
+            }
+        }
+    }
+
+    private fun saveUserLocation() {
+        networkExecutor {
+            execute {
+                userProfileRepository.saveUserLocation(
+                    UserLocationEntity(
+                        lat = _locationScreenState.value.currentLocation.latitude,
+                        lon = _locationScreenState.value.currentLocation.longitude
+                    )
+                )
+            }
+            onSuccess {
+                _locationScreenState.update {
+                    it.copy(
+                        requestSuccess = triggered
+                    )
+                }
+            }
+            onError { error ->
+                _locationScreenState.update {
+                    it.copy(
+                        requestError = triggered(error)
+                    )
+                }
+            }
+            onLoading { isLoading ->
+                _locationScreenState.update {
+                    it.copy(
+                        isLoading = isLoading
+                    )
+                }
+            }
+        }
+    }
+
+    private fun consumeUserInfoRequestError() {
+        _userInfoScreenState.update {
+            it.copy(
+                requestError = consumed()
+            )
+        }
+    }
+
+    private fun consumeUserLocationRequestError() {
+        _locationScreenState.update {
+            it.copy(
+                requestError = consumed()
             )
         }
     }
@@ -357,8 +503,20 @@ class UserSettingsViewModel(
                     }
                 }
             }
-            onError {  }
-            onLoading {  }
+            onError { error ->
+                _locationScreenState.update {
+                    it.copy(
+                        requestError = triggered(error)
+                    )
+                }
+            }
+            onLoading { isLoading ->
+                _locationScreenState.update {
+                    it.copy(
+                        isLoading = isLoading
+                    )
+                }
+            }
         }
     }
 
@@ -380,8 +538,20 @@ class UserSettingsViewModel(
                     }
                 }
             }
-            onError {  }
-            onLoading {  }
+            onError { error ->
+                _locationScreenState.update {
+                    it.copy(
+                        requestError = triggered(error)
+                    )
+                }
+            }
+            onLoading { isLoading ->
+                _locationScreenState.update {
+                    it.copy(
+                        isLoading = isLoading
+                    )
+                }
+            }
         }
     }
 
@@ -390,9 +560,9 @@ class UserSettingsViewModel(
             execute {
                 locationRepository.getAddressFromLocation(latLng)
             }
-            onSuccess {  }
-            onError {  }
-            onLoading {  }
+            onSuccess {
+                userAddress = it.orEmpty()
+            }
         }
     }
 

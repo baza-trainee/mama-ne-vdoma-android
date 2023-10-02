@@ -3,13 +3,10 @@ package tech.baza_trainee.mama_ne_vdoma.data.interceptors
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
 import okhttp3.Response
-import tech.baza_trainee.mama_ne_vdoma.data.api.AuthApi
 import tech.baza_trainee.mama_ne_vdoma.data.utils.createEmptyResponse
 import java.io.IOException
 
-class AuthInterceptor(
-    private val auhtApi: AuthApi
-) : Interceptor {
+class AuthInterceptor() : Interceptor {
     companion object {
         const val AUTH_HEADER = "Authorization"
         //        const val EMPTY_TOKEN = "V0VCOg=="//WEB: in base64

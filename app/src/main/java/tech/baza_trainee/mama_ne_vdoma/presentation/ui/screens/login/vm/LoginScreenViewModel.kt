@@ -42,6 +42,13 @@ class LoginScreenViewModel(
             LoginEvent.LoginUser -> loginUser()
             is LoginEvent.ValidateEmail -> validateEmail(event.email)
             is LoginEvent.ValidatePassword -> validatePassword(event.password)
+            LoginEvent.OnSuccessfulLogin -> {
+                email = ""
+                password = ""
+                _viewState.update {
+                    LoginViewState()
+                }
+            }
         }
     }
 

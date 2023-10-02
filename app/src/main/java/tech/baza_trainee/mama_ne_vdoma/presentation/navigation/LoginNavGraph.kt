@@ -22,12 +22,13 @@ fun NavGraphBuilder.loginNavGraph(
         route = "login_graph",
         startDestination = "login_screen"
     ) {
-        composable("login_screen") {
-            val loginViewModel: LoginScreenViewModel = it.sharedViewModel(navController)
+        composable("login_screen") { entry ->
+            val loginViewModel: LoginScreenViewModel = entry.sharedViewModel(navController)
             LoginUserScreen(
                 screenState = loginViewModel.viewState.collectAsStateWithLifecycle(),
                 email = loginViewModel.email,
                 password = loginViewModel.password,
+                onHandleEvent = { loginViewModel.handleLoginEvent(it) },
                 onCreateUser = { navController.navigate("create_user_screen") },
                 onRestore = { navController.navigate("restore_password_screen") },
                 onLogin = { navController.navigate("user_profile_graph") }

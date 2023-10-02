@@ -64,12 +64,23 @@ class UserCreateViewModel(
         when(event) {
             is VerifyEmailEvent.VerifyEmail -> verifyEmail(
                 event.otp,
-                event.otpInputFilled,
-                event.onSuccess
+                event.otpInputFilled
             )
 
             VerifyEmailEvent.ConsumeRequestError -> consumeRequestError()
             VerifyEmailEvent.ResendCode -> resendCode()
+            VerifyEmailEvent.OnSuccessfulLogin -> {
+                email = ""
+                password = ""
+                confirmPassword = ""
+                otp = ""
+                _userCreateViewState.update {
+                    UserCreateViewState()
+                }
+                _verifyEmailViewState.update {
+                    VerifyEmailViewState()
+                }
+            }
         }
     }
 
@@ -175,15 +186,15 @@ class UserCreateViewModel(
         }
     }
 
-    private fun verifyEmail(otp: String, isLastDigit: Boolean, onSuccess: () -> Unit) {
+    private fun verifyEmail(otp: String, isLastDigit: Boolean) {
         this.otp = otp
         if (isLastDigit) {
 //            onSuccess() //for test
-            confirmUser { onSuccess() }
+            confirmUser()
         }
     }
 
-    private fun confirmUser(onSuccess: () -> Unit) {
+    private fun confirmUser() {
         networkExecutor {
             execute {
                 authRepository.confirmEmail(
@@ -193,7 +204,9 @@ class UserCreateViewModel(
                     )
                 )
             }
-            onSuccess { loginUser() }
+            onSuccess {
+                loginUser()
+            }
             onError { error ->
                 _verifyEmailViewState.update {
                     it.copy(

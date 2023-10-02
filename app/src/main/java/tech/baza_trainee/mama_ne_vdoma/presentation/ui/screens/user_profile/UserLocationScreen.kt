@@ -1,6 +1,7 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile
 
 import android.Manifest
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -35,6 +36,8 @@ import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
+import de.palm.composestateevents.EventEffect
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.LoadingIndicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.LocationPermissionTextProvider
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.PermissionDialog
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.SurfaceWithNavigationBars
@@ -56,8 +59,21 @@ fun UserLocationScreen(
     SurfaceWithNavigationBars(
         modifier = modifier
     ) {
+        val context = LocalContext.current
+
+        EventEffect(
+            event = screenState.value.requestSuccess,
+            onConsumed = {}
+        ) { onNext() }
+
+        EventEffect(
+            event = screenState.value.requestError,
+            onConsumed = { onHandleLocationEvent(UserLocationEvent.ConsumeRequestError) }
+        ) { if (it.isNotBlank()) Toast.makeText(context, it, Toast.LENGTH_LONG).show() }
+
         LaunchedEffect(key1 = true) {
-            onHandleLocationEvent(UserLocationEvent.RequestUserLocation)
+            if (userAddress.isEmpty())
+                onHandleLocationEvent(UserLocationEvent.RequestUserLocation)
         }
 
         val activity = LocalContext.current.findActivity()
@@ -201,13 +217,15 @@ fun UserLocationScreen(
                         bottom.linkTo(parent.bottom)
                     }
                     .height(48.dp),
-                onClick = onNext
+                onClick = { onHandleLocationEvent(UserLocationEvent.SaveUserLocation) }
             ) {
                 ButtonText(
                     text = "Далі"
                 )
             }
         }
+
+        if (screenState.value.isLoading) LoadingIndicator()
     }
 }
 
