@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import tech.baza_trainee.mama_ne_vdoma.domain.model.AuthUserEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.ConfirmEmailEntity
+import tech.baza_trainee.mama_ne_vdoma.domain.model.ResendCodeEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.AuthRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.UserCreateEvent
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.UserCreateViewState
@@ -68,7 +69,7 @@ class UserCreateViewModel(
             )
 
             VerifyEmailEvent.ConsumeRequestError -> consumeRequestError()
-            VerifyEmailEvent.ResendCode -> Unit//confirmUser { event.onSuccess() }
+            VerifyEmailEvent.ResendCode -> resendCode()
         }
     }
 
@@ -226,6 +227,32 @@ class UserCreateViewModel(
                         loginSuccess = triggered
                     )
                 }
+            }
+            onError { error ->
+                _verifyEmailViewState.update {
+                    it.copy(
+                        requestError = triggered(error)
+                    )
+                }
+            }
+            onLoading { isLoading ->
+                _verifyEmailViewState.update {
+                    it.copy(
+                        isLoading = isLoading
+                    )
+                }
+            }
+        }
+    }
+
+    private fun resendCode() {
+        networkExecutor {
+            execute {
+                authRepository.resendCode(
+                    ResendCodeEntity(
+                        email = email
+                    )
+                )
             }
             onError { error ->
                 _verifyEmailViewState.update {
