@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import tech.baza_trainee.mama_ne_vdoma.domain.model.Period
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.ScheduleScreenState
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.model.ScheduleViewState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.ButtonText
 import java.time.DayOfWeek
@@ -31,7 +31,7 @@ import java.time.DayOfWeek
 fun ScheduleScreen(
     modifier: Modifier = Modifier,
     title: String = "Title",
-    screenState: State<ScheduleScreenState> = mutableStateOf(ScheduleScreenState()),
+    screenState: State<ScheduleViewState> = mutableStateOf(ScheduleViewState()),
     comment: State<String> = mutableStateOf(""),
     onUpdateSchedule: (DayOfWeek, Period) -> Unit = { _, _ -> },
     onUpdateComment: (String) -> Unit = {},

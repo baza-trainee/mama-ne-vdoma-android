@@ -1,4 +1,4 @@
-package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user
+package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile
 
 import android.Manifest
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -18,7 +18,9 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -27,19 +29,18 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.core.app.ActivityCompat
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
-import org.koin.androidx.compose.getViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.LocationPermissionTextProvider
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.PermissionDialog
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.SurfaceWithNavigationBars
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.TopBarWithoutArrow
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.vm.UserSettingsViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.model.UserLocationEvent
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.model.UserLocationViewState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.ButtonText
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.findActivity
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.openAppSettings
@@ -47,18 +48,17 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.openAppSett
 @Composable
 fun UserLocationScreen(
     modifier: Modifier = Modifier,
-    viewModel: UserSettingsViewModel,
+    screenState: State<UserLocationViewState> = mutableStateOf(UserLocationViewState()),
+    userAddress: String = "",
+    onHandleLocationEvent: (UserLocationEvent) -> Unit = { _ -> },
     onNext: () -> Unit = {}
 ) {
     SurfaceWithNavigationBars(
         modifier = modifier
     ) {
-
         LaunchedEffect(key1 = true) {
-            viewModel.requestCurrentLocation()
+            onHandleLocationEvent(UserLocationEvent.RequestUserLocation)
         }
-
-        val screenState = viewModel.locationScreenState.collectAsStateWithLifecycle()
 
         val activity = LocalContext.current.findActivity()
         val permissionDialogQueue = remember { mutableStateListOf<String>() }
@@ -164,8 +164,8 @@ fun UserLocationScreen(
                 }
 
                 OutlinedTextField(
-                    value = viewModel.userAddress,
-                    onValueChange = { viewModel.updateUserAddress(it) },
+                    value = userAddress,
+                    onValueChange = { onHandleLocationEvent(UserLocationEvent.UpdateUserAddress(it)) },
                     modifier = modifier
                         .constrainAs(edit) {
                             bottom.linkTo(parent.bottom, 16.dp)
@@ -182,7 +182,7 @@ fun UserLocationScreen(
                     ),
                     trailingIcon = {
                         IconButton(
-                            onClick = { viewModel.getLocationFromAddress() }
+                            onClick = { onHandleLocationEvent(UserLocationEvent.GetLocationFromAddress) }
                         ) {
                             Icon(
                                 imageVector = Icons.Filled.Search,
@@ -214,7 +214,5 @@ fun UserLocationScreen(
 @Composable
 @Preview
 fun UserLocationPreview() {
-    UserLocationScreen(
-        viewModel = getViewModel()
-    )
+    UserLocationScreen()
 }

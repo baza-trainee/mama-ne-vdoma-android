@@ -19,6 +19,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -26,16 +28,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import de.palm.composestateevents.EventEffect
-import org.koin.androidx.compose.getViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.LoadingIndicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.OutlinedTextFieldWithError
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.PasswordTextFieldWithError
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.SocialLoginBlock
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.SurfaceWithSystemBars
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.getTextWithUnderline
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.vm.UserCreateViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.UserCreateEvent
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.UserCreateViewState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.ButtonText
@@ -43,15 +44,17 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.ButtonText
 @Composable
 fun CreateUserScreen(
     modifier: Modifier = Modifier,
-    viewModel: UserCreateViewModel,
+    screenState: State<UserCreateViewState> = mutableStateOf(UserCreateViewState()),
+    email: String = "",
+    password: String = "",
+    confirmPassword: String = "",
+    onHandleEvent: (UserCreateEvent) -> Unit = { _ -> },
     onCreateUser: () -> Unit = {},
     onLogin: () -> Unit = {}
 ) {
     SurfaceWithSystemBars(
         modifier = modifier
     ) {
-        val screenState = viewModel.userCreateViewState.collectAsStateWithLifecycle()
-
         val context = LocalContext.current
 
         EventEffect(
@@ -61,7 +64,7 @@ fun CreateUserScreen(
 
         EventEffect(
             event = screenState.value.registerError,
-            onConsumed = { viewModel.consumeRegisterError() }
+            onConsumed = { onHandleEvent(UserCreateEvent.ConsumeRegisterError) }
         ) { if (it.isNotBlank()) Toast.makeText(context, it, Toast.LENGTH_LONG).show() }
 
         val scrollState = rememberScrollState()
@@ -94,9 +97,9 @@ fun CreateUserScreen(
                     modifier = modifier
                         .fillMaxWidth()
                         .padding(horizontal = 24.dp),
-                    text = viewModel.email,
+                    text = email,
                     label = "Введіть свій email",
-                    onValueChange = { viewModel.validateEmail(it) },
+                    onValueChange = { onHandleEvent(UserCreateEvent.ValidateEmail(it)) },
                     isError = screenState.value.emailValid == ValidField.INVALID,
                     errorText = "Ви ввели некоректний email",
                     leadingIcon = {
@@ -113,8 +116,8 @@ fun CreateUserScreen(
                     modifier = modifier
                         .fillMaxWidth()
                         .padding(horizontal = 24.dp),
-                    password = viewModel.password,
-                    onValueChange = { viewModel.validatePassword(it) },
+                    password = password,
+                    onValueChange = { onHandleEvent(UserCreateEvent.ValidatePassword(it)) },
                     isError = screenState.value.passwordValid == ValidField.INVALID
                 )
 
@@ -137,8 +140,8 @@ fun CreateUserScreen(
                         .fillMaxWidth()
                         .padding(horizontal = 24.dp),
                     label = "Повторіть ваш пароль",
-                    password = viewModel.confirmPassword,
-                    onValueChange = { viewModel.validateConfirmPassword(it) },
+                    password = confirmPassword,
+                    onValueChange = { onHandleEvent(UserCreateEvent.ValidateConfirmPassword(it)) },
                     isError = screenState.value.confirmPasswordValid == ValidField.INVALID,
                     errorText = "Паролі не співпадають"
                 )
@@ -153,7 +156,7 @@ fun CreateUserScreen(
                 ) {
                     Checkbox(
                         checked = screenState.value.isPolicyChecked,
-                        onCheckedChange = { viewModel.updatePolicyCheck(it) }
+                        onCheckedChange = { onHandleEvent(UserCreateEvent.UpdatePolicyCheck(it)) }
                     )
                     Text(
                         modifier = modifier
@@ -177,7 +180,7 @@ fun CreateUserScreen(
                         .height(48.dp),
                     onClick = {
 //                        onCreateUser() //for test
-                        viewModel.registerUser()
+                        onHandleEvent(UserCreateEvent.RegisterUser)
                     },
                     enabled = screenState.value.isAllConform
                 ) {
@@ -248,7 +251,5 @@ fun CreateUserScreen(
 @Composable
 @Preview
 fun CreateUserPreview() {
-    CreateUserScreen(
-        viewModel = getViewModel()
-    )
+    CreateUserScreen()
 }

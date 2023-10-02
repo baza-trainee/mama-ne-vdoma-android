@@ -20,10 +20,10 @@ import tech.baza_trainee.mama_ne_vdoma.data.repository.LocationRepositoryImpl
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.AuthRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.LocationRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.vm.UserCreateViewModel
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.vm.UserSettingsViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.vm.LoginScreenViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.vm.NewPasswordScreenViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.vm.RestorePasswordScreenViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.vm.UserSettingsViewModel
 
 val userKoinModule = module {
     factory { Gson() }

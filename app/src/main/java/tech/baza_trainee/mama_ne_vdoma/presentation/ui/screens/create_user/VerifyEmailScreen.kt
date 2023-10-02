@@ -12,23 +12,29 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import org.koin.androidx.compose.getViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.OtpTextField
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.SurfaceWithSystemBars
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.vm.UserCreateViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.VerifyEmailEvent
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.VerifyEmailViewState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.ButtonText
 
 @Composable
 fun VerifyEmailScreen(
     modifier: Modifier = Modifier,
-    viewModel: UserCreateViewModel,
+    screenState: State<VerifyEmailViewState> = mutableStateOf(VerifyEmailViewState()),
+    otp: String = "",
+    onHandleEvent: (VerifyEmailEvent) -> Unit = { _ -> },
     onVerify: () -> Unit = {}
 ) {
     SurfaceWithSystemBars {
@@ -36,8 +42,6 @@ fun VerifyEmailScreen(
             modifier = modifier.fillMaxSize(),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            val screenState = viewModel.verifyEmailViewState.collectAsStateWithLifecycle()
-
             Column(
                 modifier = modifier
                     .imePadding()
@@ -72,13 +76,27 @@ fun VerifyEmailScreen(
                 Spacer(modifier = modifier.height(32.dp))
 
                 OtpTextField(
-                    otpText = viewModel.otp,
+                    otpText = otp,
                     onOtpTextChange = { value, otpInputFilled ->
-                        viewModel.verifyEmail(value, otpInputFilled) {
-                            onVerify()
-                        }
+                        onHandleEvent(
+                            VerifyEmailEvent.VerifyEmail(value, otpInputFilled) {
+                                onVerify()
+                            }
+                        )
                     }
                 )
+                if (screenState.value.otpValid == ValidField.INVALID)
+                    Text(
+                        text = "Ви ввели невірний код",
+                        color = Color.Red,
+                        modifier = modifier
+                            .padding(horizontal = 24.dp),
+                        fontFamily = redHatDisplayFontFamily,
+                        style = TextStyle(
+                            fontFamily = redHatDisplayFontFamily
+                        ),
+                        fontSize = 14.sp
+                    )
             }
 
             Button(
@@ -99,7 +117,5 @@ fun VerifyEmailScreen(
 @Composable
 @Preview
 fun VerifyEmailPreview() {
-    VerifyEmailScreen(
-        viewModel = getViewModel()
-    )
+    VerifyEmailScreen()
 }

@@ -13,7 +13,9 @@ import kotlinx.coroutines.flow.update
 import tech.baza_trainee.mama_ne_vdoma.domain.model.AuthUserEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.ConfirmEmailEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.AuthRepository
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.UserCreateEvent
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.UserCreateViewState
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.VerifyEmailEvent
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.VerifyEmailViewState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
@@ -46,7 +48,28 @@ class UserCreateViewModel(
     var otp by mutableStateOf("")
         private set
 
-    fun validateEmail(email: String) {
+    fun handleUserCreateEvent(event: UserCreateEvent) {
+        when(event) {
+            UserCreateEvent.ConsumeRegisterError -> consumeRegisterError()
+            UserCreateEvent.RegisterUser -> registerUser()
+            is UserCreateEvent.UpdatePolicyCheck -> updatePolicyCheck(event.isChecked)
+            is UserCreateEvent.ValidateConfirmPassword -> validateConfirmPassword(event.confirmPassword)
+            is UserCreateEvent.ValidateEmail -> validateEmail(event.email)
+            is UserCreateEvent.ValidatePassword -> validatePassword(event.password)
+        }
+    }
+
+    fun handleVerifyEmailEvent(event: VerifyEmailEvent) {
+        when(event) {
+            is VerifyEmailEvent.VerifyEmail -> verifyEmail(
+                event.otp,
+                event.otpInputFilled,
+                event.onSuccess
+            )
+        }
+    }
+
+    private fun validateEmail(email: String) {
         this.email = email
         val emailValid = if (email.validateEmail()) ValidField.VALID
         else ValidField.INVALID
@@ -58,7 +81,7 @@ class UserCreateViewModel(
         updateConform()
     }
 
-    fun validatePassword(password: String) {
+    private fun validatePassword(password: String) {
         this.password = password
         val passwordValid = if (password.validatePassword()) ValidField.VALID
         else ValidField.INVALID
@@ -70,13 +93,13 @@ class UserCreateViewModel(
         checkPasswords(password, confirmPassword)
     }
 
-    fun validateConfirmPassword(confirmPassword: String) {
+    private fun validateConfirmPassword(confirmPassword: String) {
         this.confirmPassword = confirmPassword
         checkPasswords(password, confirmPassword)
         updateConform()
     }
 
-    fun updatePolicyCheck(isChecked: Boolean) {
+    private fun updatePolicyCheck(isChecked: Boolean) {
         _userCreateViewState.update {
             it.copy(
                 isPolicyChecked = isChecked
@@ -106,7 +129,7 @@ class UserCreateViewModel(
         }
     }
 
-    fun registerUser() {
+    private fun registerUser() {
         networkExecutor {
             execute {
                 authRepository.registerUser(
@@ -140,7 +163,7 @@ class UserCreateViewModel(
         }
     }
 
-    fun consumeRegisterError() {
+    private fun consumeRegisterError() {
         _userCreateViewState.update {
             it.copy(
                 registerError = consumed()
@@ -148,7 +171,7 @@ class UserCreateViewModel(
         }
     }
 
-    fun verifyEmail(otp: String, isLastDigit: Boolean, onSuccess: () -> Unit) {
+    private fun verifyEmail(otp: String, isLastDigit: Boolean, onSuccess: () -> Unit) {
         this.otp = otp
         if (isLastDigit) {
 //            onSuccess() //for test

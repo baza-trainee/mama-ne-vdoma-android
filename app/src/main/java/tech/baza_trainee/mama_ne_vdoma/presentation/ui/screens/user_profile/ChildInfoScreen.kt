@@ -1,4 +1,4 @@
-package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user
+package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,6 +16,8 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
@@ -23,20 +25,22 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import org.koin.androidx.compose.getViewModel
 import tech.baza_trainee.mama_ne_vdoma.domain.model.Gender
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.OutlinedTextFieldWithError
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.RadioGroup
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.TopBarWithArrow
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.vm.UserSettingsViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.model.ChildInfoEvent
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.model.ChildInfoViewState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.ButtonText
 
 @Composable
 fun ChildInfoScreen(
     modifier: Modifier = Modifier,
-    viewModel: UserSettingsViewModel,
+    screenState: State<ChildInfoViewState> = mutableStateOf(ChildInfoViewState()),
+    childName: String = "",
+    childAge: String = "",
+    onHandleChildEvent: (ChildInfoEvent) -> Unit = { _ -> },
     onNext: () -> Unit = { },
     onBack: () -> Unit = { }
 ) {
@@ -46,8 +50,6 @@ fun ChildInfoScreen(
             .fillMaxSize(),
         color = MaterialTheme.colorScheme.background
     ) {
-        val screenState = viewModel.childInfoScreenState.collectAsStateWithLifecycle()
-
         ConstraintLayout(
             modifier = modifier
                 .imePadding()
@@ -85,9 +87,9 @@ fun ChildInfoScreen(
                     modifier = modifier
                         .fillMaxWidth()
                         .padding(horizontal = 24.dp),
-                    text = viewModel.childName,
+                    text = childName,
                     label = "Вкажіть ім'я дитини",
-                    onValueChange = { viewModel.validateChildName(it) },
+                    onValueChange = { onHandleChildEvent(ChildInfoEvent.ValidateChildName(it)) },
                     isError = screenState.value.nameValid == ValidField.INVALID,
                     errorText = "Ви ввели некоректнe ім'я"
                 )
@@ -98,9 +100,9 @@ fun ChildInfoScreen(
                     modifier = modifier
                         .fillMaxWidth()
                         .padding(horizontal = 24.dp),
-                    text = viewModel.childAge,
+                    text = childAge,
                     label = "Вкажіть вік дитини",
-                    onValueChange = { viewModel.validateAge(it) },
+                    onValueChange = { onHandleChildEvent(ChildInfoEvent.ValidateAge(it)) },
                     isError = screenState.value.ageValid == ValidField.INVALID,
                     errorText = "Ви ввели некоректний вік",
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
@@ -117,7 +119,7 @@ fun ChildInfoScreen(
                     radioGroupOptions = genderOptions,
                     getText = { it.gender },
                     selected = screenState.value.gender,
-                    onSelectedChange = { viewModel.setGender(it) }
+                    onSelectedChange = { onHandleChildEvent(ChildInfoEvent.SetGender(it)) }
                 )
             }
 
@@ -130,7 +132,7 @@ fun ChildInfoScreen(
                     }
                     .height(48.dp),
                 onClick = {
-                    viewModel.saveCurrentChild()
+                    onHandleChildEvent(ChildInfoEvent.SaveCurrentChild)
                     onNext()
                 },
                 enabled = screenState.value.nameValid == ValidField.VALID &&
@@ -148,7 +150,5 @@ fun ChildInfoScreen(
 @Composable
 @Preview
 fun ChildInfoPreview() {
-    ChildInfoScreen(
-        viewModel = getViewModel()
-    )
+    ChildInfoScreen()
 }

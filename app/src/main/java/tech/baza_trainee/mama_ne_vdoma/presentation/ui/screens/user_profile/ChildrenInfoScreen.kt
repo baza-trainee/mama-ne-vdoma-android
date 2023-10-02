@@ -1,4 +1,4 @@
-package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user
+package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -16,6 +16,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -24,20 +26,20 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import org.koin.androidx.compose.getViewModel
 import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.ChildInfoDesk
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.SurfaceWithNavigationBars
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.TopBarWithArrow
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.vm.UserSettingsViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.model.ChildrenInfoEvent
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.model.ChildrenInfoViewState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.ButtonText
 
 @Composable
 fun  ChildrenInfoScreen(
     modifier: Modifier = Modifier,
-    viewModel: UserSettingsViewModel,
+    screenState: State<ChildrenInfoViewState> = mutableStateOf(ChildrenInfoViewState()),
+    onHandleChildrenInfoEvent: (ChildrenInfoEvent) -> Unit = {},
     onNext: () -> Unit = {},
     onBack: () -> Unit = {},
     onEdit: () -> Unit = {}
@@ -45,8 +47,6 @@ fun  ChildrenInfoScreen(
     SurfaceWithNavigationBars(
         modifier = modifier
     ) {
-        val screenState = viewModel.childrenInfoScreenState.collectAsStateWithLifecycle()
-
         ConstraintLayout(
             modifier = modifier
                 .imePadding()
@@ -87,11 +87,11 @@ fun  ChildrenInfoScreen(
                     ChildInfoDesk(
                         child,
                         onEdit = {
-                            viewModel.setCurrentChild(it)
+                            onHandleChildrenInfoEvent(ChildrenInfoEvent.SetChild(it))
                             onEdit()
                         },
                         onDelete = {
-                            viewModel.deleteChild(it)
+                            onHandleChildrenInfoEvent(ChildrenInfoEvent.DeleteChild(it))
                         }
                     )
                     Spacer(modifier = modifier.height(16.dp))
@@ -102,7 +102,7 @@ fun  ChildrenInfoScreen(
                         .padding(horizontal = 24.dp)
                         .fillMaxWidth()
                         .clickable {
-                            viewModel.resetCurrentChild()
+                            onHandleChildrenInfoEvent(ChildrenInfoEvent.ResetChild)
                             onEdit()
                         },
                     verticalAlignment = Alignment.CenterVertically,
@@ -145,7 +145,5 @@ fun  ChildrenInfoScreen(
 @Composable
 @Preview
 fun ChildrenInfoPreview() {
-    ChildrenInfoScreen(
-        viewModel = getViewModel()
-    )
+    ChildrenInfoScreen()
 }

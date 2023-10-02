@@ -1,4 +1,4 @@
-package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.vm
+package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.vm
 
 import android.content.ContentResolver
 import android.graphics.Bitmap
@@ -18,11 +18,16 @@ import tech.baza_trainee.mama_ne_vdoma.domain.model.Gender
 import tech.baza_trainee.mama_ne_vdoma.domain.model.Period
 import tech.baza_trainee.mama_ne_vdoma.domain.model.ScheduleModel
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.LocationRepository
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.ChildInfoViewState
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.ChildrenInfoScreenState
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.ScheduleScreenState
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.UserInfoViewState
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.UserLocationViewState
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.model.ChildInfoEvent
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.model.ChildInfoViewState
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.model.ChildrenInfoEvent
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.model.ChildrenInfoViewState
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.model.ScheduleEvent
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.model.ScheduleViewState
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.model.UserInfoEvent
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.model.UserInfoViewState
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.model.UserLocationEvent
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.model.UserLocationViewState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.decodeBitmap
@@ -46,14 +51,14 @@ class UserSettingsViewModel(
     private val _childInfoScreenState = MutableStateFlow(ChildInfoViewState())
     val childInfoScreenState: StateFlow<ChildInfoViewState> = _childInfoScreenState.asStateFlow()
 
-    private val _childScheduleScreenState = MutableStateFlow(ScheduleScreenState())
-    val childScheduleScreenState: StateFlow<ScheduleScreenState> = _childScheduleScreenState.asStateFlow()
+    private val _childScheduleViewState = MutableStateFlow(ScheduleViewState())
+    val childScheduleViewState: StateFlow<ScheduleViewState> = _childScheduleViewState.asStateFlow()
 
-    private val _parentScheduleScreenState = MutableStateFlow(ScheduleScreenState())
-    val parentScheduleScreenState: StateFlow<ScheduleScreenState> = _parentScheduleScreenState.asStateFlow()
+    private val _parentScheduleViewState = MutableStateFlow(ScheduleViewState())
+    val parentScheduleViewState: StateFlow<ScheduleViewState> = _parentScheduleViewState.asStateFlow()
 
-    private val _childrenInfoScreenState = MutableStateFlow(ChildrenInfoScreenState())
-    val childrenInfoScreenState: StateFlow<ChildrenInfoScreenState> = _childrenInfoScreenState.asStateFlow()
+    private val _childrenInfoViewState = MutableStateFlow(ChildrenInfoViewState())
+    val childrenInfoViewState: StateFlow<ChildrenInfoViewState> = _childrenInfoViewState.asStateFlow()
 
     var userAddress by mutableStateOf("")
         private set
@@ -62,12 +67,6 @@ class UserSettingsViewModel(
         private set
 
     var userPhone by mutableStateOf("")
-        private set
-
-    var userAvatar by mutableStateOf<Bitmap?>(null)
-        private set
-
-    var countryCode by mutableStateOf("")
         private set
 
     var childName by mutableStateOf("")
@@ -83,14 +82,56 @@ class UserSettingsViewModel(
 
     private var currentChildId = ""
 
-    fun setUriForCrop(uri: Uri) {
-        uriForCrop = uri
+    fun handleUserInfoEvent(event: UserInfoEvent) {
+        when(event) {
+            is UserInfoEvent.SetUriForCrop -> setUriForCrop(event.uri)
+            is UserInfoEvent.ValidateUserName -> validateUserName(event.name)
+            is UserInfoEvent.ValidatePhone -> validatePhone(event.phone)
+            is UserInfoEvent.SetCode -> setCode(event.code)
+        }
+    }
+
+    fun handleUserLocationEvent(event: UserLocationEvent) {
+        when(event) {
+            UserLocationEvent.GetLocationFromAddress -> getLocationFromAddress()
+            UserLocationEvent.RequestUserLocation -> requestCurrentLocation()
+            is UserLocationEvent.UpdateUserAddress -> updateUserAddress(event.address)
+        }
+    }
+
+    fun handleChildInfoEvent(event: ChildInfoEvent) {
+        when(event) {
+            ChildInfoEvent.SaveCurrentChild -> saveCurrentChild()
+            is ChildInfoEvent.SetGender -> setGender(event.gender)
+            is ChildInfoEvent.ValidateAge -> validateAge(event.age)
+            is ChildInfoEvent.ValidateChildName -> validateChildName(event.name)
+        }
+    }
+
+    fun handleChildrenInfoEvent(event: ChildrenInfoEvent) {
+        when(event) {
+            is ChildrenInfoEvent.DeleteChild -> deleteChild(event.id)
+            ChildrenInfoEvent.ResetChild -> resetCurrentChild()
+            is ChildrenInfoEvent.SetChild -> setCurrentChild(event.id)
+        }
+    }
+
+    fun handleScheduleEvent(event: ScheduleEvent) {
+        when(event) {
+            ScheduleEvent.SetCurrentChildSchedule -> setCurrentChildSchedule()
+            is ScheduleEvent.UpdateChildComment -> updateChildComment(event.comment)
+            is ScheduleEvent.UpdateChildSchedule -> updateChildSchedule(event.day, event.period)
+        }
     }
 
     fun getBitmapForCrop(contentResolver: ContentResolver) = uriForCrop.decodeBitmap(contentResolver)
 
     fun saveUserAvatar(image: Bitmap) {
-        userAvatar = image
+        _userInfoScreenState.update {
+            it.copy(
+                userAvatar = image
+            )
+        }
 //        val deferred = coroutineScope.async(Dispatchers.IO) {
 //            val filename = "cropped_avatar"
 //            context.openFileOutput(filename, Context.MODE_PRIVATE)
@@ -104,11 +145,19 @@ class UserSettingsViewModel(
 //        }
     }
 
-    fun setCode(code: String) {
-        countryCode = code
+    private fun setUriForCrop(uri: Uri) {
+        uriForCrop = uri
     }
 
-    fun validatePhone(phone: String) {
+    private fun setCode(code: String) {
+        _userInfoScreenState.update {
+            it.copy(
+                code = code
+            )
+        }
+    }
+
+    private fun validatePhone(phone: String) {
         userPhone = phone
         val phoneValid = if (phone.length in PHONE_LENGTH && phone.none { !it.isDigit() }) ValidField.VALID
         else ValidField.INVALID
@@ -119,7 +168,7 @@ class UserSettingsViewModel(
         }
     }
 
-    fun validateUserName(name: String) {
+    private fun validateUserName(name: String) {
         userName = name
         val nameValid = if (name.length in NAME_LENGTH && name.all { it.isLetter() || it.isDigit() }) ValidField.VALID
         else ValidField.INVALID
@@ -130,7 +179,7 @@ class UserSettingsViewModel(
         }
     }
 
-    fun validateChildName(name: String) {
+    private fun validateChildName(name: String) {
         childName = name
         val nameValid = if (name.none { !it.isLetter() }) ValidField.VALID
         else ValidField.INVALID
@@ -141,7 +190,7 @@ class UserSettingsViewModel(
         }
     }
 
-    fun validateAge(age: String) {
+    private fun validateAge(age: String) {
         childAge =  age
 
         val intAge = age.toFloatOrNull()
@@ -156,17 +205,17 @@ class UserSettingsViewModel(
         }
     }
 
-    fun setGender(gender: Gender) {
+    private fun setGender(gender: Gender) {
         _childInfoScreenState.update {
             it.copy( gender = gender)
         }
     }
 
-    fun updateChildSchedule(dayOfWeek: DayOfWeek, dayPeriod: Period) {
-        val currentSchedule = _childScheduleScreenState.value.schedule
+    private fun updateChildSchedule(dayOfWeek: DayOfWeek, dayPeriod: Period) {
+        val currentSchedule = _childScheduleViewState.value.schedule
         when (dayPeriod) {
             Period.WHOLE_DAY -> {
-                _childScheduleScreenState.update {
+                _childScheduleViewState.update {
                     it.copy(
                         schedule = currentSchedule.apply {
                             schedule[dayOfWeek] = schedule[dayOfWeek]?.copy(
@@ -185,7 +234,7 @@ class UserSettingsViewModel(
             }
 
             Period.MORNING -> {
-                _childScheduleScreenState.update {
+                _childScheduleViewState.update {
                     it.copy(
                         schedule = currentSchedule.apply {
                             schedule[dayOfWeek] = schedule[dayOfWeek]?.copy(
@@ -211,7 +260,7 @@ class UserSettingsViewModel(
             }
 
             Period.NOON -> {
-                _childScheduleScreenState.update {
+                _childScheduleViewState.update {
                     it.copy(
                         schedule = currentSchedule.apply {
                             schedule[dayOfWeek] = schedule[dayOfWeek]?.copy(
@@ -237,7 +286,7 @@ class UserSettingsViewModel(
             }
 
             Period.AFTERNOON -> {
-                _childScheduleScreenState.update {
+                _childScheduleViewState.update {
                     it.copy(
                         schedule = currentSchedule.apply {
                             schedule[dayOfWeek] = schedule[dayOfWeek]?.copy(
@@ -263,12 +312,12 @@ class UserSettingsViewModel(
             }
         }
 
-        with(_childrenInfoScreenState.value.children.toMutableList()) {
+        with(_childrenInfoViewState.value.children.toMutableList()) {
             val child = firstOrNull { it.id == currentChildId }
             if (child != null) {
                 val index = indexOf(child)
                 val newChild = child.copy(
-                    schedule = _childScheduleScreenState.value.schedule,
+                    schedule = _childScheduleViewState.value.schedule,
                 )
                 this[index] = newChild
             } else
@@ -278,11 +327,11 @@ class UserSettingsViewModel(
                         name = childName,
                         age = childAge,
                         gender = _childInfoScreenState.value.gender,
-                        schedule = _childScheduleScreenState.value.schedule,
+                        schedule = _childScheduleViewState.value.schedule,
                         comment = childComment.value
                     )
                 )
-            _childrenInfoScreenState.update {
+            _childrenInfoViewState.update {
                 it.copy(
                     children = this
                 )
@@ -290,11 +339,11 @@ class UserSettingsViewModel(
         }
     }
 
-    fun updateChildComment(comment: String) {
+    private fun updateChildComment(comment: String) {
         this.childComment.value = comment
     }
 
-    fun requestCurrentLocation() {
+    private fun requestCurrentLocation() {
         networkExecutor<LatLng?> {
             execute {
                 locationRepository.getCurrentLocation()
@@ -313,11 +362,11 @@ class UserSettingsViewModel(
         }
     }
 
-    fun updateUserAddress(address: String) {
+    private fun updateUserAddress(address: String) {
         this.userAddress = address
     }
 
-    fun getLocationFromAddress() {
+    private fun getLocationFromAddress() {
         networkExecutor<LatLng?> {
             execute {
                 locationRepository.getLocationFromAddress(userAddress)
@@ -336,7 +385,7 @@ class UserSettingsViewModel(
         }
     }
 
-    fun getAddressFromLocation(latLng: LatLng) {
+    private fun getAddressFromLocation(latLng: LatLng) {
         networkExecutor<String?> {
             execute {
                 locationRepository.getAddressFromLocation(latLng)
@@ -347,15 +396,15 @@ class UserSettingsViewModel(
         }
     }
 
-    fun resetCurrentChild() {
+    private fun resetCurrentChild() {
         currentChildId = ""
     }
 
-    fun deleteChild(childId: String) {
-        with(_childrenInfoScreenState.value.children.toMutableList()) {
+    private fun deleteChild(childId: String) {
+        with(_childrenInfoViewState.value.children.toMutableList()) {
             val child = firstOrNull { it.id == childId }
             remove(child)
-            _childrenInfoScreenState.update {
+            _childrenInfoViewState.update {
                 it.copy(
                     children = this
                 )
@@ -363,14 +412,14 @@ class UserSettingsViewModel(
         }
     }
 
-    fun setCurrentChild(childId: String = "") {
+    private fun setCurrentChild(childId: String = "") {
         currentChildId = when {
             childId.isNotEmpty() -> childId
             currentChildId.isEmpty() -> UUID.randomUUID().toString()
             else -> currentChildId
         }
         val currentChild =
-            _childrenInfoScreenState.value.children.firstOrNull() { it.id == currentChildId }
+            _childrenInfoViewState.value.children.firstOrNull() { it.id == currentChildId }
                 ?: Child(
                     id = currentChildId
                 )
@@ -385,8 +434,8 @@ class UserSettingsViewModel(
         }
     }
 
-    fun saveCurrentChild() {
-        val list = _childrenInfoScreenState.value.children.toMutableList()
+    private fun saveCurrentChild() {
+        val list = _childrenInfoViewState.value.children.toMutableList()
         val child = list.firstOrNull { it.id == currentChildId }
         if (child != null) {
             val index = list.indexOf(child)
@@ -405,18 +454,18 @@ class UserSettingsViewModel(
                     gender = _childInfoScreenState.value.gender
                 )
             )
-        _childrenInfoScreenState.update {
+        _childrenInfoViewState.update {
             it.copy(
                 children = list
             )
         }
     }
 
-    fun setCurrentChildSchedule() {
-        with(_childrenInfoScreenState.value.children.toMutableList()) {
+    private fun setCurrentChildSchedule() {
+        with(_childrenInfoViewState.value.children.toMutableList()) {
             val child = firstOrNull { it.id == currentChildId }
             childComment.value = child?.comment.orEmpty()
-            _childScheduleScreenState.update {
+            _childScheduleViewState.update {
                 it.copy(
                     schedule = child?.schedule ?: ScheduleModel()
                 )
