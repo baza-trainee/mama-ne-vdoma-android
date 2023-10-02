@@ -9,7 +9,7 @@ fun String.validateEmail(): Boolean = Pattern.compile(EMAIL_PATTERN).matcher(thi
 fun String.validatePassword() = contains(PATTERN_DIGITS.toRegex()) &&
         contains(PATTERN_LATIN.toRegex()) &&
         filterNot { it.isLetter() || it.isDigit() }.contains(PATTERN_SPECIAL_CHARACTERS.toRegex()) &&
-        none { it.isWhitespace() } &&
+        none { it.isWhitespace() } && !none { it.isLowerCase() } && !none { it.isUpperCase() } &&
         length in MIN_PASSWORD_LENGTH..MAX_PASSWORD_LENGTH
 
 const val EMAIL_PATTERN =
