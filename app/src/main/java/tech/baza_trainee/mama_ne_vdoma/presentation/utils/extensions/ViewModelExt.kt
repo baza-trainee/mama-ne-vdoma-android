@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.NetworkRequestBuilder
@@ -20,17 +21,18 @@ fun <T> CoroutineScope.networkOperation(networkRequestBuilder: NetworkRequestBui
     val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
         var message = ""
         var code = 0
-        when(throwable) {
+        when (throwable) {
             is Exception -> {
                 message = throwable.message.orEmpty()
                 code = if (throwable is HttpException) throwable.code() else 0
             }
+
             is Error -> {
                 message = throwable.message.orDefault("defaultErrorMessage")
             }
         }
 
-        with(builder){
+        with(builder) {
             builderError?.invoke(message)
             builderErrorWithCode?.invoke(message, code)
             builderFinish?.invoke()
@@ -38,7 +40,7 @@ fun <T> CoroutineScope.networkOperation(networkRequestBuilder: NetworkRequestBui
         }
     }
 
-    launch(exceptionHandler) {
+    launch(exceptionHandler + Dispatchers.IO) {
         builder.builderStart?.invoke()
 
         builder.builderLoading?.invoke(true)
