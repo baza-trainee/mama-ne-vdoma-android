@@ -66,6 +66,9 @@ class UserCreateViewModel(
                 event.otpInputFilled,
                 event.onSuccess
             )
+
+            VerifyEmailEvent.ConsumeRequestError -> consumeRequestError()
+            VerifyEmailEvent.ResendCode -> Unit//confirmUser { event.onSuccess() }
         }
     }
 
@@ -189,8 +192,14 @@ class UserCreateViewModel(
                     )
                 )
             }
-            onSuccess {  }
-            onError {  }
+            onSuccess { loginUser() }
+            onError { error ->
+                _verifyEmailViewState.update {
+                    it.copy(
+                        requestError = triggered(error)
+                    )
+                }
+            }
             onLoading { isLoading ->
                 _verifyEmailViewState.update {
                     it.copy(
@@ -198,6 +207,48 @@ class UserCreateViewModel(
                     )
                 }
             }
+        }
+    }
+
+    private fun loginUser() {
+        networkExecutor {
+            execute {
+                authRepository.loginUser(
+                    AuthUserEntity(
+                        email = email,
+                        password = password
+                    )
+                )
+            }
+            onSuccess {
+                _verifyEmailViewState.update {
+                    it.copy(
+                        loginSuccess = triggered
+                    )
+                }
+            }
+            onError { error ->
+                _verifyEmailViewState.update {
+                    it.copy(
+                        requestError = triggered(error)
+                    )
+                }
+            }
+            onLoading { isLoading ->
+                _verifyEmailViewState.update {
+                    it.copy(
+                        isLoading = isLoading
+                    )
+                }
+            }
+        }
+    }
+
+    private fun consumeRequestError() {
+        _verifyEmailViewState.update {
+            it.copy(
+                requestError = consumed()
+            )
         }
     }
 }

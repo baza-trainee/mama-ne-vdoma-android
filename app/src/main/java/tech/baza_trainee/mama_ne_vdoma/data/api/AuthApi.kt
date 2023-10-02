@@ -5,6 +5,7 @@ import retrofit2.http.Body
 import retrofit2.http.POST
 import tech.baza_trainee.mama_ne_vdoma.data.model.AuthUserDto
 import tech.baza_trainee.mama_ne_vdoma.data.model.ConfirmEmailDto
+import tech.baza_trainee.mama_ne_vdoma.data.model.JWTTokenDto
 
 interface AuthApi {
 
@@ -15,6 +16,6 @@ interface AuthApi {
     suspend fun confirmEmail(@Body confirmation: ConfirmEmailDto): Response<Unit>
 
     @POST("api/auth/login")
-    suspend fun loginUser(@Body user: AuthUserDto): Response<Unit>
+    suspend fun loginUser(@Body user: AuthUserDto): Response<JWTTokenDto>
 
 }

@@ -36,7 +36,7 @@ fun NavGraphBuilder.createUserNavGraph(
                 screenState = userCreateViewModel.verifyEmailViewState.collectAsStateWithLifecycle(),
                 otp = userCreateViewModel.otp,
                 onHandleEvent = { userCreateViewModel.handleVerifyEmailEvent(it) },
-                onVerify = { navController.navigate("user_profile_graph") }
+                onSuccess = { navController.navigate("user_profile_graph") }
             )
         }
     }

@@ -1,5 +1,6 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -16,11 +17,14 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import de.palm.composestateevents.EventEffect
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.LoadingIndicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.OtpTextField
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.SurfaceWithSystemBars
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.VerifyEmailEvent
@@ -35,9 +39,21 @@ fun VerifyEmailScreen(
     screenState: State<VerifyEmailViewState> = mutableStateOf(VerifyEmailViewState()),
     otp: String = "",
     onHandleEvent: (VerifyEmailEvent) -> Unit = { _ -> },
-    onVerify: () -> Unit = {}
+    onSuccess: () -> Unit = {}
 ) {
     SurfaceWithSystemBars {
+        val context = LocalContext.current
+
+        EventEffect(
+            event = screenState.value.loginSuccess,
+            onConsumed = {}
+        ) { onSuccess() }
+
+        EventEffect(
+            event = screenState.value.requestError,
+            onConsumed = { onHandleEvent(VerifyEmailEvent.ConsumeRequestError) }
+        ) { if (it.isNotBlank()) Toast.makeText(context, it, Toast.LENGTH_LONG).show() }
+
         Column(
             modifier = modifier.fillMaxSize(),
             verticalArrangement = Arrangement.SpaceBetween
@@ -80,7 +96,7 @@ fun VerifyEmailScreen(
                     onOtpTextChange = { value, otpInputFilled ->
                         onHandleEvent(
                             VerifyEmailEvent.VerifyEmail(value, otpInputFilled) {
-                                onVerify()
+                                onSuccess()
                             }
                         )
                     }
@@ -111,6 +127,8 @@ fun VerifyEmailScreen(
                 )
             }
         }
+
+        if (screenState.value.isLoading) LoadingIndicator()
     }
 }
 
