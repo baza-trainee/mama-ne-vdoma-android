@@ -103,7 +103,6 @@ dependencies {
     implementation("com.canopas.jetcountrypicker:jetcountrypicker:1.0.9")
 
     implementation("com.github.SmartToolFactory:Compose-Cropper:0.4.0")
-    implementation("io.coil-kt:coil-compose:2.4.0")
 
     implementation("com.github.leonard-palm:compose-state-events:2.0.3")
 

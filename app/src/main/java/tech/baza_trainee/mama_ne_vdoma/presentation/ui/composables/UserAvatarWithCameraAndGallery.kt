@@ -32,6 +32,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -40,8 +41,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.app.ActivityCompat
 import androidx.core.content.FileProvider
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import tech.baza_trainee.mama_ne_vdoma.R
@@ -121,25 +120,32 @@ fun UserAvatarWithCameraAndGallery(
             }
         }
 
-
-
-    AsyncImage(
-        model = ImageRequest.Builder(LocalContext.current)
-            .data(avatar)
-            .crossfade(true)
-            .build(),
-        placeholder = painterResource(id = R.drawable.no_photo),
-        fallback = painterResource(id = R.drawable.no_photo),
-        contentDescription = "avatar",
-        contentScale = ContentScale.FillBounds,
-        modifier = modifier
-            .width(172.dp)
-            .height(172.dp)
-            .clip(CircleShape)
-            .clickable {
-                showPickerDialog = true
-            }
-    )
+    if (avatar != null)
+        Image(
+            bitmap = avatar.asImageBitmap(),
+            contentDescription = "avatar",
+            contentScale = ContentScale.Fit,
+            modifier = modifier
+                .width(172.dp)
+                .height(172.dp)
+                .clip(CircleShape)
+                .clickable {
+                    showPickerDialog = true
+                }
+        )
+    else
+        Image(
+            painter = painterResource(id = R.drawable.no_photo),
+            contentDescription = "avatar",
+            contentScale = ContentScale.Fit,
+            modifier = modifier
+                .width(172.dp)
+                .height(172.dp)
+                .clip(CircleShape)
+                .clickable {
+                    showPickerDialog = true
+                }
+        )
 
     if (showPickerDialog) {
         AlertDialog(

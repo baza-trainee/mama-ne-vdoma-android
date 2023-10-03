@@ -17,8 +17,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asAndroidBitmap
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -31,19 +31,22 @@ import com.smarttoolfactory.cropper.model.OutlineType
 import com.smarttoolfactory.cropper.model.OvalCropShape
 import com.smarttoolfactory.cropper.settings.CropDefaults
 import com.smarttoolfactory.cropper.settings.CropOutlineProperty
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.LoadingIndicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.SurfaceWithSystemBars
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 
 @Composable
 fun ImageCropScreen(
     modifier: Modifier = Modifier,
-    imageForCrop: Bitmap = Bitmap.createBitmap(200, 200, Bitmap.Config.ARGB_8888),
-    onSaveUserAvatar: (Bitmap) -> Unit = { _ -> },
+    imageForCrop: ImageBitmap = ImageBitmap(512, 512),
+    onHandleCropEvent: (Bitmap) -> Unit = {},
     onImageCropped: () -> Unit = {}
 ) {
     SurfaceWithSystemBars(
         modifier = modifier
     ) {
+        var isCropping by remember { mutableStateOf(false) }
+
         Column(
             modifier = modifier
                 .fillMaxWidth(),
@@ -62,43 +65,36 @@ fun ImageCropScreen(
                 fontFamily = redHatDisplayFontFamily
             )
 
-            var crop by remember { mutableStateOf(false) }
-            var isCropping by remember { mutableStateOf(false) }
-
-            val croppedImage by remember { mutableStateOf(imageForCrop.asImageBitmap()) }
+            Spacer(modifier = modifier.height(8.dp))
 
             val handleSize: Float = LocalDensity.current.run { 20.dp.toPx() }
-            val cropProperties by remember {
-                mutableStateOf(
-                    CropDefaults.properties(
-                        cropOutlineProperty = CropOutlineProperty(
-                            OutlineType.Oval,
-                            OvalCropShape(0, "Oval")
-                        ),
-                        handleSize = handleSize,
-                        aspectRatio = AspectRatio(1f),
-                        fixedAspectRatio = true
-                    )
-                )
-            }
-            val cropStyle by remember { mutableStateOf(CropDefaults.style()) }
+            var crop by remember { mutableStateOf(false) }
 
             ImageCropper(
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f),
-                backgroundColor = MaterialTheme.colorScheme.surface,
-                imageBitmap = croppedImage,
+                imageBitmap = imageForCrop,
                 contentDescription = "Image Cropper",
-                cropStyle = cropStyle,
-                cropProperties = cropProperties,
+                cropStyle = CropDefaults.style(),
+                cropProperties = CropDefaults.properties(
+                    cropOutlineProperty = CropOutlineProperty(
+                        OutlineType.Oval,
+                        OvalCropShape(0, "Oval")
+                    ),
+                    handleSize = handleSize,
+                    aspectRatio = AspectRatio(1f),
+                    fixedAspectRatio = true
+                ),
                 crop = crop,
                 onCropStart = {
                     isCropping = true
                 },
                 onCropSuccess = {
-                    isCropping = false
+                    onHandleCropEvent(it.asAndroidBitmap())
+                    onImageCropped()
                     crop = false
+                    isCropping = false
                 }
             )
 
@@ -110,8 +106,7 @@ fun ImageCropScreen(
                     .fillMaxWidth()
                     .height(48.dp),
                 onClick = {
-                    onSaveUserAvatar(croppedImage.asAndroidBitmap())
-                    onImageCropped()
+                    crop = true
                 }
             ) {
                 Text(
@@ -121,6 +116,8 @@ fun ImageCropScreen(
                 )
             }
         }
+
+        if (isCropping) LoadingIndicator()
     }
 }
 

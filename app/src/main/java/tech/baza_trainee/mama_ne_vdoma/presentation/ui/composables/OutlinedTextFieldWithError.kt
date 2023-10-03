@@ -1,5 +1,6 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -80,7 +81,9 @@ fun OutlinedTextFieldWithError(
     errorText: String = "",
     keyboardOptions: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
 ) {
-    Column {
+    Column(
+        verticalArrangement = Arrangement.Top
+    ) {
         val focusRequester = remember { FocusRequester() }
 
         var isEmailFocused by remember { mutableStateOf(false) }

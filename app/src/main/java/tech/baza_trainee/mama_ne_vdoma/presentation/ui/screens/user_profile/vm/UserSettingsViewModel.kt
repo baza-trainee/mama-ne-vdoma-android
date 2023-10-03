@@ -1,6 +1,5 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.vm
 
-import android.content.ContentResolver
 import android.graphics.Bitmap
 import android.net.Uri
 import androidx.compose.runtime.mutableStateOf
@@ -35,7 +34,6 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.mode
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.decodeBase64
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.decodeBitmap
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.encodeToBase64
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.networkExecutor
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onError
@@ -49,11 +47,11 @@ class UserSettingsViewModel(
     private val locationRepository: LocationRepository
 ): ViewModel() {
 
-    private val _locationScreenState = MutableStateFlow(UserLocationViewState())
-    val locationScreenState: StateFlow<UserLocationViewState> = _locationScreenState.asStateFlow()
-
     private val _userInfoScreenState = MutableStateFlow(UserInfoViewState())
     val userInfoScreenState: StateFlow<UserInfoViewState> = _userInfoScreenState.asStateFlow()
+
+    private val _locationScreenState = MutableStateFlow(UserLocationViewState())
+    val locationScreenState: StateFlow<UserLocationViewState> = _locationScreenState.asStateFlow()
 
     private val _childInfoScreenState = MutableStateFlow(ChildInfoViewState())
     val childInfoScreenState: StateFlow<ChildInfoViewState> = _childInfoScreenState.asStateFlow()
@@ -70,9 +68,10 @@ class UserSettingsViewModel(
     var childComment = mutableStateOf("")
         private set
 
-    private var uriForCrop: Uri = Uri.EMPTY
-
     private var currentChildId = ""
+
+    var uriForCrop: Uri = Uri.EMPTY
+        private set
 
     init {
         getUserInfo()
@@ -80,7 +79,7 @@ class UserSettingsViewModel(
 
     fun handleUserInfoEvent(event: UserInfoEvent) {
         when(event) {
-            is UserInfoEvent.SetUriForCrop -> setUriForCrop(event.uri)
+            is UserInfoEvent.SetImageToCrop -> setUriForCrop(event.uri)
             is UserInfoEvent.ValidateUserName -> validateUserName(event.name)
             is UserInfoEvent.ValidatePhone -> validatePhone(event.phone)
             is UserInfoEvent.SetCode -> setCode(event.code)
@@ -123,8 +122,6 @@ class UserSettingsViewModel(
             is ScheduleEvent.UpdateChildSchedule -> updateChildSchedule(event.day, event.period)
         }
     }
-
-    fun getBitmapForCrop(contentResolver: ContentResolver) = uriForCrop.decodeBitmap(contentResolver)
 
     fun saveUserAvatar(image: Bitmap) {
         _userInfoScreenState.update {
@@ -230,7 +227,7 @@ class UserSettingsViewModel(
                         name = _userInfoScreenState.value.name,
                         phone = _userInfoScreenState.value.phone,
                         countryCode = _userInfoScreenState.value.code,
-                        avatar = _userInfoScreenState.value.userAvatar?.encodeToBase64().orEmpty()
+                        avatar = _userInfoScreenState.value.userAvatar.encodeToBase64()
                     )
                 )
             }
@@ -633,5 +630,6 @@ class UserSettingsViewModel(
         private val PHONE_LENGTH = 9..12
         private val NAME_LENGTH = 6..18
         private const val MAX_AGE = 18f
+        private const val IMAGE_SIZE = 3 * 1024 * 1024
     }
 }

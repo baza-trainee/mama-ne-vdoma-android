@@ -115,7 +115,9 @@ fun UserInfoScreen(
                         .padding(horizontal = 24.dp)
                         .padding(top = 32.dp),
                     avatar = screenState.value.userAvatar,
-                    setUriForCrop = { onHandleUserInfoEvent(UserInfoEvent.SetUriForCrop(it)) },
+                    setUriForCrop = {
+                        onHandleUserInfoEvent(UserInfoEvent.SetImageToCrop(it))
+                    },
                     onEditPhoto = onEditPhoto
                 )
 

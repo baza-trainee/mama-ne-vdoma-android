@@ -12,7 +12,7 @@ data class UserInfoViewState(
     val phone: String = "",
     val phoneValid: ValidField = ValidField.EMPTY,
     val code: String = "",
-    val userAvatar: Bitmap? = null,
+    val userAvatar: Bitmap = Bitmap.createBitmap(200, 200, Bitmap.Config.ARGB_8888),
     val isLoading: Boolean = false,
     val requestSuccess: StateEvent = consumed,
     val requestError: StateEventWithContent<String> = consumed()

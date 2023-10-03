@@ -1,5 +1,6 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.navigation
 
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
@@ -15,6 +16,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.Pare
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.UserInfoScreen
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.UserLocationScreen
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.vm.UserSettingsViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.decodeBitmap
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.sharedViewModel
 
 fun NavGraphBuilder.userProfileGraph(
@@ -39,10 +41,10 @@ fun NavGraphBuilder.userProfileGraph(
             val userSettingsViewModel: UserSettingsViewModel = entry.sharedViewModel(navController)
 
             val context = LocalContext.current
-            val imageForCrop = userSettingsViewModel.getBitmapForCrop(context.contentResolver)
+            val imageBitmap = userSettingsViewModel.uriForCrop.decodeBitmap(context.contentResolver).asImageBitmap()
             ImageCropScreen(
-                imageForCrop = imageForCrop,
-                onSaveUserAvatar = { userSettingsViewModel.saveUserAvatar(it) }
+                imageForCrop = imageBitmap,
+                onHandleCropEvent = { userSettingsViewModel.saveUserAvatar(it) }
             ) { navController.navigate(UserProfileRoutes.UserInfo.route) }
         }
         composable(UserProfileRoutes.UserLocation.route) { entry ->
