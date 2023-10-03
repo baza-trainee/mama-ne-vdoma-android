@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import tech.baza_trainee.mama_ne_vdoma.domain.model.Period
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.short
 import java.time.DayOfWeek
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -65,31 +66,7 @@ fun DayScheduleRow(
             colors = chipColors,
             label = {
                 Text(
-                    text = "пн",
-                    fontFamily = redHatDisplayFontFamily,
-                    fontSize = 14.sp,
-                )
-            }
-        )
-        FilterChip(
-            onClick = {},
-            selected = daysOfWeek.contains(DayOfWeek.THURSDAY),
-            colors = chipColors,
-            label = {
-                Text(
-                    text = "вт",
-                    fontFamily = redHatDisplayFontFamily,
-                    fontSize = 14.sp,
-                )
-            }
-        )
-        FilterChip(
-            onClick = {},
-            selected = daysOfWeek.contains(DayOfWeek.WEDNESDAY),
-            colors = chipColors,
-            label = {
-                Text(
-                    text = "ср",
+                    text = DayOfWeek.MONDAY.short(),
                     fontFamily = redHatDisplayFontFamily,
                     fontSize = 14.sp,
                 )
@@ -101,7 +78,31 @@ fun DayScheduleRow(
             colors = chipColors,
             label = {
                 Text(
-                    text = "чт",
+                    text = DayOfWeek.TUESDAY.short(),
+                    fontFamily = redHatDisplayFontFamily,
+                    fontSize = 14.sp,
+                )
+            }
+        )
+        FilterChip(
+            onClick = {},
+            selected = daysOfWeek.contains(DayOfWeek.WEDNESDAY),
+            colors = chipColors,
+            label = {
+                Text(
+                    text = DayOfWeek.WEDNESDAY.short(),
+                    fontFamily = redHatDisplayFontFamily,
+                    fontSize = 14.sp,
+                )
+            }
+        )
+        FilterChip(
+            onClick = {},
+            selected = daysOfWeek.contains(DayOfWeek.THURSDAY),
+            colors = chipColors,
+            label = {
+                Text(
+                    text = DayOfWeek.THURSDAY.short(),
                     fontFamily = redHatDisplayFontFamily,
                     fontSize = 14.sp,
                 )
@@ -113,7 +114,7 @@ fun DayScheduleRow(
             colors = chipColors,
             label = {
                 Text(
-                    text = "пт",
+                    text = DayOfWeek.FRIDAY.short(),
                     fontFamily = redHatDisplayFontFamily,
                     fontSize = 14.sp,
                 )
@@ -125,7 +126,7 @@ fun DayScheduleRow(
             colors = chipColors,
             label = {
                 Text(
-                    text = "сб",
+                    text = DayOfWeek.SATURDAY.short(),
                     fontFamily = redHatDisplayFontFamily,
                     fontSize = 14.sp,
                 )
@@ -137,7 +138,7 @@ fun DayScheduleRow(
             colors = chipColors,
             label = {
                 Text(
-                    text = "нд",
+                    text = DayOfWeek.SUNDAY.short(),
                     fontFamily = redHatDisplayFontFamily,
                     fontSize = 14.sp,
                 )
