@@ -4,6 +4,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.StartRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.start.InfoScreen
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.start.Start
 
@@ -11,17 +12,17 @@ fun NavGraphBuilder.startNavGraph(
     navController: NavHostController
 ) {
     navigation(
-        route = "start_graph",
-        startDestination = "start_screen"
+        route = Graphs.Start.route,
+        startDestination = StartRoutes.Start.route
     ) {
-        composable("start_screen") {
+        composable(StartRoutes.Start.route) {
             Start(
-                onStart = { navController.navigate("info_screen") },
-                onLogin = { navController.navigate("login_screen") }
+                onStart = { navController.navigate(StartRoutes.Info.route) },
+                onLogin = { navController.navigate(Graphs.Login.route) }
             )
         }
-        composable("info_screen") {
-            InfoScreen { navController.navigate("create_user_graph") }
+        composable(StartRoutes.Info.route) {
+            InfoScreen { navController.navigate(Graphs.CreateUser.route) }
         }
     }
 }

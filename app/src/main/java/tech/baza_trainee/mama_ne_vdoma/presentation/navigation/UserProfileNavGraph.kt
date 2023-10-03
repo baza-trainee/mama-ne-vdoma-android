@@ -21,7 +21,7 @@ fun NavGraphBuilder.userProfileGraph(
     navController: NavHostController
 ) {
     navigation(
-        route = "user_profile_graph",
+        route = Graphs.UserProfile.route,
         startDestination = UserProfileRoutes.UserInfo.route
     ) {
 

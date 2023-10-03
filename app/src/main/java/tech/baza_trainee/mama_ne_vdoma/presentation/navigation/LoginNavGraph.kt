@@ -5,6 +5,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.LoginRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.EmailConfirmScreen
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.LoginUserScreen
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.NewPasswordScreen
@@ -19,43 +20,43 @@ fun NavGraphBuilder.loginNavGraph(
     navController: NavHostController
 ) {
     navigation(
-        route = "login_graph",
-        startDestination = "login_screen"
+        route = Graphs.Login.route,
+        startDestination = LoginRoutes.Login.route
     ) {
-        composable("login_screen") { entry ->
+        composable(LoginRoutes.Login.route) { entry ->
             val loginViewModel: LoginScreenViewModel = entry.sharedViewModel(navController)
             LoginUserScreen(
                 screenState = loginViewModel.viewState.collectAsStateWithLifecycle(),
                 email = loginViewModel.email,
                 password = loginViewModel.password,
                 onHandleEvent = { loginViewModel.handleLoginEvent(it) },
-                onCreateUser = { navController.navigate("create_user_screen") },
-                onRestore = { navController.navigate("restore_password_screen") },
-                onLogin = { navController.navigate("user_profile_graph") }
+                onCreateUser = { navController.navigate(Graphs.CreateUser.route) },
+                onRestore = { navController.navigate(LoginRoutes.RestorePassword.route) },
+                onLogin = { navController.navigate(Graphs.UserProfile.route) }
             )
         }
-        composable("restore_password_screen") {
+        composable(LoginRoutes.RestorePassword.route) {
             val restorePasswordScreenViewModel: RestorePasswordScreenViewModel = it.sharedViewModel(navController)
             RestorePasswordScreen(
                 viewModel = restorePasswordScreenViewModel,
                 onBack = { navController.popBackStack() },
-                onRestore = { navController.navigate("email_confirm_screen") },
+                onRestore = { navController.navigate(LoginRoutes.EmailConfirm.route) },
             )
         }
-        composable("email_confirm_screen") {
+        composable(LoginRoutes.EmailConfirm.route) {
             EmailConfirmScreen(
-                onLogin = { navController.navigate("new_password_screen") },
+                onLogin = { navController.navigate(LoginRoutes.NewPassword.route) },
                 onSendAgain = {},
             )
         }
-        composable("new_password_screen") {
+        composable(LoginRoutes.NewPassword.route) {
             val newPasswordScreenViewModel: NewPasswordScreenViewModel = it.sharedViewModel(navController)
             NewPasswordScreen(
                 viewModel = newPasswordScreenViewModel
-            ) { navController.navigate("restore_success_screen") }
+            ) { navController.navigate(LoginRoutes.RestoreSuccess.route) }
         }
-        composable("restore_success_screen") {
-            RestoreSuccessScreen { navController.navigate("start_graph") }
+        composable(LoginRoutes.RestoreSuccess.route) {
+            RestoreSuccessScreen { navController.navigate(LoginRoutes.Login.route) }
         }
     }
 }

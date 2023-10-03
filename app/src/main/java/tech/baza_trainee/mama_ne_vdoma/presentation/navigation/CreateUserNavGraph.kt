@@ -15,7 +15,7 @@ fun NavGraphBuilder.createUserNavGraph(
     navController: NavHostController
 ) {
     navigation(
-        route = "create_user_graph",
+        route = Graphs.CreateUser.route,
         startDestination = CreateUserRoute.CreateUser.route
     ) {
         composable(CreateUserRoute.CreateUser.route) { entry ->
@@ -26,8 +26,8 @@ fun NavGraphBuilder.createUserNavGraph(
                 password = userCreateViewModel.password,
                 confirmPassword = userCreateViewModel.confirmPassword,
                 onHandleEvent = { userCreateViewModel.handleUserCreateEvent(it) },
-                onCreateUser = { navController.navigate(CreateUserRoute.VerifyEmail.route) }, //temp need replace with logic
-                onLogin = { navController.navigate("login_graph") }
+                onCreateUser = { navController.navigate(CreateUserRoute.VerifyEmail.route) },
+                onLogin = { navController.navigate(Graphs.Login.route) }
             )
         }
         composable(CreateUserRoute.VerifyEmail.route) { entry ->
@@ -36,7 +36,7 @@ fun NavGraphBuilder.createUserNavGraph(
                 screenState = userCreateViewModel.verifyEmailViewState.collectAsStateWithLifecycle(),
                 otp = userCreateViewModel.otp,
                 onHandleEvent = { userCreateViewModel.handleVerifyEmailEvent(it) },
-                onSuccess = { navController.navigate("user_profile_graph") }
+                onSuccess = { navController.navigate(Graphs.UserProfile.route) }
             )
         }
     }
