@@ -1,18 +1,15 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Email
@@ -20,37 +17,52 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import org.koin.androidx.compose.getViewModel
+import de.palm.composestateevents.EventEffect
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.OutlinedTextFieldWithError
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.vm.RestorePasswordScreenViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.SurfaceWithSystemBars
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.model.RestorePasswordEvent
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.model.RestorePasswordViewState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 
 @Composable
 fun RestorePasswordScreen(
     modifier: Modifier = Modifier,
-    viewModel: RestorePasswordScreenViewModel,
+    screenState: State<RestorePasswordViewState> = mutableStateOf(RestorePasswordViewState()),
+    onHandleEvent: (RestorePasswordEvent) -> Unit = { _ -> },
     onBack: () -> Unit = {},
     onRestore: () -> Unit = {}
 ) {
-    Surface(
+    SurfaceWithSystemBars(
         modifier = modifier
-            .windowInsetsPadding(WindowInsets.systemBars)
-            .fillMaxSize(),
-        color = MaterialTheme.colorScheme.background
     ) {
-        val screenState = viewModel.viewState.collectAsStateWithLifecycle()
+        val context = LocalContext.current
+
+        EventEffect(
+            event = screenState.value.loginSuccess,
+            onConsumed = {}
+        ) {
+            onHandleEvent(RestorePasswordEvent.OnSuccess)
+            onRestore()
+        }
+
+        EventEffect(
+            event = screenState.value.requestError,
+            onConsumed = { onHandleEvent(RestorePasswordEvent.ConsumeRequestError) }
+        ) { if (it.isNotBlank()) Toast.makeText(context, it, Toast.LENGTH_LONG).show() }
+
         Column(
             modifier = modifier
                 .imePadding()
@@ -117,9 +129,9 @@ fun RestorePasswordScreen(
                     modifier = modifier
                         .fillMaxWidth()
                         .padding(horizontal = 24.dp),
-                    text = viewModel.email,
+                    text = screenState.value.email,
                     label = "Введіть свій email",
-                    onValueChange = { viewModel.validateEmail(it) },
+                    onValueChange = { onHandleEvent(RestorePasswordEvent.ValidateEmail(it)) },
                     isError = screenState.value.emailValid == ValidField.INVALID,
                     errorText = "Ви ввели некоректний email",
                     leadingIcon = {
@@ -152,7 +164,5 @@ fun RestorePasswordScreen(
 @Composable
 @Preview
 fun RestorePasswordPreview() {
-    RestorePasswordScreen(
-        viewModel = getViewModel()
-    )
+    RestorePasswordScreen()
 }

@@ -1,8 +1,5 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.vm
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import de.palm.composestateevents.consumed
 import de.palm.composestateevents.triggered
@@ -37,18 +34,6 @@ class UserCreateViewModel(
     private val _verifyEmailViewState = MutableStateFlow(VerifyEmailViewState())
     val verifyEmailViewState: StateFlow<VerifyEmailViewState> = _verifyEmailViewState.asStateFlow()
 
-    var email by mutableStateOf("")
-        private set
-
-    var password by mutableStateOf("")
-        private set
-
-    var confirmPassword by mutableStateOf("")
-        private set
-
-    var otp by mutableStateOf("")
-        private set
-
     fun handleUserCreateEvent(event: UserCreateEvent) {
         when(event) {
             UserCreateEvent.ConsumeRegisterError -> consumeRegisterError()
@@ -70,10 +55,6 @@ class UserCreateViewModel(
             VerifyEmailEvent.ConsumeRequestError -> consumeRequestError()
             VerifyEmailEvent.ResendCode -> resendCode()
             VerifyEmailEvent.OnSuccessfulLogin -> {
-                email = ""
-                password = ""
-                confirmPassword = ""
-                otp = ""
                 _userCreateViewState.update {
                     UserCreateViewState()
                 }
@@ -85,11 +66,11 @@ class UserCreateViewModel(
     }
 
     private fun validateEmail(email: String) {
-        this.email = email
         val emailValid = if (email.validateEmail()) ValidField.VALID
         else ValidField.INVALID
         _userCreateViewState.update {
             it.copy(
+                email = email,
                 emailValid = emailValid
             )
         }
@@ -97,20 +78,24 @@ class UserCreateViewModel(
     }
 
     private fun validatePassword(password: String) {
-        this.password = password
         val passwordValid = if (password.validatePassword()) ValidField.VALID
         else ValidField.INVALID
         _userCreateViewState.update {
             it.copy(
+                password = password,
                 passwordValid = passwordValid
             )
         }
-        checkPasswords(password, confirmPassword)
+        checkPasswords(password, _userCreateViewState.value.confirmPassword)
     }
 
     private fun validateConfirmPassword(confirmPassword: String) {
-        this.confirmPassword = confirmPassword
-        checkPasswords(password, confirmPassword)
+        _userCreateViewState.update {
+            it.copy(
+                confirmPassword = confirmPassword
+            )
+        }
+        checkPasswords(_userCreateViewState.value.password, confirmPassword)
         updateConform()
     }
 
@@ -149,8 +134,8 @@ class UserCreateViewModel(
             execute {
                 authRepository.registerUser(
                     AuthUserEntity(
-                        email = email,
-                        password = password
+                        email = _userCreateViewState.value.email,
+                        password = _userCreateViewState.value.password
                     )
                 )
             }
@@ -187,7 +172,11 @@ class UserCreateViewModel(
     }
 
     private fun verifyEmail(otp: String, isLastDigit: Boolean) {
-        this.otp = otp
+        _verifyEmailViewState.update {
+            it.copy(
+                otp = otp
+            )
+        }
         if (isLastDigit) {
 //            onSuccess() //for test
             confirmUser()
@@ -199,8 +188,8 @@ class UserCreateViewModel(
             execute {
                 authRepository.confirmEmail(
                     ConfirmEmailEntity(
-                        email = email,
-                        code = otp
+                        email = _userCreateViewState.value.email,
+                        code = _verifyEmailViewState.value.otp
                     )
                 )
             }
@@ -229,8 +218,8 @@ class UserCreateViewModel(
             execute {
                 authRepository.loginUser(
                     AuthUserEntity(
-                        email = email,
-                        password = password
+                        email = _userCreateViewState.value.email,
+                        password = _userCreateViewState.value.password
                     )
                 )
             }
@@ -263,7 +252,7 @@ class UserCreateViewModel(
             execute {
                 authRepository.resendCode(
                     RequestWithEmailEntity(
-                        email = email
+                        email = _userCreateViewState.value.email
                     )
                 )
             }

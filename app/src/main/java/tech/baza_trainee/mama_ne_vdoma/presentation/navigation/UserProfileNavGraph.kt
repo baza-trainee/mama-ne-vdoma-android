@@ -29,8 +29,6 @@ fun NavGraphBuilder.userProfileGraph(
             val userSettingsViewModel: UserSettingsViewModel = entry.sharedViewModel(navController)
             UserInfoScreen(
                 screenState = userSettingsViewModel.userInfoScreenState.collectAsStateWithLifecycle(),
-                userName = userSettingsViewModel.userName,
-                userPhone = userSettingsViewModel.userPhone,
                 onHandleUserInfoEvent = { userSettingsViewModel.handleUserInfoEvent(it)},
                 onCreateUser = { navController.navigate(UserProfileRoutes.UserLocation.route) },
                 onEditPhoto = { navController.navigate(UserProfileRoutes.ImageCrop.route) },
@@ -39,6 +37,7 @@ fun NavGraphBuilder.userProfileGraph(
         }
         composable(UserProfileRoutes.ImageCrop.route) { entry ->
             val userSettingsViewModel: UserSettingsViewModel = entry.sharedViewModel(navController)
+
             val context = LocalContext.current
             val imageForCrop = userSettingsViewModel.getBitmapForCrop(context.contentResolver)
             ImageCropScreen(
@@ -50,7 +49,6 @@ fun NavGraphBuilder.userProfileGraph(
             val userSettingsViewModel: UserSettingsViewModel = entry.sharedViewModel(navController)
             UserLocationScreen(
                 screenState = userSettingsViewModel.locationScreenState.collectAsStateWithLifecycle(),
-                userAddress = userSettingsViewModel.userAddress,
                 onHandleLocationEvent = { userSettingsViewModel.handleUserLocationEvent(it) }
             ) {
                 navController.navigate(UserProfileRoutes.ChildInfo.route)
@@ -60,8 +58,6 @@ fun NavGraphBuilder.userProfileGraph(
             val userSettingsViewModel: UserSettingsViewModel = entry.sharedViewModel(navController)
             ChildInfoScreen(
                 screenState = userSettingsViewModel.childInfoScreenState.collectAsStateWithLifecycle(),
-                childName = userSettingsViewModel.childName,
-                childAge = userSettingsViewModel.childAge,
                 onHandleChildEvent = { userSettingsViewModel.handleChildInfoEvent(it) },
                 onNext = { navController.navigate(UserProfileRoutes.ChildSchedule.route,) },
                 onBack = { navController.popBackStack() }

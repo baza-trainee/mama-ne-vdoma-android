@@ -27,8 +27,6 @@ fun NavGraphBuilder.loginNavGraph(
             val loginViewModel: LoginScreenViewModel = entry.sharedViewModel(navController)
             LoginUserScreen(
                 screenState = loginViewModel.viewState.collectAsStateWithLifecycle(),
-                email = loginViewModel.email,
-                password = loginViewModel.password,
                 onHandleEvent = { loginViewModel.handleLoginEvent(it) },
                 onCreateUser = { navController.navigate(Graphs.CreateUser.route) },
                 onRestore = { navController.navigate(LoginRoutes.RestorePassword.route) },
@@ -36,10 +34,11 @@ fun NavGraphBuilder.loginNavGraph(
                 onBack = { navController.navigate(Graphs.Start.route) }
             )
         }
-        composable(LoginRoutes.RestorePassword.route) {
-            val restorePasswordScreenViewModel: RestorePasswordScreenViewModel = it.sharedViewModel(navController)
+        composable(LoginRoutes.RestorePassword.route) { entry ->
+            val restorePasswordScreenViewModel: RestorePasswordScreenViewModel = entry.sharedViewModel(navController)
             RestorePasswordScreen(
-                viewModel = restorePasswordScreenViewModel,
+                screenState = restorePasswordScreenViewModel.viewState.collectAsStateWithLifecycle(),
+                onHandleEvent = { restorePasswordScreenViewModel.handleRestoreEvent(it) },
                 onBack = { navController.popBackStack() },
                 onRestore = { navController.navigate(LoginRoutes.EmailConfirm.route) },
             )
@@ -50,10 +49,11 @@ fun NavGraphBuilder.loginNavGraph(
                 onSendAgain = {},
             )
         }
-        composable(LoginRoutes.NewPassword.route) {
-            val newPasswordScreenViewModel: NewPasswordScreenViewModel = it.sharedViewModel(navController)
+        composable(LoginRoutes.NewPassword.route) { entry ->
+            val newPasswordScreenViewModel: NewPasswordScreenViewModel = entry.sharedViewModel(navController)
             NewPasswordScreen(
-                viewModel = newPasswordScreenViewModel
+                screenState = newPasswordScreenViewModel.viewState.collectAsStateWithLifecycle(),
+                onHandleEvent = { newPasswordScreenViewModel.handleNewPasswordEvent(it) },
             ) { navController.navigate(LoginRoutes.RestoreSuccess.route) }
         }
         composable(LoginRoutes.RestoreSuccess.route) {

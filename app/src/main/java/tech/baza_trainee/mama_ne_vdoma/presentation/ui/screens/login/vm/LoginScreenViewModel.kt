@@ -1,8 +1,5 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.vm
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import de.palm.composestateevents.consumed
 import de.palm.composestateevents.triggered
@@ -30,12 +27,6 @@ class LoginScreenViewModel(
     private val _viewState = MutableStateFlow(LoginViewState())
     val viewState: StateFlow<LoginViewState> = _viewState.asStateFlow()
 
-    var email by mutableStateOf("")
-        private set
-
-    var password by mutableStateOf("")
-        private set
-
     fun handleLoginEvent(event: LoginEvent) {
         when(event) {
             LoginEvent.ConsumeRequestError -> consumeRequestError()
@@ -43,8 +34,6 @@ class LoginScreenViewModel(
             is LoginEvent.ValidateEmail -> validateEmail(event.email)
             is LoginEvent.ValidatePassword -> validatePassword(event.password)
             LoginEvent.OnSuccessfulLogin -> {
-                email = ""
-                password = ""
                 _viewState.update {
                     LoginViewState()
                 }
@@ -53,22 +42,22 @@ class LoginScreenViewModel(
     }
 
     private fun validateEmail(email: String) {
-        this.email = email
         val emailValid = if (email.validateEmail()) ValidField.VALID
         else ValidField.INVALID
         _viewState.update {
             it.copy(
+                email = email,
                 emailValid = emailValid
             )
         }
     }
 
     private fun validatePassword(password: String) {
-        this.password = password
         val passwordValid = if (password.validatePassword()) ValidField.VALID
         else ValidField.INVALID
         _viewState.update {
             it.copy(
+                password = password,
                 passwordValid = passwordValid
             )
         }
@@ -79,8 +68,8 @@ class LoginScreenViewModel(
             execute {
                 authRepository.loginUser(
                     AuthUserEntity(
-                        email = email,
-                        password = password
+                        email = _viewState.value.email,
+                        password = _viewState.value.password
                     )
                 )
             }

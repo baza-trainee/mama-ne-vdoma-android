@@ -46,9 +46,6 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.ButtonText
 fun CreateUserScreen(
     modifier: Modifier = Modifier,
     screenState: State<UserCreateViewState> = mutableStateOf(UserCreateViewState()),
-    email: String = "",
-    password: String = "",
-    confirmPassword: String = "",
     onHandleEvent: (UserCreateEvent) -> Unit = { _ -> },
     onCreateUser: () -> Unit = {},
     onLogin: () -> Unit = {},
@@ -101,7 +98,7 @@ fun CreateUserScreen(
                     modifier = modifier
                         .fillMaxWidth()
                         .padding(horizontal = 24.dp),
-                    text = email,
+                    text = screenState.value.email,
                     label = "Введіть свій email",
                     onValueChange = { onHandleEvent(UserCreateEvent.ValidateEmail(it)) },
                     isError = screenState.value.emailValid == ValidField.INVALID,
@@ -120,7 +117,7 @@ fun CreateUserScreen(
                     modifier = modifier
                         .fillMaxWidth()
                         .padding(horizontal = 24.dp),
-                    password = password,
+                    password = screenState.value.password,
                     onValueChange = { onHandleEvent(UserCreateEvent.ValidatePassword(it)) },
                     isError = screenState.value.passwordValid == ValidField.INVALID
                 )
@@ -144,7 +141,7 @@ fun CreateUserScreen(
                         .fillMaxWidth()
                         .padding(horizontal = 24.dp),
                     label = "Повторіть ваш пароль",
-                    password = confirmPassword,
+                    password = screenState.value.confirmPassword,
                     onValueChange = { onHandleEvent(UserCreateEvent.ValidateConfirmPassword(it)) },
                     isError = screenState.value.confirmPasswordValid == ValidField.INVALID,
                     errorText = "Паролі не співпадають"

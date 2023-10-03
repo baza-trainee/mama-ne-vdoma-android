@@ -6,6 +6,7 @@ import de.palm.composestateevents.StateEventWithContent
 import de.palm.composestateevents.consumed
 
 data class UserLocationViewState(
+    val address: String = "",
     val currentLocation: LatLng = LatLng(0.0,0.0),
     val isLoading: Boolean = false,
     val requestSuccess: StateEvent = consumed,

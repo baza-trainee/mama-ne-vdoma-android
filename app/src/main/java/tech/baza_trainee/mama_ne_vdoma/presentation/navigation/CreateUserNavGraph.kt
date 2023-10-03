@@ -22,9 +22,6 @@ fun NavGraphBuilder.createUserNavGraph(
             val userCreateViewModel: UserCreateViewModel = entry.sharedViewModel(navController)
             CreateUserScreen(
                 screenState = userCreateViewModel.userCreateViewState.collectAsStateWithLifecycle(),
-                email = userCreateViewModel.email,
-                password = userCreateViewModel.password,
-                confirmPassword = userCreateViewModel.confirmPassword,
                 onHandleEvent = { userCreateViewModel.handleUserCreateEvent(it) },
                 onCreateUser = { navController.navigate(CreateUserRoute.VerifyEmail.route) },
                 onLogin = { navController.navigate(Graphs.Login.route) },
@@ -35,7 +32,6 @@ fun NavGraphBuilder.createUserNavGraph(
             val userCreateViewModel: UserCreateViewModel = entry.sharedViewModel(navController)
             VerifyEmailScreen(
                 screenState = userCreateViewModel.verifyEmailViewState.collectAsStateWithLifecycle(),
-                otp = userCreateViewModel.otp,
                 onHandleEvent = { userCreateViewModel.handleVerifyEmailEvent(it) },
                 onSuccess = { navController.navigate(Graphs.UserProfile.route) }
             )

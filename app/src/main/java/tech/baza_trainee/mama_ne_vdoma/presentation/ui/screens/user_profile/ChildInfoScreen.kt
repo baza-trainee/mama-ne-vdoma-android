@@ -38,8 +38,6 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.ButtonText
 fun ChildInfoScreen(
     modifier: Modifier = Modifier,
     screenState: State<ChildInfoViewState> = mutableStateOf(ChildInfoViewState()),
-    childName: String = "",
-    childAge: String = "",
     onHandleChildEvent: (ChildInfoEvent) -> Unit = { _ -> },
     onNext: () -> Unit = { },
     onBack: () -> Unit = { }
@@ -87,7 +85,7 @@ fun ChildInfoScreen(
                     modifier = modifier
                         .fillMaxWidth()
                         .padding(horizontal = 24.dp),
-                    text = childName,
+                    text = screenState.value.name,
                     label = "Вкажіть ім'я дитини",
                     onValueChange = { onHandleChildEvent(ChildInfoEvent.ValidateChildName(it)) },
                     isError = screenState.value.nameValid == ValidField.INVALID,
@@ -100,7 +98,7 @@ fun ChildInfoScreen(
                     modifier = modifier
                         .fillMaxWidth()
                         .padding(horizontal = 24.dp),
-                    text = childAge,
+                    text = screenState.value.age,
                     label = "Вкажіть вік дитини",
                     onValueChange = { onHandleChildEvent(ChildInfoEvent.ValidateAge(it)) },
                     isError = screenState.value.ageValid == ValidField.INVALID,

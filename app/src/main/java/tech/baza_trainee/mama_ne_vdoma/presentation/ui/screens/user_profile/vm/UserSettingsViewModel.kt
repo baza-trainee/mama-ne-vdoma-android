@@ -3,9 +3,7 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.vm
 import android.content.ContentResolver
 import android.graphics.Bitmap
 import android.net.Uri
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.google.android.gms.maps.model.LatLng
 import de.palm.composestateevents.consumed
@@ -68,21 +66,6 @@ class UserSettingsViewModel(
 
     private val _childrenInfoViewState = MutableStateFlow(ChildrenInfoViewState())
     val childrenInfoViewState: StateFlow<ChildrenInfoViewState> = _childrenInfoViewState.asStateFlow()
-
-    var userAddress by mutableStateOf("")
-        private set
-
-    var userName by mutableStateOf("")
-        private set
-
-    var userPhone by mutableStateOf("")
-        private set
-
-    var childName by mutableStateOf("")
-        private set
-
-    var childAge by mutableStateOf("")
-        private set
 
     var childComment = mutableStateOf("")
         private set
@@ -168,14 +151,14 @@ class UserSettingsViewModel(
                 userProfileRepository.getUserInfo()
             }
             onSuccess { entity ->
-                userName = entity?.name.orEmpty()
-                userPhone = entity?.phone.orEmpty()
                 _userInfoScreenState.update {
                     it.copy(
+                        name = entity?.name.orEmpty(),
+                        phone = entity?.phone.orEmpty(),
                         code = entity?.countryCode.orEmpty(),
                         userAvatar = entity?.avatar.orEmpty().decodeBase64(),
-                        nameValid = if (userName.isNotEmpty()) ValidField.VALID else ValidField.EMPTY,
-                        phoneValid = if (userPhone.isNotEmpty()) ValidField.VALID else ValidField.EMPTY,
+                        nameValid = if (!entity?.name.isNullOrEmpty()) ValidField.VALID else ValidField.EMPTY,
+                        phoneValid = if (!entity?.phone.isNullOrEmpty()) ValidField.VALID else ValidField.EMPTY,
                     )
                 }
                 _locationScreenState.update {
@@ -218,22 +201,22 @@ class UserSettingsViewModel(
     }
 
     private fun validatePhone(phone: String) {
-        userPhone = phone
         val phoneValid = if (phone.length in PHONE_LENGTH && phone.none { !it.isDigit() }) ValidField.VALID
         else ValidField.INVALID
         _userInfoScreenState.update {
             it.copy(
+                phone = phone,
                 phoneValid = phoneValid
             )
         }
     }
 
     private fun validateUserName(name: String) {
-        userName = name
         val nameValid = if (name.length in NAME_LENGTH && name.all { it.isLetter() || it.isDigit() }) ValidField.VALID
         else ValidField.INVALID
         _userInfoScreenState.update {
             it.copy(
+                name =  name,
                 nameValid = nameValid
             )
         }
@@ -244,8 +227,8 @@ class UserSettingsViewModel(
             execute {
                 userProfileRepository.saveUserInfo(
                     UserInfoEntity(
-                        name = userName,
-                        phone = userPhone,
+                        name = _userInfoScreenState.value.name,
+                        phone = _userInfoScreenState.value.phone,
                         countryCode = _userInfoScreenState.value.code,
                         avatar = _userInfoScreenState.value.userAvatar?.encodeToBase64().orEmpty()
                     )
@@ -326,26 +309,23 @@ class UserSettingsViewModel(
     }
 
     private fun validateChildName(name: String) {
-        childName = name
         val nameValid = if (name.none { !it.isLetter() }) ValidField.VALID
         else ValidField.INVALID
         _childInfoScreenState.update {
             it.copy(
+                name = name,
                 nameValid = nameValid
             )
         }
     }
 
     private fun validateAge(age: String) {
-        childAge =  age
-
         val intAge = age.toFloatOrNull()
-
         val ageValid = if (intAge != null && intAge in 0f..MAX_AGE) ValidField.VALID
         else ValidField.INVALID
-
         _childInfoScreenState.update {
             it.copy(
+                age = age,
                 ageValid = ageValid
             )
         }
@@ -470,8 +450,8 @@ class UserSettingsViewModel(
                 add(
                     Child(
                         id = currentChildId,
-                        name = childName,
-                        age = childAge,
+                        name = _childInfoScreenState.value.name,
+                        age = _childInfoScreenState.value.age,
                         gender = _childInfoScreenState.value.gender,
                         schedule = _childScheduleViewState.value.schedule,
                         comment = childComment.value
@@ -521,13 +501,17 @@ class UserSettingsViewModel(
     }
 
     private fun updateUserAddress(address: String) {
-        this.userAddress = address
+        _locationScreenState.update {
+            it.copy(
+                address = address
+            )
+        }
     }
 
     private fun getLocationFromAddress() {
         networkExecutor<LatLng?> {
             execute {
-                locationRepository.getLocationFromAddress(userAddress)
+                locationRepository.getLocationFromAddress(_locationScreenState.value.address)
             }
             onSuccess { location ->
                 location?.let {
@@ -561,7 +545,7 @@ class UserSettingsViewModel(
                 locationRepository.getAddressFromLocation(latLng)
             }
             onSuccess {
-                userAddress = it.orEmpty()
+                updateUserAddress(it.orEmpty())
             }
         }
     }
@@ -588,16 +572,17 @@ class UserSettingsViewModel(
             currentChildId.isEmpty() -> UUID.randomUUID().toString()
             else -> currentChildId
         }
+
         val currentChild =
             _childrenInfoViewState.value.children.firstOrNull() { it.id == currentChildId }
                 ?: Child(
                     id = currentChildId
                 )
-        childName = currentChild.name
-        childAge= currentChild.age
         _childInfoScreenState.update {
             it.copy(
+                name = currentChild.name,
                 nameValid = ValidField.VALID,
+                age = currentChild.age,
                 ageValid = ValidField.VALID,
                 gender = currentChild.gender
             )
@@ -610,8 +595,8 @@ class UserSettingsViewModel(
         if (child != null) {
             val index = list.indexOf(child)
             val newChild = child.copy(
-                name = childName,
-                age = childAge,
+                name = _childInfoScreenState.value.name,
+                age = _childInfoScreenState.value.age,
                 gender = _childInfoScreenState.value.gender
             )
             list[index] = newChild
@@ -619,8 +604,8 @@ class UserSettingsViewModel(
             list.add(
                 Child(
                     id = currentChildId,
-                    name = childName,
-                    age = childAge,
+                    name = _childInfoScreenState.value.name,
+                    age = _childInfoScreenState.value.age,
                     gender = _childInfoScreenState.value.gender
                 )
             )

@@ -37,7 +37,6 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.ButtonText
 fun VerifyEmailScreen(
     modifier: Modifier = Modifier,
     screenState: State<VerifyEmailViewState> = mutableStateOf(VerifyEmailViewState()),
-    otp: String = "",
     onHandleEvent: (VerifyEmailEvent) -> Unit = { _ -> },
     onSuccess: () -> Unit = {}
 ) {
@@ -95,7 +94,7 @@ fun VerifyEmailScreen(
                 Spacer(modifier = modifier.height(32.dp))
 
                 OtpTextField(
-                    otpText = otp,
+                    otpText = screenState.value.otp,
                     onOtpTextChange = { value, otpInputFilled ->
                         onHandleEvent(
                             VerifyEmailEvent.VerifyEmail(value, otpInputFilled) {

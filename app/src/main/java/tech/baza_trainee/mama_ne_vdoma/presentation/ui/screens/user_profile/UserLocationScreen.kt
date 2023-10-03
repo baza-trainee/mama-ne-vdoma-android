@@ -52,7 +52,6 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.openAppSett
 fun UserLocationScreen(
     modifier: Modifier = Modifier,
     screenState: State<UserLocationViewState> = mutableStateOf(UserLocationViewState()),
-    userAddress: String = "",
     onHandleLocationEvent: (UserLocationEvent) -> Unit = { _ -> },
     onNext: () -> Unit = {}
 ) {
@@ -72,7 +71,7 @@ fun UserLocationScreen(
         ) { if (it.isNotBlank()) Toast.makeText(context, it, Toast.LENGTH_LONG).show() }
 
         LaunchedEffect(key1 = true) {
-            if (userAddress.isEmpty())
+            if (screenState.value.address.isEmpty())
                 onHandleLocationEvent(UserLocationEvent.RequestUserLocation)
         }
 
@@ -180,7 +179,7 @@ fun UserLocationScreen(
                 }
 
                 OutlinedTextField(
-                    value = userAddress,
+                    value = screenState.value.address,
                     onValueChange = { onHandleLocationEvent(UserLocationEvent.UpdateUserAddress(it)) },
                     modifier = modifier
                         .constrainAs(edit) {

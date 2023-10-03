@@ -59,8 +59,6 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.ButtonText
 fun UserInfoScreen(
     modifier: Modifier = Modifier,
     screenState: State<UserInfoViewState> = mutableStateOf(UserInfoViewState()),
-    userName: String = "",
-    userPhone: String = "",
     onHandleUserInfoEvent: (UserInfoEvent) -> Unit = { _ -> },
     onCreateUser: () -> Unit = {},
     onEditPhoto: () -> Unit = {},
@@ -126,7 +124,7 @@ fun UserInfoScreen(
                         .fillMaxWidth()
                         .padding(horizontal = 24.dp)
                         .padding(top = 32.dp),
-                    text = userName,
+                    text = screenState.value.name,
                     label = "Вкажіть своє ім'я",
                     onValueChange = { onHandleUserInfoEvent(UserInfoEvent.ValidateUserName(it)) },
                     isError = screenState.value.nameValid == ValidField.INVALID,
@@ -184,7 +182,7 @@ fun UserInfoScreen(
                             }
                             .weight(.75f)
                             .padding(end = 24.dp),
-                        value = userPhone,
+                        value = screenState.value.phone,
                         label = { Text("Введіть свій номер телефону") },
                         onValueChange = { onHandleUserInfoEvent(UserInfoEvent.ValidatePhone(it)) },
                         isError = screenState.value.phoneValid == ValidField.INVALID && isPhoneFocused,

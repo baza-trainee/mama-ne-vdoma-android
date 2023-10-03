@@ -6,20 +6,15 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.systemBars
-import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
@@ -38,6 +33,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.LoadingIndica
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.OutlinedTextFieldWithError
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.PasswordTextFieldWithError
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.SocialLoginBlock
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.SurfaceWithSystemBars
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.getTextWithUnderline
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.model.LoginEvent
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.model.LoginViewState
@@ -48,19 +44,14 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 fun LoginUserScreen(
     modifier: Modifier = Modifier,
     screenState: State<LoginViewState> = mutableStateOf(LoginViewState()),
-    email: String = "",
-    password: String = "",
     onHandleEvent: (LoginEvent) -> Unit = { _ -> },
     onCreateUser: () -> Unit = {},
     onRestore: () -> Unit = {},
     onLogin: () -> Unit = {},
     onBack: () -> Unit = {}
 ) {
-    Surface(
+    SurfaceWithSystemBars(
         modifier = modifier
-            .windowInsetsPadding(WindowInsets.systemBars)
-            .fillMaxSize(),
-        color = MaterialTheme.colorScheme.background
     ) {
         BackPressHandler { onBack() }
 
@@ -106,7 +97,7 @@ fun LoginUserScreen(
                     modifier = modifier
                         .fillMaxWidth()
                         .padding(horizontal = 24.dp),
-                    text = email,
+                    text = screenState.value.email,
                     label = "Введіть свій email",
                     onValueChange = { onHandleEvent(LoginEvent.ValidateEmail(it)) },
                     isError = screenState.value.emailValid == ValidField.INVALID,
@@ -125,7 +116,7 @@ fun LoginUserScreen(
                     modifier = modifier
                         .fillMaxWidth()
                         .padding(horizontal = 24.dp),
-                    password = password,
+                    password = screenState.value.password,
                     onValueChange = { onHandleEvent(LoginEvent.ValidatePassword(it)) },
                     isError = screenState.value.passwordValid == ValidField.INVALID
                 )
