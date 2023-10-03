@@ -1,11 +1,14 @@
 package tech.baza_trainee.mama_ne_vdoma.di
 
+import com.chuckerteam.chucker.api.ChuckerCollector
+import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.ToNumberPolicy
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidApplication
+import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 import retrofit2.Retrofit
@@ -29,6 +32,16 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.vm.RestoreP
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.vm.UserSettingsViewModel
 
 val userKoinModule = module {
+    single {
+        ChuckerInterceptor.Builder(
+            androidContext()
+        )
+            .collector(ChuckerCollector(androidContext()))
+            .maxContentLength(CHUCKER_CONTENT_MAX_LENGTH)
+            .redactHeaders(emptySet())
+            .alwaysReadResponseBody(false)
+            .build()
+    }
     factory { Gson() }
     single {
         HttpLoggingInterceptor().setLevel(
@@ -36,9 +49,9 @@ val userKoinModule = module {
             else HttpLoggingInterceptor.Level.NONE
         )
     }
-    single { createAuthApiOkHttpClient(get()) }
-    single { createUserProfileApi(get()) }
-    single { createOpenApi<AuthApi>(get()) }
+    single { createOkHttpClient(get(), get()) }
+    single { createUserProfileApi(get(), get()) }
+    single { createCustomApi<AuthApi>(get()) }
     factory<AuthRepository> { AuthRepositoryImpl(get()) }
     factory<UserProfileRepository> { UserProfileRepositoryImpl(get()) }
     factory<LocationDataSource> { LocationDataSourceImpl(androidApplication()) }
@@ -70,27 +83,33 @@ fun createGson(): Gson = GsonBuilder()
     .create()
 
 private fun createUserProfileApi(
-    httpLoggingInterceptor: HttpLoggingInterceptor
+    httpLoggingInterceptor: HttpLoggingInterceptor,
+    loggingInterceptor: ChuckerInterceptor
 ): UserProfileApi {
     val okHttpBuilder = OkHttpClient.Builder()
         .addInterceptor(AuthInterceptor())
         .addInterceptor(httpLoggingInterceptor)
+        .addInterceptor(loggingInterceptor)
 
     return createWebService(okHttpBuilder.build())
 }
 
-inline fun <reified T> createOpenApi(
-    openApiOkHttpClient: OkHttpClient
+inline fun <reified T> createCustomApi(
+    okHttpClient: OkHttpClient
 ): T {
-    return createWebService(openApiOkHttpClient)
+    return createWebService(okHttpClient)
 }
 
-fun createAuthApiOkHttpClient(
-    httpLoggingInterceptor: HttpLoggingInterceptor
+fun createOkHttpClient(
+    httpLoggingInterceptor: HttpLoggingInterceptor,
+    loggingInterceptor: ChuckerInterceptor
 ): OkHttpClient {
     return OkHttpClient.Builder()
 //        .hostnameVerifier { _, _ -> true }
 //        .addInterceptor(TokenInterceptor())
         .addInterceptor(httpLoggingInterceptor)
+        .addInterceptor(loggingInterceptor)
         .build()
 }
+
+private const val CHUCKER_CONTENT_MAX_LENGTH = 250000L
