@@ -32,7 +32,8 @@ fun NavGraphBuilder.loginNavGraph(
                 onHandleEvent = { loginViewModel.handleLoginEvent(it) },
                 onCreateUser = { navController.navigate(Graphs.CreateUser.route) },
                 onRestore = { navController.navigate(LoginRoutes.RestorePassword.route) },
-                onLogin = { navController.navigate(Graphs.UserProfile.route) }
+                onLogin = { navController.navigate(Graphs.UserProfile.route) },
+                onBack = { navController.navigate(Graphs.Start.route) }
             )
         }
         composable(LoginRoutes.RestorePassword.route) {

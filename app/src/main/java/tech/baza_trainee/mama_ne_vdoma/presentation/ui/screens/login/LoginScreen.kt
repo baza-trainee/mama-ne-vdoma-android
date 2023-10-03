@@ -33,6 +33,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import de.palm.composestateevents.EventEffect
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.BackPressHandler
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.LoadingIndicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.OutlinedTextFieldWithError
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.PasswordTextFieldWithError
@@ -52,7 +53,8 @@ fun LoginUserScreen(
     onHandleEvent: (LoginEvent) -> Unit = { _ -> },
     onCreateUser: () -> Unit = {},
     onRestore: () -> Unit = {},
-    onLogin: () -> Unit = {}
+    onLogin: () -> Unit = {},
+    onBack: () -> Unit = {}
 ) {
     Surface(
         modifier = modifier
@@ -60,6 +62,8 @@ fun LoginUserScreen(
             .fillMaxSize(),
         color = MaterialTheme.colorScheme.background
     ) {
+        BackPressHandler { onBack() }
+
         val context = LocalContext.current
 
         EventEffect(

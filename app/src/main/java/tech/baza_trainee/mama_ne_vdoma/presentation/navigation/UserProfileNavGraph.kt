@@ -33,7 +33,8 @@ fun NavGraphBuilder.userProfileGraph(
                 userPhone = userSettingsViewModel.userPhone,
                 onHandleUserInfoEvent = { userSettingsViewModel.handleUserInfoEvent(it)},
                 onCreateUser = { navController.navigate(UserProfileRoutes.UserLocation.route) },
-                onEditPhoto = { navController.navigate(UserProfileRoutes.ImageCrop.route) }
+                onEditPhoto = { navController.navigate(UserProfileRoutes.ImageCrop.route) },
+                onBack = { navController.navigate(Graphs.Start.route) }
             )
         }
         composable(UserProfileRoutes.ImageCrop.route) { entry ->

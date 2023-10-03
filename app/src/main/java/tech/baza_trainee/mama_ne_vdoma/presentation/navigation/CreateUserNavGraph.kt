@@ -27,7 +27,8 @@ fun NavGraphBuilder.createUserNavGraph(
                 confirmPassword = userCreateViewModel.confirmPassword,
                 onHandleEvent = { userCreateViewModel.handleUserCreateEvent(it) },
                 onCreateUser = { navController.navigate(CreateUserRoute.VerifyEmail.route) },
-                onLogin = { navController.navigate(Graphs.Login.route) }
+                onLogin = { navController.navigate(Graphs.Login.route) },
+                onBack = { navController.navigate(Graphs.Start.route) }
             )
         }
         composable(CreateUserRoute.VerifyEmail.route) { entry ->
