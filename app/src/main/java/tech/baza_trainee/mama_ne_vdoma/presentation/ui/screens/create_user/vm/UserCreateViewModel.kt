@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import tech.baza_trainee.mama_ne_vdoma.domain.model.AuthUserEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.ConfirmEmailEntity
-import tech.baza_trainee.mama_ne_vdoma.domain.model.ResendCodeEntity
+import tech.baza_trainee.mama_ne_vdoma.domain.model.RequestWithEmailEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.AuthRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.UserCreateEvent
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.model.UserCreateViewState
@@ -262,7 +262,7 @@ class UserCreateViewModel(
         networkExecutor {
             execute {
                 authRepository.resendCode(
-                    ResendCodeEntity(
+                    RequestWithEmailEntity(
                         email = email
                     )
                 )

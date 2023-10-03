@@ -7,7 +7,8 @@ import tech.baza_trainee.mama_ne_vdoma.data.utils.asCustomResponse
 import tech.baza_trainee.mama_ne_vdoma.data.utils.getMessage
 import tech.baza_trainee.mama_ne_vdoma.domain.model.AuthUserEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.ConfirmEmailEntity
-import tech.baza_trainee.mama_ne_vdoma.domain.model.ResendCodeEntity
+import tech.baza_trainee.mama_ne_vdoma.domain.model.RequestWithEmailEntity
+import tech.baza_trainee.mama_ne_vdoma.domain.model.RestorePasswordEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.AuthRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestResult
 
@@ -26,7 +27,7 @@ class AuthRepositoryImpl(private val authApi: AuthApi): AuthRepository {
         else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage())
     }
 
-    override suspend fun resendCode(request: ResendCodeEntity): RequestResult<Unit> {
+    override suspend fun resendCode(request: RequestWithEmailEntity): RequestResult<Unit> {
         val result = authApi.resendCode(request.toDataModel())
         return if (result.isSuccessful)
             RequestResult.Success(Unit)
@@ -39,5 +40,19 @@ class AuthRepositoryImpl(private val authApi: AuthApi): AuthRepository {
             AuthInterceptor.AUTH_TOKEN = result.body()?.jwt.orEmpty()
             RequestResult.Success(Unit)
         } else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage())
+    }
+
+    override suspend fun forgetPassword(request: RequestWithEmailEntity): RequestResult<Unit> {
+        val result = authApi.forgetPassword(request.toDataModel())
+        return if (result.isSuccessful)
+            RequestResult.Success(Unit)
+        else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage())
+    }
+
+    override suspend fun resetPassword(request: RestorePasswordEntity): RequestResult<Unit> {
+        val result = authApi.resetPassword(request.toDataModel())
+        return if (result.isSuccessful)
+            RequestResult.Success(Unit)
+        else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage())
     }
 }
