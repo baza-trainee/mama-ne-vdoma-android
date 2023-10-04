@@ -30,7 +30,14 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.vm.Us
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.vm.LoginScreenViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.vm.NewPasswordScreenViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.vm.RestorePasswordScreenViewModel
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.vm.UserSettingsViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.model.UserProfileCommunicator
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.vm.ChildInfoViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.vm.ChildScheduleViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.vm.ChildrenInfoViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.vm.FullInfoViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.vm.ParentScheduleViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.vm.UserInfoViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.vm.UserLocationViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.BitmapHelper
 
 val userKoinModule = module {
@@ -60,7 +67,14 @@ val userKoinModule = module {
     factory<LocationRepository> { LocationRepositoryImpl(get()) }
     single { PhoneNumberUtil.createInstance(androidContext()) }
     single { BitmapHelper(androidContext()) }
-    viewModel { UserSettingsViewModel(get(), get(), get(), get()) }
+    single { UserProfileCommunicator() }
+    viewModel { UserInfoViewModel(get(), get(), get(), get(), get()) }
+    viewModel { UserLocationViewModel(get(), get(), get()) }
+    viewModel { ChildInfoViewModel(get()) }
+    viewModel { ChildScheduleViewModel(get()) }
+    viewModel { ChildrenInfoViewModel(get()) }
+    viewModel { ParentScheduleViewModel(get()) }
+    viewModel { FullInfoViewModel(get()) }
     viewModel { UserCreateViewModel(get()) }
 }
 
