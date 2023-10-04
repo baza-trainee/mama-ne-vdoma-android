@@ -77,6 +77,17 @@ fun UserInfoScreen(
         ) { onCreateUser() }
 
         EventEffect(
+            event = screenState.value.avatarSizeError,
+            onConsumed = {}
+        ) {
+            Toast.makeText(
+                context,
+                "Аватарка має розмір більше 500кБ. Будь ласка, оберіть інше фото і повторіть",
+                Toast.LENGTH_LONG
+            ).show()
+        }
+
+        EventEffect(
             event = screenState.value.requestError,
             onConsumed = { onHandleUserInfoEvent(UserInfoEvent.ConsumeRequestError) }
         ) { if (it.isNotBlank()) Toast.makeText(context, it, Toast.LENGTH_LONG).show() }

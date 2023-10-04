@@ -31,6 +31,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.vm.LoginScr
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.vm.NewPasswordScreenViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.vm.RestorePasswordScreenViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.vm.UserSettingsViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.BitmapHelper
 
 val userKoinModule = module {
     single {
@@ -58,7 +59,8 @@ val userKoinModule = module {
     factory<LocationDataSource> { LocationDataSourceImpl(androidApplication()) }
     factory<LocationRepository> { LocationRepositoryImpl(get()) }
     single { PhoneNumberUtil.createInstance(androidContext()) }
-    viewModel { UserSettingsViewModel(get(), get(), get()) }
+    single { BitmapHelper(androidContext()) }
+    viewModel { UserSettingsViewModel(get(), get(), get(), get()) }
     viewModel { UserCreateViewModel(get()) }
 }
 

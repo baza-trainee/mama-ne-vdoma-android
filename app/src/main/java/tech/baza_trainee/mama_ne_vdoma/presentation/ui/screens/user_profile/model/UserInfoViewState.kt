@@ -16,5 +16,6 @@ data class UserInfoViewState(
     val userAvatar: Bitmap = Bitmap.createBitmap(200, 200, Bitmap.Config.ARGB_8888),
     val isLoading: Boolean = false,
     val requestSuccess: StateEvent = consumed,
+    val avatarSizeError: StateEvent = consumed,
     val requestError: StateEventWithContent<String> = consumed()
 )

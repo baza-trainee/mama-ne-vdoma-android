@@ -4,14 +4,17 @@ import android.graphics.Bitmap
 import android.net.Uri
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.model.LatLng
 import de.palm.composestateevents.consumed
 import de.palm.composestateevents.triggered
 import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import tech.baza_trainee.mama_ne_vdoma.domain.model.Child
 import tech.baza_trainee.mama_ne_vdoma.domain.model.DayPeriod
 import tech.baza_trainee.mama_ne_vdoma.domain.model.Gender
@@ -32,10 +35,10 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.mode
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.model.UserInfoViewState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.model.UserLocationEvent
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.model.UserLocationViewState
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.BitmapHelper
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.decodeBase64
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.encodeToBase64
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.networkExecutor
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onError
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onLoading
@@ -46,7 +49,8 @@ import java.util.UUID
 class UserSettingsViewModel(
     private val userProfileRepository: UserProfileRepository,
     private val locationRepository: LocationRepository,
-    private val phoneNumberUtil: PhoneNumberUtil
+    private val phoneNumberUtil: PhoneNumberUtil,
+    private val bitmapHelper: BitmapHelper
 ): ViewModel() {
 
     private val _userInfoScreenState = MutableStateFlow(UserInfoViewState())
@@ -72,8 +76,7 @@ class UserSettingsViewModel(
 
     private var currentChildId = ""
 
-    var uriForCrop: Uri = Uri.EMPTY
-        private set
+    private var uriForCrop: Uri = Uri.EMPTY
 
     init {
         getUserInfo()
@@ -125,12 +128,29 @@ class UserSettingsViewModel(
         }
     }
 
+    fun getUserAvatarBitmap(): Bitmap {
+        return bitmapHelper.bitmapFromUri(uriForCrop)
+    }
+
     fun saveUserAvatar(image: Bitmap) {
-        _userInfoScreenState.update {
-            it.copy(
-                userAvatar = image
-            )
+        viewModelScope.launch(Dispatchers.IO) {
+            val newImage = Bitmap.createScaledBitmap(image, 512, 512, true)
+            val newImageSize = bitmapHelper.getSize(newImage)
+            if (newImageSize < IMAGE_SIZE) {
+                _userInfoScreenState.update {
+                    it.copy(
+                        userAvatar = image
+                    )
+                }
+            } else {
+                _userInfoScreenState.update {
+                    it.copy(
+                        avatarSizeError = triggered
+                    )
+                }
+            }
         }
+
 //        val deferred = coroutineScope.async(Dispatchers.IO) {
 //            val filename = "cropped_avatar"
 //            context.openFileOutput(filename, Context.MODE_PRIVATE)
@@ -236,7 +256,7 @@ class UserSettingsViewModel(
                         name = _userInfoScreenState.value.name,
                         phone = _userInfoScreenState.value.phone,
                         countryCode = _userInfoScreenState.value.code,
-                        avatar = _userInfoScreenState.value.userAvatar.encodeToBase64()
+                        avatar = bitmapHelper.encodeToBase64(_userInfoScreenState.value.userAvatar)
                     )
                 )
             }
@@ -636,9 +656,8 @@ class UserSettingsViewModel(
 
     companion object {
 
-        private val PHONE_LENGTH = 9..12
         private val NAME_LENGTH = 6..18
         private const val MAX_AGE = 18f
-        private const val IMAGE_SIZE = 3 * 1024 * 1024
+        private const val IMAGE_SIZE = 500 * 1024
     }
 }
