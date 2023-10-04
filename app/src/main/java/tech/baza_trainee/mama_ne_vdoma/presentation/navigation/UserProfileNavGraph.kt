@@ -10,10 +10,12 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.UserProfil
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.ChildInfoScreen
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.ChildScheduleScreen
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.ChildrenInfoScreen
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.FullInfoScreen
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.ImageCropScreen
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.ParentScheduleScreen
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.UserInfoScreen
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.UserLocationScreen
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.model.FullProfileEvent
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.vm.UserSettingsViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.sharedViewModel
 
@@ -81,12 +83,27 @@ fun NavGraphBuilder.userProfileGraph(
                 onEdit = { navController.navigate(UserProfileRoutes.ChildInfo.route) }
             )
         }
-        composable(UserProfileRoutes.ParentSchedule.route) {
-            val userSettingsViewModel: UserSettingsViewModel = it.sharedViewModel(navController)
+        composable(UserProfileRoutes.ParentSchedule.route) { entry ->
+            val userSettingsViewModel: UserSettingsViewModel = entry.sharedViewModel(navController)
             ParentScheduleScreen(
-                userSettingsViewModel,
-                { },
-                { navController.popBackStack() }
+                screenState = userSettingsViewModel.parentScheduleViewState.collectAsStateWithLifecycle(),
+                comment = userSettingsViewModel.parentComment,
+                onHandleScheduleEvent = { userSettingsViewModel.handleScheduleEvent(it) },
+                onNext = {
+                    userSettingsViewModel.handleFullProfileEvent(FullProfileEvent.UpdateFullProfile)
+                    navController.navigate(UserProfileRoutes.FullProfile.route)
+                },
+                onBack = { navController.popBackStack() }
+            )
+        }
+        composable(UserProfileRoutes.FullProfile.route) { entry ->
+            val userSettingsViewModel: UserSettingsViewModel = entry.sharedViewModel(navController)
+            FullInfoScreen(
+                screenState = userSettingsViewModel.fullInfoViewState.collectAsStateWithLifecycle(),
+                onHandleEvent = { userSettingsViewModel.handleFullProfileEvent(it) },
+                onBack = { navController.popBackStack() },
+                onNext = {},
+                onEdit = {}
             )
         }
     }

@@ -1,5 +1,6 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -8,6 +9,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -17,43 +20,40 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import tech.baza_trainee.mama_ne_vdoma.R
-import tech.baza_trainee.mama_ne_vdoma.domain.model.Child
 import tech.baza_trainee.mama_ne_vdoma.domain.model.DayPeriod
-import tech.baza_trainee.mama_ne_vdoma.domain.model.Gender
 import tech.baza_trainee.mama_ne_vdoma.domain.model.Period
 import tech.baza_trainee.mama_ne_vdoma.domain.model.ScheduleModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 import java.time.DayOfWeek
-import java.util.UUID
 
 @Composable
 @Preview
-fun ChildInfoDesk(
-    child: Child = Child(
-        UUID.randomUUID().toString(),
-        "Іванко",
-        "5",
-        Gender.BOY,
-        ScheduleModel(
-            mutableStateMapOf(
-                DayOfWeek.MONDAY to DayPeriod(morning = true),
-                DayOfWeek.TUESDAY to DayPeriod(wholeDay = true),
-                DayOfWeek.WEDNESDAY to DayPeriod(noon = true),
-                DayOfWeek.THURSDAY to DayPeriod(morning = true, afternoon = true),
-                DayOfWeek.FRIDAY to DayPeriod(noon = true, afternoon = true),
-                DayOfWeek.SATURDAY to DayPeriod(afternoon = true),
-                DayOfWeek.SUNDAY to DayPeriod(wholeDay = true),
-            )
+fun ParentInfoDesk(
+    name: String = "Somebody",
+    address: String = "Somewhere",
+    avatar: ImageBitmap = ImageBitmap(48, 48),
+    schedule: ScheduleModel = ScheduleModel(
+        mutableStateMapOf(
+            DayOfWeek.MONDAY to DayPeriod(morning = true),
+            DayOfWeek.TUESDAY to DayPeriod(wholeDay = true),
+            DayOfWeek.WEDNESDAY to DayPeriod(noon = true),
+            DayOfWeek.THURSDAY to DayPeriod(morning = true, afternoon = true),
+            DayOfWeek.FRIDAY to DayPeriod(noon = true, afternoon = true),
+            DayOfWeek.SATURDAY to DayPeriod(afternoon = true),
+            DayOfWeek.SUNDAY to DayPeriod(wholeDay = true),
         )
     ),
-    onEdit: (String) -> Unit = {},
-    onDelete: (String) -> Unit = {}
+    onEdit: () -> Unit = {},
+    onDelete: () -> Unit = {}
 ) {
     val localModifier = Modifier
 
@@ -73,37 +73,33 @@ fun ChildInfoDesk(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.End
         ) {
-            Icon(
-                painter = painterResource(id = if (child.gender == Gender.BOY) R.drawable.ic_boy else R.drawable.ic_girl),
+            Image(
+                modifier = localModifier
+                    .height(48.dp)
+                    .width(48.dp)
+                    .clip(CircleShape),
+                bitmap = avatar,
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.primary
+                contentScale = ContentScale.Fit
             )
-            Column(
+            Text(
                 modifier = localModifier
                     .padding(horizontal = 8.dp)
                     .fillMaxWidth()
-                    .weight(1f)
-            ) {
-                Text(
-                    text = child.name,
-                    fontFamily = redHatDisplayFontFamily,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold
-                )
-                Text(
-                    text = String.format("%s р.", child.age),
-                    fontFamily = redHatDisplayFontFamily,
-                    fontSize = 14.sp,
-                )
-            }
-            IconButton(onClick = { onEdit(child.id) }) {
+                    .weight(1f),
+                text = name,
+                fontFamily = redHatDisplayFontFamily,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold
+            )
+            IconButton(onClick = { onEdit() }) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_edit),
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.primary
                 )
             }
-            IconButton(onClick = { onDelete(child.id) }) {
+            IconButton(onClick = { onDelete() }) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_delete),
                     contentDescription = null,
@@ -114,13 +110,33 @@ fun ChildInfoDesk(
 
         Spacer(modifier = localModifier.height(8.dp))
 
-        val morning = child.schedule.schedule.filter { it.value.morning }.keys
-        val noon = child.schedule.schedule.filter { it.value.noon }.keys
-        val afternoon = child.schedule.schedule.filter { it.value.afternoon }.keys
-        val wholeDay = child.schedule.schedule.filter { it.value.wholeDay }.keys
+        Text(
+            modifier = localModifier
+                .padding(horizontal = 8.dp)
+                .fillMaxWidth(),
+            text = "Ваша адреса",
+            fontFamily = redHatDisplayFontFamily,
+            fontSize = 14.sp
+        )
 
-        val dayText = "Дні, коли потрібно доглянути дитину"
-        val periodText = "Час, коли потрібно доглянути дитину"
+        Text(
+            modifier = localModifier
+                .padding(horizontal = 8.dp)
+                .fillMaxWidth(),
+            text = address,
+            fontFamily = redHatDisplayFontFamily,
+            fontSize = 14.sp
+        )
+
+        Spacer(modifier = localModifier.height(8.dp))
+
+        val morning = schedule.schedule.filter { it.value.morning }.keys
+        val noon = schedule.schedule.filter { it.value.noon }.keys
+        val afternoon = schedule.schedule.filter { it.value.afternoon }.keys
+        val wholeDay = schedule.schedule.filter { it.value.wholeDay }.keys
+
+        val dayText = "Дні, коли ви можете доглядати за дітьми"
+        val periodText = "Час, коли ви можете доглядати за дітьми"
 
         if (morning.isNotEmpty())
             DayScheduleRow(

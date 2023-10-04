@@ -9,4 +9,5 @@ sealed class UserProfileRoutes(val route: String) {
     object ChildSchedule: UserProfileRoutes("child_schedule_screen")
     object ChildrenInfo: UserProfileRoutes("children_info_screen")
     object ParentSchedule: UserProfileRoutes("parent_schedule_screen")
+    object FullProfile: UserProfileRoutes("full_profile_screen")
 }

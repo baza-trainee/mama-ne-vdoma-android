@@ -29,6 +29,8 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.mode
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.model.ChildInfoViewState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.model.ChildrenInfoEvent
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.model.ChildrenInfoViewState
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.model.FullInfoViewState
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.model.FullProfileEvent
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.model.ScheduleEvent
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.model.ScheduleViewState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.model.UserInfoEvent
@@ -42,6 +44,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.decodeBase6
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.networkExecutor
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onError
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onLoading
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onStart
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onSuccess
 import java.time.DayOfWeek
 import java.util.UUID
@@ -71,7 +74,13 @@ class UserSettingsViewModel(
     private val _childrenInfoViewState = MutableStateFlow(ChildrenInfoViewState())
     val childrenInfoViewState: StateFlow<ChildrenInfoViewState> = _childrenInfoViewState.asStateFlow()
 
+    private val _fullInfoViewState = MutableStateFlow(FullInfoViewState())
+    val fullInfoViewState: StateFlow<FullInfoViewState> = _fullInfoViewState.asStateFlow()
+
     var childComment = mutableStateOf("")
+        private set
+
+    var parentComment = mutableStateOf("")
         private set
 
     private var currentChildId = ""
@@ -125,6 +134,14 @@ class UserSettingsViewModel(
             ScheduleEvent.SetCurrentChildSchedule -> setCurrentChildSchedule()
             is ScheduleEvent.UpdateChildComment -> updateChildComment(event.comment)
             is ScheduleEvent.UpdateChildSchedule -> updateChildSchedule(event.day, event.period)
+            is ScheduleEvent.UpdateParentComment -> updateParentComment(event.comment)
+            is ScheduleEvent.UpdateParentSchedule -> updateParentSchedule(event.day, event.period)
+        }
+    }
+
+    fun handleFullProfileEvent(event: FullProfileEvent) {
+        when(event) {
+            FullProfileEvent.UpdateFullProfile -> updateFullProfile()
         }
     }
 
@@ -150,18 +167,6 @@ class UserSettingsViewModel(
                 }
             }
         }
-
-//        val deferred = coroutineScope.async(Dispatchers.IO) {
-//            val filename = "cropped_avatar"
-//            context.openFileOutput(filename, Context.MODE_PRIVATE)
-//                .use {
-//                    croppedImage?.asAndroidBitmap()
-//                        ?.compress(Bitmap.CompressFormat.JPEG, 100, it)
-//                    it.flush()
-//                    it.close()
-//                }
-//            return@async File(context.filesDir, filename)
-//        }
     }
 
     private fun getUserInfo() {
@@ -286,6 +291,14 @@ class UserSettingsViewModel(
 
     private fun saveUserLocation() {
         networkExecutor {
+            onStart {
+                getAddressFromLocation(
+                    LatLng(
+                        _locationScreenState.value.currentLocation.latitude,
+                        _locationScreenState.value.currentLocation.longitude
+                    )
+                )
+            }
             execute {
                 userProfileRepository.saveUserLocation(
                     UserLocationEntity(
@@ -495,6 +508,126 @@ class UserSettingsViewModel(
         this.childComment.value = comment
     }
 
+    private fun updateParentSchedule(dayOfWeek: DayOfWeek, dayPeriod: Period) {
+        val currentSchedule = _parentScheduleViewState.value.schedule
+        when (dayPeriod) {
+            Period.WHOLE_DAY -> {
+                _parentScheduleViewState.update {
+                    it.copy(
+                        schedule = currentSchedule.apply {
+                            schedule[dayOfWeek] = schedule[dayOfWeek]?.copy(
+                                wholeDay = schedule[dayOfWeek]?.wholeDay?.not() ?: false
+                            ) ?: DayPeriod()
+                            if (schedule[dayOfWeek]?.wholeDay == true) {
+                                schedule[dayOfWeek] = schedule[dayOfWeek]?.copy(
+                                    morning = false,
+                                    noon = false,
+                                    afternoon = false
+                                ) ?: DayPeriod()
+                            }
+                        }
+                    )
+                }
+            }
+
+            Period.MORNING -> {
+                _parentScheduleViewState.update {
+                    it.copy(
+                        schedule = currentSchedule.apply {
+                            schedule[dayOfWeek] = schedule[dayOfWeek]?.copy(
+                                morning = schedule[dayOfWeek]?.morning?.not() ?: false
+                            ) ?: DayPeriod()
+                            if (schedule[dayOfWeek]?.morning == true &&
+                                schedule[dayOfWeek]?.noon == true &&
+                                schedule[dayOfWeek]?.afternoon == true) {
+                                schedule[dayOfWeek] = schedule[dayOfWeek]?.copy(
+                                    wholeDay = true,
+                                    morning = false,
+                                    noon = false,
+                                    afternoon = false
+                                ) ?: DayPeriod()
+                            } else if (schedule[dayOfWeek]?.morning == true && schedule[dayOfWeek]?.wholeDay == true) {
+                                schedule[dayOfWeek] = schedule[dayOfWeek]?.copy(
+                                    wholeDay = false
+                                ) ?: DayPeriod()
+                            }
+                        }
+                    )
+                }
+            }
+
+            Period.NOON -> {
+                _parentScheduleViewState.update {
+                    it.copy(
+                        schedule = currentSchedule.apply {
+                            schedule[dayOfWeek] = schedule[dayOfWeek]?.copy(
+                                noon = schedule[dayOfWeek]?.noon?.not() ?: false
+                            ) ?: DayPeriod()
+                            if (schedule[dayOfWeek]?.morning == true &&
+                                schedule[dayOfWeek]?.noon == true &&
+                                schedule[dayOfWeek]?.afternoon == true) {
+                                schedule[dayOfWeek] = schedule[dayOfWeek]?.copy(
+                                    wholeDay = true,
+                                    morning = false,
+                                    noon = false,
+                                    afternoon = false
+                                ) ?: DayPeriod()
+                            } else if (schedule[dayOfWeek]?.noon == true && schedule[dayOfWeek]?.wholeDay == true) {
+                                schedule[dayOfWeek] = schedule[dayOfWeek]?.copy(
+                                    wholeDay = false
+                                ) ?: DayPeriod()
+                            }
+                        }
+                    )
+                }
+            }
+
+            Period.AFTERNOON -> {
+                _parentScheduleViewState.update {
+                    it.copy(
+                        schedule = currentSchedule.apply {
+                            schedule[dayOfWeek] = schedule[dayOfWeek]?.copy(
+                                afternoon = schedule[dayOfWeek]?.afternoon?.not() ?: false
+                            ) ?: DayPeriod()
+                            if (schedule[dayOfWeek]?.morning == true &&
+                                schedule[dayOfWeek]?.noon == true &&
+                                schedule[dayOfWeek]?.afternoon == true) {
+                                schedule[dayOfWeek] = schedule[dayOfWeek]?.copy(
+                                    wholeDay = true,
+                                    morning = false,
+                                    noon = false,
+                                    afternoon = false
+                                ) ?: DayPeriod()
+                            } else if (schedule[dayOfWeek]?.afternoon == true && schedule[dayOfWeek]?.wholeDay == true) {
+                                schedule[dayOfWeek] = schedule[dayOfWeek]?.copy(
+                                    wholeDay = false
+                                ) ?: DayPeriod()
+                            }
+                        }
+                    )
+                }
+            }
+        }
+    }
+
+    private fun updateParentComment(comment: String) {
+        this.parentComment.value = comment
+    }
+
+    private fun updateFullProfile() {
+        _fullInfoViewState.update {
+            it.copy(
+                name = _userInfoScreenState.value.name,
+                userAvatar = _userInfoScreenState.value.userAvatar,
+                address = _locationScreenState.value.address,
+                schedule = _parentScheduleViewState.value.schedule,
+                children = _childrenInfoViewState.value.children,
+                requestSuccess = consumed,
+                requestError = consumed()
+            )
+        }
+    }
+
     private fun requestCurrentLocation() {
         networkExecutor<LatLng?> {
             execute {
@@ -578,6 +711,9 @@ class UserSettingsViewModel(
 
     private fun resetCurrentChild() {
         currentChildId = ""
+        _childInfoScreenState.update {
+            ChildInfoViewState()
+        }
     }
 
     private fun deleteChild(childId: String) {
@@ -600,7 +736,7 @@ class UserSettingsViewModel(
         }
 
         val currentChild =
-            _childrenInfoViewState.value.children.firstOrNull() { it.id == currentChildId }
+            _childrenInfoViewState.value.children.firstOrNull { it.id == currentChildId }
                 ?: Child(
                     id = currentChildId
                 )
@@ -626,7 +762,8 @@ class UserSettingsViewModel(
                 gender = _childInfoScreenState.value.gender
             )
             list[index] = newChild
-        } else
+        } else {
+            currentChildId = UUID.randomUUID().toString()
             list.add(
                 Child(
                     id = currentChildId,
@@ -635,6 +772,7 @@ class UserSettingsViewModel(
                     gender = _childInfoScreenState.value.gender
                 )
             )
+        }
         _childrenInfoViewState.update {
             it.copy(
                 children = list

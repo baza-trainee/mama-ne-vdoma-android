@@ -26,7 +26,9 @@ import java.time.DayOfWeek
 @Composable
 fun DayScheduleRow(
     daysOfWeek: Set<DayOfWeek>,
-    period: Period
+    period: Period,
+    dayText: String,
+    periodText: String
 ) {
 
     val localModifier = Modifier
@@ -48,7 +50,7 @@ fun DayScheduleRow(
     )
 
     Text(
-        text = "Дні, коли потрібно доглянути дитину",
+        text = dayText,
         fontFamily = redHatDisplayFontFamily,
         fontSize = 14.sp,
     )
@@ -149,7 +151,7 @@ fun DayScheduleRow(
     Spacer(modifier = localModifier.height(8.dp))
 
     Text(
-        text = "Час, коли потрібно доглянути дитину",
+        text = periodText,
         fontFamily = redHatDisplayFontFamily,
         fontSize = 14.sp,
     )
