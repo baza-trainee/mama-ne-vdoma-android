@@ -251,7 +251,7 @@ fun UserInfoScreen(
                     },
                     containerColor = MaterialTheme.colorScheme.surface,
                     onItemSelected = {
-                        onHandleUserInfoEvent(UserInfoEvent.SetCode(it.dial_code))
+                        onHandleUserInfoEvent(UserInfoEvent.SetCode(it.dial_code, it.code))
                         openBottomSheet = false
                     }, onDismissRequest = {
                         openBottomSheet = false

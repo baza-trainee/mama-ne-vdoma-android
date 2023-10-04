@@ -5,6 +5,7 @@ import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.ToNumberPolicy
+import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidApplication
@@ -56,7 +57,8 @@ val userKoinModule = module {
     factory<UserProfileRepository> { UserProfileRepositoryImpl(get()) }
     factory<LocationDataSource> { LocationDataSourceImpl(androidApplication()) }
     factory<LocationRepository> { LocationRepositoryImpl(get()) }
-    viewModel { UserSettingsViewModel(get(), get()) }
+    single { PhoneNumberUtil.createInstance(androidContext()) }
+    viewModel { UserSettingsViewModel(get(), get(), get()) }
     viewModel { UserCreateViewModel(get()) }
 }
 

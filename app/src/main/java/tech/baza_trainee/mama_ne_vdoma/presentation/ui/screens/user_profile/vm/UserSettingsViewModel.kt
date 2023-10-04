@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import com.google.android.gms.maps.model.LatLng
 import de.palm.composestateevents.consumed
 import de.palm.composestateevents.triggered
+import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -44,7 +45,8 @@ import java.util.UUID
 
 class UserSettingsViewModel(
     private val userProfileRepository: UserProfileRepository,
-    private val locationRepository: LocationRepository
+    private val locationRepository: LocationRepository,
+    private val phoneNumberUtil: PhoneNumberUtil
 ): ViewModel() {
 
     private val _userInfoScreenState = MutableStateFlow(UserInfoViewState())
@@ -82,7 +84,7 @@ class UserSettingsViewModel(
             is UserInfoEvent.SetImageToCrop -> setUriForCrop(event.uri)
             is UserInfoEvent.ValidateUserName -> validateUserName(event.name)
             is UserInfoEvent.ValidatePhone -> validatePhone(event.phone)
-            is UserInfoEvent.SetCode -> setCode(event.code)
+            is UserInfoEvent.SetCode -> setCode(event.code, event.country)
             UserInfoEvent.SaveInfo -> saveUserInfo()
             UserInfoEvent.ConsumeRequestError -> consumeUserInfoRequestError()
         }
@@ -189,17 +191,24 @@ class UserSettingsViewModel(
         uriForCrop = uri
     }
 
-    private fun setCode(code: String) {
+    private fun setCode(code: String, country: String) {
         _userInfoScreenState.update {
             it.copy(
-                code = code
+                code = code,
+                country = country
             )
         }
     }
 
     private fun validatePhone(phone: String) {
-        val phoneValid = if (phone.length in PHONE_LENGTH && phone.none { !it.isDigit() }) ValidField.VALID
-        else ValidField.INVALID
+        val phoneValid = try {
+            val fullNumber = _userInfoScreenState.value.code + phone
+            val phoneNumber = phoneNumberUtil.parse(fullNumber, _userInfoScreenState.value.country)
+            if (phoneNumberUtil.isPossibleNumber(phoneNumber)) ValidField.VALID
+            else ValidField.INVALID
+        } catch (e: Exception) {
+            ValidField.INVALID
+        }
         _userInfoScreenState.update {
             it.copy(
                 phone = phone,
