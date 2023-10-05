@@ -7,23 +7,24 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import org.koin.androidx.compose.navigation.koinNavViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.Graphs
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.UserProfileRoutes
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.ChildInfoScreen
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.ChildScheduleScreen
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.ChildrenInfoScreen
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.FullInfoScreen
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.ImageCropScreen
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.ParentScheduleScreen
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.UserInfoScreen
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.UserLocationScreen
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.model.FullProfileEvent
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.vm.ChildInfoViewModel
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.vm.ChildScheduleViewModel
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.vm.ChildrenInfoViewModel
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.vm.FullInfoViewModel
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.vm.ParentScheduleViewModel
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.vm.UserInfoViewModel
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.vm.UserLocationViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.child_info.ChildInfoScreen
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.child_info.ChildInfoViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.children_info.ChildrenInfoScreen
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.children_info.ChildrenInfoViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.full_info.FullInfoScreen
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.full_info.FullInfoViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.full_info.FullProfileEvent
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.schedule.child_schedule.ChildScheduleScreen
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.schedule.child_schedule.ChildScheduleViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.schedule.parent_schedule.ParentScheduleScreen
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.schedule.parent_schedule.ParentScheduleViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.user_info.ImageCropScreen
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.user_info.UserInfoScreen
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.user_info.UserInfoViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.user_location.UserLocationScreen
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.user_location.UserLocationViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.sharedViewModel
 
 fun NavGraphBuilder.userProfileGraph(
@@ -51,7 +52,7 @@ fun NavGraphBuilder.userProfileGraph(
                 onHandleCropEvent = { userInfoViewModel.saveUserAvatar(it) }
             ) { navController.navigate(UserProfileRoutes.UserInfo.route) }
         }
-        composable(UserProfileRoutes.UserLocation.route) { _ ->
+        composable(UserProfileRoutes.UserLocation.route) {
             val userLocationViewModel: UserLocationViewModel = koinNavViewModel()
             UserLocationScreen(
                 screenState = userLocationViewModel.locationScreenState.collectAsStateWithLifecycle(),
@@ -60,7 +61,7 @@ fun NavGraphBuilder.userProfileGraph(
                 navController.navigate(UserProfileRoutes.ChildInfo.route)
             }
         }
-        composable(UserProfileRoutes.ChildInfo.route) { _ ->
+        composable(UserProfileRoutes.ChildInfo.route) {
             val childInfoViewModel: ChildInfoViewModel = koinNavViewModel()
             ChildInfoScreen(
                 screenState = childInfoViewModel.childInfoScreenState.collectAsStateWithLifecycle(),
@@ -69,7 +70,7 @@ fun NavGraphBuilder.userProfileGraph(
                 onBack = { navController.popBackStack() }
             )
         }
-        composable(UserProfileRoutes.ChildSchedule.route) { _ ->
+        composable(UserProfileRoutes.ChildSchedule.route) {
             val childScheduleViewModel: ChildScheduleViewModel = koinNavViewModel()
             ChildScheduleScreen(
                 screenState = childScheduleViewModel.childScheduleViewState.collectAsStateWithLifecycle(),
@@ -79,7 +80,7 @@ fun NavGraphBuilder.userProfileGraph(
                 { navController.popBackStack() }
             )
         }
-        composable(UserProfileRoutes.ChildrenInfo.route) { _ ->
+        composable(UserProfileRoutes.ChildrenInfo.route) {
             val childrenInfoViewModel: ChildrenInfoViewModel = koinNavViewModel()
             ChildrenInfoScreen(
                 screenState = childrenInfoViewModel.childrenInfoViewState.collectAsStateWithLifecycle(),
@@ -89,7 +90,7 @@ fun NavGraphBuilder.userProfileGraph(
                 onEdit = { navController.navigate(UserProfileRoutes.ChildInfo.route) }
             )
         }
-        composable(UserProfileRoutes.ParentSchedule.route) { _ ->
+        composable(UserProfileRoutes.ParentSchedule.route) {
             val parentScheduleViewModel: ParentScheduleViewModel = koinNavViewModel()
             ParentScheduleScreen(
                 screenState = parentScheduleViewModel.parentScheduleViewState.collectAsStateWithLifecycle(),
@@ -102,7 +103,7 @@ fun NavGraphBuilder.userProfileGraph(
                 onBack = { navController.popBackStack() }
             )
         }
-        composable(UserProfileRoutes.FullProfile.route) { _ ->
+        composable(UserProfileRoutes.FullProfile.route) {
             val fullInfoViewModel: FullInfoViewModel = koinNavViewModel()
             FullInfoScreen(
                 screenState = fullInfoViewModel.fullInfoViewState.collectAsStateWithLifecycle(),

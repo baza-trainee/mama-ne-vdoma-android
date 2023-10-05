@@ -26,21 +26,22 @@ import tech.baza_trainee.mama_ne_vdoma.data.repository.UserProfileRepositoryImpl
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.AuthRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.LocationRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.vm.UserCreateViewModel
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.vm.LoginScreenViewModel
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.vm.NewPasswordScreenViewModel
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.vm.RestorePasswordScreenViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.verify_email.VerifyEmailViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.UserCreateViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.login.LoginScreenViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.new_password.NewPasswordScreenViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.restore_password.RestorePasswordScreenViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.child_info.ChildInfoViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.children_info.ChildrenInfoViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.full_info.FullInfoViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.model.UserProfileCommunicator
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.vm.ChildInfoViewModel
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.vm.ChildScheduleViewModel
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.vm.ChildrenInfoViewModel
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.vm.FullInfoViewModel
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.vm.ParentScheduleViewModel
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.vm.UserInfoViewModel
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.vm.UserLocationViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.schedule.child_schedule.ChildScheduleViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.schedule.parent_schedule.ParentScheduleViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.user_info.UserInfoViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.user_location.UserLocationViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.BitmapHelper
 
-val userKoinModule = module {
+val repoModule = module {
     single {
         ChuckerInterceptor.Builder(
             androidContext()
@@ -65,6 +66,9 @@ val userKoinModule = module {
     factory<UserProfileRepository> { UserProfileRepositoryImpl(get()) }
     factory<LocationDataSource> { LocationDataSourceImpl(androidApplication()) }
     factory<LocationRepository> { LocationRepositoryImpl(get()) }
+}
+
+val userKoinModule = module {
     single { PhoneNumberUtil.createInstance(androidContext()) }
     single { BitmapHelper(androidContext()) }
     single { UserProfileCommunicator() }
@@ -78,10 +82,14 @@ val userKoinModule = module {
     viewModel { UserCreateViewModel(get()) }
 }
 
+val verifyEmailModule = module {
+    viewModel { (email: String, password: String) -> VerifyEmailViewModel(email, password, get()) }
+}
+
 val loginKoinModule = module {
     viewModel { LoginScreenViewModel(get()) }
-    viewModel { NewPasswordScreenViewModel() }
-    viewModel { RestorePasswordScreenViewModel() }
+    viewModel { (email: String, otp: String) -> NewPasswordScreenViewModel(email, otp, get()) }
+    viewModel { RestorePasswordScreenViewModel(get()) }
 }
 
 const val BASE_URL = "https://tough-moth-trunks.cyclic.cloud/"

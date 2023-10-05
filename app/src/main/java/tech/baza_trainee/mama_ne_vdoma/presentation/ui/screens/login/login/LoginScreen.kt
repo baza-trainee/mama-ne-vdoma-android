@@ -1,29 +1,28 @@
-package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user
+package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.login
 
 import android.widget.Toast
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material3.Button
-import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -38,14 +37,14 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.SurfaceWithSy
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.getTextWithUnderline
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.ButtonText
 
 @Composable
-fun CreateUserScreen(
+fun LoginUserScreen(
     modifier: Modifier = Modifier,
-    screenState: State<UserCreateViewState> = mutableStateOf(UserCreateViewState()),
-    onHandleEvent: (UserCreateEvent) -> Unit = { _ -> },
+    screenState: State<LoginViewState> = mutableStateOf(LoginViewState()),
+    onHandleEvent: (LoginEvent) -> Unit = { _ -> },
     onCreateUser: () -> Unit = {},
+    onRestore: () -> Unit = {},
     onLogin: () -> Unit = {},
     onBack: () -> Unit = {}
 ) {
@@ -57,20 +56,20 @@ fun CreateUserScreen(
         val context = LocalContext.current
 
         EventEffect(
-            event = screenState.value.registerSuccess,
+            event = screenState.value.loginSuccess,
             onConsumed = {}
-        ) { onCreateUser() }
+        ) {
+            onHandleEvent(LoginEvent.OnSuccessfulLogin)
+            onLogin()
+        }
 
         EventEffect(
-            event = screenState.value.registerError,
-            onConsumed = { onHandleEvent(UserCreateEvent.ConsumeRegisterError) }
+            event = screenState.value.requestError,
+            onConsumed = { onHandleEvent(LoginEvent.ConsumeRequestError) }
         ) { if (it.isNotBlank()) Toast.makeText(context, it, Toast.LENGTH_LONG).show() }
-
-        val scrollState = rememberScrollState()
-
+        
         Column(
             modifier = modifier
-                .verticalScroll(scrollState)
                 .imePadding()
                 .fillMaxWidth(),
             verticalArrangement = Arrangement.SpaceBetween
@@ -83,7 +82,7 @@ fun CreateUserScreen(
                 Text(
                     modifier = modifier
                         .fillMaxWidth(),
-                    text = "Створити профіль",
+                    text = "Увійти у свій профіль",
                     fontSize = 20.sp,
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.onBackground,
@@ -98,7 +97,7 @@ fun CreateUserScreen(
                         .padding(horizontal = 24.dp),
                     text = screenState.value.email,
                     label = "Введіть свій email",
-                    onValueChange = { onHandleEvent(UserCreateEvent.ValidateEmail(it)) },
+                    onValueChange = { onHandleEvent(LoginEvent.ValidateEmail(it)) },
                     isError = screenState.value.emailValid == ValidField.INVALID,
                     errorText = "Ви ввели некоректний email",
                     leadingIcon = {
@@ -116,75 +115,43 @@ fun CreateUserScreen(
                         .fillMaxWidth()
                         .padding(horizontal = 24.dp),
                     password = screenState.value.password,
-                    onValueChange = { onHandleEvent(UserCreateEvent.ValidatePassword(it)) },
+                    onValueChange = { onHandleEvent(LoginEvent.ValidatePassword(it)) },
                     isError = screenState.value.passwordValid == ValidField.INVALID
-                )
-
-                Spacer(modifier = modifier.height(2.dp))
-
-                Text(
-                    modifier = modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 24.dp),
-                    text =
-                    "Ваш пароль повинен складатись з 6-24 символів і обов’язково містити великі та малі латинські букви, цифри, спеціальні знаки",
-                    fontSize = 14.sp,
-                    fontFamily = redHatDisplayFontFamily
-                )
-
-                Spacer(modifier = modifier.height(16.dp))
-
-                PasswordTextFieldWithError(
-                    modifier = modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 24.dp),
-                    label = "Повторіть ваш пароль",
-                    password = screenState.value.confirmPassword,
-                    onValueChange = { onHandleEvent(UserCreateEvent.ValidateConfirmPassword(it)) },
-                    isError = screenState.value.confirmPasswordValid == ValidField.INVALID,
-                    errorText = "Паролі не співпадають"
                 )
 
                 Spacer(modifier = modifier.height(8.dp))
 
-                Row(
+                Text(
                     modifier = modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 24.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Checkbox(
-                        checked = screenState.value.isPolicyChecked,
-                        onCheckedChange = { onHandleEvent(UserCreateEvent.UpdatePolicyCheck(it)) }
-                    )
-                    Text(
-                        modifier = modifier
-                            .weight(1f)
-                            .fillMaxWidth(),
-                        text = getTextWithUnderline(
-                            "Даю згоду на використання моїх даних згідно з ",
-                            "Політикою конфіденційності"
-                        ),
-                        fontSize = 14.sp,
-                        fontFamily = redHatDisplayFontFamily
-                    )
-                }
+                        .padding(horizontal = 24.dp)
+                        .clickable(
+                            indication = null,
+                            interactionSource = remember { MutableInteractionSource() }
+                        ) {
+                            onRestore()
+                        },
+                    text = getTextWithUnderline("", "Забули пароль?", false),
+                    textAlign = TextAlign.End,
+                    fontSize = 14.sp,
+                    fontFamily = redHatDisplayFontFamily
+                )
 
-                Spacer(modifier = modifier.height(24.dp))
+                Spacer(modifier = modifier.height(48.dp))
 
                 Button(
                     modifier = modifier
-                        .padding(horizontal = 24.dp)
+                        .padding(horizontal = 24.dp, vertical = 16.dp)
                         .fillMaxWidth()
                         .height(48.dp),
-                    onClick = {
-//                        onCreateUser() //for test
-                        onHandleEvent(UserCreateEvent.RegisterUser)
-                    },
-                    enabled = screenState.value.isAllConform
+                    onClick = { onHandleEvent(LoginEvent.LoginUser) },
+                    enabled = screenState.value.passwordValid == ValidField.VALID &&
+                            screenState.value.emailValid == ValidField.VALID
                 ) {
-                    ButtonText(
-                        text = "Зареєструватись"
+                    Text(
+                        text = "Увійти",
+                        fontFamily = redHatDisplayFontFamily,
+                        fontWeight = FontWeight.Bold
                     )
                 }
 
@@ -217,6 +184,7 @@ fun CreateUserScreen(
 //                            },
 //                        text = "чи",
 //                        fontSize = 14.sp,
+//                        fontFamily = redHatDisplayFontFamily
 //                    )
 //                    Box(
 //                        modifier = modifier
@@ -238,8 +206,8 @@ fun CreateUserScreen(
             SocialLoginBlock(
                 modifier = modifier,
                 horizontalPadding = 24.dp,
-                getTextWithUnderline("Вже є акаунт? ", "Увійти"),
-                onLogin
+                getTextWithUnderline("Ще немає профілю? ", "Зареєструватись"),
+                onCreateUser
             )
         }
 
@@ -249,6 +217,6 @@ fun CreateUserScreen(
 
 @Composable
 @Preview
-fun CreateUserPreview() {
-    CreateUserScreen()
+fun LoginUserPreview() {
+    LoginUserScreen()
 }
