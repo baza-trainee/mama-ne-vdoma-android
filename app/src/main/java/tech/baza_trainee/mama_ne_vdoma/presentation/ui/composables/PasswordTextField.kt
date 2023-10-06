@@ -71,6 +71,7 @@ fun ShowHidePasswordTextField(
         },
         textStyle = TextStyle(
             fontFamily = redHatDisplayFontFamily
-        )
+        ),
+        maxLines = 1
     )
 }

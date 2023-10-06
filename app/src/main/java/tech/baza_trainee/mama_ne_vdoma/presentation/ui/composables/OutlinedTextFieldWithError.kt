@@ -118,7 +118,8 @@ fun OutlinedTextFieldWithError(
             keyboardOptions = keyboardOptions,
             textStyle = TextStyle(
                 fontFamily = redHatDisplayFontFamily
-            )
+            ),
+            maxLines = 1
         )
         if (isError && isEmailFocused) {
             Text(
