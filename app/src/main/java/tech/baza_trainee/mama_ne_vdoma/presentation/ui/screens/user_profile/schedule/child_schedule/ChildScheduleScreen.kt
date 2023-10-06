@@ -1,9 +1,12 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.schedule.child_schedule
 
+import android.widget.Toast
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.platform.LocalContext
+import de.palm.composestateevents.EventEffect
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.LoadingIndicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.ScheduleScreen
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.schedule.ScheduleEvent
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.schedule.ScheduleViewState
@@ -16,9 +19,17 @@ fun ChildScheduleScreen(
     onNext: () -> Unit,
     onBack: () -> Unit
 ) {
-    LaunchedEffect(key1 = true) {
-        onHandleScheduleEvent(ScheduleEvent.SetCurrentChildSchedule)
-    }
+    val context = LocalContext.current
+
+    EventEffect(
+        event = screenState.value.requestSuccess,
+        onConsumed = {}
+    ) { onNext() }
+
+    EventEffect(
+        event = screenState.value.requestError,
+        onConsumed = { onHandleScheduleEvent(ScheduleEvent.ConsumeRequestError) }
+    ) { if (it.isNotBlank()) Toast.makeText(context, it, Toast.LENGTH_LONG).show() }
 
     ScheduleScreen(
         title = "Вкажіть, коли потрібно доглядати дитину",
@@ -26,7 +37,9 @@ fun ChildScheduleScreen(
         comment = comment,
         onUpdateSchedule = { day, period -> onHandleScheduleEvent(ScheduleEvent.UpdateChildSchedule(day, period)) },
         onUpdateComment = { onHandleScheduleEvent(ScheduleEvent.UpdateChildComment(it)) },
-        onNext = onNext,
+        onNext = { onHandleScheduleEvent(ScheduleEvent.PatchChildSchedule) },
         onBack = onBack
     )
+
+    if (screenState.value.isLoading) LoadingIndicator()
 }

@@ -27,14 +27,9 @@ class ChildInfoViewModel(
     private val _childInfoScreenState = MutableStateFlow(ChildInfoViewState())
     val childInfoScreenState: StateFlow<ChildInfoViewState> = _childInfoScreenState.asStateFlow()
 
-    init {
-        if (communicator.currentChildId.isNotEmpty())
-            getChildById()
-    }
-
     fun handleChildInfoEvent(event: ChildInfoEvent) {
         when(event) {
-            ChildInfoEvent.SaveChild -> if (communicator.currentChildId.isEmpty()) saveChild() else patchChild()
+            ChildInfoEvent.SaveChild -> saveChild()
             is ChildInfoEvent.SetGender -> setGender(event.gender)
             is ChildInfoEvent.ValidateAge -> validateAge(event.age)
             is ChildInfoEvent.ValidateChildName -> validateChildName(event.name)
@@ -71,40 +66,6 @@ class ChildInfoViewModel(
         }
     }
 
-    private fun getChildById() {
-        networkExecutor<ChildEntity?> {
-            execute {
-                userProfileRepository.getChildById(communicator.currentChildId)
-            }
-            onSuccess { entity ->
-                _childInfoScreenState.update {
-                    it.copy(
-                        name = entity?.name.orEmpty(),
-                        nameValid = ValidField.VALID,
-                        age = entity?.age.toString(),
-                        ageValid = ValidField.VALID,
-                        gender = if (entity?.isMale == true) Gender.BOY else Gender.GIRL,
-                        requestSuccess = triggered
-                    )
-                }
-            }
-            onError { error ->
-                _childInfoScreenState.update {
-                    it.copy(
-                        requestError = triggered(error)
-                    )
-                }
-            }
-            onLoading { isLoading ->
-                _childInfoScreenState.update {
-                    it.copy(
-                        isLoading = isLoading
-                    )
-                }
-            }
-        }
-    }
-
     private fun saveChild() {
         networkExecutor<ChildEntity?> {
             execute {
@@ -118,35 +79,6 @@ class ChildInfoViewModel(
             }
             onSuccess { entity ->
                 communicator.currentChildId = entity?.childId.orEmpty()
-                _childInfoScreenState.update {
-                    it.copy(
-                        requestSuccess = triggered
-                    )
-                }
-            }
-            onError { error ->
-                _childInfoScreenState.update {
-                    it.copy(
-                        requestError = triggered(error)
-                    )
-                }
-            }
-            onLoading { isLoading ->
-                _childInfoScreenState.update {
-                    it.copy(
-                        isLoading = isLoading
-                    )
-                }
-            }
-        }
-    }
-
-    private fun patchChild() {
-        networkExecutor {
-            execute {
-                userProfileRepository.patchChildById(communicator.currentChildId)
-            }
-            onSuccess {
                 _childInfoScreenState.update {
                     it.copy(
                         requestSuccess = triggered

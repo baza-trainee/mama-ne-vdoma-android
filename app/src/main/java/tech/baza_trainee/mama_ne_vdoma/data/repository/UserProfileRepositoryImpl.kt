@@ -7,6 +7,7 @@ import tech.baza_trainee.mama_ne_vdoma.data.utils.asCustomResponse
 import tech.baza_trainee.mama_ne_vdoma.data.utils.getMessage
 import tech.baza_trainee.mama_ne_vdoma.domain.model.ChildEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.InitChildEntity
+import tech.baza_trainee.mama_ne_vdoma.domain.model.PatchChildEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UserInfoEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UserLocationEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UserProfileEntity
@@ -57,10 +58,17 @@ class UserProfileRepositoryImpl(private val userProfileApi: UserProfileApi): Use
         else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage())
     }
 
-    override suspend fun patchChildById(childId: String): RequestResult<ChildEntity?> {
-        val result = userProfileApi.patchChildById(childId)
+    override suspend fun patchChildById(childId: String, data: PatchChildEntity): RequestResult<ChildEntity?> {
+        val result = userProfileApi.patchChildById(childId, data.toDataModel())
         return if (result.isSuccessful)
             RequestResult.Success(result.body()?.toDomainModel())
+        else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage())
+    }
+
+    override suspend fun deleteChildById(childId: String): RequestResult<Unit> {
+        val result = userProfileApi.deleteChildById(childId)
+        return if (result.isSuccessful)
+            RequestResult.Success(Unit)
         else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage())
     }
 }

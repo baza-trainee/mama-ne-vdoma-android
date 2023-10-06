@@ -75,10 +75,10 @@ val userKoinModule = module {
     viewModel { UserInfoViewModel(get(), get(), get(), get(), get()) }
     viewModel { UserLocationViewModel(get(), get(), get()) }
     viewModel { ChildInfoViewModel(get(), get()) }
-    viewModel { ChildScheduleViewModel(get()) }
-    viewModel { ChildrenInfoViewModel(get()) }
+    viewModel { ChildScheduleViewModel(get(), get()) }
+    viewModel { ChildrenInfoViewModel(get(), get()) }
     viewModel { ParentScheduleViewModel(get()) }
-    viewModel { FullInfoViewModel(get()) }
+    viewModel { FullInfoViewModel(get(), get()) }
     viewModel { UserCreateViewModel(get()) }
 }
 

@@ -23,7 +23,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import tech.baza_trainee.mama_ne_vdoma.R
-import tech.baza_trainee.mama_ne_vdoma.domain.model.Child
+import tech.baza_trainee.mama_ne_vdoma.domain.model.ChildEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.DayPeriod
 import tech.baza_trainee.mama_ne_vdoma.domain.model.Gender
 import tech.baza_trainee.mama_ne_vdoma.domain.model.Period
@@ -35,12 +35,12 @@ import java.util.UUID
 @Composable
 @Preview
 fun ChildInfoDesk(
-    child: Child = Child(
-        UUID.randomUUID().toString(),
-        "Іванко",
-        "5",
-        Gender.BOY,
-        ScheduleModel(
+    child: ChildEntity = ChildEntity(
+        childId = UUID.randomUUID().toString(),
+        name = "Іванко",
+        age = "5",
+        gender = Gender.BOY,
+        schedule = ScheduleModel(
             mutableStateMapOf(
                 DayOfWeek.MONDAY to DayPeriod(morning = true),
                 DayOfWeek.TUESDAY to DayPeriod(wholeDay = true),
@@ -96,14 +96,14 @@ fun ChildInfoDesk(
                     fontSize = 14.sp,
                 )
             }
-            IconButton(onClick = { onEdit(child.id) }) {
+            IconButton(onClick = { onEdit(child.childId) }) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_edit),
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.primary
                 )
             }
-            IconButton(onClick = { onDelete(child.id) }) {
+            IconButton(onClick = { onDelete(child.childId) }) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_delete),
                     contentDescription = null,

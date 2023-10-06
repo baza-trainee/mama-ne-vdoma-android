@@ -2,6 +2,7 @@ package tech.baza_trainee.mama_ne_vdoma.data.api
 
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.PATCH
 import retrofit2.http.POST
@@ -11,6 +12,7 @@ import tech.baza_trainee.mama_ne_vdoma.data.model.InitChildDto
 import tech.baza_trainee.mama_ne_vdoma.data.model.UserInfoDto
 import tech.baza_trainee.mama_ne_vdoma.data.model.UserLocationDto
 import tech.baza_trainee.mama_ne_vdoma.data.model.UserProfileDto
+import tech.baza_trainee.mama_ne_vdoma.data.model.WeekScheduleDto
 
 interface UserProfileApi {
 
@@ -33,5 +35,8 @@ interface UserProfileApi {
     suspend fun getChildById(@Path("id") childId: String): Response<ChildDto>
 
     @PATCH("api/child/{id}")
-    suspend fun patchChildById(@Path("id") childId: String): Response<ChildDto>
+    suspend fun patchChildById(@Path("id") childId: String, @Body data: WeekScheduleDto): Response<ChildDto>
+
+    @DELETE("api/child/{id}")
+    suspend fun deleteChildById(@Path("id") childId: String): Response<Unit>
 }

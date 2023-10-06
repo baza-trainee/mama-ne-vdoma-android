@@ -2,6 +2,7 @@ package tech.baza_trainee.mama_ne_vdoma.domain.repository
 
 import tech.baza_trainee.mama_ne_vdoma.domain.model.ChildEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.InitChildEntity
+import tech.baza_trainee.mama_ne_vdoma.domain.model.PatchChildEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UserInfoEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UserLocationEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UserProfileEntity
@@ -21,6 +22,7 @@ interface UserProfileRepository {
 
     suspend fun getChildById(childId: String): RequestResult<ChildEntity?>
 
-    suspend fun patchChildById(childId: String): RequestResult<ChildEntity?>
+    suspend fun patchChildById(childId: String, data: PatchChildEntity): RequestResult<ChildEntity?>
 
+    suspend fun deleteChildById(childId: String): RequestResult<Unit>
 }

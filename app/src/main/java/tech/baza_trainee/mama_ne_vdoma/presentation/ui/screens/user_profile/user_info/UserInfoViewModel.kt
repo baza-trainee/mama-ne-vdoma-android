@@ -105,7 +105,7 @@ class UserInfoViewModel(
                         code = entity?.countryCode.orEmpty(),
                         userAvatar = entity?.avatar.orEmpty().decodeBase64(),
                         nameValid = if (!entity?.name.isNullOrEmpty()) ValidField.VALID else ValidField.EMPTY,
-                        phoneValid = if (!entity?.phone.isNullOrEmpty()) ValidField.VALID else ValidField.EMPTY,
+                        phoneValid = if (!entity?.phone.isNullOrEmpty()) ValidField.VALID else ValidField.EMPTY
                     )
                 }
                 getAddressFromLocation(

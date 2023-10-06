@@ -6,8 +6,9 @@ data class ChildDto(
     val name: String,
     val age: Int,
     val isMale: Boolean,
-    val note: String,
+    val note: String?,
     val parentId: String,
     @SerializedName("_id")
-    val childId: String
+    val childId: String,
+    val week: Map<String, DayScheduleDto>?
 )

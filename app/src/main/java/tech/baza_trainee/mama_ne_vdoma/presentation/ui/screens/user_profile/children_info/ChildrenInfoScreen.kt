@@ -1,5 +1,6 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.children_info
 
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -20,14 +21,17 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import de.palm.composestateevents.EventEffect
 import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.ChildInfoDesk
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.LoadingIndicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.SurfaceWithNavigationBars
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.TopBarWithArrow
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
@@ -45,6 +49,18 @@ fun  ChildrenInfoScreen(
     SurfaceWithNavigationBars(
         modifier = modifier
     ) {
+        val context = LocalContext.current
+
+        EventEffect(
+            event = screenState.value.requestSuccess,
+            onConsumed = {}
+        ) { onNext() }
+
+        EventEffect(
+            event = screenState.value.requestError,
+            onConsumed = { onHandleChildrenInfoEvent(ChildrenInfoEvent.ConsumeRequestError) }
+        ) { if (it.isNotBlank()) Toast.makeText(context, it, Toast.LENGTH_LONG).show() }
+
         ConstraintLayout(
             modifier = modifier
                 .imePadding()
@@ -137,6 +153,8 @@ fun  ChildrenInfoScreen(
                 )
             }
         }
+
+        if (screenState.value.isLoading) LoadingIndicator()
     }
 }
 
