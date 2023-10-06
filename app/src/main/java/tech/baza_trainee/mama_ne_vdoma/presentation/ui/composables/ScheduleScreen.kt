@@ -50,7 +50,7 @@ fun ScheduleScreen(
 
             val topGuideline = createGuidelineFromTop(0.2f)
 
-            TopBarWithArrow(
+            TopBarWithOptArrow(
                 modifier = modifier
                     .constrainAs(topBar) {
                         top.linkTo(parent.top)

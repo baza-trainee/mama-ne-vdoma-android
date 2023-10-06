@@ -12,6 +12,7 @@ import tech.baza_trainee.mama_ne_vdoma.domain.model.ChildEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.DayPeriod
 import tech.baza_trainee.mama_ne_vdoma.domain.model.PatchChildEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.Period
+import tech.baza_trainee.mama_ne_vdoma.domain.model.ScheduleModel
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.model.UserProfileCommunicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.schedule.ScheduleEvent
@@ -174,11 +175,11 @@ class ChildScheduleViewModel(
                 userProfileRepository.getChildById(communicator.currentChildId)
             }
             onSuccess { entity ->
-//                _childScheduleViewState.update {
-//                    it.copy(
-//                        schedule = child?.schedule ?: ScheduleModel()
-//                    )
-//                }
+                _childScheduleViewState.update {
+                    it.copy(
+                        schedule = entity?.schedule ?: ScheduleModel()
+                    )
+                }
             }
             onError { error ->
                 _childScheduleViewState.update {
@@ -209,6 +210,7 @@ class ChildScheduleViewModel(
                 )
             }
             onSuccess {
+                communicator.isChildInfoFilled = true
                 _childScheduleViewState.update {
                     it.copy(
                         requestSuccess = triggered

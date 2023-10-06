@@ -66,6 +66,9 @@ class UserLocationViewModel(
                 )
             }
             onSuccess {
+                communicator.apply {
+                    address = _locationScreenState.value.address
+                }
                 _locationScreenState.update {
                     it.copy(
                         requestSuccess = triggered

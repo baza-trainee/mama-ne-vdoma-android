@@ -4,7 +4,6 @@ import android.graphics.Bitmap
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.android.gms.maps.model.LatLng
 import de.palm.composestateevents.consumed
 import de.palm.composestateevents.triggered
 import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
@@ -15,14 +14,11 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UserInfoEntity
-import tech.baza_trainee.mama_ne_vdoma.domain.model.UserProfileEntity
-import tech.baza_trainee.mama_ne_vdoma.domain.repository.LocationRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.model.UserProfileCommunicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.BitmapHelper
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.decodeBase64
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.networkExecutor
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onError
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onLoading
@@ -31,7 +27,6 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onSuccess
 class UserInfoViewModel(
     private val communicator: UserProfileCommunicator,
     private val userProfileRepository: UserProfileRepository,
-    private val locationRepository: LocationRepository,
     private val phoneNumberUtil: PhoneNumberUtil,
     private val bitmapHelper: BitmapHelper
 ): ViewModel() {
@@ -39,22 +34,22 @@ class UserInfoViewModel(
     private val _userInfoScreenState = MutableStateFlow(UserInfoViewState())
     val userInfoScreenState: StateFlow<UserInfoViewState> = _userInfoScreenState.asStateFlow()
 
-    private var uriForCrop: Uri = Uri.EMPTY
-
     init {
-        if (communicator.name.isEmpty())
-            getUserInfo()
-        else
-            _userInfoScreenState.update {
-                it.copy(
-                    name = communicator.name,
-                    nameValid = ValidField.VALID,
-                    code = communicator.code,
-                    phone = communicator.phone,
-                    phoneValid = ValidField.VALID,
-                    userAvatar = communicator.userAvatar
-                )
-            }
+        _userInfoScreenState.update {
+            it.copy(
+                name = communicator.name,
+                nameValid = if (communicator.name.isEmpty()) ValidField.EMPTY else ValidField.VALID,
+                code = communicator.code,
+                phone = communicator.phone,
+                phoneValid = if (communicator.phone.isEmpty()) ValidField.EMPTY else ValidField.VALID,
+                userAvatar = communicator.userAvatar,
+                requestSuccess = consumed
+            )
+        }
+        if (communicator.croppedImage != BitmapHelper.DEFAULT_BITMAP) {
+            saveUserAvatar(communicator.croppedImage)
+            communicator.croppedImage = BitmapHelper.DEFAULT_BITMAP
+        }
     }
 
     fun handleUserInfoEvent(event: UserInfoEvent) {
@@ -68,11 +63,11 @@ class UserInfoViewModel(
         }
     }
 
-    fun getUserAvatarBitmap(): Bitmap {
-        return bitmapHelper.bitmapFromUri(uriForCrop)
+    private fun setUriForCrop(uri: Uri) {
+        communicator.uriForCrop = uri
     }
 
-    fun saveUserAvatar(image: Bitmap) {
+    private fun saveUserAvatar(image: Bitmap) {
         viewModelScope.launch(Dispatchers.IO) {
             val newImage = Bitmap.createScaledBitmap(image, 512, 512, true)
             val newImageSize = bitmapHelper.getSize(newImage)
@@ -90,75 +85,6 @@ class UserInfoViewModel(
                 }
             }
         }
-    }
-
-    private fun getUserInfo() {
-        networkExecutor<UserProfileEntity?> {
-            execute {
-                userProfileRepository.getUserInfo()
-            }
-            onSuccess { entity ->
-                _userInfoScreenState.update {
-                    it.copy(
-                        name = entity?.name.orEmpty(),
-                        phone = entity?.phone.orEmpty(),
-                        code = entity?.countryCode.orEmpty(),
-                        userAvatar = entity?.avatar.orEmpty().decodeBase64(),
-                        nameValid = if (!entity?.name.isNullOrEmpty()) ValidField.VALID else ValidField.EMPTY,
-                        phoneValid = if (!entity?.phone.isNullOrEmpty()) ValidField.VALID else ValidField.EMPTY
-                    )
-                }
-                getAddressFromLocation(
-                    latLng = LatLng(
-                        entity?.location?.coordinates?.get(1) ?: 0.00,
-                        entity?.location?.coordinates?.get(0) ?: 0.00
-                    )
-                )
-            }
-            onError { error ->
-                _userInfoScreenState.update {
-                    it.copy(
-                        requestError = triggered(error)
-                    )
-                }
-            }
-            onLoading { isLoading ->
-                _userInfoScreenState.update {
-                    it.copy(
-                        isLoading = isLoading
-                    )
-                }
-            }
-        }
-    }
-
-    private fun getAddressFromLocation(latLng: LatLng) {
-        networkExecutor<String?> {
-            execute {
-                locationRepository.getAddressFromLocation(latLng)
-            }
-            onSuccess {
-                communicator.address = it.orEmpty()
-            }
-            onError { error ->
-                _userInfoScreenState.update {
-                    it.copy(
-                        requestError = triggered(error)
-                    )
-                }
-            }
-            onLoading { isLoading ->
-                _userInfoScreenState.update {
-                    it.copy(
-                        isLoading = isLoading
-                    )
-                }
-            }
-        }
-    }
-
-    private fun setUriForCrop(uri: Uri) {
-        uriForCrop = uri
     }
 
     private fun setCode(code: String, country: String) {
@@ -214,6 +140,8 @@ class UserInfoViewModel(
                 communicator.apply {
                     name = _userInfoScreenState.value.name
                     userAvatar = _userInfoScreenState.value.userAvatar
+                    code = _userInfoScreenState.value.code
+                    phone = _userInfoScreenState.value.phone
                 }
                 _userInfoScreenState.update {
                     it.copy(

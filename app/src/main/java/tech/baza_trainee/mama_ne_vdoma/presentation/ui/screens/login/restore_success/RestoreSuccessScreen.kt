@@ -15,7 +15,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.SurfaceWithNavigationBars
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.TopBarWithoutArrow
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.TopBarWithOptArrow
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.ButtonText
 
 @Composable
@@ -33,7 +33,7 @@ fun RestoreSuccessScreen(
 
             val topGuideline = createGuidelineFromTop(0.2f)
 
-            TopBarWithoutArrow(
+            TopBarWithOptArrow(
                 modifier = modifier
                     .fillMaxWidth()
                     .constrainAs(title) {

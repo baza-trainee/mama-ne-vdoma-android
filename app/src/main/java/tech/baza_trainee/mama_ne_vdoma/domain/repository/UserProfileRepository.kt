@@ -16,6 +16,8 @@ interface UserProfileRepository {
 
     suspend fun saveUserLocation(location: UserLocationEntity): RequestResult<Unit>
 
+    suspend fun deleteUser(): RequestResult<Unit>
+
     suspend fun saveChild(request: InitChildEntity): RequestResult<ChildEntity?>
 
     suspend fun getChildren(): RequestResult<List<ChildEntity>>

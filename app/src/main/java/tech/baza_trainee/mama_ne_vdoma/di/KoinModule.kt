@@ -34,6 +34,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.restore_pas
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.child_info.ChildInfoViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.children_info.ChildrenInfoViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.full_info.FullInfoViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.image_crop.ImageCropViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.model.UserProfileCommunicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.schedule.child_schedule.ChildScheduleViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.schedule.parent_schedule.ParentScheduleViewModel
@@ -72,13 +73,14 @@ val userKoinModule = module {
     single { PhoneNumberUtil.createInstance(androidContext()) }
     single { BitmapHelper(androidContext()) }
     single { UserProfileCommunicator() }
-    viewModel { UserInfoViewModel(get(), get(), get(), get(), get()) }
+    viewModel { UserInfoViewModel(get(), get(), get(), get()) }
+    viewModel { ImageCropViewModel(get(), get()) }
     viewModel { UserLocationViewModel(get(), get(), get()) }
     viewModel { ChildInfoViewModel(get(), get()) }
     viewModel { ChildScheduleViewModel(get(), get()) }
     viewModel { ChildrenInfoViewModel(get(), get()) }
     viewModel { ParentScheduleViewModel(get()) }
-    viewModel { FullInfoViewModel(get(), get()) }
+    viewModel { FullInfoViewModel(get(), get(), get()) }
     viewModel { UserCreateViewModel(get()) }
 }
 

@@ -37,6 +37,13 @@ class UserProfileRepositoryImpl(private val userProfileApi: UserProfileApi): Use
         else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage())
     }
 
+    override suspend fun deleteUser(): RequestResult<Unit> {
+        val result = userProfileApi.deleteUser()
+        return if (result.isSuccessful)
+            RequestResult.Success(Unit)
+        else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage())
+    }
+
     override suspend fun saveChild(request: InitChildEntity): RequestResult<ChildEntity?> {
         val result = userProfileApi.saveChild(request.toDataModel())
         return if (result.isSuccessful)

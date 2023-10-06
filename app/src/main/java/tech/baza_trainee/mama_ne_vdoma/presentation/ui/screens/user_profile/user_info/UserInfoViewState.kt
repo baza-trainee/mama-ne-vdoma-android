@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import de.palm.composestateevents.StateEvent
 import de.palm.composestateevents.StateEventWithContent
 import de.palm.composestateevents.consumed
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.BitmapHelper
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 
 data class UserInfoViewState(
@@ -13,7 +14,7 @@ data class UserInfoViewState(
     val phoneValid: ValidField = ValidField.EMPTY,
     val code: String = "",
     val country: String = "",
-    val userAvatar: Bitmap = Bitmap.createBitmap(200, 200, Bitmap.Config.ARGB_8888),
+    val userAvatar: Bitmap = BitmapHelper.DEFAULT_BITMAP,
     val isLoading: Boolean = false,
     val requestSuccess: StateEvent = consumed,
     val avatarSizeError: StateEvent = consumed,

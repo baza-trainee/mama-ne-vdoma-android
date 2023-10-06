@@ -27,7 +27,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.LoadingIndica
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.OutlinedTextFieldWithError
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.RadioGroup
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.SurfaceWithNavigationBars
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.TopBarWithArrow
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.TopBarWithOptArrow
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.ButtonText
 
@@ -61,7 +61,7 @@ fun ChildInfoScreen(
 
             val topGuideline = createGuidelineFromTop(0.2f)
 
-            TopBarWithArrow(
+            TopBarWithOptArrow(
                 modifier = modifier
                     .constrainAs(topBar) {
                         top.linkTo(parent.top)

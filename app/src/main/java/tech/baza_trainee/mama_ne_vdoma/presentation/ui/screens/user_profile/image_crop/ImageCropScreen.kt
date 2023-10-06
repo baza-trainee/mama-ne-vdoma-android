@@ -1,4 +1,4 @@
-package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.user_info
+package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.image_crop
 
 import android.graphics.Bitmap
 import androidx.compose.foundation.layout.Arrangement

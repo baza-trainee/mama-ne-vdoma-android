@@ -25,6 +25,9 @@ interface UserProfileApi {
     @PATCH("api/parent/geo")
     suspend fun saveUserLocation(@Body location: UserLocationDto): Response<Unit>
 
+    @DELETE("api/parent")
+    suspend fun deleteUser(): Response<Unit>
+
     @POST("api/child")
     suspend fun saveChild(@Body request: InitChildDto): Response<ChildDto>
 

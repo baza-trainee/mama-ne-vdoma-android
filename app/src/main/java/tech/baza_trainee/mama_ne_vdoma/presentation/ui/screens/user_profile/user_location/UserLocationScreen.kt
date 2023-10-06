@@ -41,7 +41,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.LoadingIndica
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.LocationPermissionTextProvider
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.PermissionDialog
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.SurfaceWithNavigationBars
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.TopBarWithoutArrow
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.TopBarWithOptArrow
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.ButtonText
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.findActivity
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.openAppSettings
@@ -118,7 +118,7 @@ fun UserLocationScreen(
 
             val topGuideline = createGuidelineFromTop(0.2f)
 
-            TopBarWithoutArrow(
+            TopBarWithOptArrow(
                 modifier = modifier
                     .constrainAs(title) {
                         top.linkTo(parent.top)

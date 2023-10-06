@@ -2,13 +2,13 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.sch
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import de.palm.composestateevents.triggered
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import tech.baza_trainee.mama_ne_vdoma.domain.model.DayPeriod
 import tech.baza_trainee.mama_ne_vdoma.domain.model.Period
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.full_info.FullProfileEvent
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.model.UserProfileCommunicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.schedule.ScheduleEvent
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.schedule.ScheduleViewState
@@ -34,15 +34,19 @@ class ParentScheduleViewModel(
 
     fun handleScheduleEvent(event: ScheduleEvent) {
         when(event) {
+            ScheduleEvent.PatchParentSchedule -> saveParentSchedule()
             is ScheduleEvent.UpdateParentComment -> updateParentComment(event.comment)
             is ScheduleEvent.UpdateParentSchedule -> updateParentSchedule(event.day, event.period)
             else -> Unit
         }
     }
 
-    fun handleFullProfileEvent(event: FullProfileEvent) {
-        when(event) {
-            FullProfileEvent.UpdateFullProfile -> updateFullProfile()
+    private fun saveParentSchedule() {
+        communicator.isUserInfoFilled = true
+        _parentScheduleViewState.update {
+            it.copy(
+                requestSuccess = triggered
+            )
         }
     }
 
@@ -150,9 +154,5 @@ class ParentScheduleViewModel(
 
     private fun updateParentComment(comment: String) {
         this.parentComment.value = comment
-    }
-
-    private fun updateFullProfile() {
-        communicator.schedule = _parentScheduleViewState.value.schedule
     }
 }

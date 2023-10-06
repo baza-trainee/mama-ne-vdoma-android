@@ -15,9 +15,19 @@ fun String.validatePassword() = contains(PATTERN_DIGITS.toRegex()) &&
         none { it.isWhitespace() } && !none { it.isLowerCase() } && !none { it.isUpperCase() } &&
         length in MIN_PASSWORD_LENGTH..MAX_PASSWORD_LENGTH
 
-fun String.decodeBase64(): Bitmap {
+fun String.decodeBase64ToBitmap(): Bitmap {
     val decodedByteArray = Base64.decode(this, Base64.DEFAULT)
     return BitmapFactory.decodeByteArray(decodedByteArray, 0, decodedByteArray.size)
+}
+
+fun String.encodeToBase64(): String {
+    val byteArray = toByteArray(Charsets.UTF_8)
+    return Base64.encodeToString(byteArray, Base64.DEFAULT)
+}
+
+fun String.decodeFromBase64(): String {
+    val byteArray = Base64.decode(this, Base64.DEFAULT)
+    return String(byteArray, Charsets.UTF_8)
 }
 
 const val EMAIL_PATTERN =

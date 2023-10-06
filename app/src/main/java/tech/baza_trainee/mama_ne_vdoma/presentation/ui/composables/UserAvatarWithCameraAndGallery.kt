@@ -46,6 +46,7 @@ import kotlinx.coroutines.withContext
 import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.SlateGray
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.BitmapHelper
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.findActivity
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.openAppSettings
 import java.io.File
@@ -54,7 +55,7 @@ import java.io.File
 @Composable
 fun UserAvatarWithCameraAndGallery(
     modifier: Modifier = Modifier,
-    avatar: Bitmap?,
+    avatar: Bitmap = BitmapHelper.DEFAULT_BITMAP,
     setUriForCrop: (Uri) -> Unit,
     onEditPhoto: () -> Unit
 ) {
@@ -120,7 +121,7 @@ fun UserAvatarWithCameraAndGallery(
             }
         }
 
-    if (avatar != null)
+    if (avatar != BitmapHelper.DEFAULT_BITMAP)
         Image(
             bitmap = avatar.asImageBitmap(),
             contentDescription = "avatar",

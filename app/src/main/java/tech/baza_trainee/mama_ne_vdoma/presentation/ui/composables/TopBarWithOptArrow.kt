@@ -5,11 +5,18 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -26,10 +33,11 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFa
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun TopBarWithoutArrow(
+fun TopBarWithOptArrow(
     modifier: Modifier = Modifier,
     title: String = "Title",
-    info: String = ""
+    info: String = "",
+    onBack: (() -> Unit)? = null,
 ) {
     Column(
         modifier = modifier
@@ -37,8 +45,30 @@ fun TopBarWithoutArrow(
             .windowInsetsPadding(WindowInsets.statusBars)
             .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.SpaceBetween
+        verticalArrangement = if (onBack != null) Arrangement.Top else Arrangement.SpaceBetween
     ) {
+        if (onBack != null) {
+            Row(
+                modifier = modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.Start,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                IconButton(
+                    modifier = modifier
+                        .padding(start = 16.dp, top = 16.dp)
+                        .height(24.dp)
+                        .width(24.dp),
+                    onClick = { onBack() }
+                ) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onPrimary
+                    )
+                }
+            }
+        }
         Text(
             modifier = modifier
                 .padding(top = 16.dp)
@@ -46,12 +76,14 @@ fun TopBarWithoutArrow(
                 .fillMaxWidth(),
             text = title,
             fontSize = 24.sp,
-            textAlign = TextAlign.Center,
+            textAlign = if (onBack != null) TextAlign.Start else TextAlign.Center,
             color = MaterialTheme.colorScheme.onPrimary,
             fontFamily = redHatDisplayFontFamily
         )
 
         if (info.isNotEmpty()) {
+//            Spacer(modifier = modifier.height(64.dp))
+
             var isOverflowed by remember { mutableStateOf(false) }
 
             if (isOverflowed)

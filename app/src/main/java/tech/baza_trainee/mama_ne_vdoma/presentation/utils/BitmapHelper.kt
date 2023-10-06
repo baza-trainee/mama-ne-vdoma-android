@@ -30,5 +30,7 @@ class BitmapHelper(private val context: Context) {
     companion object {
 
         private const val PNG_QUALITY = 75
+
+        val DEFAULT_BITMAP = Bitmap.createBitmap(200, 200, Bitmap.Config.ARGB_8888)
     }
 }
