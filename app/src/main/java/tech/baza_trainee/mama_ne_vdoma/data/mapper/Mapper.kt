@@ -1,7 +1,9 @@
 package tech.baza_trainee.mama_ne_vdoma.data.mapper
 
 import tech.baza_trainee.mama_ne_vdoma.data.model.AuthUserDto
+import tech.baza_trainee.mama_ne_vdoma.data.model.ChildDto
 import tech.baza_trainee.mama_ne_vdoma.data.model.ConfirmEmailDto
+import tech.baza_trainee.mama_ne_vdoma.data.model.InitChildDto
 import tech.baza_trainee.mama_ne_vdoma.data.model.LocationDto
 import tech.baza_trainee.mama_ne_vdoma.data.model.RequestWithEmailDto
 import tech.baza_trainee.mama_ne_vdoma.data.model.RestorePasswordDto
@@ -9,7 +11,9 @@ import tech.baza_trainee.mama_ne_vdoma.data.model.UserInfoDto
 import tech.baza_trainee.mama_ne_vdoma.data.model.UserLocationDto
 import tech.baza_trainee.mama_ne_vdoma.data.model.UserProfileDto
 import tech.baza_trainee.mama_ne_vdoma.domain.model.AuthUserEntity
+import tech.baza_trainee.mama_ne_vdoma.domain.model.ChildEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.ConfirmEmailEntity
+import tech.baza_trainee.mama_ne_vdoma.domain.model.InitChildEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.LocationEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.RequestWithEmailEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.RestorePasswordEntity
@@ -32,3 +36,7 @@ fun UserLocationEntity.toDataModel() = UserLocationDto(lat, lon)
 fun UserProfileDto.toDomainModel() = UserProfileEntity(email, name, countryCode, phone, avatar, location.toDomainModel())
 
 fun LocationDto.toDomainModel() = LocationEntity(type, coordinates)
+
+fun InitChildEntity.toDataModel() = InitChildDto(name, age, isMale)
+
+fun ChildDto.toDomainModel() = ChildEntity(name, age, isMale, note, parentId, childId)

@@ -1,41 +1,44 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.child_info
 
 import androidx.lifecycle.ViewModel
+import de.palm.composestateevents.consumed
+import de.palm.composestateevents.triggered
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import tech.baza_trainee.mama_ne_vdoma.domain.model.Child
+import tech.baza_trainee.mama_ne_vdoma.domain.model.ChildEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.Gender
+import tech.baza_trainee.mama_ne_vdoma.domain.model.InitChildEntity
+import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.model.UserProfileCommunicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
-import java.util.UUID
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.networkExecutor
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onError
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onLoading
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onSuccess
 
 class ChildInfoViewModel(
-    private val communicator: UserProfileCommunicator
+    private val communicator: UserProfileCommunicator,
+    private val userProfileRepository: UserProfileRepository
 ): ViewModel() {
 
     private val _childInfoScreenState = MutableStateFlow(ChildInfoViewState())
     val childInfoScreenState: StateFlow<ChildInfoViewState> = _childInfoScreenState.asStateFlow()
 
     init {
-        _childInfoScreenState.update {
-            it.copy(
-                name = communicator.currentChild.name,
-                nameValid = ValidField.VALID,
-                age = communicator.currentChild.age,
-                ageValid = ValidField.VALID,
-                gender = communicator.currentChild.gender
-            )
-        }
+        if (communicator.currentChildId.isNotEmpty())
+            getChildById()
     }
 
     fun handleChildInfoEvent(event: ChildInfoEvent) {
         when(event) {
-            ChildInfoEvent.SaveCurrentChild -> saveCurrentChild()
+            ChildInfoEvent.SaveChild -> if (communicator.currentChildId.isEmpty()) saveChild() else patchChild()
             is ChildInfoEvent.SetGender -> setGender(event.gender)
             is ChildInfoEvent.ValidateAge -> validateAge(event.age)
             is ChildInfoEvent.ValidateChildName -> validateChildName(event.name)
+            ChildInfoEvent.ConsumeRequestError -> consumeRequestError()
         }
     }
 
@@ -51,8 +54,8 @@ class ChildInfoViewModel(
     }
 
     private fun validateAge(age: String) {
-        val intAge = age.toFloatOrNull()
-        val ageValid = if (intAge != null && intAge in 0f..MAX_AGE) ValidField.VALID
+        val intAge = age.toIntOrNull()
+        val ageValid = if (intAge != null && intAge in 0..MAX_AGE) ValidField.VALID
         else ValidField.INVALID
         _childInfoScreenState.update {
             it.copy(
@@ -68,31 +71,115 @@ class ChildInfoViewModel(
         }
     }
 
-    private fun saveCurrentChild() {
-        val list = communicator.children.toMutableList()
-        val child = list.firstOrNull { it.id == communicator.currentChild.id }
-        if (child != null) {
-            val index = list.indexOf(child)
-            val newChild = child.copy(
-                name = _childInfoScreenState.value.name,
-                age = _childInfoScreenState.value.age,
-                gender = _childInfoScreenState.value.gender
-            )
-            list[index] = newChild
-        } else {
-            communicator.currentChild = Child (
-                id = UUID.randomUUID().toString(),
-                name = _childInfoScreenState.value.name,
-                age = _childInfoScreenState.value.age,
-                gender = _childInfoScreenState.value.gender
-            )
-            list.add(communicator.currentChild)
+    private fun getChildById() {
+        networkExecutor<ChildEntity?> {
+            execute {
+                userProfileRepository.getChildById(communicator.currentChildId)
+            }
+            onSuccess { entity ->
+                _childInfoScreenState.update {
+                    it.copy(
+                        name = entity?.name.orEmpty(),
+                        nameValid = ValidField.VALID,
+                        age = entity?.age.toString(),
+                        ageValid = ValidField.VALID,
+                        gender = if (entity?.isMale == true) Gender.BOY else Gender.GIRL,
+                        requestSuccess = triggered
+                    )
+                }
+            }
+            onError { error ->
+                _childInfoScreenState.update {
+                    it.copy(
+                        requestError = triggered(error)
+                    )
+                }
+            }
+            onLoading { isLoading ->
+                _childInfoScreenState.update {
+                    it.copy(
+                        isLoading = isLoading
+                    )
+                }
+            }
         }
-        communicator.children = list
+    }
+
+    private fun saveChild() {
+        networkExecutor<ChildEntity?> {
+            execute {
+                userProfileRepository.saveChild(
+                    InitChildEntity(
+                        name = _childInfoScreenState.value.name,
+                        age = _childInfoScreenState.value.age.toIntOrNull() ?: 0,
+                        isMale = _childInfoScreenState.value.gender == Gender.BOY
+                    )
+                )
+            }
+            onSuccess { entity ->
+                communicator.currentChildId = entity?.childId.orEmpty()
+                _childInfoScreenState.update {
+                    it.copy(
+                        requestSuccess = triggered
+                    )
+                }
+            }
+            onError { error ->
+                _childInfoScreenState.update {
+                    it.copy(
+                        requestError = triggered(error)
+                    )
+                }
+            }
+            onLoading { isLoading ->
+                _childInfoScreenState.update {
+                    it.copy(
+                        isLoading = isLoading
+                    )
+                }
+            }
+        }
+    }
+
+    private fun patchChild() {
+        networkExecutor {
+            execute {
+                userProfileRepository.patchChildById(communicator.currentChildId)
+            }
+            onSuccess {
+                _childInfoScreenState.update {
+                    it.copy(
+                        requestSuccess = triggered
+                    )
+                }
+            }
+            onError { error ->
+                _childInfoScreenState.update {
+                    it.copy(
+                        requestError = triggered(error)
+                    )
+                }
+            }
+            onLoading { isLoading ->
+                _childInfoScreenState.update {
+                    it.copy(
+                        isLoading = isLoading
+                    )
+                }
+            }
+        }
+    }
+
+    private fun consumeRequestError() {
+        _childInfoScreenState.update {
+            it.copy(
+                requestError = consumed()
+            )
+        }
     }
 
     companion object {
 
-        private const val MAX_AGE = 18f
+        private const val MAX_AGE = 18
     }
 }

@@ -74,7 +74,7 @@ val userKoinModule = module {
     single { UserProfileCommunicator() }
     viewModel { UserInfoViewModel(get(), get(), get(), get(), get()) }
     viewModel { UserLocationViewModel(get(), get(), get()) }
-    viewModel { ChildInfoViewModel(get()) }
+    viewModel { ChildInfoViewModel(get(), get()) }
     viewModel { ChildScheduleViewModel(get()) }
     viewModel { ChildrenInfoViewModel(get()) }
     viewModel { ParentScheduleViewModel(get()) }

@@ -5,6 +5,8 @@ import tech.baza_trainee.mama_ne_vdoma.data.mapper.toDataModel
 import tech.baza_trainee.mama_ne_vdoma.data.mapper.toDomainModel
 import tech.baza_trainee.mama_ne_vdoma.data.utils.asCustomResponse
 import tech.baza_trainee.mama_ne_vdoma.data.utils.getMessage
+import tech.baza_trainee.mama_ne_vdoma.domain.model.ChildEntity
+import tech.baza_trainee.mama_ne_vdoma.domain.model.InitChildEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UserInfoEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UserLocationEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UserProfileEntity
@@ -31,6 +33,34 @@ class UserProfileRepositoryImpl(private val userProfileApi: UserProfileApi): Use
         val result = userProfileApi.saveUserLocation(location.toDataModel())
         return if (result.isSuccessful)
             RequestResult.Success(Unit)
+        else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage())
+    }
+
+    override suspend fun saveChild(request: InitChildEntity): RequestResult<ChildEntity?> {
+        val result = userProfileApi.saveChild(request.toDataModel())
+        return if (result.isSuccessful)
+            RequestResult.Success(result.body()?.toDomainModel())
+        else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage())
+    }
+
+    override suspend fun getChildren(): RequestResult<List<ChildEntity>> {
+        val result = userProfileApi.getChildren()
+        return if (result.isSuccessful)
+            RequestResult.Success(result.body()?.map { it.toDomainModel() }?.toList().orEmpty())
+        else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage())
+    }
+
+    override suspend fun getChildById(childId: String): RequestResult<ChildEntity?> {
+        val result = userProfileApi.getChildById(childId)
+        return if (result.isSuccessful)
+            RequestResult.Success(result.body()?.toDomainModel())
+        else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage())
+    }
+
+    override suspend fun patchChildById(childId: String): RequestResult<ChildEntity?> {
+        val result = userProfileApi.patchChildById(childId)
+        return if (result.isSuccessful)
+            RequestResult.Success(result.body()?.toDomainModel())
         else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage())
     }
 }

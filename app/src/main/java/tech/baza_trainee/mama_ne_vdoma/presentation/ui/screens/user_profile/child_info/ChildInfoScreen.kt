@@ -1,33 +1,32 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.child_info
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
-import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import de.palm.composestateevents.EventEffect
 import tech.baza_trainee.mama_ne_vdoma.domain.model.Gender
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.LoadingIndicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.OutlinedTextFieldWithError
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.RadioGroup
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.SurfaceWithNavigationBars
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.TopBarWithArrow
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.ButtonText
@@ -40,12 +39,19 @@ fun ChildInfoScreen(
     onNext: () -> Unit = { },
     onBack: () -> Unit = { }
 ) {
-    Surface(
-        modifier = modifier
-            .windowInsetsPadding(WindowInsets.navigationBars)
-            .fillMaxSize(),
-        color = MaterialTheme.colorScheme.background
-    ) {
+    SurfaceWithNavigationBars {
+        val context = LocalContext.current
+
+        EventEffect(
+            event = screenState.value.requestSuccess,
+            onConsumed = {}
+        ) { onNext() }
+
+        EventEffect(
+            event = screenState.value.requestError,
+            onConsumed = { onHandleChildEvent(ChildInfoEvent.ConsumeRequestError) }
+        ) { if (it.isNotBlank()) Toast.makeText(context, it, Toast.LENGTH_LONG).show() }
+
         ConstraintLayout(
             modifier = modifier
                 .imePadding()
@@ -128,8 +134,7 @@ fun ChildInfoScreen(
                     }
                     .height(48.dp),
                 onClick = {
-                    onHandleChildEvent(ChildInfoEvent.SaveCurrentChild)
-                    onNext()
+                    onHandleChildEvent(ChildInfoEvent.SaveChild)
                 },
                 enabled = screenState.value.nameValid == ValidField.VALID &&
                         screenState.value.ageValid == ValidField.VALID &&
@@ -140,6 +145,8 @@ fun ChildInfoScreen(
                 )
             }
         }
+
+        if (screenState.value.isLoading) LoadingIndicator()
     }
 }
 

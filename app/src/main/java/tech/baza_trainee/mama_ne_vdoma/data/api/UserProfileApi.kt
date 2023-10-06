@@ -4,6 +4,10 @@ import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.PATCH
+import retrofit2.http.POST
+import retrofit2.http.Path
+import tech.baza_trainee.mama_ne_vdoma.data.model.ChildDto
+import tech.baza_trainee.mama_ne_vdoma.data.model.InitChildDto
 import tech.baza_trainee.mama_ne_vdoma.data.model.UserInfoDto
 import tech.baza_trainee.mama_ne_vdoma.data.model.UserLocationDto
 import tech.baza_trainee.mama_ne_vdoma.data.model.UserProfileDto
@@ -18,4 +22,16 @@ interface UserProfileApi {
 
     @PATCH("api/parent/geo")
     suspend fun saveUserLocation(@Body location: UserLocationDto): Response<Unit>
+
+    @POST("api/child")
+    suspend fun saveChild(@Body request: InitChildDto): Response<ChildDto>
+
+    @GET("api/child")
+    suspend fun getChildren(): Response<List<ChildDto>>
+
+    @GET("api/child/{id}")
+    suspend fun getChildById(@Path("id") childId: String): Response<ChildDto>
+
+    @PATCH("api/child/{id}")
+    suspend fun patchChildById(@Path("id") childId: String): Response<ChildDto>
 }
