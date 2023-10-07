@@ -195,6 +195,6 @@ class UserInfoViewModel(
     companion object {
 
         private val NAME_LENGTH = 2..18
-        private const val IMAGE_SIZE = 250 * 1024
+        private const val IMAGE_SIZE = 10 * 1024 * 1024
     }
 }
