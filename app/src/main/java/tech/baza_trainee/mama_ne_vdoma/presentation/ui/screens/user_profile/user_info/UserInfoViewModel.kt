@@ -115,8 +115,12 @@ class UserInfoViewModel(
     }
 
     private fun validateUserName(name: String) {
-        val nameValid = if (name.length in NAME_LENGTH && name.all { it.isLetter() || it.isDigit() }) ValidField.VALID
-        else ValidField.INVALID
+        val nameValid = if (name.length in NAME_LENGTH &&
+            name.all { it.isLetter() || it.isDigit() || it == ' ' || it == '-' })
+            ValidField.VALID
+        else
+            ValidField.INVALID
+
         _userInfoScreenState.update {
             it.copy(
                 name =  name,

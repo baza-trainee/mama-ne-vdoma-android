@@ -147,7 +147,7 @@ fun UserInfoScreen(
                         .fillMaxWidth()
                         .padding(horizontal = 24.dp)
                         .padding(top = 4.dp),
-                    text = "Ваше ім’я повинне складатись із 6-18 символів і може містити букви та цифри",
+                    text = "Ваше ім’я повинне складатись із 2-18 символів і може містити букви та цифри, а також пробіли та дефіси",
                     textAlign = TextAlign.Start,
                     fontFamily = redHatDisplayFontFamily
                 )
