@@ -20,6 +20,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,6 +34,8 @@ import androidx.core.app.ActivityCompat
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.maps.android.compose.GoogleMap
+import com.google.maps.android.compose.MapProperties
+import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
@@ -67,11 +70,6 @@ fun UserLocationScreen(
             event = screenState.value.requestError,
             onConsumed = { onHandleLocationEvent(UserLocationEvent.ConsumeRequestError) }
         ) { if (it.isNotBlank()) Toast.makeText(context, it, Toast.LENGTH_LONG).show() }
-
-        LaunchedEffect(key1 = true) {
-            if (screenState.value.address.isEmpty())
-                onHandleLocationEvent(UserLocationEvent.RequestUserLocation)
-        }
 
         val activity = LocalContext.current.findActivity()
         val permissionDialogQueue = remember { mutableStateListOf<String>() }
@@ -158,6 +156,12 @@ fun UserLocationScreen(
                 }
 
                 val (map, edit) = createRefs()
+                val uiSettings = remember {
+                    MapUiSettings(myLocationButtonEnabled = true)
+                }
+                val properties by remember {
+                    mutableStateOf(MapProperties(isMyLocationEnabled = true))
+                }
 
                 GoogleMap(
                     modifier = modifier
@@ -167,7 +171,16 @@ fun UserLocationScreen(
                             bottom.linkTo(edit.top, 16.dp)
                             height = Dimension.fillToConstraints
                         },
-                    cameraPositionState = cameraPositionState
+                    cameraPositionState = cameraPositionState,
+                    uiSettings = uiSettings,
+                    properties = properties,
+                    onMyLocationButtonClick = {
+                        onHandleLocationEvent(UserLocationEvent.RequestUserLocation)
+                        true
+                    },
+                    onMapClick = {
+                        onHandleLocationEvent(UserLocationEvent.OnMapClick(it))
+                    }
                 ) {
                     Marker(
                         state = MarkerState(position = screenState.value.currentLocation),

@@ -46,7 +46,17 @@ class UserLocationViewModel(
             UserLocationEvent.ConsumeRequestError -> consumeUserLocationRequestError()
             UserLocationEvent.ConsumeRequestSuccess -> consumeRequestSuccess()
             UserLocationEvent.SaveUserLocation -> saveUserLocation()
+            is UserLocationEvent.OnMapClick -> setLocation(event.location)
         }
+    }
+
+    private fun setLocation(location: LatLng) {
+        _locationScreenState.update {
+            it.copy(
+                currentLocation = location
+            )
+        }
+        getAddressFromLocation(location)
     }
 
     private fun saveUserLocation() {
@@ -68,9 +78,6 @@ class UserLocationViewModel(
                 )
             }
             onSuccess {
-                communicator.apply {
-                    address = _locationScreenState.value.address
-                }
                 _locationScreenState.update {
                     it.copy(
                         requestSuccess = triggered
@@ -114,6 +121,7 @@ class UserLocationViewModel(
                             currentLocation = location
                         )
                     }
+                    getAddressFromLocation(location)
                 }
             }
             onError { error ->
