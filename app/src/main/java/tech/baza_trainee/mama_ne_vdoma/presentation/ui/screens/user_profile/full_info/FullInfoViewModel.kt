@@ -148,12 +148,15 @@ class FullInfoViewModel(
                     schedule = entity?.schedule.ifNullOrEmpty { ScheduleModel() }
                 }
 
-                getAddressFromLocation(
-                    latLng = LatLng(
-                        entity?.location?.coordinates?.get(1) ?: 0.00,
-                        entity?.location?.coordinates?.get(0) ?: 0.00
+                if (!entity?.location?.coordinates.isNullOrEmpty())
+                    getAddressFromLocation(
+                        latLng = LatLng(
+                            entity?.location?.coordinates?.get(1) ?: 0.00,
+                            entity?.location?.coordinates?.get(0) ?: 0.00
+                        )
                     )
-                )
+
+                getChildren()
             }
             onError { error ->
                 _fullInfoViewState.update {
@@ -185,8 +188,6 @@ class FullInfoViewModel(
                         address = address.orEmpty()
                     )
                 }
-
-                getChildren()
             }
             onError { error ->
                 _fullInfoViewState.update {
