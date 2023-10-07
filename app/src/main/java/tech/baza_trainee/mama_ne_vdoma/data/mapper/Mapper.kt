@@ -78,7 +78,7 @@ fun DayPeriod.toDataModel() = DayScheduleDto(
 )
 
 fun PatchChildEntity.toDataModel() = WeekScheduleDto(
-    note = comment,
+    note = comment.ifEmpty { null },
     week = mutableMapOf<String, DayScheduleDto>().also { map ->
         schedule.schedule.forEach {
             map[it.key.name.lowercase()] = it.value.toDataModel()

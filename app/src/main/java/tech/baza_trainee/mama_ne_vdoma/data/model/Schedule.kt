@@ -1,7 +1,7 @@
 package tech.baza_trainee.mama_ne_vdoma.data.model
 
 data class WeekScheduleDto(
-    val note: String,
+    val note: String?,
     val week: Map<String, DayScheduleDto>
 )
 
