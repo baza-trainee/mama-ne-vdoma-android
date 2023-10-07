@@ -10,5 +10,6 @@ data class VerifyEmailViewState(
     val otpValid: ValidField = ValidField.EMPTY,
     val isLoading: Boolean = false,
     val loginSuccess: StateEvent = consumed,
+    val restoreSuccess: StateEvent = consumed,
     val requestError: StateEventWithContent<String> = consumed()
 )

@@ -1,6 +1,5 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.verify_email
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import de.palm.composestateevents.consumed
 import de.palm.composestateevents.triggered
@@ -27,10 +26,6 @@ class VerifyEmailViewModel(
     private val _viewState = MutableStateFlow(VerifyEmailViewState())
     val viewState: StateFlow<VerifyEmailViewState> = _viewState.asStateFlow()
 
-    init {
-        Log.d("MAMA", "$email $password")
-    }
-
     fun handleEvent(event: VerifyEmailEvent) {
         when (event) {
             is VerifyEmailEvent.VerifyEmail -> verifyEmail(
@@ -40,12 +35,9 @@ class VerifyEmailViewModel(
 
 
             VerifyEmailEvent.ConsumeRequestError -> consumeRequestError()
+            VerifyEmailEvent.ConsumeLoginSuccess -> consumeLoginSuccess()
+            VerifyEmailEvent.ConsumeRestoreSuccess -> consumeRestoreSuccess()
             VerifyEmailEvent.ResendCode -> resendCode()
-            VerifyEmailEvent.OnSuccessfulLogin -> {
-                _viewState.update {
-                    VerifyEmailViewState()
-                }
-            }
         }
     }
 
@@ -61,7 +53,7 @@ class VerifyEmailViewModel(
             else
                 _viewState.update {
                     it.copy(
-                        loginSuccess = triggered
+                        restoreSuccess = triggered
                     )
                 }
         }
@@ -161,6 +153,22 @@ class VerifyEmailViewModel(
         _viewState.update {
             it.copy(
                 requestError = consumed()
+            )
+        }
+    }
+
+    private fun consumeLoginSuccess() {
+        _viewState.update {
+            it.copy(
+                loginSuccess = consumed
+            )
+        }
+    }
+
+    private fun consumeRestoreSuccess() {
+        _viewState.update {
+            it.copy(
+                restoreSuccess = consumed
             )
         }
     }

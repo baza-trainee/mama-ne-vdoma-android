@@ -38,7 +38,7 @@ sealed class LoginRoutes(val route: String) {
                 )
             }
 
-            fun getDestination(email: String, password: String, ): String {
+            fun getDestination(email: String, password: String): String {
                 return "$BASE_ROUTE_VERIFY?" +
                         "$EMAIL=$email," +
                         "$PASSWORD=$password" +
@@ -117,7 +117,7 @@ sealed class LoginRoutes(val route: String) {
 
     companion object {
 
-        private const val BASE_ROUTE_VERIFY = "email_verify_screen"
+        private const val BASE_ROUTE_VERIFY = "email_verify_restore_screen"
         private const val BASE_ROUTE_PASSWORD = "new_password_screen"
         private const val BASE_ROUTE_EMAIL = "email_confirm_screen"
         private const val EMAIL = "email"

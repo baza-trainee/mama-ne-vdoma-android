@@ -77,7 +77,7 @@ fun NavGraphBuilder.loginNavGraph(
                 screenState = verifyEmailViewModel.viewState.collectAsStateWithLifecycle(),
                 title = "Відновлення паролю",
                 onHandleEvent = { verifyEmailViewModel.handleEvent(it) },
-                onSuccess = { otp ->
+                onRestore = { otp ->
                     navController.navigate(LoginRoutes.NewPassword.getDestination(email, otp)) }
             )
         }

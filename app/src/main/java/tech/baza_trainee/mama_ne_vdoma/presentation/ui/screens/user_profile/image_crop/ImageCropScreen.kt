@@ -38,7 +38,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFa
 @Composable
 fun ImageCropScreen(
     modifier: Modifier = Modifier,
-    imageForCrop: () -> ImageBitmap = { ImageBitmap(512, 512) },
+    imageForCrop: ImageBitmap = ImageBitmap(512, 512),
     onHandleCropEvent: (Bitmap) -> Unit = {},
     onImageCropped: () -> Unit = {}
 ) {
@@ -74,7 +74,7 @@ fun ImageCropScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f),
-                imageBitmap = imageForCrop.invoke(),
+                imageBitmap = imageForCrop,
                 contentDescription = "Image Cropper",
                 cropStyle = CropDefaults.style(),
                 cropProperties = CropDefaults.properties(

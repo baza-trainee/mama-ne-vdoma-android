@@ -37,18 +37,21 @@ fun VerifyEmailScreen(
     screenState: State<VerifyEmailViewState> = mutableStateOf(VerifyEmailViewState()),
     title: String = "0",
     onHandleEvent: (VerifyEmailEvent) -> Unit = { _ -> },
-    onSuccess: (String) -> Unit = {}
+    onRestore: (String) -> Unit = {},
+    onLogin: () -> Unit = {}
 ) {
     SurfaceWithSystemBars {
         val context = LocalContext.current
 
         EventEffect(
             event = screenState.value.loginSuccess,
-            onConsumed = {}
-        ) {
-            onSuccess(screenState.value.otp)
-            onHandleEvent(VerifyEmailEvent.OnSuccessfulLogin)
-        }
+            onConsumed = { onHandleEvent(VerifyEmailEvent.ConsumeLoginSuccess) }
+        ) { onLogin() }
+
+        EventEffect(
+            event = screenState.value.restoreSuccess,
+            onConsumed = { onHandleEvent(VerifyEmailEvent.ConsumeRestoreSuccess) }
+        ) { onRestore(screenState.value.otp) }
 
         EventEffect(
             event = screenState.value.requestError,

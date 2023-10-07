@@ -45,7 +45,7 @@ fun CreateUserScreen(
     modifier: Modifier = Modifier,
     screenState: State<UserCreateViewState> = mutableStateOf(UserCreateViewState()),
     onHandleEvent: (UserCreateEvent) -> Unit = { _ -> },
-    onCreateUser: () -> Unit = {},
+    onCreateUser: (String, String) -> Unit = {_,_ ->},
     onLogin: () -> Unit = {},
     onBack: () -> Unit = {}
 ) {
@@ -59,7 +59,12 @@ fun CreateUserScreen(
         EventEffect(
             event = screenState.value.registerSuccess,
             onConsumed = {}
-        ) { onCreateUser() }
+        ) {
+            onCreateUser(
+                screenState.value.email,
+                screenState.value.password
+            )
+        }
 
         EventEffect(
             event = screenState.value.registerError,
