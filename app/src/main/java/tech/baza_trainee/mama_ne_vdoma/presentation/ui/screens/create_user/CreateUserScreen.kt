@@ -58,7 +58,7 @@ fun CreateUserScreen(
 
         EventEffect(
             event = screenState.value.registerSuccess,
-            onConsumed = {}
+            onConsumed = { onHandleEvent(UserCreateEvent.ConsumeRequestSuccess) }
         ) {
             onCreateUser(
                 screenState.value.email,
@@ -68,7 +68,7 @@ fun CreateUserScreen(
 
         EventEffect(
             event = screenState.value.registerError,
-            onConsumed = { onHandleEvent(UserCreateEvent.ConsumeRegisterError) }
+            onConsumed = { onHandleEvent(UserCreateEvent.ConsumeRequestError) }
         ) { if (it.isNotBlank()) Toast.makeText(context, it, Toast.LENGTH_LONG).show() }
 
         val scrollState = rememberScrollState()

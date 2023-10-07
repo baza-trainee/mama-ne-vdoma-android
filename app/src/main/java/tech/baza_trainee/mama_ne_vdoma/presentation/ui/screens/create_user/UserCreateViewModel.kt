@@ -27,7 +27,8 @@ class UserCreateViewModel(
 
     fun handleUserCreateEvent(event: UserCreateEvent) {
         when(event) {
-            UserCreateEvent.ConsumeRegisterError -> consumeRegisterError()
+            UserCreateEvent.ConsumeRequestError -> consumeRequestError()
+            UserCreateEvent.ConsumeRequestSuccess -> consumeRequestSuccess()
             UserCreateEvent.RegisterUser -> registerUser()
             is UserCreateEvent.UpdatePolicyCheck -> updatePolicyCheck(event.isChecked)
             is UserCreateEvent.ValidateConfirmPassword -> validateConfirmPassword(event.confirmPassword)
@@ -134,10 +135,18 @@ class UserCreateViewModel(
         }
     }
 
-    private fun consumeRegisterError() {
+    private fun consumeRequestError() {
         _viewState.update {
             it.copy(
                 registerError = consumed()
+            )
+        }
+    }
+
+    private fun consumeRequestSuccess() {
+        _viewState.update {
+            it.copy(
+                registerSuccess = consumed
             )
         }
     }
