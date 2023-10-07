@@ -60,7 +60,7 @@ fun UserLocationScreen(
 
         EventEffect(
             event = screenState.value.requestSuccess,
-            onConsumed = {}
+            onConsumed = { onHandleLocationEvent(UserLocationEvent.ConsumeRequestSuccess) }
         ) { onNext() }
 
         EventEffect(

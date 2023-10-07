@@ -48,6 +48,8 @@ class FullInfoViewModel(
             FullProfileEvent.ResetChild -> resetCurrentChild()
             is FullProfileEvent.SetChild -> setCurrentChild(event.id)
             FullProfileEvent.ConsumeRequestError -> consumeRequestError()
+            FullProfileEvent.ConsumeDeleteRequest -> consumeDeleteRequest()
+            FullProfileEvent.ConsumeRequestSuccess -> consumeRequestSuccess()
         }
     }
 
@@ -233,6 +235,22 @@ class FullInfoViewModel(
         _fullInfoViewState.update {
             it.copy(
                 requestError = consumed()
+            )
+        }
+    }
+
+    private fun consumeRequestSuccess() {
+        _fullInfoViewState.update {
+            it.copy(
+                requestSuccess = consumed
+            )
+        }
+    }
+
+    private fun consumeDeleteRequest() {
+        _fullInfoViewState.update {
+            it.copy(
+                userDeleted = consumed
             )
         }
     }

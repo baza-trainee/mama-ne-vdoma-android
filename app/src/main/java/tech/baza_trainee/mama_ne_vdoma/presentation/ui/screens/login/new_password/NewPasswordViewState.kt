@@ -11,6 +11,6 @@ data class NewPasswordViewState(
     val confirmPassword: String = "",
     val confirmPasswordValid: ValidField = ValidField.EMPTY,
     val isLoading: Boolean = false,
-    val loginSuccess: StateEvent = consumed,
+    val requestSuccess: StateEvent = consumed,
     val requestError: StateEventWithContent<String> = consumed()
 )

@@ -48,7 +48,7 @@ fun NavGraphBuilder.userProfileGraph(
             UserInfoScreen(
                 screenState = userInfoViewModel.userInfoScreenState.collectAsStateWithLifecycle(),
                 onHandleUserInfoEvent = { userInfoViewModel.handleUserInfoEvent(it)},
-                onCreateUser = { navController.navigate(UserProfileRoutes.UserLocation.route) },
+                onNext = { navController.navigate(UserProfileRoutes.UserLocation.route) },
                 onEditPhoto = { navController.navigate(UserProfileRoutes.ImageCrop.route) },
                 onBack = { navController.navigate(UserProfileRoutes.FullProfile.route) }
             )

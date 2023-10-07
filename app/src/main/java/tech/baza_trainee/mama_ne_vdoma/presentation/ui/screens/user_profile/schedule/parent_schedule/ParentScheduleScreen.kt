@@ -22,7 +22,7 @@ fun ParentScheduleScreen(
 
     EventEffect(
         event = screenState.value.requestSuccess,
-        onConsumed = {}
+        onConsumed = { onHandleScheduleEvent(ScheduleEvent.ConsumeRequestSuccess) }
     ) { onNext() }
 
     EventEffect(

@@ -4,6 +4,8 @@ import android.net.Uri
 
 sealed interface UserInfoEvent {
     object ConsumeRequestError: UserInfoEvent
+    object ConsumeAvatarError: UserInfoEvent
+    object ConsumeRequestSuccess: UserInfoEvent
     object SaveInfo: UserInfoEvent
     data class ValidateUserName(val name: String) : UserInfoEvent
     data class SetImageToCrop(val uri: Uri) : UserInfoEvent

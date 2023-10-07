@@ -41,8 +41,8 @@ fun NewPasswordScreen(
         val context = LocalContext.current
 
         EventEffect(
-            event = screenState.value.loginSuccess,
-            onConsumed = {}
+            event = screenState.value.requestSuccess,
+            onConsumed = { onHandleEvent(NewPasswordEvent.ConsumeRequestSuccess) }
         ) { onRestore() }
 
         EventEffect(

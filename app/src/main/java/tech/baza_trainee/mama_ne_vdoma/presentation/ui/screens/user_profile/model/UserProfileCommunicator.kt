@@ -8,11 +8,11 @@ class UserProfileCommunicator {
     var name = ""
     var code = ""
     var phone = ""
-    var uriForCrop = Uri.EMPTY
-    var userAvatar = BitmapHelper.DEFAULT_BITMAP
-    var croppedImage = BitmapHelper.DEFAULT_BITMAP
     var address = ""
     var schedule = ScheduleModel()
+    var uriForCrop: Uri = Uri.EMPTY
+    var userAvatar = BitmapHelper.DEFAULT_BITMAP
+    var croppedImage = BitmapHelper.DEFAULT_BITMAP
     var currentChildId = ""
     var isUserInfoFilled = false
     var isChildInfoFilled = false

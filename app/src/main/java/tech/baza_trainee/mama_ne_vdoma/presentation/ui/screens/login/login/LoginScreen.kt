@@ -57,7 +57,7 @@ fun LoginUserScreen(
 
         EventEffect(
             event = screenState.value.loginSuccess,
-            onConsumed = {}
+            onConsumed = { onHandleEvent(LoginEvent.ConsumeRequestSuccess) }
         ) {
             onHandleEvent(LoginEvent.OnSuccessfulLogin)
             onLogin()

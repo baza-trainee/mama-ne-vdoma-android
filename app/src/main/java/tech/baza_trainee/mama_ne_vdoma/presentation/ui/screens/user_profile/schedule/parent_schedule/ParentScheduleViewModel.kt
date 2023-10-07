@@ -1,6 +1,7 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.schedule.parent_schedule
 
 import androidx.lifecycle.ViewModel
+import de.palm.composestateevents.consumed
 import de.palm.composestateevents.triggered
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -40,6 +41,8 @@ class ParentScheduleViewModel(
 
     fun handleScheduleEvent(event: ScheduleEvent) {
         when(event) {
+            ScheduleEvent.ConsumeRequestError -> consumeRequestError()
+            ScheduleEvent.ConsumeRequestSuccess -> consumeRequestSuccess()
             ScheduleEvent.PatchParentSchedule -> saveParentSchedule()
             is ScheduleEvent.UpdateParentSchedule -> updateParentSchedule(event.day, event.period)
             else -> Unit
@@ -183,6 +186,22 @@ class ParentScheduleViewModel(
                     )
                 }
             }
+        }
+    }
+
+    private fun consumeRequestSuccess() {
+        _parentScheduleViewState.update {
+            it.copy(
+                requestSuccess = consumed
+            )
+        }
+    }
+
+    private fun consumeRequestError() {
+        _parentScheduleViewState.update {
+            it.copy(
+                requestError = consumed()
+            )
         }
     }
 }

@@ -58,7 +58,7 @@ fun UserInfoScreen(
     modifier: Modifier = Modifier,
     screenState: State<UserInfoViewState> = mutableStateOf(UserInfoViewState()),
     onHandleUserInfoEvent: (UserInfoEvent) -> Unit = { _ -> },
-    onCreateUser: () -> Unit = {},
+    onNext: () -> Unit = {},
     onEditPhoto: () -> Unit = {},
     onBack: () -> Unit = {}
 ) {
@@ -71,12 +71,12 @@ fun UserInfoScreen(
 
         EventEffect(
             event = screenState.value.requestSuccess,
-            onConsumed = {}
-        ) { onCreateUser() }
+            onConsumed = { onHandleUserInfoEvent(UserInfoEvent.ConsumeRequestSuccess) }
+        ) { onNext() }
 
         EventEffect(
             event = screenState.value.avatarSizeError,
-            onConsumed = {}
+            onConsumed = { onHandleUserInfoEvent(UserInfoEvent.ConsumeAvatarError) }
         ) {
             Toast.makeText(
                 context,

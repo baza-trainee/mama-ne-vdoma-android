@@ -36,6 +36,8 @@ class LoginScreenViewModel(
                     LoginViewState()
                 }
             }
+
+            LoginEvent.ConsumeRequestSuccess -> consumeLoginSuccess()
         }
     }
 
@@ -99,6 +101,14 @@ class LoginScreenViewModel(
         _viewState.update {
             it.copy(
                 requestError = consumed()
+            )
+        }
+    }
+
+    private fun consumeLoginSuccess() {
+        _viewState.update {
+            it.copy(
+                loginSuccess = consumed
             )
         }
     }

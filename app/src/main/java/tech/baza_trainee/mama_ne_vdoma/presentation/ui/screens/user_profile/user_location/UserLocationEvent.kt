@@ -2,6 +2,7 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.use
 
 sealed interface UserLocationEvent {
     object ConsumeRequestError: UserLocationEvent
+    object ConsumeRequestSuccess: UserLocationEvent
     object SaveUserLocation: UserLocationEvent
     object RequestUserLocation : UserLocationEvent
     object GetLocationFromAddress : UserLocationEvent

@@ -51,7 +51,7 @@ fun RestorePasswordScreen(
 
         EventEffect(
             event = screenState.value.requestSuccess,
-            onConsumed = {}
+            onConsumed = { onHandleEvent(RestorePasswordEvent.ConsumeRequestSuccess) }
         ) {
             onRestore(screenState.value.email)
             onHandleEvent(RestorePasswordEvent.OnSuccess)

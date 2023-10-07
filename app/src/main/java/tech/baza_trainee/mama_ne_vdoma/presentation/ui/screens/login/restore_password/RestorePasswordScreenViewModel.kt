@@ -26,7 +26,7 @@ class RestorePasswordScreenViewModel(
 
     fun handleRestoreEvent(event: RestorePasswordEvent) {
         when(event) {
-            RestorePasswordEvent.ConsumeRequestError -> consumeRegisterError()
+            RestorePasswordEvent.ConsumeRequestError -> consumeRequestError()
             RestorePasswordEvent.SendEmail -> forgetPassword()
 
             RestorePasswordEvent.OnSuccess -> _viewState.update {
@@ -34,6 +34,7 @@ class RestorePasswordScreenViewModel(
             }
 
             is RestorePasswordEvent.ValidateEmail -> validateEmail(event.email)
+            RestorePasswordEvent.ConsumeRequestSuccess -> consumeRegisterSuccess()
         }
     }
 
@@ -81,10 +82,18 @@ class RestorePasswordScreenViewModel(
         }
     }
 
-    private fun consumeRegisterError() {
+    private fun consumeRequestError() {
         _viewState.update {
             it.copy(
                 requestError = consumed()
+            )
+        }
+    }
+
+    private fun consumeRegisterSuccess() {
+        _viewState.update {
+            it.copy(
+                requestSuccess = consumed
             )
         }
     }

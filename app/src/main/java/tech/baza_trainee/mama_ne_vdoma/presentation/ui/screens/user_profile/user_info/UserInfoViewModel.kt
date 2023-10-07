@@ -42,8 +42,7 @@ class UserInfoViewModel(
                 code = communicator.code,
                 phone = communicator.phone,
                 phoneValid = if (communicator.phone.isEmpty()) ValidField.EMPTY else ValidField.VALID,
-                userAvatar = communicator.userAvatar,
-                requestSuccess = consumed
+                userAvatar = communicator.userAvatar
             )
         }
         if (communicator.croppedImage != BitmapHelper.DEFAULT_BITMAP) {
@@ -60,6 +59,8 @@ class UserInfoViewModel(
             is UserInfoEvent.SetCode -> setCode(event.code, event.country)
             UserInfoEvent.SaveInfo -> saveUserInfo()
             UserInfoEvent.ConsumeRequestError -> consumeUserInfoRequestError()
+            UserInfoEvent.ConsumeRequestSuccess -> consumeUserInfoRequestSuccess()
+            UserInfoEvent.ConsumeAvatarError -> consumeUserInfoAvatarError()
         }
     }
 
@@ -171,6 +172,22 @@ class UserInfoViewModel(
         _userInfoScreenState.update {
             it.copy(
                 requestError = consumed()
+            )
+        }
+    }
+
+    private fun consumeUserInfoRequestSuccess() {
+        _userInfoScreenState.update {
+            it.copy(
+                requestSuccess = consumed
+            )
+        }
+    }
+
+    private fun consumeUserInfoAvatarError() {
+        _userInfoScreenState.update {
+            it.copy(
+                avatarSizeError = consumed
             )
         }
     }

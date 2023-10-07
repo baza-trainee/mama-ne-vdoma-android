@@ -73,12 +73,12 @@ fun FullInfoScreen(
 
         EventEffect(
             event = screenState.value.requestSuccess,
-            onConsumed = {}
+            onConsumed = { onHandleEvent(FullProfileEvent.ConsumeRequestSuccess) }
         ) { onNext() }
 
         EventEffect(
             event = screenState.value.userDeleted,
-            onConsumed = {}
+            onConsumed = { onHandleEvent(FullProfileEvent.ConsumeDeleteRequest) }
         ) { onDelete() }
 
         EventEffect(

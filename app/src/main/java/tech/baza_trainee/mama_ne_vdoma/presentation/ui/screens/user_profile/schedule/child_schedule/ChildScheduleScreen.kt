@@ -23,7 +23,7 @@ fun ChildScheduleScreen(
 
     EventEffect(
         event = screenState.value.requestSuccess,
-        onConsumed = {}
+        onConsumed = { onHandleScheduleEvent(ScheduleEvent.ConsumeRequestSuccess) }
     ) { onNext() }
 
     EventEffect(

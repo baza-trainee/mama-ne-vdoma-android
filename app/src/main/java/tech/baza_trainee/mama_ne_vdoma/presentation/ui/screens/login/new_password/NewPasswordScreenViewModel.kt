@@ -32,6 +32,7 @@ class NewPasswordScreenViewModel(
             NewPasswordEvent.ConsumeRequestError -> consumeRequestError()
             is NewPasswordEvent.ValidatePassword -> validatePassword(event.password)
             is NewPasswordEvent.ValidateConfirmPassword -> validateConfirmPassword(event.confirmPassword)
+            NewPasswordEvent.ConsumeRequestSuccess -> consumeRequestSuccess()
         }
     }
 
@@ -80,7 +81,7 @@ class NewPasswordScreenViewModel(
             onSuccess {
                 _viewState.update {
                     it.copy(
-                        loginSuccess = triggered
+                        requestSuccess = triggered
                     )
                 }
             }
@@ -105,6 +106,14 @@ class NewPasswordScreenViewModel(
         _viewState.update {
             it.copy(
                 requestError = consumed()
+            )
+        }
+    }
+
+    private fun consumeRequestSuccess() {
+        _viewState.update {
+            it.copy(
+                requestSuccess = consumed
             )
         }
     }

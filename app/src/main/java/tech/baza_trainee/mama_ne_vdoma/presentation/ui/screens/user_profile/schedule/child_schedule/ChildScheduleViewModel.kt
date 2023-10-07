@@ -44,6 +44,7 @@ class ChildScheduleViewModel(
         when(event) {
             ScheduleEvent.PatchChildSchedule -> patchChild()
             ScheduleEvent.ConsumeRequestError -> consumeRequestError()
+            ScheduleEvent.ConsumeRequestSuccess -> consumeRequestSuccess()
             is ScheduleEvent.UpdateChildComment -> updateChildComment(event.comment)
             is ScheduleEvent.UpdateChildSchedule -> updateChildSchedule(event.day, event.period)
             else -> Unit
@@ -238,6 +239,14 @@ class ChildScheduleViewModel(
         _childScheduleViewState.update {
             it.copy(
                 requestError = consumed()
+            )
+        }
+    }
+
+    private fun consumeRequestSuccess() {
+        _childScheduleViewState.update {
+            it.copy(
+                requestSuccess = consumed
             )
         }
     }

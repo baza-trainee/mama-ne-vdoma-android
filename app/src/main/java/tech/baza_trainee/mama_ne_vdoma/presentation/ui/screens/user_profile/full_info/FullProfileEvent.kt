@@ -2,6 +2,8 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.ful
 
 sealed interface FullProfileEvent {
     object ConsumeRequestError: FullProfileEvent
+    object ConsumeRequestSuccess: FullProfileEvent
+    object ConsumeDeleteRequest: FullProfileEvent
     object DeleteUser: FullProfileEvent
     object ResetChild: FullProfileEvent
     data class SetChild(val id: String) : FullProfileEvent

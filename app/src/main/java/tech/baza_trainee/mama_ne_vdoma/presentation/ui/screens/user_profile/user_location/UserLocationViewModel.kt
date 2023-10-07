@@ -34,7 +34,8 @@ class UserLocationViewModel(
                 address = communicator.address
             )
         }
-        getLocationFromAddress()
+        if (communicator.address.isNotEmpty())
+            getLocationFromAddress()
     }
 
     fun handleUserLocationEvent(event: UserLocationEvent) {
@@ -43,6 +44,7 @@ class UserLocationViewModel(
             UserLocationEvent.RequestUserLocation -> requestCurrentLocation()
             is UserLocationEvent.UpdateUserAddress -> updateUserAddress(event.address)
             UserLocationEvent.ConsumeRequestError -> consumeUserLocationRequestError()
+            UserLocationEvent.ConsumeRequestSuccess -> consumeRequestSuccess()
             UserLocationEvent.SaveUserLocation -> saveUserLocation()
         }
     }
@@ -147,11 +149,12 @@ class UserLocationViewModel(
             }
             onSuccess { location ->
                 location?.let {
-                    _locationScreenState.update {
-                        it.copy(
-                            currentLocation = location
-                        )
-                    }
+                    if (_locationScreenState.value.currentLocation != location)
+                        _locationScreenState.update {
+                            it.copy(
+                                currentLocation = location
+                            )
+                        }
                 }
             }
             onError { error ->
@@ -193,6 +196,14 @@ class UserLocationViewModel(
                     )
                 }
             }
+        }
+    }
+
+    private fun consumeRequestSuccess() {
+        _locationScreenState.update {
+            it.copy(
+                requestSuccess = consumed
+            )
         }
     }
 }
