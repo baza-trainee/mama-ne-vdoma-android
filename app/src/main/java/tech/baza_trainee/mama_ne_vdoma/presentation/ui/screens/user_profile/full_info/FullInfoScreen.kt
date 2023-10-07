@@ -1,6 +1,7 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.full_info
 
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.Animatable
 import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.RepeatMode
@@ -69,6 +70,8 @@ fun FullInfoScreen(
     SurfaceWithNavigationBars(
         modifier = modifier
     ) {
+        BackHandler { onBack() }
+
         val context = LocalContext.current
 
         EventEffect(

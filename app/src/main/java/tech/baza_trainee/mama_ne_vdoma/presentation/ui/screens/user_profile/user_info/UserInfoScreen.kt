@@ -42,7 +42,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.canopas.campose.countrypicker.CountryPickerBottomSheet
 import de.palm.composestateevents.EventEffect
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.BackPressHandler
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.LoadingIndicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.OutlinedTextFieldWithError
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.SurfaceWithSystemBars
@@ -65,8 +64,6 @@ fun UserInfoScreen(
     SurfaceWithSystemBars(
         modifier = modifier
     ) {
-        BackPressHandler { onBack() }
-
         val context = LocalContext.current
 
         EventEffect(
