@@ -3,7 +3,7 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes
 sealed class UserProfileRoutes(val route: String) {
 
     object UserInfo: UserProfileRoutes("user_info_screen")
-    object ImageCrop: UserProfileRoutes("user_info_screen")
+    object ImageCrop: UserProfileRoutes("user_crop_screen")
     object UserLocation: UserProfileRoutes("user_location_screen")
     object ChildInfo: UserProfileRoutes("child_info_screen")
     object ChildSchedule: UserProfileRoutes("child_schedule_screen")

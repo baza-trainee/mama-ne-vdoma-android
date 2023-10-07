@@ -27,6 +27,7 @@ import tech.baza_trainee.mama_ne_vdoma.domain.model.ScheduleModel
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UserInfoEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UserLocationEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UserProfileEntity
+import tech.baza_trainee.mama_ne_vdoma.domain.model.ifNullOrEmpty
 import java.time.DayOfWeek
 
 fun AuthUserEntity.toDataModel() = AuthUserDto(email, password)
@@ -37,11 +38,36 @@ fun ConfirmEmailEntity.toDataModel() = ConfirmEmailDto(email, code)
 
 fun RequestWithEmailEntity.toDataModel() = RequestWithEmailDto(email)
 
-fun UserInfoEntity.toDataModel() = UserInfoDto(name, countryCode, phone, avatar)
+fun UserInfoEntity.toDataModel() = UserInfoDto(
+    name,
+    countryCode,
+    phone,
+    avatar,
+    week = mutableMapOf<String, DayScheduleDto>().also { map ->
+        schedule.schedule.forEach {
+            map[it.key.name.lowercase()] = it.value.toDataModel()
+        }
+    }
+)
 
 fun UserLocationEntity.toDataModel() = UserLocationDto(lat, lon)
 
-fun UserProfileDto.toDomainModel() = UserProfileEntity(email, name, countryCode, phone, avatar, location.toDomainModel())
+fun UserProfileDto.toDomainModel() = UserProfileEntity(
+    email,
+    name,
+    countryCode,
+    phone,
+    avatar,
+    location.toDomainModel(),
+    schedule = ScheduleModel(
+        schedule = mutableStateMapOf<DayOfWeek, DayPeriod>().also {
+            week?.forEach { entry ->
+                val key = DayOfWeek.valueOf(entry.key.uppercase())
+                it[key] = entry.value.toDomainModel()
+            }
+        }
+    ).ifNullOrEmpty { ScheduleModel() }
+)
 
 fun LocationDto.toDomainModel() = LocationEntity(type, coordinates)
 
@@ -61,7 +87,7 @@ fun ChildDto.toDomainModel() = ChildEntity(
                 it[key] = entry.value.toDomainModel()
             }
         }
-    )
+    ).ifNullOrEmpty { ScheduleModel() }
 )
 
 fun DayScheduleDto.toDomainModel() = DayPeriod(

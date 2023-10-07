@@ -12,6 +12,11 @@ data class ScheduleModel(
     }
 )
 
+fun ScheduleModel?.ifNullOrEmpty(creator: () -> ScheduleModel): ScheduleModel {
+    return if (this != null && schedule.isNotEmpty()) this
+    else creator()
+}
+
 data class DayPeriod(
     val morning: Boolean = false,
     val noon: Boolean = false,

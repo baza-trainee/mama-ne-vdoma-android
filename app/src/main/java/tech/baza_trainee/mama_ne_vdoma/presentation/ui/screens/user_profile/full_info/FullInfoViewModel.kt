@@ -8,7 +8,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import tech.baza_trainee.mama_ne_vdoma.domain.model.ChildEntity
+import tech.baza_trainee.mama_ne_vdoma.domain.model.ScheduleModel
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UserProfileEntity
+import tech.baza_trainee.mama_ne_vdoma.domain.model.ifNullOrEmpty
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.LocationRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.model.UserProfileCommunicator
@@ -78,16 +81,18 @@ class FullInfoViewModel(
     }
 
     private fun getChildren() {
-        networkExecutor {
+        networkExecutor<List<ChildEntity>> {
             execute {
                 userProfileRepository.getChildren()
             }
             onSuccess { entity ->
                 _fullInfoViewState.update {
                     it.copy(
-                        children = entity
+                        children = entity,
+                        isChildInfoFilled = entity.isNotEmpty()
                     )
                 }
+                communicator.isUserInfoFilled = entity.isNotEmpty()
             }
             onError { error ->
                 _fullInfoViewState.update {
@@ -112,18 +117,26 @@ class FullInfoViewModel(
                 userProfileRepository.getUserInfo()
             }
             onSuccess { entity ->
+                val _isUserInfoFilled = !entity?.name.isNullOrEmpty() &&
+                        !entity?.phone.isNullOrEmpty() &&
+                        !entity?.schedule?.schedule.isNullOrEmpty()
+
                 _fullInfoViewState.update {
                     it.copy(
                         name = entity?.name.orEmpty(),
                         userAvatar = entity?.avatar.orEmpty().decodeBase64ToBitmap(),
+                        schedule = entity?.schedule.ifNullOrEmpty { ScheduleModel() },
+                        isUserInfoFilled = _isUserInfoFilled
                     )
                 }
 
                 communicator.apply {
+                    isUserInfoFilled = _isUserInfoFilled
                     name = entity?.name.orEmpty()
                     userAvatar = entity?.avatar.orEmpty().decodeBase64ToBitmap()
                     code = entity?.countryCode.orEmpty()
                     phone = entity?.phone.orEmpty()
+                    schedule = entity?.schedule.ifNullOrEmpty { ScheduleModel() }
                 }
 
                 getAddressFromLocation(

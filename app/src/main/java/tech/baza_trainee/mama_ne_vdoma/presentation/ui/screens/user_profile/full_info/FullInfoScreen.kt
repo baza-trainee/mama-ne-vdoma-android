@@ -62,6 +62,7 @@ fun FullInfoScreen(
     onNext: () -> Unit = {},
     onBack: () -> Unit = {},
     onEditUser: () -> Unit = {},
+    onAddChild: () -> Unit = {},
     onEditChild: () -> Unit = {},
     onDelete: () -> Unit = {}
 ) {
@@ -220,7 +221,7 @@ fun FullInfoScreen(
                         )
                         .clickable(enabled = screenState.value.isUserInfoFilled) {
                             onHandleEvent(FullProfileEvent.ResetChild)
-                            onEditChild()
+                            onAddChild()
                         },
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Start
@@ -239,7 +240,7 @@ fun FullInfoScreen(
                         modifier = modifier
                             .padding(start = 8.dp)
                             .fillMaxWidth(1f),
-                        color = if (screenState.value.isChildInfoFilled) MaterialTheme.colorScheme.onBackground
+                        color = if (screenState.value.isUserInfoFilled) MaterialTheme.colorScheme.onBackground
                         else SlateGray
                     )
                 }

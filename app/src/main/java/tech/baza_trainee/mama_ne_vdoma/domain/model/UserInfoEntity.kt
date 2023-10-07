@@ -4,5 +4,6 @@ data class UserInfoEntity(
     val name: String = "",
     val countryCode: String = "",
     val phone: String = "",
-    val avatar: String = ""
+    val avatar: String = "",
+    val schedule: ScheduleModel = ScheduleModel()
 )

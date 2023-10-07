@@ -6,7 +6,8 @@ data class UserProfileDto(
     val countryCode: String = "",
     val phone: String = "",
     val avatar: String = "",
-    val location: LocationDto = LocationDto()
+    val location: LocationDto = LocationDto(),
+    val week: Map<String, DayScheduleDto>?
 )
 
 data class LocationDto(

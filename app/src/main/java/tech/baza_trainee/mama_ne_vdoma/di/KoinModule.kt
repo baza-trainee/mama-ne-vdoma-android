@@ -71,7 +71,7 @@ val repoModule = module {
 
 val userKoinModule = module {
     single { PhoneNumberUtil.createInstance(androidContext()) }
-    single { BitmapHelper(androidContext()) }
+    single { BitmapHelper(androidApplication()) }
     single { UserProfileCommunicator() }
     viewModel { UserInfoViewModel(get(), get(), get(), get()) }
     viewModel { ImageCropViewModel(get(), get()) }
@@ -79,7 +79,7 @@ val userKoinModule = module {
     viewModel { ChildInfoViewModel(get(), get()) }
     viewModel { ChildScheduleViewModel(get(), get()) }
     viewModel { ChildrenInfoViewModel(get(), get()) }
-    viewModel { ParentScheduleViewModel(get()) }
+    viewModel { ParentScheduleViewModel(get(), get(), get()) }
     viewModel { FullInfoViewModel(get(), get(), get()) }
     viewModel { UserCreateViewModel(get()) }
 }

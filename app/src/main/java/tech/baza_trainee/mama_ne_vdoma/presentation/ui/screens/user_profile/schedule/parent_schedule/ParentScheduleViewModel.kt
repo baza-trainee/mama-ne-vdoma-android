@@ -9,13 +9,23 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import tech.baza_trainee.mama_ne_vdoma.domain.model.DayPeriod
 import tech.baza_trainee.mama_ne_vdoma.domain.model.Period
+import tech.baza_trainee.mama_ne_vdoma.domain.model.UserInfoEntity
+import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.model.UserProfileCommunicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.schedule.ScheduleEvent
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.schedule.ScheduleViewState
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.BitmapHelper
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.networkExecutor
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onError
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onLoading
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onSuccess
 import java.time.DayOfWeek
 
 class ParentScheduleViewModel(
-    private val communicator: UserProfileCommunicator
+    private val communicator: UserProfileCommunicator,
+    private val userProfileRepository: UserProfileRepository,
+    private val bitmapHelper: BitmapHelper
 ): ViewModel() {
 
     private val _parentScheduleViewState = MutableStateFlow(ScheduleViewState())
@@ -42,11 +52,40 @@ class ParentScheduleViewModel(
     }
 
     private fun saveParentSchedule() {
-        communicator.isUserInfoFilled = true
-        _parentScheduleViewState.update {
-            it.copy(
-                requestSuccess = triggered
-            )
+        networkExecutor {
+            execute {
+                userProfileRepository.saveUserInfo(
+                    UserInfoEntity(
+                        name = communicator.name,
+                        phone = communicator.phone,
+                        countryCode = communicator.code,
+                        avatar = bitmapHelper.encodeToBase64(communicator.userAvatar),
+                        schedule = _parentScheduleViewState.value.schedule
+                    )
+                )
+            }
+            onSuccess {
+                communicator.isUserInfoFilled = true
+                _parentScheduleViewState.update {
+                    it.copy(
+                        requestSuccess = triggered
+                    )
+                }
+            }
+            onError { error ->
+                _parentScheduleViewState.update {
+                    it.copy(
+                        requestError = triggered(error)
+                    )
+                }
+            }
+            onLoading { isLoading ->
+                _parentScheduleViewState.update {
+                    it.copy(
+                        isLoading = isLoading
+                    )
+                }
+            }
         }
     }
 

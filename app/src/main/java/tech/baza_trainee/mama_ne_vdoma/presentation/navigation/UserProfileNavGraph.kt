@@ -38,6 +38,7 @@ fun NavGraphBuilder.userProfileGraph(
                 onBack = { navController.navigate(Graphs.Login.route) },
                 onNext = {},
                 onEditUser = { navController.navigate(UserProfileRoutes.UserInfo.route) },
+                onAddChild = { navController.navigate(UserProfileRoutes.ChildInfo.route) },
                 onEditChild = { navController.navigate(UserProfileRoutes.ChildSchedule.route) },
                 onDelete = { navController.navigate(Graphs.CreateUser.route) }
             )
@@ -55,7 +56,7 @@ fun NavGraphBuilder.userProfileGraph(
         composable(UserProfileRoutes.ImageCrop.route) {
             val imageCropViewModel: ImageCropViewModel = koinNavViewModel()
             ImageCropScreen(
-                imageForCrop = imageCropViewModel.getUserAvatarBitmap(),
+                imageForCrop = { imageCropViewModel.getUserAvatarBitmap() },
                 onHandleCropEvent = { imageCropViewModel.saveCroppedImage(it) }
             ) { navController.navigate(UserProfileRoutes.UserInfo.route) }
         }
