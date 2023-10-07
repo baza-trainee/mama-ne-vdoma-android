@@ -41,7 +41,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.canopas.campose.countrypicker.CountryPickerBottomSheet
-import de.palm.composestateevents.EventEffect
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.LoadingIndicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.OutlinedTextFieldWithError
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.SurfaceWithSystemBars
@@ -56,7 +55,8 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.ButtonText
 fun UserInfoScreen(
     modifier: Modifier = Modifier,
     screenState: State<UserInfoViewState> = mutableStateOf(UserInfoViewState()),
-    onHandleUserInfoEvent: (UserInfoEvent) -> Unit = { _ -> },
+    uiState: State<UserInfoUiState> = mutableStateOf(UserInfoUiState.Idle),
+    handleEvent: (UserInfoEvent) -> Unit = { _ -> },
     onNext: () -> Unit = {},
     onEditPhoto: () -> Unit = {}
 ) {
@@ -65,26 +65,29 @@ fun UserInfoScreen(
     ) {
         val context = LocalContext.current
 
-        EventEffect(
-            event = screenState.value.requestSuccess,
-            onConsumed = { onHandleUserInfoEvent(UserInfoEvent.ConsumeRequestSuccess) }
-        ) { onNext() }
-
-        EventEffect(
-            event = screenState.value.avatarSizeError,
-            onConsumed = { onHandleUserInfoEvent(UserInfoEvent.ConsumeAvatarError) }
-        ) {
-            Toast.makeText(
-                context,
-                "Аватарка має розмір більше 1МБ. Будь ласка, оберіть інше фото і повторіть",
-                Toast.LENGTH_LONG
-            ).show()
+        when(val state = uiState.value) {
+            UserInfoUiState.Idle -> Unit
+            is UserInfoUiState.OnError -> {
+                if (state.error.isNotBlank()) Toast.makeText(
+                    context,
+                    state.error,
+                    Toast.LENGTH_LONG
+                ).show()
+                handleEvent(UserInfoEvent.ResetUiState)
+            }
+            UserInfoUiState.OnNext -> {
+                onNext()
+                handleEvent(UserInfoEvent.ResetUiState)
+            }
+            UserInfoUiState.OnAvatarError -> {
+                Toast.makeText(
+                    context,
+                    "Аватарка має розмір більше 1МБ. Будь ласка, оберіть інше фото і повторіть",
+                    Toast.LENGTH_LONG
+                ).show()
+                handleEvent(UserInfoEvent.ResetUiState)
+            }
         }
-
-        EventEffect(
-            event = screenState.value.requestError,
-            onConsumed = { onHandleUserInfoEvent(UserInfoEvent.ConsumeRequestError) }
-        ) { if (it.isNotBlank()) Toast.makeText(context, it, Toast.LENGTH_LONG).show() }
 
         var openBottomSheet by rememberSaveable { mutableStateOf(false) }
         val scrollState = rememberScrollState()
@@ -121,7 +124,7 @@ fun UserInfoScreen(
                         .padding(top = 32.dp),
                     avatar = screenState.value.userAvatar,
                     setUriForCrop = {
-                        onHandleUserInfoEvent(UserInfoEvent.SetImageToCrop(it))
+                        handleEvent(UserInfoEvent.SetImageToCrop(it))
                     },
                     onEditPhoto = onEditPhoto
                 )
@@ -133,7 +136,7 @@ fun UserInfoScreen(
                         .padding(top = 32.dp),
                     text = screenState.value.name,
                     label = "Вкажіть своє ім'я",
-                    onValueChange = { onHandleUserInfoEvent(UserInfoEvent.ValidateUserName(it)) },
+                    onValueChange = { handleEvent(UserInfoEvent.ValidateUserName(it)) },
                     isError = screenState.value.nameValid == ValidField.INVALID,
                     errorText = "Ви ввели некоректнe ім'я"
                 )
@@ -191,7 +194,7 @@ fun UserInfoScreen(
                             .padding(end = 24.dp),
                         value = screenState.value.phone,
                         label = { Text("Введіть свій номер телефону") },
-                        onValueChange = { onHandleUserInfoEvent(UserInfoEvent.ValidatePhone(it)) },
+                        onValueChange = { handleEvent(UserInfoEvent.ValidatePhone(it)) },
                         isError = screenState.value.phoneValid == ValidField.INVALID && isPhoneFocused,
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
                         maxLines = 1,
@@ -230,7 +233,7 @@ fun UserInfoScreen(
                     .padding(horizontal = 24.dp, vertical = 16.dp)
                     .fillMaxWidth()
                     .height(48.dp),
-                onClick = { onHandleUserInfoEvent(UserInfoEvent.SaveInfo) },
+                onClick = { handleEvent(UserInfoEvent.SaveInfo) },
                 enabled = screenState.value.nameValid == ValidField.VALID &&
                         screenState.value.phoneValid == ValidField.VALID &&
                         screenState.value.code.isNotEmpty()
@@ -256,7 +259,7 @@ fun UserInfoScreen(
                     },
                     containerColor = MaterialTheme.colorScheme.surface,
                     onItemSelected = {
-                        onHandleUserInfoEvent(UserInfoEvent.SetCode(it.dial_code, it.code))
+                        handleEvent(UserInfoEvent.SetCode(it.dial_code, it.code))
                         openBottomSheet = false
                     }, onDismissRequest = {
                         openBottomSheet = false

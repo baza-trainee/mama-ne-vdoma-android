@@ -3,8 +3,7 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.use
 import com.google.android.gms.maps.model.LatLng
 
 sealed interface UserLocationEvent {
-    object ConsumeRequestError: UserLocationEvent
-    object ConsumeRequestSuccess: UserLocationEvent
+    object ResetUiState: UserLocationEvent
     object SaveUserLocation: UserLocationEvent
     object RequestUserLocation : UserLocationEvent
     data class OnMapClick(val location: LatLng) : UserLocationEvent

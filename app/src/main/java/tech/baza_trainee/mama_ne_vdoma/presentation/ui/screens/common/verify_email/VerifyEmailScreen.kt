@@ -23,7 +23,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import de.palm.composestateevents.EventEffect
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.LoadingIndicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.OtpTextField
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.SurfaceWithSystemBars
@@ -35,28 +34,34 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.ButtonText
 fun VerifyEmailScreen(
     modifier: Modifier = Modifier,
     screenState: State<VerifyEmailViewState> = mutableStateOf(VerifyEmailViewState()),
+    uiState: State<VerifyEmailUiState> = mutableStateOf(VerifyEmailUiState.Idle),
     title: String = "0",
-    onHandleEvent: (VerifyEmailEvent) -> Unit = { _ -> },
+    handleEvent: (VerifyEmailEvent) -> Unit = { _ -> },
     onRestore: (String) -> Unit = {},
     onLogin: () -> Unit = {}
 ) {
     SurfaceWithSystemBars {
         val context = LocalContext.current
 
-        EventEffect(
-            event = screenState.value.loginSuccess,
-            onConsumed = { onHandleEvent(VerifyEmailEvent.ConsumeLoginSuccess) }
-        ) { onLogin() }
-
-        EventEffect(
-            event = screenState.value.restoreSuccess,
-            onConsumed = { onHandleEvent(VerifyEmailEvent.ConsumeRestoreSuccess) }
-        ) { onRestore(screenState.value.otp) }
-
-        EventEffect(
-            event = screenState.value.requestError,
-            onConsumed = { onHandleEvent(VerifyEmailEvent.ConsumeRequestError) }
-        ) { if (it.isNotBlank()) Toast.makeText(context, it, Toast.LENGTH_LONG).show() }
+        when(val state = uiState.value) {
+            VerifyEmailUiState.Idle -> Unit
+            is VerifyEmailUiState.OnError -> {
+                if (state.error.isNotBlank()) Toast.makeText(
+                    context,
+                    state.error,
+                    Toast.LENGTH_LONG
+                ).show()
+                handleEvent(VerifyEmailEvent.ResetUiState)
+            }
+            VerifyEmailUiState.OnLogin -> {
+                onLogin()
+                handleEvent(VerifyEmailEvent.ResetUiState)
+            }
+            VerifyEmailUiState.OnRestore -> {
+                onRestore(screenState.value.otp)
+                handleEvent(VerifyEmailEvent.ResetUiState)
+            }
+        }
 
         Column(
             modifier = modifier.fillMaxSize(),
@@ -98,7 +103,7 @@ fun VerifyEmailScreen(
                 OtpTextField(
                     otpText = screenState.value.otp,
                     onOtpTextChange = { value, otpInputFilled ->
-                        onHandleEvent(
+                        handleEvent(
                             VerifyEmailEvent.VerifyEmail(value, otpInputFilled)
                         )
                     }

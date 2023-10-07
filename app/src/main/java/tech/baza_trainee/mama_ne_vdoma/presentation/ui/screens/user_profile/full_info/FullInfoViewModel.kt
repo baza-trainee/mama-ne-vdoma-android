@@ -1,9 +1,9 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.full_info
 
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.google.android.gms.maps.model.LatLng
-import de.palm.composestateevents.consumed
-import de.palm.composestateevents.triggered
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -32,6 +32,10 @@ class FullInfoViewModel(
     private val _fullInfoViewState = MutableStateFlow(FullInfoViewState())
     val fullInfoViewState: StateFlow<FullInfoViewState> = _fullInfoViewState.asStateFlow()
 
+    private val _uiState = mutableStateOf<FullInfoUiState>(FullInfoUiState.Idle)
+    val uiState: State<FullInfoUiState>
+        get() = _uiState
+
     init {
         getUserInfo()
         _fullInfoViewState.update {
@@ -42,15 +46,13 @@ class FullInfoViewModel(
         }
     }
 
-    fun handleFullProfileEvent(event: FullProfileEvent) {
+    fun handleFullProfileEvent(event: FullInfoEvent) {
         when(event) {
-            FullProfileEvent.DeleteUser -> deleteUser()
-            is FullProfileEvent.DeleteChild -> deleteChild(event.id)
-            FullProfileEvent.ResetChild -> resetCurrentChild()
-            is FullProfileEvent.SetChild -> setCurrentChild(event.id)
-            FullProfileEvent.ConsumeRequestError -> consumeRequestError()
-            FullProfileEvent.ConsumeDeleteRequest -> consumeDeleteRequest()
-            FullProfileEvent.ConsumeRequestSuccess -> consumeRequestSuccess()
+            FullInfoEvent.DeleteUser -> deleteUser()
+            is FullInfoEvent.DeleteChild -> deleteChild(event.id)
+            FullInfoEvent.ResetChild -> resetCurrentChild()
+            is FullInfoEvent.SetChild -> setCurrentChild(event.id)
+            FullInfoEvent.ResetUiState -> _uiState.value = FullInfoUiState.Idle
         }
     }
 
@@ -60,18 +62,10 @@ class FullInfoViewModel(
                 userProfileRepository.deleteUser()
             }
             onSuccess {
-                _fullInfoViewState.update {
-                    it.copy(
-                        userDeleted = triggered
-                    )
-                }
+                _uiState.value = FullInfoUiState.OnDelete
             }
             onError { error ->
-                _fullInfoViewState.update {
-                    it.copy(
-                        requestError = triggered(error)
-                    )
-                }
+                _uiState.value = FullInfoUiState.OnError(error)
             }
             onLoading { isLoading ->
                 _fullInfoViewState.update {
@@ -98,11 +92,7 @@ class FullInfoViewModel(
                 communicator.isUserInfoFilled = entity.isNotEmpty()
             }
             onError { error ->
-                _fullInfoViewState.update {
-                    it.copy(
-                        requestError = triggered(error)
-                    )
-                }
+                _uiState.value = FullInfoUiState.OnError(error)
             }
             onLoading { isLoading ->
                 _fullInfoViewState.update {
@@ -159,11 +149,7 @@ class FullInfoViewModel(
                 getChildren()
             }
             onError { error ->
-                _fullInfoViewState.update {
-                    it.copy(
-                        requestError = triggered(error)
-                    )
-                }
+                _uiState.value = FullInfoUiState.OnError(error)
             }
             onLoading { isLoading ->
                 _fullInfoViewState.update {
@@ -190,11 +176,7 @@ class FullInfoViewModel(
                 }
             }
             onError { error ->
-                _fullInfoViewState.update {
-                    it.copy(
-                        requestError = triggered(error)
-                    )
-                }
+                _uiState.value = FullInfoUiState.OnError(error)
             }
             onLoading { isLoading ->
                 _fullInfoViewState.update {
@@ -219,11 +201,7 @@ class FullInfoViewModel(
                 getChildren()
             }
             onError { error ->
-                _fullInfoViewState.update {
-                    it.copy(
-                        requestError = triggered(error)
-                    )
-                }
+                _uiState.value = FullInfoUiState.OnError(error)
             }
             onLoading { isLoading ->
                 _fullInfoViewState.update {
@@ -237,29 +215,5 @@ class FullInfoViewModel(
 
     private fun setCurrentChild(childId: String = "") {
         communicator.currentChildId = childId
-    }
-
-    private fun consumeRequestError() {
-        _fullInfoViewState.update {
-            it.copy(
-                requestError = consumed()
-            )
-        }
-    }
-
-    private fun consumeRequestSuccess() {
-        _fullInfoViewState.update {
-            it.copy(
-                requestSuccess = consumed
-            )
-        }
-    }
-
-    private fun consumeDeleteRequest() {
-        _fullInfoViewState.update {
-            it.copy(
-                userDeleted = consumed
-            )
-        }
     }
 }

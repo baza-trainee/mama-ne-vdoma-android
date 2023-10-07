@@ -1,14 +1,15 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.login
 
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import de.palm.composestateevents.consumed
-import de.palm.composestateevents.triggered
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import tech.baza_trainee.mama_ne_vdoma.domain.model.AuthUserEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.AuthRepository
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.CommonUiState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.networkExecutor
@@ -25,9 +26,12 @@ class LoginScreenViewModel(
     private val _viewState = MutableStateFlow(LoginViewState())
     val viewState: StateFlow<LoginViewState> = _viewState.asStateFlow()
 
+    private val _uiState = mutableStateOf<CommonUiState>(CommonUiState.Idle)
+    val uiState: State<CommonUiState>
+        get() = _uiState
+
     fun handleLoginEvent(event: LoginEvent) {
         when(event) {
-            LoginEvent.ConsumeRequestError -> consumeRequestError()
             LoginEvent.LoginUser -> loginUser()
             is LoginEvent.ValidateEmail -> validateEmail(event.email)
             is LoginEvent.ValidatePassword -> validatePassword(event.password)
@@ -37,7 +41,7 @@ class LoginScreenViewModel(
                 }
             }
 
-            LoginEvent.ConsumeRequestSuccess -> consumeLoginSuccess()
+            LoginEvent.ResetUiState -> _uiState.value = CommonUiState.Idle
         }
     }
 
@@ -74,18 +78,10 @@ class LoginScreenViewModel(
                 )
             }
             onSuccess {
-                _viewState.update {
-                    it.copy(
-                        loginSuccess = triggered
-                    )
-                }
+                _uiState.value = CommonUiState.OnNext
             }
             onError { error ->
-                _viewState.update {
-                    it.copy(
-                        requestError = triggered(error)
-                    )
-                }
+                _uiState.value = CommonUiState.OnError(error)
             }
             onLoading { isLoading ->
                 _viewState.update {
@@ -94,22 +90,6 @@ class LoginScreenViewModel(
                     )
                 }
             }
-        }
-    }
-
-    private fun consumeRequestError() {
-        _viewState.update {
-            it.copy(
-                requestError = consumed()
-            )
-        }
-    }
-
-    private fun consumeLoginSuccess() {
-        _viewState.update {
-            it.copy(
-                loginSuccess = consumed
-            )
         }
     }
 }

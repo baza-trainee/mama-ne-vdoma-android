@@ -44,7 +44,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import de.palm.composestateevents.EventEffect
 import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.ChildInfoDesk
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.LoadingIndicator
@@ -59,7 +58,8 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.ButtonText
 fun FullInfoScreen(
     modifier: Modifier = Modifier,
     screenState: State<FullInfoViewState> = mutableStateOf(FullInfoViewState()),
-    onHandleEvent: (FullProfileEvent) -> Unit = {},
+    uiState: State<FullInfoUiState> = mutableStateOf(FullInfoUiState.Idle),
+    handleEvent: (FullInfoEvent) -> Unit = {},
     onNext: () -> Unit = {},
     onBack: () -> Unit = {},
     onEditUser: () -> Unit = {},
@@ -74,20 +74,25 @@ fun FullInfoScreen(
 
         val context = LocalContext.current
 
-        EventEffect(
-            event = screenState.value.requestSuccess,
-            onConsumed = { onHandleEvent(FullProfileEvent.ConsumeRequestSuccess) }
-        ) { onNext() }
-
-        EventEffect(
-            event = screenState.value.userDeleted,
-            onConsumed = { onHandleEvent(FullProfileEvent.ConsumeDeleteRequest) }
-        ) { onDelete() }
-
-        EventEffect(
-            event = screenState.value.requestError,
-            onConsumed = { onHandleEvent(FullProfileEvent.ConsumeRequestError) }
-        ) { if (it.isNotBlank()) Toast.makeText(context, it, Toast.LENGTH_LONG).show() }
+        when(val state = uiState.value) {
+            FullInfoUiState.Idle -> Unit
+            is FullInfoUiState.OnError -> {
+                if (state.error.isNotBlank()) Toast.makeText(
+                    context,
+                    state.error,
+                    Toast.LENGTH_LONG
+                ).show()
+                handleEvent(FullInfoEvent.ResetUiState)
+            }
+            FullInfoUiState.OnNext -> {
+                onNext()
+                handleEvent(FullInfoEvent.ResetUiState)
+            }
+            FullInfoUiState.OnDelete -> {
+                onDelete()
+                handleEvent(FullInfoEvent.ResetUiState)
+            }
+        }
 
         val colorAnimatable = remember { Animatable(Color.White) }
 
@@ -162,7 +167,7 @@ fun FullInfoScreen(
                         avatar = screenState.value.userAvatar.asImageBitmap(),
                         schedule = screenState.value.schedule,
                         onEdit = onEditUser,
-                        onDelete = { onHandleEvent(FullProfileEvent.DeleteUser) }
+                        onDelete = { handleEvent(FullInfoEvent.DeleteUser) }
                     )
                 else
                     Box(
@@ -199,11 +204,11 @@ fun FullInfoScreen(
                     ChildInfoDesk(
                         child,
                         onEdit = {
-                            onHandleEvent(FullProfileEvent.SetChild(it))
+                            handleEvent(FullInfoEvent.SetChild(it))
                             onEditChild()
                         },
                         onDelete = {
-                            onHandleEvent(FullProfileEvent.DeleteChild(it))
+                            handleEvent(FullInfoEvent.DeleteChild(it))
                         }
                     )
                 }
@@ -223,7 +228,7 @@ fun FullInfoScreen(
                             else colorAnimatable.value
                         )
                         .clickable(enabled = screenState.value.isUserInfoFilled) {
-                            onHandleEvent(FullProfileEvent.ResetChild)
+                            handleEvent(FullInfoEvent.ResetChild)
                             onAddChild()
                         },
                     verticalAlignment = Alignment.CenterVertically,

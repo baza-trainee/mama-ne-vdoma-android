@@ -20,10 +20,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import de.palm.composestateevents.EventEffect
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.LoadingIndicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.PasswordTextFieldWithError
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.SurfaceWithSystemBars
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.CommonUiState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.ButtonText
@@ -32,7 +32,8 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.ButtonText
 fun NewPasswordScreen(
     modifier: Modifier = Modifier,
     screenState: State<NewPasswordViewState> = mutableStateOf(NewPasswordViewState()),
-    onHandleEvent: (NewPasswordEvent) -> Unit = { _ -> },
+    uiState: State<CommonUiState> = mutableStateOf(CommonUiState.Idle),
+    handleEvent: (NewPasswordEvent) -> Unit = { _ -> },
     onRestore: () -> Unit = {}
 ) {
     SurfaceWithSystemBars(
@@ -40,15 +41,21 @@ fun NewPasswordScreen(
     ) {
         val context = LocalContext.current
 
-        EventEffect(
-            event = screenState.value.requestSuccess,
-            onConsumed = { onHandleEvent(NewPasswordEvent.ConsumeRequestSuccess) }
-        ) { onRestore() }
-
-        EventEffect(
-            event = screenState.value.requestError,
-            onConsumed = { onHandleEvent(NewPasswordEvent.ConsumeRequestError) }
-        ) { if (it.isNotBlank()) Toast.makeText(context, it, Toast.LENGTH_LONG).show() }
+        when(val state = uiState.value) {
+            CommonUiState.Idle -> Unit
+            is CommonUiState.OnError -> {
+                if (state.error.isNotBlank()) Toast.makeText(
+                    context,
+                    state.error,
+                    Toast.LENGTH_LONG
+                ).show()
+                handleEvent(NewPasswordEvent.ResetUiState)
+            }
+            CommonUiState.OnNext -> {
+                onRestore()
+                handleEvent(NewPasswordEvent.ResetUiState)
+            }
+        }
 
         Column(
             modifier = modifier
@@ -92,7 +99,7 @@ fun NewPasswordScreen(
                         .fillMaxWidth()
                         .padding(horizontal = 24.dp),
                     password = screenState.value.password,
-                    onValueChange = { onHandleEvent(NewPasswordEvent.ValidatePassword(it)) },
+                    onValueChange = { handleEvent(NewPasswordEvent.ValidatePassword(it)) },
                     isError = screenState.value.passwordValid == ValidField.INVALID
                 )
 
@@ -115,7 +122,7 @@ fun NewPasswordScreen(
                         .padding(horizontal = 24.dp),
                     label = "Повторіть ваш пароль",
                     password = screenState.value.confirmPassword,
-                    onValueChange = { onHandleEvent(NewPasswordEvent.ValidateConfirmPassword(it)) },
+                    onValueChange = { handleEvent(NewPasswordEvent.ValidateConfirmPassword(it)) },
                     isError = screenState.value.confirmPasswordValid == ValidField.INVALID,
                     errorText = "Паролі не співпадають"
                 )
@@ -126,7 +133,7 @@ fun NewPasswordScreen(
                     .padding(horizontal = 24.dp, vertical = 16.dp)
                     .fillMaxWidth()
                     .height(48.dp),
-                onClick = { onHandleEvent(NewPasswordEvent.ResetPassword) },
+                onClick = { handleEvent(NewPasswordEvent.ResetPassword) },
                 enabled = screenState.value.passwordValid == ValidField.VALID &&
                         screenState.value.confirmPasswordValid == ValidField.VALID
             ) {

@@ -28,13 +28,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import de.palm.composestateevents.EventEffect
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.LoadingIndicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.OutlinedTextFieldWithError
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.PasswordTextFieldWithError
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.SocialLoginBlock
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.SurfaceWithSystemBars
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.getTextWithUnderline
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.CommonUiState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 
@@ -42,7 +42,8 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 fun LoginUserScreen(
     modifier: Modifier = Modifier,
     screenState: State<LoginViewState> = mutableStateOf(LoginViewState()),
-    onHandleEvent: (LoginEvent) -> Unit = { _ -> },
+    uiState: State<CommonUiState> = mutableStateOf(CommonUiState.Idle),
+    handleEvent: (LoginEvent) -> Unit = { _ -> },
     onCreateUser: () -> Unit = {},
     onRestore: () -> Unit = {},
     onLogin: () -> Unit = {},
@@ -55,18 +56,17 @@ fun LoginUserScreen(
 
         val context = LocalContext.current
 
-        EventEffect(
-            event = screenState.value.loginSuccess,
-            onConsumed = { onHandleEvent(LoginEvent.ConsumeRequestSuccess) }
-        ) {
-            onHandleEvent(LoginEvent.OnSuccessfulLogin)
-            onLogin()
+        when(val state = uiState.value) {
+            CommonUiState.Idle -> Unit
+            is CommonUiState.OnError -> {
+                if (state.error.isNotBlank()) Toast.makeText(context, state.error, Toast.LENGTH_LONG).show()
+                handleEvent(LoginEvent.ResetUiState)
+            }
+            CommonUiState.OnNext -> {
+                onLogin()
+                handleEvent(LoginEvent.ResetUiState)
+            }
         }
-
-        EventEffect(
-            event = screenState.value.requestError,
-            onConsumed = { onHandleEvent(LoginEvent.ConsumeRequestError) }
-        ) { if (it.isNotBlank()) Toast.makeText(context, it, Toast.LENGTH_LONG).show() }
         
         Column(
             modifier = modifier
@@ -97,7 +97,7 @@ fun LoginUserScreen(
                         .padding(horizontal = 24.dp),
                     text = screenState.value.email,
                     label = "Введіть свій email",
-                    onValueChange = { onHandleEvent(LoginEvent.ValidateEmail(it)) },
+                    onValueChange = { handleEvent(LoginEvent.ValidateEmail(it)) },
                     isError = screenState.value.emailValid == ValidField.INVALID,
                     errorText = "Ви ввели некоректний email",
                     leadingIcon = {
@@ -115,7 +115,7 @@ fun LoginUserScreen(
                         .fillMaxWidth()
                         .padding(horizontal = 24.dp),
                     password = screenState.value.password,
-                    onValueChange = { onHandleEvent(LoginEvent.ValidatePassword(it)) },
+                    onValueChange = { handleEvent(LoginEvent.ValidatePassword(it)) },
                     isError = screenState.value.passwordValid == ValidField.INVALID
                 )
 
@@ -144,7 +144,7 @@ fun LoginUserScreen(
                         .padding(horizontal = 24.dp, vertical = 16.dp)
                         .fillMaxWidth()
                         .height(48.dp),
-                    onClick = { onHandleEvent(LoginEvent.LoginUser) },
+                    onClick = { handleEvent(LoginEvent.LoginUser) },
                     enabled = screenState.value.passwordValid == ValidField.VALID &&
                             screenState.value.emailValid == ValidField.VALID
                 ) {

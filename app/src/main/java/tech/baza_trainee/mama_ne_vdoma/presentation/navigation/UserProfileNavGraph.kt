@@ -34,7 +34,7 @@ fun NavGraphBuilder.userProfileGraph(
             val fullInfoViewModel: FullInfoViewModel = koinNavViewModel()
             FullInfoScreen(
                 screenState = fullInfoViewModel.fullInfoViewState.collectAsStateWithLifecycle(),
-                onHandleEvent = { fullInfoViewModel.handleFullProfileEvent(it) },
+                handleEvent = { fullInfoViewModel.handleFullProfileEvent(it) },
                 onBack = { navController.navigate(Graphs.Login.route) },
                 onNext = {},
                 onEditUser = { navController.navigate(UserProfileRoutes.UserInfo.route) },
@@ -47,7 +47,8 @@ fun NavGraphBuilder.userProfileGraph(
             val userInfoViewModel: UserInfoViewModel = koinNavViewModel()
             UserInfoScreen(
                 screenState = userInfoViewModel.userInfoScreenState.collectAsStateWithLifecycle(),
-                onHandleUserInfoEvent = { userInfoViewModel.handleUserInfoEvent(it)},
+                uiState = userInfoViewModel.uiState,
+                handleEvent = { userInfoViewModel.handleUserInfoEvent(it)},
                 onNext = { navController.navigate(UserProfileRoutes.UserLocation.route) },
                 onEditPhoto = { navController.navigate(UserProfileRoutes.ImageCrop.route) }
             )
@@ -63,14 +64,16 @@ fun NavGraphBuilder.userProfileGraph(
             val userLocationViewModel: UserLocationViewModel = koinNavViewModel()
             UserLocationScreen(
                 screenState = userLocationViewModel.locationScreenState.collectAsStateWithLifecycle(),
-                onHandleLocationEvent = { userLocationViewModel.handleUserLocationEvent(it) }
+                uiState = userLocationViewModel.uiState,
+                handleEvent = { userLocationViewModel.handleUserLocationEvent(it) }
             ) { navController.navigate(UserProfileRoutes.ParentSchedule.route) }
         }
         composable(UserProfileRoutes.ParentSchedule.route) {
             val parentScheduleViewModel: ParentScheduleViewModel = koinNavViewModel()
             ParentScheduleScreen(
                 screenState = parentScheduleViewModel.parentScheduleViewState.collectAsStateWithLifecycle(),
-                onHandleScheduleEvent = { parentScheduleViewModel.handleScheduleEvent(it) },
+                uiState = parentScheduleViewModel.uiState,
+                handleEvent = { parentScheduleViewModel.handleScheduleEvent(it) },
                 onNext = { navController.navigate(UserProfileRoutes.FullProfile.route) },
                 onBack = { navController.popBackStack() }
             )
@@ -79,7 +82,8 @@ fun NavGraphBuilder.userProfileGraph(
             val childInfoViewModel: ChildInfoViewModel = koinNavViewModel()
             ChildInfoScreen(
                 screenState = childInfoViewModel.childInfoScreenState.collectAsStateWithLifecycle(),
-                onHandleChildEvent = { childInfoViewModel.handleChildInfoEvent(it) },
+                uiState = childInfoViewModel.uiState,
+                handleEvent = { childInfoViewModel.handleChildInfoEvent(it) },
                 onNext = { navController.navigate(UserProfileRoutes.ChildSchedule.route,) },
                 onBack = { navController.navigate(UserProfileRoutes.FullProfile.route) }
             )
@@ -88,8 +92,9 @@ fun NavGraphBuilder.userProfileGraph(
             val childScheduleViewModel: ChildScheduleViewModel = koinNavViewModel()
             ChildScheduleScreen(
                 screenState = childScheduleViewModel.childScheduleViewState.collectAsStateWithLifecycle(),
+                uiState = childScheduleViewModel.uiState,
                 comment = childScheduleViewModel.childComment,
-                onHandleScheduleEvent = { childScheduleViewModel.handleScheduleEvent(it) },
+                handleEvent = { childScheduleViewModel.handleScheduleEvent(it) },
                 { navController.navigate(UserProfileRoutes.FullProfile.route) },
                 { navController.navigate(UserProfileRoutes.FullProfile.route) }
             )

@@ -33,7 +33,8 @@ fun NavGraphBuilder.loginNavGraph(
             val loginViewModel: LoginScreenViewModel = koinNavViewModel()
             LoginUserScreen(
                 screenState = loginViewModel.viewState.collectAsStateWithLifecycle(),
-                onHandleEvent = { loginViewModel.handleLoginEvent(it) },
+                uiState = loginViewModel.uiState,
+                handleEvent = { loginViewModel.handleLoginEvent(it) },
                 onCreateUser = { navController.navigate(Graphs.CreateUser.route) },
                 onRestore = { navController.navigate(LoginRoutes.RestorePassword.route) },
                 onLogin = { navController.navigate(Graphs.UserProfile.route) },
@@ -44,7 +45,8 @@ fun NavGraphBuilder.loginNavGraph(
             val restorePasswordScreenViewModel: RestorePasswordScreenViewModel = entry.sharedViewModel(navController)
             RestorePasswordScreen(
                 screenState = restorePasswordScreenViewModel.viewState.collectAsStateWithLifecycle(),
-                onHandleEvent = { restorePasswordScreenViewModel.handleRestoreEvent(it) },
+                uiState = restorePasswordScreenViewModel.uiState,
+                handleEvent = { restorePasswordScreenViewModel.handleRestoreEvent(it) },
                 onBack = { navController.popBackStack() },
                 onRestore = { email -> navController.navigate(LoginRoutes.EmailConfirm.getDestination(email)) },
             )
@@ -75,8 +77,9 @@ fun NavGraphBuilder.loginNavGraph(
             }
             VerifyEmailScreen(
                 screenState = verifyEmailViewModel.viewState.collectAsStateWithLifecycle(),
+                uiState = verifyEmailViewModel.uiState,
                 title = "Відновлення паролю",
-                onHandleEvent = { verifyEmailViewModel.handleEvent(it) },
+                handleEvent = { verifyEmailViewModel.handleEvent(it) },
                 onRestore = { otp ->
                     navController.navigate(LoginRoutes.NewPassword.getDestination(email, otp)) }
             )
@@ -91,7 +94,8 @@ fun NavGraphBuilder.loginNavGraph(
             }
             NewPasswordScreen(
                 screenState = newPasswordScreenViewModel.viewState.collectAsStateWithLifecycle(),
-                onHandleEvent = { newPasswordScreenViewModel.handleNewPasswordEvent(it) },
+                uiState = newPasswordScreenViewModel.uiState,
+                handleEvent = { newPasswordScreenViewModel.handleNewPasswordEvent(it) },
             ) { navController.navigate(LoginRoutes.RestoreSuccess.route) }
         }
         composable(LoginRoutes.RestoreSuccess.route) {

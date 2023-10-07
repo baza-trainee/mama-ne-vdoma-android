@@ -1,9 +1,9 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.user_location
 
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.google.android.gms.maps.model.LatLng
-import de.palm.composestateevents.consumed
-import de.palm.composestateevents.triggered
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.update
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UserLocationEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.LocationRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.CommonUiState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.model.UserProfileCommunicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.networkExecutor
@@ -28,6 +29,10 @@ class UserLocationViewModel(
     private val _locationScreenState = MutableStateFlow(UserLocationViewState())
     val locationScreenState: StateFlow<UserLocationViewState> = _locationScreenState.asStateFlow()
 
+    private val _uiState = mutableStateOf<CommonUiState>(CommonUiState.Idle)
+    val uiState: State<CommonUiState>
+        get() = _uiState
+
     init {
         _locationScreenState.update {
             it.copy(
@@ -40,11 +45,10 @@ class UserLocationViewModel(
 
     fun handleUserLocationEvent(event: UserLocationEvent) {
         when(event) {
+            UserLocationEvent.ResetUiState -> _uiState.value = CommonUiState.Idle
             UserLocationEvent.GetLocationFromAddress -> getLocationFromAddress()
             UserLocationEvent.RequestUserLocation -> requestCurrentLocation()
             is UserLocationEvent.UpdateUserAddress -> updateUserAddress(event.address)
-            UserLocationEvent.ConsumeRequestError -> consumeUserLocationRequestError()
-            UserLocationEvent.ConsumeRequestSuccess -> consumeRequestSuccess()
             UserLocationEvent.SaveUserLocation -> saveUserLocation()
             is UserLocationEvent.OnMapClick -> setLocation(event.location)
         }
@@ -78,18 +82,10 @@ class UserLocationViewModel(
                 )
             }
             onSuccess {
-                _locationScreenState.update {
-                    it.copy(
-                        requestSuccess = triggered
-                    )
-                }
+                _uiState.value = CommonUiState.OnNext
             }
             onError { error ->
-                _locationScreenState.update {
-                    it.copy(
-                        requestError = triggered(error)
-                    )
-                }
+                _uiState.value = CommonUiState.OnError(error)
             }
             onLoading { isLoading ->
                 _locationScreenState.update {
@@ -98,14 +94,6 @@ class UserLocationViewModel(
                     )
                 }
             }
-        }
-    }
-
-    private fun consumeUserLocationRequestError() {
-        _locationScreenState.update {
-            it.copy(
-                requestError = consumed()
-            )
         }
     }
 
@@ -125,11 +113,7 @@ class UserLocationViewModel(
                 }
             }
             onError { error ->
-                _locationScreenState.update {
-                    it.copy(
-                        requestError = triggered(error)
-                    )
-                }
+                _uiState.value = CommonUiState.OnError(error)
             }
             onLoading { isLoading ->
                 _locationScreenState.update {
@@ -166,11 +150,7 @@ class UserLocationViewModel(
                 }
             }
             onError { error ->
-                _locationScreenState.update {
-                    it.copy(
-                        requestError = triggered(error)
-                    )
-                }
+                _uiState.value = CommonUiState.OnError(error)
             }
             onLoading { isLoading ->
                 _locationScreenState.update {
@@ -191,11 +171,7 @@ class UserLocationViewModel(
                 updateUserAddress(it.orEmpty())
             }
             onError { error ->
-                _locationScreenState.update {
-                    it.copy(
-                        requestError = triggered(error)
-                    )
-                }
+                _uiState.value = CommonUiState.OnError(error)
             }
             onLoading { isLoading ->
                 _locationScreenState.update {
@@ -204,14 +180,6 @@ class UserLocationViewModel(
                     )
                 }
             }
-        }
-    }
-
-    private fun consumeRequestSuccess() {
-        _locationScreenState.update {
-            it.copy(
-                requestSuccess = consumed
-            )
         }
     }
 }

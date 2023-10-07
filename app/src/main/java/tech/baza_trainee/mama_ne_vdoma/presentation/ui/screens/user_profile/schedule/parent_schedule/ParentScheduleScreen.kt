@@ -5,38 +5,41 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.platform.LocalContext
-import de.palm.composestateevents.EventEffect
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.LoadingIndicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.ScheduleScreen
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.CommonUiState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.schedule.ScheduleEvent
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.schedule.ScheduleViewState
 
 @Composable
 fun ParentScheduleScreen(
     screenState: State<ScheduleViewState> = mutableStateOf(ScheduleViewState()),
-    onHandleScheduleEvent: (ScheduleEvent) -> Unit = {},
+    uiState: State<CommonUiState> = mutableStateOf(CommonUiState.Idle),
+    handleEvent: (ScheduleEvent) -> Unit = {},
     onNext: () -> Unit,
     onBack: () -> Unit
 ) {
     val context = LocalContext.current
 
-    EventEffect(
-        event = screenState.value.requestSuccess,
-        onConsumed = { onHandleScheduleEvent(ScheduleEvent.ConsumeRequestSuccess) }
-    ) { onNext() }
-
-    EventEffect(
-        event = screenState.value.requestError,
-        onConsumed = { onHandleScheduleEvent(ScheduleEvent.ConsumeRequestError) }
-    ) { if (it.isNotBlank()) Toast.makeText(context, it, Toast.LENGTH_LONG).show() }
+    when(val state = uiState.value) {
+        CommonUiState.Idle -> Unit
+        is CommonUiState.OnError -> {
+            if (state.error.isNotBlank()) Toast.makeText(context, state.error, Toast.LENGTH_LONG).show()
+            handleEvent(ScheduleEvent.ResetUiState)
+        }
+        CommonUiState.OnNext -> {
+            onNext()
+            handleEvent(ScheduleEvent.ResetUiState)
+        }
+    }
 
     ScheduleScreen(
         title = "Визначіть свій графік, коли можете доглядати дітей",
         screenState = screenState,
         isCommentNeeded = false,
-        onUpdateSchedule = { day, period -> onHandleScheduleEvent(ScheduleEvent.UpdateParentSchedule(day, period)) },
+        onUpdateSchedule = { day, period -> handleEvent(ScheduleEvent.UpdateParentSchedule(day, period)) },
         onUpdateComment = {},
-        onNext = { onHandleScheduleEvent(ScheduleEvent.PatchParentSchedule) },
+        onNext = { handleEvent(ScheduleEvent.PatchParentSchedule) },
         onBack = onBack
     )
 

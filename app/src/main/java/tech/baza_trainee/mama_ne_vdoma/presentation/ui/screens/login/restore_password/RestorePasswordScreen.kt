@@ -29,10 +29,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import de.palm.composestateevents.EventEffect
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.LoadingIndicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.OutlinedTextFieldWithError
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.SurfaceWithSystemBars
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.CommonUiState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 
@@ -40,7 +40,8 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 fun RestorePasswordScreen(
     modifier: Modifier = Modifier,
     screenState: State<RestorePasswordViewState> = mutableStateOf(RestorePasswordViewState()),
-    onHandleEvent: (RestorePasswordEvent) -> Unit = { _ -> },
+    uiState: State<CommonUiState> = mutableStateOf(CommonUiState.Idle),
+    handleEvent: (RestorePasswordEvent) -> Unit = { _ -> },
     onBack: () -> Unit = {},
     onRestore: (String) -> Unit = {}
 ) {
@@ -49,18 +50,21 @@ fun RestorePasswordScreen(
     ) {
         val context = LocalContext.current
 
-        EventEffect(
-            event = screenState.value.requestSuccess,
-            onConsumed = { onHandleEvent(RestorePasswordEvent.ConsumeRequestSuccess) }
-        ) {
-            onRestore(screenState.value.email)
-            onHandleEvent(RestorePasswordEvent.OnSuccess)
+        when(val state = uiState.value) {
+            CommonUiState.Idle -> Unit
+            is CommonUiState.OnError -> {
+                if (state.error.isNotBlank()) Toast.makeText(
+                    context,
+                    state.error,
+                    Toast.LENGTH_LONG
+                ).show()
+                handleEvent(RestorePasswordEvent.ResetUiState)
+            }
+            CommonUiState.OnNext -> {
+                onRestore(screenState.value.email)
+                handleEvent(RestorePasswordEvent.ResetUiState)
+            }
         }
-
-        EventEffect(
-            event = screenState.value.requestError,
-            onConsumed = { onHandleEvent(RestorePasswordEvent.ConsumeRequestError) }
-        ) { if (it.isNotBlank()) Toast.makeText(context, it, Toast.LENGTH_LONG).show() }
 
         Column(
             modifier = modifier
@@ -130,7 +134,7 @@ fun RestorePasswordScreen(
                         .padding(horizontal = 24.dp),
                     text = screenState.value.email,
                     label = "Введіть свій email",
-                    onValueChange = { onHandleEvent(RestorePasswordEvent.ValidateEmail(it)) },
+                    onValueChange = { handleEvent(RestorePasswordEvent.ValidateEmail(it)) },
                     isError = screenState.value.emailValid == ValidField.INVALID,
                     errorText = "Ви ввели некоректний email",
                     leadingIcon = {
@@ -147,7 +151,7 @@ fun RestorePasswordScreen(
                     .padding(horizontal = 24.dp, vertical = 16.dp)
                     .fillMaxWidth()
                     .height(48.dp),
-                onClick = { onHandleEvent(RestorePasswordEvent.SendEmail) },
+                onClick = { handleEvent(RestorePasswordEvent.SendEmail) },
                 enabled = screenState.value.emailValid == ValidField.VALID
             ) {
                 Text(

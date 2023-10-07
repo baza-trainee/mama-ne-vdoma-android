@@ -1,14 +1,15 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user
 
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import de.palm.composestateevents.consumed
-import de.palm.composestateevents.triggered
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import tech.baza_trainee.mama_ne_vdoma.domain.model.AuthUserEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.AuthRepository
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.CommonUiState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.networkExecutor
@@ -25,11 +26,14 @@ class UserCreateViewModel(
     private val _viewState = MutableStateFlow(UserCreateViewState())
     val viewState: StateFlow<UserCreateViewState> = _viewState.asStateFlow()
 
+    private val _uiState = mutableStateOf<CommonUiState>(CommonUiState.Idle)
+    val uiState: State<CommonUiState>
+        get() = _uiState
+
     fun handleUserCreateEvent(event: UserCreateEvent) {
         when(event) {
-            UserCreateEvent.ConsumeRequestError -> consumeRequestError()
-            UserCreateEvent.ConsumeRequestSuccess -> consumeRequestSuccess()
             UserCreateEvent.RegisterUser -> registerUser()
+            UserCreateEvent.ResetUiState -> _uiState.value = CommonUiState.Idle
             is UserCreateEvent.UpdatePolicyCheck -> updatePolicyCheck(event.isChecked)
             is UserCreateEvent.ValidateConfirmPassword -> validateConfirmPassword(event.confirmPassword)
             is UserCreateEvent.ValidateEmail -> validateEmail(event.email)
@@ -112,18 +116,10 @@ class UserCreateViewModel(
                 )
             }
             onSuccess {
-                _viewState.update {
-                    it.copy(
-                        registerSuccess = triggered
-                    )
-                }
+                _uiState.value = CommonUiState.OnNext
             }
             onError { error ->
-                _viewState.update {
-                    it.copy(
-                        registerError = triggered(error)
-                    )
-                }
+                _uiState.value = CommonUiState.OnError(error)
             }
             onLoading { isLoading ->
                 _viewState.update {
@@ -132,22 +128,6 @@ class UserCreateViewModel(
                     )
                 }
             }
-        }
-    }
-
-    private fun consumeRequestError() {
-        _viewState.update {
-            it.copy(
-                registerError = consumed()
-            )
-        }
-    }
-
-    private fun consumeRequestSuccess() {
-        _viewState.update {
-            it.copy(
-                registerSuccess = consumed
-            )
         }
     }
 }

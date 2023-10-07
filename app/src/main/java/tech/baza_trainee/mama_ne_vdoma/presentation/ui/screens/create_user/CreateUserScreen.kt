@@ -29,13 +29,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import de.palm.composestateevents.EventEffect
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.LoadingIndicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.OutlinedTextFieldWithError
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.PasswordTextFieldWithError
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.SocialLoginBlock
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.SurfaceWithSystemBars
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.getTextWithUnderline
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.CommonUiState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.ButtonText
@@ -44,7 +44,8 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.ButtonText
 fun CreateUserScreen(
     modifier: Modifier = Modifier,
     screenState: State<UserCreateViewState> = mutableStateOf(UserCreateViewState()),
-    onHandleEvent: (UserCreateEvent) -> Unit = { _ -> },
+    uiState: State<CommonUiState> = mutableStateOf(CommonUiState.Idle),
+    handleEvent: (UserCreateEvent) -> Unit = { _ -> },
     onCreateUser: (String, String) -> Unit = {_,_ ->},
     onLogin: () -> Unit = {},
     onBack: () -> Unit = {}
@@ -56,20 +57,21 @@ fun CreateUserScreen(
 
         val context = LocalContext.current
 
-        EventEffect(
-            event = screenState.value.registerSuccess,
-            onConsumed = { onHandleEvent(UserCreateEvent.ConsumeRequestSuccess) }
-        ) {
-            onCreateUser(
-                screenState.value.email,
-                screenState.value.password
-            )
+        when(val state = uiState.value) {
+            CommonUiState.Idle -> Unit
+            is CommonUiState.OnError -> {
+                if (state.error.isNotBlank()) Toast.makeText(
+                    context,
+                    state.error,
+                    Toast.LENGTH_LONG
+                ).show()
+                handleEvent(UserCreateEvent.ResetUiState)
+            }
+            CommonUiState.OnNext -> {
+                onLogin()
+                handleEvent(UserCreateEvent.ResetUiState)
+            }
         }
-
-        EventEffect(
-            event = screenState.value.registerError,
-            onConsumed = { onHandleEvent(UserCreateEvent.ConsumeRequestError) }
-        ) { if (it.isNotBlank()) Toast.makeText(context, it, Toast.LENGTH_LONG).show() }
 
         val scrollState = rememberScrollState()
 
@@ -103,7 +105,7 @@ fun CreateUserScreen(
                         .padding(horizontal = 24.dp),
                     text = screenState.value.email,
                     label = "Введіть свій email",
-                    onValueChange = { onHandleEvent(UserCreateEvent.ValidateEmail(it)) },
+                    onValueChange = { handleEvent(UserCreateEvent.ValidateEmail(it)) },
                     isError = screenState.value.emailValid == ValidField.INVALID,
                     errorText = "Ви ввели некоректний email",
                     leadingIcon = {
@@ -121,7 +123,7 @@ fun CreateUserScreen(
                         .fillMaxWidth()
                         .padding(horizontal = 24.dp),
                     password = screenState.value.password,
-                    onValueChange = { onHandleEvent(UserCreateEvent.ValidatePassword(it)) },
+                    onValueChange = { handleEvent(UserCreateEvent.ValidatePassword(it)) },
                     isError = screenState.value.passwordValid == ValidField.INVALID
                 )
 
@@ -145,7 +147,7 @@ fun CreateUserScreen(
                         .padding(horizontal = 24.dp),
                     label = "Повторіть ваш пароль",
                     password = screenState.value.confirmPassword,
-                    onValueChange = { onHandleEvent(UserCreateEvent.ValidateConfirmPassword(it)) },
+                    onValueChange = { handleEvent(UserCreateEvent.ValidateConfirmPassword(it)) },
                     isError = screenState.value.confirmPasswordValid == ValidField.INVALID,
                     errorText = "Паролі не співпадають"
                 )
@@ -160,7 +162,7 @@ fun CreateUserScreen(
                 ) {
                     Checkbox(
                         checked = screenState.value.isPolicyChecked,
-                        onCheckedChange = { onHandleEvent(UserCreateEvent.UpdatePolicyCheck(it)) }
+                        onCheckedChange = { handleEvent(UserCreateEvent.UpdatePolicyCheck(it)) }
                     )
                     Text(
                         modifier = modifier
@@ -184,7 +186,7 @@ fun CreateUserScreen(
                         .height(48.dp),
                     onClick = {
 //                        onCreateUser() //for test
-                        onHandleEvent(UserCreateEvent.RegisterUser)
+                        handleEvent(UserCreateEvent.RegisterUser)
                     },
                     enabled = screenState.value.isAllConform
                 ) {

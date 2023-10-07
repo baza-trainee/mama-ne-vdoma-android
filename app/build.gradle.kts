@@ -104,8 +104,6 @@ dependencies {
 
     implementation("com.github.SmartToolFactory:Compose-Cropper:0.4.0")
 
-    implementation("com.github.leonard-palm:compose-state-events:2.0.3")
-
     debugImplementation("com.github.chuckerteam.chucker:library:4.0.0")
     releaseImplementation("com.github.chuckerteam.chucker:library-no-op:4.0.0")
 

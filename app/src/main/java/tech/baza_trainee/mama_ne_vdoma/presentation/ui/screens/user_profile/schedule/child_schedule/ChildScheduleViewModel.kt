@@ -1,9 +1,8 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.schedule.child_schedule
 
+import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import de.palm.composestateevents.consumed
-import de.palm.composestateevents.triggered
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -14,6 +13,7 @@ import tech.baza_trainee.mama_ne_vdoma.domain.model.PatchChildEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.Period
 import tech.baza_trainee.mama_ne_vdoma.domain.model.ScheduleModel
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.CommonUiState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.model.UserProfileCommunicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.schedule.ScheduleEvent
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.schedule.ScheduleViewState
@@ -32,6 +32,11 @@ class ChildScheduleViewModel(
     private val _childScheduleViewState = MutableStateFlow(ScheduleViewState())
     val childScheduleViewState: StateFlow<ScheduleViewState> = _childScheduleViewState.asStateFlow()
 
+    private val _uiState = mutableStateOf<CommonUiState>(CommonUiState.Idle)
+    val uiState: State<CommonUiState>
+        get() = _uiState
+
+
     var childComment = mutableStateOf("")
         private set
 
@@ -43,8 +48,7 @@ class ChildScheduleViewModel(
     fun handleScheduleEvent(event: ScheduleEvent) {
         when(event) {
             ScheduleEvent.PatchChildSchedule -> patchChild()
-            ScheduleEvent.ConsumeRequestError -> consumeRequestError()
-            ScheduleEvent.ConsumeRequestSuccess -> consumeRequestSuccess()
+            ScheduleEvent.ResetUiState -> _uiState.value = CommonUiState.Idle
             is ScheduleEvent.UpdateChildComment -> updateChildComment(event.comment)
             is ScheduleEvent.UpdateChildSchedule -> updateChildSchedule(event.day, event.period)
             else -> Unit
@@ -151,19 +155,6 @@ class ChildScheduleViewModel(
                 }
             }
         }
-
-//        with(communicator.children.toMutableList()) {
-//            val child = firstOrNull { it.id == communicator.currentChild.id }
-//            if (child != null) {
-//                val index = indexOf(child)
-//                val newChild = child.copy(
-//                    schedule = _childScheduleViewState.value.schedule,
-//                    comment = childComment.value
-//                )
-//                this[index] = newChild
-//            }
-//            communicator.children = this
-//        }
     }
 
     private fun updateChildComment(comment: String) {
@@ -183,11 +174,7 @@ class ChildScheduleViewModel(
                 }
             }
             onError { error ->
-                _childScheduleViewState.update {
-                    it.copy(
-                        requestError = triggered(error)
-                    )
-                }
+                _uiState.value = CommonUiState.OnError(error)
             }
             onLoading { isLoading ->
                 _childScheduleViewState.update {
@@ -212,18 +199,10 @@ class ChildScheduleViewModel(
             }
             onSuccess {
                 communicator.isChildInfoFilled = true
-                _childScheduleViewState.update {
-                    it.copy(
-                        requestSuccess = triggered
-                    )
-                }
+                _uiState.value = CommonUiState.OnNext
             }
             onError { error ->
-                _childScheduleViewState.update {
-                    it.copy(
-                        requestError = triggered(error)
-                    )
-                }
+                _uiState.value = CommonUiState.OnError(error)
             }
             onLoading { isLoading ->
                 _childScheduleViewState.update {
@@ -232,22 +211,6 @@ class ChildScheduleViewModel(
                     )
                 }
             }
-        }
-    }
-
-    private fun consumeRequestError() {
-        _childScheduleViewState.update {
-            it.copy(
-                requestError = consumed()
-            )
-        }
-    }
-
-    private fun consumeRequestSuccess() {
-        _childScheduleViewState.update {
-            it.copy(
-                requestSuccess = consumed
-            )
         }
     }
 }

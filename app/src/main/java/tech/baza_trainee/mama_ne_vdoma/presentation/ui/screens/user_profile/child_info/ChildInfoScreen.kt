@@ -21,13 +21,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import de.palm.composestateevents.EventEffect
 import tech.baza_trainee.mama_ne_vdoma.domain.model.Gender
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.LoadingIndicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.OutlinedTextFieldWithError
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.RadioGroup
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.SurfaceWithNavigationBars
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.TopBarWithOptArrow
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.CommonUiState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.ButtonText
 
@@ -35,22 +35,29 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.ButtonText
 fun ChildInfoScreen(
     modifier: Modifier = Modifier,
     screenState: State<ChildInfoViewState> = mutableStateOf(ChildInfoViewState()),
-    onHandleChildEvent: (ChildInfoEvent) -> Unit = { _ -> },
+    uiState: State<CommonUiState> = mutableStateOf(CommonUiState.Idle),
+    handleEvent: (ChildInfoEvent) -> Unit = { _ -> },
     onNext: () -> Unit = { },
     onBack: () -> Unit = { }
 ) {
     SurfaceWithNavigationBars {
         val context = LocalContext.current
 
-        EventEffect(
-            event = screenState.value.requestSuccess,
-            onConsumed = {}
-        ) { onNext() }
-
-        EventEffect(
-            event = screenState.value.requestError,
-            onConsumed = { onHandleChildEvent(ChildInfoEvent.ConsumeRequestError) }
-        ) { if (it.isNotBlank()) Toast.makeText(context, it, Toast.LENGTH_LONG).show() }
+        when(val state = uiState.value) {
+            CommonUiState.Idle -> Unit
+            is CommonUiState.OnError -> {
+                if (state.error.isNotBlank()) Toast.makeText(
+                    context,
+                    state.error,
+                    Toast.LENGTH_LONG
+                ).show()
+                handleEvent(ChildInfoEvent.ResetUiState)
+            }
+            CommonUiState.OnNext -> {
+                onNext()
+                handleEvent(ChildInfoEvent.ResetUiState)
+            }
+        }
 
         ConstraintLayout(
             modifier = modifier
@@ -91,7 +98,7 @@ fun ChildInfoScreen(
                         .padding(horizontal = 24.dp),
                     text = screenState.value.name,
                     label = "Вкажіть ім'я дитини",
-                    onValueChange = { onHandleChildEvent(ChildInfoEvent.ValidateChildName(it)) },
+                    onValueChange = { handleEvent(ChildInfoEvent.ValidateChildName(it)) },
                     isError = screenState.value.nameValid == ValidField.INVALID,
                     errorText = "Ви ввели некоректнe ім'я"
                 )
@@ -104,7 +111,7 @@ fun ChildInfoScreen(
                         .padding(horizontal = 24.dp),
                     text = screenState.value.age,
                     label = "Вкажіть вік дитини",
-                    onValueChange = { onHandleChildEvent(ChildInfoEvent.ValidateAge(it)) },
+                    onValueChange = { handleEvent(ChildInfoEvent.ValidateAge(it)) },
                     isError = screenState.value.ageValid == ValidField.INVALID,
                     errorText = "Ви ввели некоректний вік",
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
@@ -121,7 +128,7 @@ fun ChildInfoScreen(
                     radioGroupOptions = genderOptions,
                     getText = { it.gender },
                     selected = screenState.value.gender,
-                    onSelectedChange = { onHandleChildEvent(ChildInfoEvent.SetGender(it)) }
+                    onSelectedChange = { handleEvent(ChildInfoEvent.SetGender(it)) }
                 )
             }
 
@@ -134,7 +141,7 @@ fun ChildInfoScreen(
                     }
                     .height(48.dp),
                 onClick = {
-                    onHandleChildEvent(ChildInfoEvent.SaveChild)
+                    handleEvent(ChildInfoEvent.SaveChild)
                 },
                 enabled = screenState.value.nameValid == ValidField.VALID &&
                         screenState.value.ageValid == ValidField.VALID &&

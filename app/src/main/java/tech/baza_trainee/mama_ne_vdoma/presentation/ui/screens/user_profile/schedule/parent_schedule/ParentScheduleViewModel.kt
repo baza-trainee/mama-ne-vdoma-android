@@ -1,8 +1,8 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.schedule.parent_schedule
 
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import de.palm.composestateevents.consumed
-import de.palm.composestateevents.triggered
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -11,6 +11,7 @@ import tech.baza_trainee.mama_ne_vdoma.domain.model.DayPeriod
 import tech.baza_trainee.mama_ne_vdoma.domain.model.Period
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UserInfoEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.CommonUiState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.model.UserProfileCommunicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.schedule.ScheduleEvent
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.schedule.ScheduleViewState
@@ -31,6 +32,10 @@ class ParentScheduleViewModel(
     private val _parentScheduleViewState = MutableStateFlow(ScheduleViewState())
     val parentScheduleViewState: StateFlow<ScheduleViewState> = _parentScheduleViewState.asStateFlow()
 
+    private val _uiState = mutableStateOf<CommonUiState>(CommonUiState.Idle)
+    val uiState: State<CommonUiState>
+        get() = _uiState
+
     init {
         _parentScheduleViewState.update {
             it.copy(
@@ -41,9 +46,8 @@ class ParentScheduleViewModel(
 
     fun handleScheduleEvent(event: ScheduleEvent) {
         when(event) {
-            ScheduleEvent.ConsumeRequestError -> consumeRequestError()
-            ScheduleEvent.ConsumeRequestSuccess -> consumeRequestSuccess()
             ScheduleEvent.PatchParentSchedule -> saveParentSchedule()
+            ScheduleEvent.ResetUiState -> _uiState.value = CommonUiState.Idle
             is ScheduleEvent.UpdateParentSchedule -> updateParentSchedule(event.day, event.period)
             else -> Unit
         }
@@ -64,18 +68,10 @@ class ParentScheduleViewModel(
             }
             onSuccess {
                 communicator.isUserInfoFilled = true
-                _parentScheduleViewState.update {
-                    it.copy(
-                        requestSuccess = triggered
-                    )
-                }
+                _uiState.value = CommonUiState.OnNext
             }
             onError { error ->
-                _parentScheduleViewState.update {
-                    it.copy(
-                        requestError = triggered(error)
-                    )
-                }
+                _uiState.value = CommonUiState.OnError(error)
             }
             onLoading { isLoading ->
                 _parentScheduleViewState.update {
@@ -186,22 +182,6 @@ class ParentScheduleViewModel(
                     )
                 }
             }
-        }
-    }
-
-    private fun consumeRequestSuccess() {
-        _parentScheduleViewState.update {
-            it.copy(
-                requestSuccess = consumed
-            )
-        }
-    }
-
-    private fun consumeRequestError() {
-        _parentScheduleViewState.update {
-            it.copy(
-                requestError = consumed()
-            )
         }
     }
 }

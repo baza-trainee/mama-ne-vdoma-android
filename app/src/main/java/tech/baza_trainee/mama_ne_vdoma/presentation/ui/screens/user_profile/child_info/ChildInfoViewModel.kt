@@ -1,8 +1,8 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.child_info
 
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import de.palm.composestateevents.consumed
-import de.palm.composestateevents.triggered
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -11,6 +11,7 @@ import tech.baza_trainee.mama_ne_vdoma.domain.model.ChildEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.Gender
 import tech.baza_trainee.mama_ne_vdoma.domain.model.InitChildEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.CommonUiState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.model.UserProfileCommunicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
@@ -27,13 +28,17 @@ class ChildInfoViewModel(
     private val _childInfoScreenState = MutableStateFlow(ChildInfoViewState())
     val childInfoScreenState: StateFlow<ChildInfoViewState> = _childInfoScreenState.asStateFlow()
 
+    private val _uiState = mutableStateOf<CommonUiState>(CommonUiState.Idle)
+    val uiState: State<CommonUiState>
+        get() = _uiState
+
     fun handleChildInfoEvent(event: ChildInfoEvent) {
         when(event) {
             ChildInfoEvent.SaveChild -> saveChild()
+            ChildInfoEvent.ResetUiState -> _uiState.value = CommonUiState.Idle
             is ChildInfoEvent.SetGender -> setGender(event.gender)
             is ChildInfoEvent.ValidateAge -> validateAge(event.age)
             is ChildInfoEvent.ValidateChildName -> validateChildName(event.name)
-            ChildInfoEvent.ConsumeRequestError -> consumeRequestError()
         }
     }
 
@@ -79,18 +84,10 @@ class ChildInfoViewModel(
             }
             onSuccess { entity ->
                 communicator.currentChildId = entity?.childId.orEmpty()
-                _childInfoScreenState.update {
-                    it.copy(
-                        requestSuccess = triggered
-                    )
-                }
+                _uiState.value = CommonUiState.OnNext
             }
             onError { error ->
-                _childInfoScreenState.update {
-                    it.copy(
-                        requestError = triggered(error)
-                    )
-                }
+                _uiState.value = CommonUiState.OnError(error)
             }
             onLoading { isLoading ->
                 _childInfoScreenState.update {
@@ -99,14 +96,6 @@ class ChildInfoViewModel(
                     )
                 }
             }
-        }
-    }
-
-    private fun consumeRequestError() {
-        _childInfoScreenState.update {
-            it.copy(
-                requestError = consumed()
-            )
         }
     }
 

@@ -1,14 +1,15 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.restore_password
 
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import de.palm.composestateevents.consumed
-import de.palm.composestateevents.triggered
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import tech.baza_trainee.mama_ne_vdoma.domain.model.RequestWithEmailEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.AuthRepository
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.CommonUiState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.networkExecutor
@@ -24,17 +25,16 @@ class RestorePasswordScreenViewModel(
     private val _viewState = MutableStateFlow(RestorePasswordViewState())
     val viewState: StateFlow<RestorePasswordViewState> = _viewState.asStateFlow()
 
+    private val _uiState = mutableStateOf<CommonUiState>(CommonUiState.Idle)
+    val uiState: State<CommonUiState>
+        get() = _uiState
+
     fun handleRestoreEvent(event: RestorePasswordEvent) {
         when(event) {
-            RestorePasswordEvent.ConsumeRequestError -> consumeRequestError()
             RestorePasswordEvent.SendEmail -> forgetPassword()
-
-            RestorePasswordEvent.OnSuccess -> _viewState.update {
-                RestorePasswordViewState()
-            }
+            RestorePasswordEvent.ResetUiState -> _uiState.value = CommonUiState.Idle
 
             is RestorePasswordEvent.ValidateEmail -> validateEmail(event.email)
-            RestorePasswordEvent.ConsumeRequestSuccess -> consumeRegisterSuccess()
         }
     }
 
@@ -59,18 +59,10 @@ class RestorePasswordScreenViewModel(
                 )
             }
             onSuccess {
-                _viewState.update {
-                    it.copy(
-                        requestSuccess = triggered
-                    )
-                }
+                _uiState.value = CommonUiState.OnNext
             }
             onError { error ->
-                _viewState.update {
-                    it.copy(
-                        requestError = triggered(error)
-                    )
-                }
+                _uiState.value = CommonUiState.OnError(error)
             }
             onLoading { isLoading ->
                 _viewState.update {
@@ -79,22 +71,6 @@ class RestorePasswordScreenViewModel(
                     )
                 }
             }
-        }
-    }
-
-    private fun consumeRequestError() {
-        _viewState.update {
-            it.copy(
-                requestError = consumed()
-            )
-        }
-    }
-
-    private fun consumeRegisterSuccess() {
-        _viewState.update {
-            it.copy(
-                requestSuccess = consumed
-            )
         }
     }
 }

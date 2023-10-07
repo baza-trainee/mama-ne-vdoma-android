@@ -2,10 +2,10 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.use
 
 import android.graphics.Bitmap
 import android.net.Uri
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import de.palm.composestateevents.consumed
-import de.palm.composestateevents.triggered
 import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -34,6 +34,10 @@ class UserInfoViewModel(
     private val _userInfoScreenState = MutableStateFlow(UserInfoViewState())
     val userInfoScreenState: StateFlow<UserInfoViewState> = _userInfoScreenState.asStateFlow()
 
+    private val _uiState = mutableStateOf<UserInfoUiState>(UserInfoUiState.Idle)
+    val uiState: State<UserInfoUiState>
+        get() = _uiState
+
     init {
         _userInfoScreenState.update {
             it.copy(
@@ -58,9 +62,7 @@ class UserInfoViewModel(
             is UserInfoEvent.ValidatePhone -> validatePhone(event.phone)
             is UserInfoEvent.SetCode -> setCode(event.code, event.country)
             UserInfoEvent.SaveInfo -> saveUserInfo()
-            UserInfoEvent.ConsumeRequestError -> consumeUserInfoRequestError()
-            UserInfoEvent.ConsumeRequestSuccess -> consumeUserInfoRequestSuccess()
-            UserInfoEvent.ConsumeAvatarError -> consumeUserInfoAvatarError()
+            UserInfoEvent.ResetUiState -> _uiState.value = UserInfoUiState.Idle
         }
     }
 
@@ -79,11 +81,7 @@ class UserInfoViewModel(
                     )
                 }
             } else {
-                _userInfoScreenState.update {
-                    it.copy(
-                        avatarSizeError = triggered
-                    )
-                }
+                _uiState.value = UserInfoUiState.OnAvatarError
             }
         }
     }
@@ -149,18 +147,10 @@ class UserInfoViewModel(
                     code = _userInfoScreenState.value.code
                     phone = _userInfoScreenState.value.phone
                 }
-                _userInfoScreenState.update {
-                    it.copy(
-                        requestSuccess = triggered
-                    )
-                }
+                _uiState.value = UserInfoUiState.OnNext
             }
             onError { error ->
-                _userInfoScreenState.update {
-                    it.copy(
-                        requestError = triggered(error)
-                    )
-                }
+                _uiState.value = UserInfoUiState.OnError(error)
             }
             onLoading { isLoading ->
                 _userInfoScreenState.update {
@@ -169,30 +159,6 @@ class UserInfoViewModel(
                     )
                 }
             }
-        }
-    }
-
-    private fun consumeUserInfoRequestError() {
-        _userInfoScreenState.update {
-            it.copy(
-                requestError = consumed()
-            )
-        }
-    }
-
-    private fun consumeUserInfoRequestSuccess() {
-        _userInfoScreenState.update {
-            it.copy(
-                requestSuccess = consumed
-            )
-        }
-    }
-
-    private fun consumeUserInfoAvatarError() {
-        _userInfoScreenState.update {
-            it.copy(
-                avatarSizeError = consumed
-            )
         }
     }
 

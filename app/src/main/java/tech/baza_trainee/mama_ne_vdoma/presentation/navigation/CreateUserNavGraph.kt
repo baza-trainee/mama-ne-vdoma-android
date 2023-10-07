@@ -25,7 +25,8 @@ fun NavGraphBuilder.createUserNavGraph(
             val userCreateViewModel: UserCreateViewModel = koinNavViewModel()
             CreateUserScreen(
                 screenState = userCreateViewModel.viewState.collectAsStateWithLifecycle(),
-                onHandleEvent = { userCreateViewModel.handleUserCreateEvent(it) },
+                uiState = userCreateViewModel.uiState,
+                handleEvent = { userCreateViewModel.handleUserCreateEvent(it) },
                 onCreateUser = { email, password -> navController.navigate(CreateUserRoute.VerifyEmail.getDestination(email, password)) },
                 onLogin = { navController.navigate(Graphs.Login.route) },
                 onBack = { navController.navigate(Graphs.Start.route) }
@@ -41,8 +42,9 @@ fun NavGraphBuilder.createUserNavGraph(
             }
             VerifyEmailScreen(
                 screenState = verifyEmailViewModel.viewState.collectAsStateWithLifecycle(),
+                uiState = verifyEmailViewModel.uiState,
                 title = "Створити профіль",
-                onHandleEvent = { verifyEmailViewModel.handleEvent(it) },
+                handleEvent = { verifyEmailViewModel.handleEvent(it) },
                 onLogin = { navController.navigate(Graphs.UserProfile.route) }
             )
         }

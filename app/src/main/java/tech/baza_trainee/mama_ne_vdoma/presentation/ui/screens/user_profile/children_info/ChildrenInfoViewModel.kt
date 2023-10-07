@@ -1,8 +1,6 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.children_info
 
 import androidx.lifecycle.ViewModel
-import de.palm.composestateevents.consumed
-import de.palm.composestateevents.triggered
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -32,7 +30,6 @@ class ChildrenInfoViewModel(
             is ChildrenInfoEvent.DeleteChild -> deleteChild(event.id)
             ChildrenInfoEvent.ResetChild -> resetCurrentChild()
             is ChildrenInfoEvent.SetChild -> setCurrentChild(event.id)
-            ChildrenInfoEvent.ConsumeRequestError -> consumeRequestError()
         }
     }
 
@@ -49,11 +46,6 @@ class ChildrenInfoViewModel(
                 }
             }
             onError { error ->
-                _childrenInfoViewState.update {
-                    it.copy(
-                        requestError = triggered(error)
-                    )
-                }
             }
             onLoading { isLoading ->
                 _childrenInfoViewState.update {
@@ -78,11 +70,6 @@ class ChildrenInfoViewModel(
                 getChildren()
             }
             onError { error ->
-                _childrenInfoViewState.update {
-                    it.copy(
-                        requestError = triggered(error)
-                    )
-                }
             }
             onLoading { isLoading ->
                 _childrenInfoViewState.update {
@@ -96,13 +83,5 @@ class ChildrenInfoViewModel(
 
     private fun setCurrentChild(childId: String = "") {
         communicator.currentChildId = childId
-    }
-
-    private fun consumeRequestError() {
-        _childrenInfoViewState.update {
-            it.copy(
-                requestError = consumed()
-            )
-        }
     }
 }

@@ -1,8 +1,8 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.verify_email
 
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import de.palm.composestateevents.consumed
-import de.palm.composestateevents.triggered
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -26,6 +26,10 @@ class VerifyEmailViewModel(
     private val _viewState = MutableStateFlow(VerifyEmailViewState())
     val viewState: StateFlow<VerifyEmailViewState> = _viewState.asStateFlow()
 
+    private val _uiState = mutableStateOf<VerifyEmailUiState>(VerifyEmailUiState.Idle)
+    val uiState: State<VerifyEmailUiState>
+        get() = _uiState
+
     fun handleEvent(event: VerifyEmailEvent) {
         when (event) {
             is VerifyEmailEvent.VerifyEmail -> verifyEmail(
@@ -33,10 +37,7 @@ class VerifyEmailViewModel(
                 event.otpInputFilled
             )
 
-
-            VerifyEmailEvent.ConsumeRequestError -> consumeRequestError()
-            VerifyEmailEvent.ConsumeLoginSuccess -> consumeLoginSuccess()
-            VerifyEmailEvent.ConsumeRestoreSuccess -> consumeRestoreSuccess()
+            VerifyEmailEvent.ResetUiState -> _uiState.value = VerifyEmailUiState.Idle
             VerifyEmailEvent.ResendCode -> resendCode()
         }
     }
@@ -51,11 +52,7 @@ class VerifyEmailViewModel(
             if (password.isNotEmpty())
                 confirmUser()
             else
-                _viewState.update {
-                    it.copy(
-                        restoreSuccess = triggered
-                    )
-                }
+                _uiState.value = VerifyEmailUiState.OnRestore
         }
     }
 
@@ -73,11 +70,7 @@ class VerifyEmailViewModel(
                 loginUser()
             }
             onError { error ->
-                _viewState.update {
-                    it.copy(
-                        requestError = triggered(error)
-                    )
-                }
+                _uiState.value = VerifyEmailUiState.OnError(error)
             }
             onLoading { isLoading ->
                 _viewState.update {
@@ -100,18 +93,10 @@ class VerifyEmailViewModel(
                 )
             }
             onSuccess {
-                _viewState.update {
-                    it.copy(
-                        loginSuccess = triggered
-                    )
-                }
+                _uiState.value = VerifyEmailUiState.OnLogin
             }
             onError { error ->
-                _viewState.update {
-                    it.copy(
-                        requestError = triggered(error)
-                    )
-                }
+                _uiState.value = VerifyEmailUiState.OnError(error)
             }
             onLoading { isLoading ->
                 _viewState.update {
@@ -133,11 +118,7 @@ class VerifyEmailViewModel(
                 )
             }
             onError { error ->
-                _viewState.update {
-                    it.copy(
-                        requestError = triggered(error)
-                    )
-                }
+                _uiState.value = VerifyEmailUiState.OnError(error)
             }
             onLoading { isLoading ->
                 _viewState.update {
@@ -146,30 +127,6 @@ class VerifyEmailViewModel(
                     )
                 }
             }
-        }
-    }
-
-    private fun consumeRequestError() {
-        _viewState.update {
-            it.copy(
-                requestError = consumed()
-            )
-        }
-    }
-
-    private fun consumeLoginSuccess() {
-        _viewState.update {
-            it.copy(
-                loginSuccess = consumed
-            )
-        }
-    }
-
-    private fun consumeRestoreSuccess() {
-        _viewState.update {
-            it.copy(
-                restoreSuccess = consumed
-            )
         }
     }
 }

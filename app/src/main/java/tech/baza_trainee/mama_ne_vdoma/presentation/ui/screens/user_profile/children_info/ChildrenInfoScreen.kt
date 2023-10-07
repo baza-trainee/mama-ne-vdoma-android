@@ -1,6 +1,5 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.children_info
 
-import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -28,7 +27,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import de.palm.composestateevents.EventEffect
 import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.ChildInfoDesk
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.LoadingIndicator
@@ -50,16 +48,6 @@ fun  ChildrenInfoScreen(
         modifier = modifier
     ) {
         val context = LocalContext.current
-
-        EventEffect(
-            event = screenState.value.requestSuccess,
-            onConsumed = {}
-        ) { onNext() }
-
-        EventEffect(
-            event = screenState.value.requestError,
-            onConsumed = { onHandleChildrenInfoEvent(ChildrenInfoEvent.ConsumeRequestError) }
-        ) { if (it.isNotBlank()) Toast.makeText(context, it, Toast.LENGTH_LONG).show() }
 
         ConstraintLayout(
             modifier = modifier
