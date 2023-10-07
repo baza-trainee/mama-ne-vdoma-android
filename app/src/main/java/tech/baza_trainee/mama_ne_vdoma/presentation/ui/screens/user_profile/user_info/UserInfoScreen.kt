@@ -58,8 +58,7 @@ fun UserInfoScreen(
     screenState: State<UserInfoViewState> = mutableStateOf(UserInfoViewState()),
     onHandleUserInfoEvent: (UserInfoEvent) -> Unit = { _ -> },
     onNext: () -> Unit = {},
-    onEditPhoto: () -> Unit = {},
-    onBack: () -> Unit = {}
+    onEditPhoto: () -> Unit = {}
 ) {
     SurfaceWithSystemBars(
         modifier = modifier
