@@ -73,7 +73,7 @@ fun ScheduleScreen(
             ) {
                 val (schedule, commentField) = createRefs()
 
-                ChildScheduleGroup(
+                ScheduleGroup(
                     modifier = modifier
                         .constrainAs(schedule) {
                             top.linkTo(parent.top)

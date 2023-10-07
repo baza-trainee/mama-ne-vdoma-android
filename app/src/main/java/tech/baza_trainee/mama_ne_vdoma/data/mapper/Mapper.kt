@@ -88,11 +88,16 @@ fun ChildDto.toDomainModel() = ChildEntity(
     parentId,
     childId,
     schedule = ScheduleModel(
-        schedule = mutableStateMapOf<DayOfWeek, DayPeriod>().also {
-            week?.forEach { entry ->
-                val key = DayOfWeek.valueOf(entry.key.uppercase())
-                it[key] = entry.value.toDomainModel()
-            }
+        schedule = mutableStateMapOf<DayOfWeek, DayPeriod>().also { map ->
+            if (week != null)
+                week.forEach { entry ->
+                    val key = DayOfWeek.valueOf(entry.key.uppercase())
+                    map[key] = entry.value.toDomainModel()
+                }
+            else
+                DayOfWeek.values().forEach {
+                    map[it] = DayPeriod()
+                }
         }
     )
 )
