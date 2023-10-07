@@ -15,6 +15,7 @@ import tech.baza_trainee.mama_ne_vdoma.domain.model.ifNullOrEmpty
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.LocationRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.model.UserProfileCommunicator
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.BitmapHelper
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.decodeBase64ToBitmap
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.networkExecutor
@@ -123,10 +124,16 @@ class FullInfoViewModel(
                         !entity?.phone.isNullOrEmpty() &&
                         !entity?.schedule?.schedule.isNullOrEmpty()
 
+                val avatar = entity?.avatar.orEmpty()
+                val image = if (avatar.isEmpty())
+                    BitmapHelper.DEFAULT_BITMAP
+                else
+                    avatar.decodeBase64ToBitmap()
+
                 _fullInfoViewState.update {
                     it.copy(
                         name = entity?.name.orEmpty(),
-                        userAvatar = entity?.avatar.orEmpty().decodeBase64ToBitmap(),
+                        userAvatar = image,
                         schedule = entity?.schedule.ifNullOrEmpty { ScheduleModel() },
                         isUserInfoFilled = _isUserInfoFilled
                     )
@@ -135,7 +142,7 @@ class FullInfoViewModel(
                 communicator.apply {
                     isUserInfoFilled = _isUserInfoFilled
                     name = entity?.name.orEmpty()
-                    userAvatar = entity?.avatar.orEmpty().decodeBase64ToBitmap()
+                    userAvatar = image
                     code = entity?.countryCode.orEmpty()
                     phone = entity?.phone.orEmpty()
                     schedule = entity?.schedule.ifNullOrEmpty { ScheduleModel() }

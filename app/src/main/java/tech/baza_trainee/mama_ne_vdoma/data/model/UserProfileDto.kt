@@ -2,12 +2,12 @@ package tech.baza_trainee.mama_ne_vdoma.data.model
 
 data class UserProfileDto(
     val email: String = "",
-    val name: String = "",
-    val countryCode: String = "",
-    val phone: String = "",
-    val avatar: String = "",
-    val location: LocationDto = LocationDto(),
-    val week: Map<String, DayScheduleDto>?
+    val name: String? = null,
+    val countryCode: String? = null,
+    val phone: String? = null,
+    val avatar: String? = null,
+    val location: LocationDto? = null,
+    val week: Map<String, DayScheduleDto>? = null
 )
 
 data class LocationDto(

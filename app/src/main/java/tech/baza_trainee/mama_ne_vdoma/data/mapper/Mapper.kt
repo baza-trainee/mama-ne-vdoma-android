@@ -27,7 +27,6 @@ import tech.baza_trainee.mama_ne_vdoma.domain.model.ScheduleModel
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UserInfoEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UserLocationEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UserProfileEntity
-import tech.baza_trainee.mama_ne_vdoma.domain.model.ifNullOrEmpty
 import java.time.DayOfWeek
 
 fun AuthUserEntity.toDataModel() = AuthUserDto(email, password)
@@ -54,22 +53,30 @@ fun UserLocationEntity.toDataModel() = UserLocationDto(lat, lon)
 
 fun UserProfileDto.toDomainModel() = UserProfileEntity(
     email,
-    name,
-    countryCode,
-    phone,
-    avatar,
+    name.orEmpty(),
+    countryCode.orEmpty(),
+    phone.orEmpty(),
+    avatar.orEmpty(),
     location.toDomainModel(),
     schedule = ScheduleModel(
-        schedule = mutableStateMapOf<DayOfWeek, DayPeriod>().also {
-            week?.forEach { entry ->
-                val key = DayOfWeek.valueOf(entry.key.uppercase())
-                it[key] = entry.value.toDomainModel()
-            }
+        schedule = mutableStateMapOf<DayOfWeek, DayPeriod>().also { map ->
+            if (week != null)
+                week.forEach { entry ->
+                    val key = DayOfWeek.valueOf(entry.key.uppercase())
+                    map[key] = entry.value.toDomainModel()
+                }
+            else
+                DayOfWeek.values().forEach {
+                    map[it] = DayPeriod()
+                }
         }
-    ).ifNullOrEmpty { ScheduleModel() }
+    )
 )
 
-fun LocationDto.toDomainModel() = LocationEntity(type, coordinates)
+fun LocationDto?.toDomainModel() = if (this != null)
+        LocationEntity(type, coordinates)
+    else
+        LocationEntity()
 
 fun InitChildEntity.toDataModel() = InitChildDto(name, age, isMale)
 
@@ -87,7 +94,7 @@ fun ChildDto.toDomainModel() = ChildEntity(
                 it[key] = entry.value.toDomainModel()
             }
         }
-    ).ifNullOrEmpty { ScheduleModel() }
+    )
 )
 
 fun DayScheduleDto.toDomainModel() = DayPeriod(

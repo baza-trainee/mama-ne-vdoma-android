@@ -11,5 +11,5 @@ data class UserProfileEntity(
 )
 data class LocationEntity(
     val type: String = "",
-    val coordinates: List<Double> = emptyList()
+    val coordinates: List<Double> = listOf(0.00, 0.00)
 )
