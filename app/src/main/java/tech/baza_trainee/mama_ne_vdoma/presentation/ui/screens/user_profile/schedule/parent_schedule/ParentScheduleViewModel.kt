@@ -1,6 +1,5 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.schedule.parent_schedule
 
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import de.palm.composestateevents.triggered
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -31,9 +30,6 @@ class ParentScheduleViewModel(
     private val _parentScheduleViewState = MutableStateFlow(ScheduleViewState())
     val parentScheduleViewState: StateFlow<ScheduleViewState> = _parentScheduleViewState.asStateFlow()
 
-    var parentComment = mutableStateOf("")
-        private set
-
     init {
         _parentScheduleViewState.update {
             it.copy(
@@ -45,7 +41,6 @@ class ParentScheduleViewModel(
     fun handleScheduleEvent(event: ScheduleEvent) {
         when(event) {
             ScheduleEvent.PatchParentSchedule -> saveParentSchedule()
-            is ScheduleEvent.UpdateParentComment -> updateParentComment(event.comment)
             is ScheduleEvent.UpdateParentSchedule -> updateParentSchedule(event.day, event.period)
             else -> Unit
         }
@@ -189,9 +184,5 @@ class ParentScheduleViewModel(
                 }
             }
         }
-    }
-
-    private fun updateParentComment(comment: String) {
-        this.parentComment.value = comment
     }
 }

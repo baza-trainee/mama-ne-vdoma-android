@@ -14,7 +14,6 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.sche
 @Composable
 fun ParentScheduleScreen(
     screenState: State<ScheduleViewState> = mutableStateOf(ScheduleViewState()),
-    comment: State<String> = mutableStateOf(""),
     onHandleScheduleEvent: (ScheduleEvent) -> Unit = {},
     onNext: () -> Unit,
     onBack: () -> Unit
@@ -34,9 +33,9 @@ fun ParentScheduleScreen(
     ScheduleScreen(
         title = "Визначіть свій графік, коли можете доглядати дітей",
         screenState = screenState,
-        comment = comment,
+        isCommentNeeded = false,
         onUpdateSchedule = { day, period -> onHandleScheduleEvent(ScheduleEvent.UpdateParentSchedule(day, period)) },
-        onUpdateComment = { onHandleScheduleEvent(ScheduleEvent.UpdateParentComment(it)) },
+        onUpdateComment = {},
         onNext = { onHandleScheduleEvent(ScheduleEvent.PatchParentSchedule) },
         onBack = onBack
     )

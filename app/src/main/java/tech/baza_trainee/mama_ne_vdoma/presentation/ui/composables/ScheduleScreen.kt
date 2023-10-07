@@ -32,6 +32,7 @@ fun ScheduleScreen(
     modifier: Modifier = Modifier,
     title: String = "Title",
     screenState: State<ScheduleViewState> = mutableStateOf(ScheduleViewState()),
+    isCommentNeeded: Boolean = true,
     comment: State<String> = mutableStateOf(""),
     onUpdateSchedule: (DayOfWeek, Period) -> Unit = { _, _ -> },
     onUpdateComment: (String) -> Unit = {},
@@ -81,30 +82,31 @@ fun ScheduleScreen(
                     onValueChange = { day, period -> onUpdateSchedule(day, period) }
                 )
 
-                OutlinedTextField(
-                    modifier = modifier
-                        .padding(horizontal = 24.dp)
-                        .fillMaxWidth()
-                        .constrainAs(commentField) {
-                            top.linkTo(schedule.bottom, 16.dp)
-                            bottom.linkTo(parent.bottom, 16.dp)
-                        },
-                    value = comment.value,
-                    label = { Text("Нотатка") },
-                    onValueChange = { onUpdateComment(it) },
-                    minLines = 3,
-                    maxLines = 3,
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedContainerColor =  MaterialTheme.colorScheme.surface,
-                        unfocusedContainerColor =  MaterialTheme.colorScheme.surface,
-                        disabledContainerColor =  MaterialTheme.colorScheme.surface,
-                        focusedBorderColor = MaterialTheme.colorScheme.primary,
-                        unfocusedBorderColor = MaterialTheme.colorScheme.surface,
-                    ),
-                    textStyle = TextStyle(
-                        fontFamily = redHatDisplayFontFamily
+                if (isCommentNeeded)
+                    OutlinedTextField(
+                        modifier = modifier
+                            .padding(horizontal = 24.dp)
+                            .fillMaxWidth()
+                            .constrainAs(commentField) {
+                                top.linkTo(schedule.bottom, 16.dp)
+                                bottom.linkTo(parent.bottom, 16.dp)
+                            },
+                        value = comment.value,
+                        label = { Text("Нотатка") },
+                        onValueChange = { onUpdateComment(it) },
+                        minLines = 3,
+                        maxLines = 3,
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedContainerColor = MaterialTheme.colorScheme.surface,
+                            unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                            disabledContainerColor = MaterialTheme.colorScheme.surface,
+                            focusedBorderColor = MaterialTheme.colorScheme.primary,
+                            unfocusedBorderColor = MaterialTheme.colorScheme.surface,
+                        ),
+                        textStyle = TextStyle(
+                            fontFamily = redHatDisplayFontFamily
+                        )
                     )
-                )
             }
 
             Button(

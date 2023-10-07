@@ -71,7 +71,6 @@ fun NavGraphBuilder.userProfileGraph(
             val parentScheduleViewModel: ParentScheduleViewModel = koinNavViewModel()
             ParentScheduleScreen(
                 screenState = parentScheduleViewModel.parentScheduleViewState.collectAsStateWithLifecycle(),
-                comment = parentScheduleViewModel.parentComment,
                 onHandleScheduleEvent = { parentScheduleViewModel.handleScheduleEvent(it) },
                 onNext = { navController.navigate(UserProfileRoutes.FullProfile.route) },
                 onBack = { navController.popBackStack() }

@@ -132,7 +132,8 @@ class UserInfoViewModel(
                         name = _userInfoScreenState.value.name,
                         phone = _userInfoScreenState.value.phone,
                         countryCode = _userInfoScreenState.value.code,
-                        avatar = bitmapHelper.encodeToBase64(_userInfoScreenState.value.userAvatar)
+                        avatar = bitmapHelper.encodeToBase64(_userInfoScreenState.value.userAvatar),
+                        schedule = communicator.schedule
                     )
                 )
             }
