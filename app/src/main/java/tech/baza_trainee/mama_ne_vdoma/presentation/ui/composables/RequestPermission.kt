@@ -18,7 +18,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.Mama_ne_vdomaTheme
 
 @Composable
 fun PermissionDialog(
@@ -28,63 +27,61 @@ fun PermissionDialog(
     onGranted: () -> Unit,
     onGoToAppSettingsClick: () -> Unit
 ) {
-    Mama_ne_vdomaTheme {
-        AlertDialog(
-            onDismissRequest = onDismiss,
-            buttons = {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(IntrinsicSize.Min),
-                    horizontalArrangement = Arrangement.SpaceEvenly
-                ) {
-                    Text(
-                        text = "Відхилити",
-                        fontWeight = FontWeight.Bold,
-                        textAlign = TextAlign.Center,
-                        color = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier
-                            .clickable {
-                                onDismiss()
-                            }
-                            .padding(16.dp)
-                    )
-                    Spacer( modifier = Modifier.width(4.dp))
-                    Text(
-                        text = if (isPermanentlyDeclined) {
-                            "Дозволити в налаштуваннях"
-                        } else {
-                            "Дозволити"
-                        },
-                        fontWeight = FontWeight.Bold,
-                        textAlign = TextAlign.Center,
-                        color = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier
-                            .clickable {
-                                if (isPermanentlyDeclined) {
-                                    onGoToAppSettingsClick()
-                                } else {
-                                    onGranted()
-                                }
-                            }
-                            .padding(16.dp)
-                    )
-                }
-            },
-            title = {
-                Text(text = "Увага! Потрібен дозвіл")
-            },
-            text = {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        buttons = {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(IntrinsicSize.Min),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
                 Text(
-                    text = permissionTextProvider.getDescription(
-                        isPermanentlyDeclined = isPermanentlyDeclined
-                    )
+                    text = "Відхилити",
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier
+                        .clickable {
+                            onDismiss()
+                        }
+                        .padding(16.dp)
                 )
-            },
-            shape = RoundedCornerShape(16.dp),
-            backgroundColor = MaterialTheme.colorScheme.surface
-        )
-    }
+                Spacer(modifier = Modifier.width(4.dp))
+                Text(
+                    text = if (isPermanentlyDeclined) {
+                        "Дозволити в налаштуваннях"
+                    } else {
+                        "Дозволити"
+                    },
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier
+                        .clickable {
+                            if (isPermanentlyDeclined) {
+                                onGoToAppSettingsClick()
+                            } else {
+                                onGranted()
+                            }
+                        }
+                        .padding(16.dp)
+                )
+            }
+        },
+        title = {
+            Text(text = "Увага! Потрібен дозвіл")
+        },
+        text = {
+            Text(
+                text = permissionTextProvider.getDescription(
+                    isPermanentlyDeclined = isPermanentlyDeclined
+                )
+            )
+        },
+        shape = RoundedCornerShape(16.dp),
+        backgroundColor = MaterialTheme.colorScheme.surface
+    )
 }
 
 interface PermissionTextProvider {
@@ -93,7 +90,7 @@ interface PermissionTextProvider {
 
 class LocationPermissionTextProvider: PermissionTextProvider {
     override fun getDescription(isPermanentlyDeclined: Boolean): String {
-        return if(isPermanentlyDeclined) {
+        return if (isPermanentlyDeclined) {
             "Схоже, ви назавжди відхилили дозвіл на місцезнаходження. " +
                     "Ви можете перейти в налаштування додатку, щоб надати його"
         } else {
