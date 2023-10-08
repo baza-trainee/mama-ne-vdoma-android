@@ -1,5 +1,6 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
@@ -42,6 +43,8 @@ fun ScheduleScreen(
     SurfaceWithNavigationBars(
         modifier = modifier
     ) {
+        BackHandler { onBack() }
+
         ConstraintLayout(
             modifier = modifier
                 .imePadding()

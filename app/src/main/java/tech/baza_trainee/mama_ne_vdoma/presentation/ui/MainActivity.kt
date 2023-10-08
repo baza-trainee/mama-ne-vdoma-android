@@ -7,12 +7,14 @@ import androidx.activity.enableEdgeToEdge
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
-import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.ScreenNavigator
-import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.createUserNavGraph
-import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.loginNavGraph
+import org.koin.android.ext.android.inject
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.graphs.createUserNavGraph
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.graphs.loginNavGraph
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.graphs.startNavGraph
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.graphs.userProfileGraph
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.NavigationEffects
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.Graphs
-import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.startNavGraph
-import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.userProfileGraph
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.Mama_ne_vdomaTheme
 
 class MainActivity : ComponentActivity() {
@@ -29,18 +31,21 @@ class MainActivity : ComponentActivity() {
             Mama_ne_vdomaTheme {
                 val navController = rememberNavController()
 
-                ScreenNavigator.newInstance(navController)
+                val navigator: ScreenNavigator by inject()
+
+                NavigationEffects(
+                    navigationChannel = navigator.navigationChannel,
+                    navHostController = navController
+                )
 
                 NavHost(
                     navController = navController,
                     startDestination = Graphs.Start.route
                 ) {
-                    val screenNavigator = ScreenNavigator.get()
-
-                    startNavGraph(screenNavigator)
-                    loginNavGraph(screenNavigator)
-                    createUserNavGraph(screenNavigator)
-                    userProfileGraph(screenNavigator)
+                    startNavGraph(navController)
+                    loginNavGraph(navController)
+                    createUserNavGraph()
+                    userProfileGraph()
                 }
             }
         }

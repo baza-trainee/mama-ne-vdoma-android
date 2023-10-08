@@ -45,15 +45,12 @@ fun CreateUserScreen(
     modifier: Modifier = Modifier,
     screenState: State<UserCreateViewState> = mutableStateOf(UserCreateViewState()),
     uiState: State<CommonUiState> = mutableStateOf(CommonUiState.Idle),
-    handleEvent: (UserCreateEvent) -> Unit = { _ -> },
-    onCreateUser: (String, String) -> Unit = {_,_ ->},
-    onLogin: () -> Unit = {},
-    onBack: () -> Unit = {}
+    handleEvent: (UserCreateEvent) -> Unit = { _ -> }
 ) {
     SurfaceWithSystemBars(
         modifier = modifier
     ) {
-        BackHandler { onBack() }
+        BackHandler { handleEvent(UserCreateEvent.OnBack) }
 
         val context = LocalContext.current
 
@@ -65,10 +62,6 @@ fun CreateUserScreen(
                     state.error,
                     Toast.LENGTH_LONG
                 ).show()
-                handleEvent(UserCreateEvent.ResetUiState)
-            }
-            CommonUiState.OnNext -> {
-                onLogin()
                 handleEvent(UserCreateEvent.ResetUiState)
             }
         }
@@ -245,9 +238,8 @@ fun CreateUserScreen(
             SocialLoginBlock(
                 modifier = modifier,
                 horizontalPadding = 24.dp,
-                getTextWithUnderline("Вже є акаунт? ", "Увійти"),
-                onLogin
-            )
+                getTextWithUnderline("Вже є акаунт? ", "Увійти")
+            ) { handleEvent(UserCreateEvent.OnLogin) }
         }
 
         if (screenState.value.isLoading) LoadingIndicator()

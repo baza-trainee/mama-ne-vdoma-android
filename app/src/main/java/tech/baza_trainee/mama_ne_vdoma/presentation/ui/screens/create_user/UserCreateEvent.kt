@@ -1,6 +1,8 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user
 
 sealed interface UserCreateEvent {
+    object OnBack: UserCreateEvent
+    object OnLogin: UserCreateEvent
     object RegisterUser: UserCreateEvent
     object ResetUiState: UserCreateEvent
     data class ValidateEmail(val email: String) : UserCreateEvent

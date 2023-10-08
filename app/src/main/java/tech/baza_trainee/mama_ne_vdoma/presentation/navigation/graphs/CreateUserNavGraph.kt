@@ -1,4 +1,4 @@
-package tech.baza_trainee.mama_ne_vdoma.presentation.navigation
+package tech.baza_trainee.mama_ne_vdoma.presentation.navigation.graphs
 
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
@@ -13,9 +13,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.verify_ema
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.CreateUserScreen
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.UserCreateViewModel
 
-fun NavGraphBuilder.createUserNavGraph(
-    screenNavigator: ScreenNavigator?
-) {
+fun NavGraphBuilder.createUserNavGraph() {
     navigation(
         route = Graphs.CreateUser.route,
         startDestination = CreateUserRoute.CreateUser.route
@@ -25,10 +23,7 @@ fun NavGraphBuilder.createUserNavGraph(
             CreateUserScreen(
                 screenState = userCreateViewModel.viewState.collectAsStateWithLifecycle(),
                 uiState = userCreateViewModel.uiState,
-                handleEvent = { userCreateViewModel.handleUserCreateEvent(it) },
-                onCreateUser = { email, password -> screenNavigator?.navigate(CreateUserRoute.VerifyEmail.getDestination(email, password)) },
-                onLogin = { screenNavigator?.navigate(Graphs.Login) },
-                onBack = { screenNavigator?.navigate(Graphs.Start) }
+                handleEvent = { userCreateViewModel.handleUserCreateEvent(it) }
             )
         }
         composable(
@@ -43,9 +38,7 @@ fun NavGraphBuilder.createUserNavGraph(
                 screenState = verifyEmailViewModel.viewState.collectAsStateWithLifecycle(),
                 uiState = verifyEmailViewModel.uiState,
                 title = "Створити профіль",
-                handleEvent = { verifyEmailViewModel.handleEvent(it) },
-                onLogin = { screenNavigator?.navigate(Graphs.UserProfile) },
-                onBack = { screenNavigator?.goBack() }
+                handleEvent = { verifyEmailViewModel.handleEvent(it) }
             )
         }
     }

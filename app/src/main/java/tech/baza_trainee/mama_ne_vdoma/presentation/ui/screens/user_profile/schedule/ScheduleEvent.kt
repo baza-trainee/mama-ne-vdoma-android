@@ -4,6 +4,7 @@ import tech.baza_trainee.mama_ne_vdoma.domain.model.Period
 import java.time.DayOfWeek
 
 sealed interface ScheduleEvent {
+    object OnBack: ScheduleEvent
     object PatchChildSchedule: ScheduleEvent
     object PatchParentSchedule: ScheduleEvent
     object ResetUiState: ScheduleEvent

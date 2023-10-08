@@ -3,12 +3,16 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.login
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import tech.baza_trainee.mama_ne_vdoma.domain.model.AuthUserEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.AuthRepository
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.Graphs
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.LoginRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.CommonUiState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
@@ -20,6 +24,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onLoading
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onSuccess
 
 class LoginScreenViewModel(
+    private val navigator: ScreenNavigator,
     private val authRepository: AuthRepository
 ): ViewModel() {
 
@@ -33,6 +38,11 @@ class LoginScreenViewModel(
     fun handleLoginEvent(event: LoginEvent) {
         when(event) {
             LoginEvent.LoginUser -> loginUser()
+            LoginEvent.ResetUiState -> _uiState.value = CommonUiState.Idle
+            LoginEvent.OnBack -> navigator.goBack()
+            LoginEvent.OnCreate -> navigator.navigate(Graphs.CreateUser)
+            LoginEvent.OnRestore -> navigator.navigate(LoginRoutes.RestorePassword)
+
             is LoginEvent.ValidateEmail -> validateEmail(event.email)
             is LoginEvent.ValidatePassword -> validatePassword(event.password)
             LoginEvent.OnSuccessfulLogin -> {
@@ -40,8 +50,6 @@ class LoginScreenViewModel(
                     LoginViewState()
                 }
             }
-
-            LoginEvent.ResetUiState -> _uiState.value = CommonUiState.Idle
         }
     }
 
@@ -78,7 +86,7 @@ class LoginScreenViewModel(
                 )
             }
             onSuccess {
-                _uiState.value = CommonUiState.OnNext
+                navigator.navigateOnMain(viewModelScope, Graphs.UserProfile)
             }
             onError { error ->
                 _uiState.value = CommonUiState.OnError(error)

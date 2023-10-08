@@ -3,6 +3,7 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.sch
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -11,6 +12,8 @@ import tech.baza_trainee.mama_ne_vdoma.domain.model.DayPeriod
 import tech.baza_trainee.mama_ne_vdoma.domain.model.Period
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UserInfoEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.UserProfileRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.CommonUiState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.model.UserProfileCommunicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.schedule.ScheduleEvent
@@ -25,6 +28,7 @@ import java.time.DayOfWeek
 
 class ParentScheduleViewModel(
     private val communicator: UserProfileCommunicator,
+    private val navigator: ScreenNavigator,
     private val userProfileRepository: UserProfileRepository,
     private val bitmapHelper: BitmapHelper
 ): ViewModel() {
@@ -46,6 +50,7 @@ class ParentScheduleViewModel(
 
     fun handleScheduleEvent(event: ScheduleEvent) {
         when(event) {
+            ScheduleEvent.OnBack -> navigator.goBack()
             ScheduleEvent.PatchParentSchedule -> saveParentSchedule()
             ScheduleEvent.ResetUiState -> _uiState.value = CommonUiState.Idle
             is ScheduleEvent.UpdateParentSchedule -> updateParentSchedule(event.day, event.period)
@@ -68,7 +73,7 @@ class ParentScheduleViewModel(
             }
             onSuccess {
                 communicator.isUserInfoFilled = true
-                _uiState.value = CommonUiState.OnNext
+                navigator.navigateOnMain(viewModelScope, UserProfileRoutes.FullProfile)
             }
             onError { error ->
                 _uiState.value = CommonUiState.OnError(error)

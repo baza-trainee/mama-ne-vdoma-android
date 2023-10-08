@@ -37,12 +37,9 @@ fun VerifyEmailScreen(
     screenState: State<VerifyEmailViewState> = mutableStateOf(VerifyEmailViewState()),
     uiState: State<VerifyEmailUiState> = mutableStateOf(VerifyEmailUiState.Idle),
     title: String = "0",
-    handleEvent: (VerifyEmailEvent) -> Unit = { _ -> },
-    onRestore: (String) -> Unit = {},
-    onLogin: () -> Unit = {},
-    onBack: () -> Unit = {}
+    handleEvent: (VerifyEmailEvent) -> Unit = { _ -> }
 ) {
-    BackHandler { onBack() }
+    BackHandler { handleEvent(VerifyEmailEvent.OnBack) }
 
     SurfaceWithSystemBars {
         val context = LocalContext.current
@@ -55,14 +52,6 @@ fun VerifyEmailScreen(
                     state.error,
                     Toast.LENGTH_LONG
                 ).show()
-                handleEvent(VerifyEmailEvent.ResetUiState)
-            }
-            VerifyEmailUiState.OnLogin -> {
-                onLogin()
-                handleEvent(VerifyEmailEvent.ResetUiState)
-            }
-            VerifyEmailUiState.OnRestore -> {
-                onRestore(screenState.value.otp)
                 handleEvent(VerifyEmailEvent.ResetUiState)
             }
         }
@@ -107,9 +96,7 @@ fun VerifyEmailScreen(
                 OtpTextField(
                     otpText = screenState.value.otp,
                     onOtpTextChange = { value, otpInputFilled ->
-                        handleEvent(
-                            VerifyEmailEvent.VerifyEmail(value, otpInputFilled)
-                        )
+                        handleEvent(VerifyEmailEvent.VerifyEmail(value, otpInputFilled))
                     }
                 )
                 if (screenState.value.otpValid == ValidField.INVALID)

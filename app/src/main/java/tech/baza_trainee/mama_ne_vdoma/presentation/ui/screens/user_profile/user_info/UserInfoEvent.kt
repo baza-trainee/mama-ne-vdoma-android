@@ -4,6 +4,7 @@ import android.net.Uri
 
 sealed interface UserInfoEvent {
     object SaveInfo: UserInfoEvent
+    object OnEditPhoto: UserInfoEvent
     object ResetUiState: UserInfoEvent
     data class ValidateUserName(val name: String) : UserInfoEvent
     data class SetImageToCrop(val uri: Uri) : UserInfoEvent

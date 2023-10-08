@@ -50,6 +50,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.LoadingIndica
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.ParentInfoDesk
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.SurfaceWithNavigationBars
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.TopBarWithOptArrow
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.CommonUiState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.SlateGray
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.ButtonText
@@ -58,38 +59,24 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.ButtonText
 fun FullInfoScreen(
     modifier: Modifier = Modifier,
     screenState: State<FullInfoViewState> = mutableStateOf(FullInfoViewState()),
-    uiState: State<FullInfoUiState> = mutableStateOf(FullInfoUiState.Idle),
-    handleEvent: (FullInfoEvent) -> Unit = {},
-    onNext: () -> Unit = {},
-    onBack: () -> Unit = {},
-    onEditUser: () -> Unit = {},
-    onAddChild: () -> Unit = {},
-    onEditChild: () -> Unit = {},
-    onDelete: () -> Unit = {}
+    uiState: State<CommonUiState> = mutableStateOf(CommonUiState.Idle),
+    handleEvent: (FullInfoEvent) -> Unit = {}
 ) {
     SurfaceWithNavigationBars(
         modifier = modifier
     ) {
-        BackHandler { onBack() }
+        BackHandler { handleEvent(FullInfoEvent.OnBack) }
 
         val context = LocalContext.current
 
         when(val state = uiState.value) {
-            FullInfoUiState.Idle -> Unit
-            is FullInfoUiState.OnError -> {
+            CommonUiState.Idle -> Unit
+            is CommonUiState.OnError -> {
                 if (state.error.isNotBlank()) Toast.makeText(
                     context,
                     state.error,
                     Toast.LENGTH_LONG
                 ).show()
-                handleEvent(FullInfoEvent.ResetUiState)
-            }
-            FullInfoUiState.OnNext -> {
-                onNext()
-                handleEvent(FullInfoEvent.ResetUiState)
-            }
-            FullInfoUiState.OnDelete -> {
-                onDelete()
                 handleEvent(FullInfoEvent.ResetUiState)
             }
         }
@@ -129,7 +116,7 @@ fun FullInfoScreen(
                         height = Dimension.fillToConstraints
                     },
                 title = "Дані Вашого профілю",
-                onBack = onBack
+                onBack = { handleEvent(FullInfoEvent.OnBack) }
             )
 
             val scrollState = rememberScrollState()
@@ -166,7 +153,7 @@ fun FullInfoScreen(
                         address = screenState.value.address.ifEmpty { "Вкажіть Вашу адресу" },
                         avatar = screenState.value.userAvatar.asImageBitmap(),
                         schedule = screenState.value.schedule,
-                        onEdit = onEditUser,
+                        onEdit = { handleEvent(FullInfoEvent.EditUser) },
                         onDelete = { handleEvent(FullInfoEvent.DeleteUser) }
                     )
                 else
@@ -175,7 +162,7 @@ fun FullInfoScreen(
                             .fillMaxWidth()
                             .height(64.dp)
                             .background(colorAnimatable.value)
-                            .clickable { onEditUser() },
+                            .clickable { handleEvent(FullInfoEvent.EditUser) },
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
@@ -204,8 +191,7 @@ fun FullInfoScreen(
                     ChildInfoDesk(
                         child,
                         onEdit = {
-                            handleEvent(FullInfoEvent.SetChild(it))
-                            onEditChild()
+                            handleEvent(FullInfoEvent.EditChild(it))
                         },
                         onDelete = {
                             handleEvent(FullInfoEvent.DeleteChild(it))
@@ -228,8 +214,7 @@ fun FullInfoScreen(
                             else colorAnimatable.value
                         )
                         .clickable(enabled = screenState.value.isUserInfoFilled) {
-                            handleEvent(FullInfoEvent.ResetChild)
-                            onAddChild()
+                            handleEvent(FullInfoEvent.AddChild)
                         },
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Start
@@ -262,7 +247,7 @@ fun FullInfoScreen(
                         bottom.linkTo(parent.bottom)
                     }
                     .height(48.dp),
-                onClick = onNext
+                onClick = { handleEvent(FullInfoEvent.OnNext) }
             ) {
                 ButtonText(
                     text = "Підтвердити"

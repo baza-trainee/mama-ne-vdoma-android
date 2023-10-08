@@ -34,14 +34,12 @@ fun NewPasswordScreen(
     modifier: Modifier = Modifier,
     screenState: State<NewPasswordViewState> = mutableStateOf(NewPasswordViewState()),
     uiState: State<CommonUiState> = mutableStateOf(CommonUiState.Idle),
-    handleEvent: (NewPasswordEvent) -> Unit = { _ -> },
-    onRestore: () -> Unit = {},
-    onBack: () -> Unit = {}
+    handleEvent: (NewPasswordEvent) -> Unit = { _ -> }
 ) {
     SurfaceWithSystemBars(
         modifier = modifier
     ) {
-        BackHandler { onBack() }
+        BackHandler { handleEvent(NewPasswordEvent.OnBack) }
 
         val context = LocalContext.current
 
@@ -53,10 +51,6 @@ fun NewPasswordScreen(
                     state.error,
                     Toast.LENGTH_LONG
                 ).show()
-                handleEvent(NewPasswordEvent.ResetUiState)
-            }
-            CommonUiState.OnNext -> {
-                onRestore()
                 handleEvent(NewPasswordEvent.ResetUiState)
             }
         }

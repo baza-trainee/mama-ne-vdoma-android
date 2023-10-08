@@ -2,7 +2,5 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.verify_em
 
 sealed interface VerifyEmailUiState {
     object Idle: VerifyEmailUiState
-    object OnLogin: VerifyEmailUiState
-    object OnRestore: VerifyEmailUiState
     data class OnError(val error: String): VerifyEmailUiState
 }

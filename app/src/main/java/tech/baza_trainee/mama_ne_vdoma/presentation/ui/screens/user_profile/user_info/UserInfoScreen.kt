@@ -56,9 +56,7 @@ fun UserInfoScreen(
     modifier: Modifier = Modifier,
     screenState: State<UserInfoViewState> = mutableStateOf(UserInfoViewState()),
     uiState: State<UserInfoUiState> = mutableStateOf(UserInfoUiState.Idle),
-    handleEvent: (UserInfoEvent) -> Unit = { _ -> },
-    onNext: () -> Unit = {},
-    onEditPhoto: () -> Unit = {}
+    handleEvent: (UserInfoEvent) -> Unit = { _ -> }
 ) {
     SurfaceWithSystemBars(
         modifier = modifier
@@ -73,10 +71,6 @@ fun UserInfoScreen(
                     state.error,
                     Toast.LENGTH_LONG
                 ).show()
-                handleEvent(UserInfoEvent.ResetUiState)
-            }
-            UserInfoUiState.OnNext -> {
-                onNext()
                 handleEvent(UserInfoEvent.ResetUiState)
             }
             UserInfoUiState.OnAvatarError -> {
@@ -126,7 +120,7 @@ fun UserInfoScreen(
                     setUriForCrop = {
                         handleEvent(UserInfoEvent.SetImageToCrop(it))
                     },
-                    onEditPhoto = onEditPhoto
+                    onEditPhoto = { handleEvent(UserInfoEvent.OnEditPhoto) }
                 )
 
                 OutlinedTextFieldWithError(

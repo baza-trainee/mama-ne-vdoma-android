@@ -39,8 +39,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFa
 fun ImageCropScreen(
     modifier: Modifier = Modifier,
     imageForCrop: ImageBitmap = ImageBitmap(512, 512),
-    onHandleCropEvent: (Bitmap) -> Unit = {},
-    onImageCropped: () -> Unit = {}
+    handleEvent: (Bitmap) -> Unit = {}
 ) {
     SurfaceWithSystemBars(
         modifier = modifier
@@ -91,8 +90,7 @@ fun ImageCropScreen(
                     isCropping = true
                 },
                 onCropSuccess = {
-                    onHandleCropEvent(it.asAndroidBitmap())
-                    onImageCropped()
+                    handleEvent(it.asAndroidBitmap())
                     crop = false
                     isCropping = false
                 }

@@ -15,6 +15,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UserInfoEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.UserProfileRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.model.UserProfileCommunicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.BitmapHelper
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
@@ -26,6 +28,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onSuccess
 
 class UserInfoViewModel(
     private val communicator: UserProfileCommunicator,
+    private val navigator: ScreenNavigator,
     private val userProfileRepository: UserProfileRepository,
     private val phoneNumberUtil: PhoneNumberUtil,
     private val bitmapHelper: BitmapHelper
@@ -63,6 +66,7 @@ class UserInfoViewModel(
             is UserInfoEvent.SetCode -> setCode(event.code, event.country)
             UserInfoEvent.SaveInfo -> saveUserInfo()
             UserInfoEvent.ResetUiState -> _uiState.value = UserInfoUiState.Idle
+            UserInfoEvent.OnEditPhoto -> navigator.navigate(UserProfileRoutes.ImageCrop)
         }
     }
 
@@ -147,7 +151,7 @@ class UserInfoViewModel(
                     code = _userInfoScreenState.value.code
                     phone = _userInfoScreenState.value.phone
                 }
-                _uiState.value = UserInfoUiState.OnNext
+                navigator.navigateOnMain(viewModelScope, UserProfileRoutes.UserLocation)
             }
             onError { error ->
                 _uiState.value = UserInfoUiState.OnError(error)

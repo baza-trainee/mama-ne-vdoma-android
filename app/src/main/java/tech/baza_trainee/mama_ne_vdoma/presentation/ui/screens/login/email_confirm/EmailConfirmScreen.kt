@@ -1,5 +1,6 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.email_confirm
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -9,9 +10,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -22,19 +26,35 @@ import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.SurfaceWithNavigationBars
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.TopBarWithOptArrow
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.getTextWithUnderline
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.CommonUiState
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.restore_password.RestorePasswordEvent
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.ButtonText
 
 @Composable
 fun EmailConfirmScreen(
     modifier: Modifier = Modifier,
+    uiState: State<CommonUiState> = mutableStateOf(CommonUiState.Idle),
     email: String = "",
-    onLogin: () -> Unit = {},
-    onSendAgain: () -> Unit = {}
+    handleEvent: (RestorePasswordEvent) -> Unit = { _ -> }
 ) {
     SurfaceWithNavigationBars(
         modifier = modifier
     ) {
+        val context = LocalContext.current
+
+        when(val state = uiState.value) {
+            CommonUiState.Idle -> Unit
+            is CommonUiState.OnError -> {
+                if (state.error.isNotBlank()) Toast.makeText(
+                    context,
+                    state.error,
+                    Toast.LENGTH_LONG
+                ).show()
+                handleEvent(RestorePasswordEvent.ResetUiState)
+            }
+        }
+
         ConstraintLayout(
             modifier = modifier.fillMaxWidth()
         ) {
@@ -77,7 +97,7 @@ fun EmailConfirmScreen(
                         bottom.linkTo(btnLogin.top)
                     }
                     .height(48.dp),
-                onClick = { onLogin() }
+                onClick = { handleEvent(RestorePasswordEvent.OnLogin(email)) }
             ) {
                 ButtonText(
                     text = "Увійти"
@@ -93,9 +113,7 @@ fun EmailConfirmScreen(
                     .clickable(
                         indication = null,
                         interactionSource = remember { MutableInteractionSource() }
-                    ) {
-                        onSendAgain()
-                    }
+                    ) { handleEvent(RestorePasswordEvent.SendEmail) }
                     .fillMaxWidth()
                     .padding(horizontal = 24.dp, vertical = 16.dp),
                 textAlign = TextAlign.Center,

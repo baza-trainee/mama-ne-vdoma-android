@@ -16,8 +16,7 @@ fun ChildScheduleScreen(
     screenState: State<ScheduleViewState> = mutableStateOf(ScheduleViewState()),
     uiState: State<CommonUiState> = mutableStateOf(CommonUiState.Idle),
     comment: State<String> = mutableStateOf(""),
-    handleEvent: (ScheduleEvent) -> Unit = {},
-    onNext: () -> Unit = {}
+    handleEvent: (ScheduleEvent) -> Unit = {}
 ) {
     val context = LocalContext.current
 
@@ -25,10 +24,6 @@ fun ChildScheduleScreen(
         CommonUiState.Idle -> Unit
         is CommonUiState.OnError -> {
             if (state.error.isNotBlank()) Toast.makeText(context, state.error, Toast.LENGTH_LONG).show()
-            handleEvent(ScheduleEvent.ResetUiState)
-        }
-        CommonUiState.OnNext -> {
-            onNext()
             handleEvent(ScheduleEvent.ResetUiState)
         }
     }
@@ -40,7 +35,7 @@ fun ChildScheduleScreen(
         onUpdateSchedule = { day, period -> handleEvent(ScheduleEvent.UpdateChildSchedule(day, period)) },
         onUpdateComment = { handleEvent(ScheduleEvent.UpdateChildComment(it)) },
         onNext = { handleEvent(ScheduleEvent.PatchChildSchedule) },
-        onBack = onNext
+        onBack = { handleEvent(ScheduleEvent.OnBack) }
     )
 
     if (screenState.value.isLoading) LoadingIndicator()

@@ -15,9 +15,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.sche
 fun ParentScheduleScreen(
     screenState: State<ScheduleViewState> = mutableStateOf(ScheduleViewState()),
     uiState: State<CommonUiState> = mutableStateOf(CommonUiState.Idle),
-    handleEvent: (ScheduleEvent) -> Unit = {},
-    onNext: () -> Unit,
-    onBack: () -> Unit
+    handleEvent: (ScheduleEvent) -> Unit = {}
 ) {
     val context = LocalContext.current
 
@@ -25,10 +23,6 @@ fun ParentScheduleScreen(
         CommonUiState.Idle -> Unit
         is CommonUiState.OnError -> {
             if (state.error.isNotBlank()) Toast.makeText(context, state.error, Toast.LENGTH_LONG).show()
-            handleEvent(ScheduleEvent.ResetUiState)
-        }
-        CommonUiState.OnNext -> {
-            onNext()
             handleEvent(ScheduleEvent.ResetUiState)
         }
     }
@@ -40,7 +34,7 @@ fun ParentScheduleScreen(
         onUpdateSchedule = { day, period -> handleEvent(ScheduleEvent.UpdateParentSchedule(day, period)) },
         onUpdateComment = {},
         onNext = { handleEvent(ScheduleEvent.PatchParentSchedule) },
-        onBack = onBack
+        onBack = { handleEvent(ScheduleEvent.OnBack) }
     )
 
     if (screenState.value.isLoading) LoadingIndicator()

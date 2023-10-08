@@ -2,7 +2,6 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.use
 
 sealed interface UserInfoUiState {
     object Idle: UserInfoUiState
-    object OnNext: UserInfoUiState
     object OnAvatarError: UserInfoUiState
     data class OnError(val error: String): UserInfoUiState
 }

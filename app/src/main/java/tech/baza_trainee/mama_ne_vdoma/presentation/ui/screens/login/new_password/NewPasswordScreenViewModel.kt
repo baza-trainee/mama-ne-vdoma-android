@@ -3,12 +3,15 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.new_passwo
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import tech.baza_trainee.mama_ne_vdoma.domain.model.RestorePasswordEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.AuthRepository
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.LoginRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.CommonUiState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
@@ -21,6 +24,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onSuccess
 class NewPasswordScreenViewModel(
     private val email: String,
     private val otp: String,
+    private val navigator: ScreenNavigator,
     private val authRepository: AuthRepository
 ): ViewModel() {
 
@@ -34,6 +38,7 @@ class NewPasswordScreenViewModel(
 
     fun handleNewPasswordEvent(event: NewPasswordEvent) {
         when(event) {
+            NewPasswordEvent.OnBack -> navigator.navigate(LoginRoutes.Login)
             NewPasswordEvent.ResetPassword -> resetPassword()
             is NewPasswordEvent.ValidatePassword -> validatePassword(event.password)
             is NewPasswordEvent.ValidateConfirmPassword -> validateConfirmPassword(event.confirmPassword)
@@ -84,7 +89,7 @@ class NewPasswordScreenViewModel(
                 )
             }
             onSuccess {
-                _uiState.value = CommonUiState.OnNext
+                navigator.navigateOnMain(viewModelScope, LoginRoutes.RestoreSuccess)
             }
             onError { error ->
                 _uiState.value = CommonUiState.OnError(error)

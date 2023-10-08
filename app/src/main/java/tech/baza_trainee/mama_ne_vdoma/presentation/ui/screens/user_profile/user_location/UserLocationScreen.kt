@@ -55,8 +55,7 @@ fun UserLocationScreen(
     modifier: Modifier = Modifier,
     screenState: State<UserLocationViewState> = mutableStateOf(UserLocationViewState()),
     uiState: State<CommonUiState> = mutableStateOf(CommonUiState.Idle),
-    handleEvent: (UserLocationEvent) -> Unit = { _ -> },
-    onNext: () -> Unit = {}
+    handleEvent: (UserLocationEvent) -> Unit = { _ -> }
 ) {
     SurfaceWithNavigationBars(
         modifier = modifier
@@ -71,10 +70,6 @@ fun UserLocationScreen(
                     state.error,
                     Toast.LENGTH_LONG
                 ).show()
-                handleEvent(UserLocationEvent.ResetUiState)
-            }
-            CommonUiState.OnNext -> {
-                onNext()
                 handleEvent(UserLocationEvent.ResetUiState)
             }
         }

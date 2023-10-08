@@ -43,16 +43,12 @@ fun LoginUserScreen(
     modifier: Modifier = Modifier,
     screenState: State<LoginViewState> = mutableStateOf(LoginViewState()),
     uiState: State<CommonUiState> = mutableStateOf(CommonUiState.Idle),
-    handleEvent: (LoginEvent) -> Unit = { _ -> },
-    onCreateUser: () -> Unit = {},
-    onRestore: () -> Unit = {},
-    onLogin: () -> Unit = {},
-    onBack: () -> Unit = {}
+    handleEvent: (LoginEvent) -> Unit = { _ -> }
 ) {
     SurfaceWithSystemBars(
         modifier = modifier
     ) {
-        BackHandler { onBack() }
+        BackHandler { handleEvent(LoginEvent.OnBack) }
 
         val context = LocalContext.current
 
@@ -60,10 +56,6 @@ fun LoginUserScreen(
             CommonUiState.Idle -> Unit
             is CommonUiState.OnError -> {
                 if (state.error.isNotBlank()) Toast.makeText(context, state.error, Toast.LENGTH_LONG).show()
-                handleEvent(LoginEvent.ResetUiState)
-            }
-            CommonUiState.OnNext -> {
-                onLogin()
                 handleEvent(LoginEvent.ResetUiState)
             }
         }
@@ -128,9 +120,7 @@ fun LoginUserScreen(
                         .clickable(
                             indication = null,
                             interactionSource = remember { MutableInteractionSource() }
-                        ) {
-                            onRestore()
-                        },
+                        ) { handleEvent(LoginEvent.OnRestore) },
                     text = getTextWithUnderline("", "Забули пароль?", false),
                     textAlign = TextAlign.End,
                     fontSize = 14.sp,
@@ -206,9 +196,8 @@ fun LoginUserScreen(
             SocialLoginBlock(
                 modifier = modifier,
                 horizontalPadding = 24.dp,
-                getTextWithUnderline("Ще немає профілю? ", "Зареєструватись"),
-                onCreateUser
-            )
+                getTextWithUnderline("Ще немає профілю? ", "Зареєструватись")
+            ) { handleEvent(LoginEvent.OnCreate) }
         }
 
         if (screenState.value.isLoading) LoadingIndicator()

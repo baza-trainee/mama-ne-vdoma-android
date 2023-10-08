@@ -41,9 +41,7 @@ fun RestorePasswordScreen(
     modifier: Modifier = Modifier,
     screenState: State<RestorePasswordViewState> = mutableStateOf(RestorePasswordViewState()),
     uiState: State<CommonUiState> = mutableStateOf(CommonUiState.Idle),
-    handleEvent: (RestorePasswordEvent) -> Unit = { _ -> },
-    onBack: () -> Unit = {},
-    onRestore: (String) -> Unit = {}
+    handleEvent: (RestorePasswordEvent) -> Unit = { _ -> }
 ) {
     SurfaceWithSystemBars(
         modifier = modifier
@@ -58,10 +56,6 @@ fun RestorePasswordScreen(
                     state.error,
                     Toast.LENGTH_LONG
                 ).show()
-                handleEvent(RestorePasswordEvent.ResetUiState)
-            }
-            CommonUiState.OnNext -> {
-                onRestore(screenState.value.email)
                 handleEvent(RestorePasswordEvent.ResetUiState)
             }
         }
@@ -90,7 +84,7 @@ fun RestorePasswordScreen(
                             .padding(start = 16.dp)
                             .height(24.dp)
                             .width(24.dp),
-                        onClick = { onBack() }
+                        onClick = { handleEvent(RestorePasswordEvent.OnBack) }
                     ) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,

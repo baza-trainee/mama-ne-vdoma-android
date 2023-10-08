@@ -9,6 +9,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import tech.baza_trainee.mama_ne_vdoma.domain.model.AuthUserEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.AuthRepository
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.CreateUserRoute
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.Graphs
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.CommonUiState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
@@ -20,6 +23,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onLoading
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onSuccess
 
 class UserCreateViewModel(
+    private val navigator: ScreenNavigator,
     private val authRepository: AuthRepository
 ): ViewModel() {
 
@@ -38,6 +42,8 @@ class UserCreateViewModel(
             is UserCreateEvent.ValidateConfirmPassword -> validateConfirmPassword(event.confirmPassword)
             is UserCreateEvent.ValidateEmail -> validateEmail(event.email)
             is UserCreateEvent.ValidatePassword -> validatePassword(event.password)
+            UserCreateEvent.OnBack -> navigator.navigate(Graphs.Start)
+            UserCreateEvent.OnLogin -> navigator.navigate(Graphs.Login)
         }
     }
 
@@ -116,7 +122,7 @@ class UserCreateViewModel(
                 )
             }
             onSuccess {
-                _uiState.value = CommonUiState.OnNext
+                navigator.navigate(CreateUserRoute.VerifyEmail.getDestination(_viewState.value.email, _viewState.value.password))
             }
             onError { error ->
                 _uiState.value = CommonUiState.OnError(error)

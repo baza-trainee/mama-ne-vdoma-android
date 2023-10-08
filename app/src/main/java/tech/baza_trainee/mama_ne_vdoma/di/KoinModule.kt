@@ -26,6 +26,8 @@ import tech.baza_trainee.mama_ne_vdoma.data.repository.UserProfileRepositoryImpl
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.AuthRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.LocationRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigatorImpl
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.verify_email.VerifyEmailViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.UserCreateViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.login.LoginScreenViewModel
@@ -67,31 +69,43 @@ val repoModule = module {
     factory<UserProfileRepository> { UserProfileRepositoryImpl(get()) }
     factory<LocationDataSource> { LocationDataSourceImpl(androidApplication()) }
     factory<LocationRepository> { LocationRepositoryImpl(get()) }
+
+    single<ScreenNavigator> { ScreenNavigatorImpl() }
 }
 
 val userKoinModule = module {
     single { PhoneNumberUtil.createInstance(androidContext()) }
     single { BitmapHelper(androidApplication()) }
     single { UserProfileCommunicator() }
-    viewModel { UserInfoViewModel(get(), get(), get(), get()) }
-    viewModel { ImageCropViewModel(get(), get()) }
-    viewModel { UserLocationViewModel(get(), get(), get()) }
-    viewModel { ChildInfoViewModel(get(), get()) }
-    viewModel { ChildScheduleViewModel(get(), get()) }
+    viewModel { UserInfoViewModel(get(), get(), get(), get(), get()) }
+    viewModel { ImageCropViewModel(get(), get(), get()) }
+    viewModel { UserLocationViewModel(get(), get(), get(), get()) }
+    viewModel { ChildInfoViewModel(get(), get(), get()) }
+    viewModel { ChildScheduleViewModel(get(), get(), get()) }
     viewModel { ChildrenInfoViewModel(get(), get()) }
-    viewModel { ParentScheduleViewModel(get(), get(), get()) }
-    viewModel { FullInfoViewModel(get(), get(), get()) }
-    viewModel { UserCreateViewModel(get()) }
+    viewModel { ParentScheduleViewModel(get(), get(), get(), get()) }
+    viewModel { FullInfoViewModel(get(), get(), get(), get()) }
+    viewModel { UserCreateViewModel(get(), get()) }
 }
 
 val verifyEmailModule = module {
-    viewModel { (email: String, password: String) -> VerifyEmailViewModel(email, password, get()) }
+    viewModel { (email: String, password: String) -> VerifyEmailViewModel(email, password, get(), get()) }
 }
 
 val loginKoinModule = module {
-    viewModel { LoginScreenViewModel(get()) }
-    viewModel { (email: String, otp: String) -> NewPasswordScreenViewModel(email, otp, get()) }
-    viewModel { RestorePasswordScreenViewModel(get()) }
+    viewModel {
+        LoginScreenViewModel(get(), get())
+    }
+    viewModel { (email: String, otp: String) ->
+        NewPasswordScreenViewModel(
+            email,
+            otp,
+            get(),
+            get()
+        )
+    }
+    viewModel {RestorePasswordScreenViewModel(get(), get())
+    }
 }
 
 const val BASE_URL = "https://tough-moth-trunks.cyclic.cloud/"

@@ -1,6 +1,7 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.child_info
 
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -36,11 +37,11 @@ fun ChildInfoScreen(
     modifier: Modifier = Modifier,
     screenState: State<ChildInfoViewState> = mutableStateOf(ChildInfoViewState()),
     uiState: State<CommonUiState> = mutableStateOf(CommonUiState.Idle),
-    handleEvent: (ChildInfoEvent) -> Unit = { _ -> },
-    onNext: () -> Unit = { },
-    onBack: () -> Unit = { }
+    handleEvent: (ChildInfoEvent) -> Unit = { _ -> }
 ) {
     SurfaceWithNavigationBars {
+        BackHandler { handleEvent(ChildInfoEvent.OnBack) }
+
         val context = LocalContext.current
 
         when(val state = uiState.value) {
@@ -51,10 +52,6 @@ fun ChildInfoScreen(
                     state.error,
                     Toast.LENGTH_LONG
                 ).show()
-                handleEvent(ChildInfoEvent.ResetUiState)
-            }
-            CommonUiState.OnNext -> {
-                onNext()
                 handleEvent(ChildInfoEvent.ResetUiState)
             }
         }
@@ -76,7 +73,7 @@ fun ChildInfoScreen(
                         height = Dimension.fillToConstraints
                     },
                 title = "Розкажіть про свою дитину",
-                onBack = onBack
+                onBack = { handleEvent(ChildInfoEvent.OnBack) }
             )
 
             Column(

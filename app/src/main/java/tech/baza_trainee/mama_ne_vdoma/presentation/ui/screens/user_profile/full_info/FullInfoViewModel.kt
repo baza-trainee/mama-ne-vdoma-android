@@ -3,6 +3,7 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.ful
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -14,6 +15,10 @@ import tech.baza_trainee.mama_ne_vdoma.domain.model.UserProfileEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.ifNullOrEmpty
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.LocationRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.Graphs
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.UserProfileRoutes
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.CommonUiState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.model.UserProfileCommunicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.BitmapHelper
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
@@ -25,6 +30,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onSuccess
 
 class FullInfoViewModel(
     private val communicator: UserProfileCommunicator,
+    private val navigator: ScreenNavigator,
     private val userProfileRepository: UserProfileRepository,
     private val locationRepository: LocationRepository
 ): ViewModel() {
@@ -32,8 +38,8 @@ class FullInfoViewModel(
     private val _fullInfoViewState = MutableStateFlow(FullInfoViewState())
     val fullInfoViewState: StateFlow<FullInfoViewState> = _fullInfoViewState.asStateFlow()
 
-    private val _uiState = mutableStateOf<FullInfoUiState>(FullInfoUiState.Idle)
-    val uiState: State<FullInfoUiState>
+    private val _uiState = mutableStateOf<CommonUiState>(CommonUiState.Idle)
+    val uiState: State<CommonUiState>
         get() = _uiState
 
     init {
@@ -50,9 +56,12 @@ class FullInfoViewModel(
         when(event) {
             FullInfoEvent.DeleteUser -> deleteUser()
             is FullInfoEvent.DeleteChild -> deleteChild(event.id)
-            FullInfoEvent.ResetChild -> resetCurrentChild()
-            is FullInfoEvent.SetChild -> setCurrentChild(event.id)
-            FullInfoEvent.ResetUiState -> _uiState.value = FullInfoUiState.Idle
+            FullInfoEvent.AddChild -> resetCurrentChild()
+            is FullInfoEvent.EditChild -> setCurrentChild(event.id)
+            FullInfoEvent.ResetUiState -> _uiState.value = CommonUiState.Idle
+            FullInfoEvent.EditUser -> navigator.navigate(UserProfileRoutes.UserInfo)
+            FullInfoEvent.OnBack -> navigator.navigate(Graphs.Login)
+            FullInfoEvent.OnNext -> TODO()
         }
     }
 
@@ -62,10 +71,10 @@ class FullInfoViewModel(
                 userProfileRepository.deleteUser()
             }
             onSuccess {
-                _uiState.value = FullInfoUiState.OnDelete
+                navigator.navigateOnMain(viewModelScope, Graphs.CreateUser)
             }
             onError { error ->
-                _uiState.value = FullInfoUiState.OnError(error)
+                _uiState.value = CommonUiState.OnError(error)
             }
             onLoading { isLoading ->
                 _fullInfoViewState.update {
@@ -92,7 +101,7 @@ class FullInfoViewModel(
                 communicator.isUserInfoFilled = entity.isNotEmpty()
             }
             onError { error ->
-                _uiState.value = FullInfoUiState.OnError(error)
+                _uiState.value = CommonUiState.OnError(error)
             }
             onLoading { isLoading ->
                 _fullInfoViewState.update {
@@ -149,7 +158,7 @@ class FullInfoViewModel(
                 getChildren()
             }
             onError { error ->
-                _uiState.value = FullInfoUiState.OnError(error)
+                _uiState.value = CommonUiState.OnError(error)
             }
             onLoading { isLoading ->
                 _fullInfoViewState.update {
@@ -176,7 +185,7 @@ class FullInfoViewModel(
                 }
             }
             onError { error ->
-                _uiState.value = FullInfoUiState.OnError(error)
+                _uiState.value = CommonUiState.OnError(error)
             }
             onLoading { isLoading ->
                 _fullInfoViewState.update {
@@ -190,6 +199,7 @@ class FullInfoViewModel(
 
     private fun resetCurrentChild() {
         communicator.currentChildId = ""
+        navigator.navigate(UserProfileRoutes.ChildInfo)
     }
 
     private fun deleteChild(childId: String) {
@@ -201,7 +211,7 @@ class FullInfoViewModel(
                 getChildren()
             }
             onError { error ->
-                _uiState.value = FullInfoUiState.OnError(error)
+                _uiState.value = CommonUiState.OnError(error)
             }
             onLoading { isLoading ->
                 _fullInfoViewState.update {
@@ -215,5 +225,6 @@ class FullInfoViewModel(
 
     private fun setCurrentChild(childId: String = "") {
         communicator.currentChildId = childId
+        navigator.navigate(UserProfileRoutes.ChildSchedule)
     }
 }

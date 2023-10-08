@@ -1,7 +1,8 @@
-package tech.baza_trainee.mama_ne_vdoma.presentation.navigation
+package tech.baza_trainee.mama_ne_vdoma.presentation.navigation.graphs
 
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import org.koin.androidx.compose.navigation.koinNavViewModel
@@ -15,14 +16,13 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.login.Login
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.login.LoginUserScreen
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.new_password.NewPasswordScreen
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.new_password.NewPasswordScreenViewModel
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.restore_password.RestorePasswordEvent
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.restore_password.RestorePasswordScreen
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.restore_password.RestorePasswordScreenViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.restore_success.RestoreSuccessScreen
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.sharedViewModel
 
 fun NavGraphBuilder.loginNavGraph(
-    screenNavigator: ScreenNavigator?
+    navHostController: NavHostController
 ) {
     navigation(
         route = Graphs.Login.route,
@@ -33,21 +33,15 @@ fun NavGraphBuilder.loginNavGraph(
             LoginUserScreen(
                 screenState = loginViewModel.viewState.collectAsStateWithLifecycle(),
                 uiState = loginViewModel.uiState,
-                handleEvent = { loginViewModel.handleLoginEvent(it) },
-                onCreateUser = { screenNavigator?.navigate(Graphs.CreateUser) },
-                onRestore = { screenNavigator?.navigate(LoginRoutes.RestorePassword) },
-                onLogin = { screenNavigator?.navigate(Graphs.UserProfile) },
-                onBack = { screenNavigator?.navigate(Graphs.Start) }
+                handleEvent = { loginViewModel.handleLoginEvent(it) }
             )
         }
         composable(LoginRoutes.RestorePassword.route) { entry ->
-            val restorePasswordScreenViewModel: RestorePasswordScreenViewModel = entry.sharedViewModel(screenNavigator)
+            val restorePasswordScreenViewModel: RestorePasswordScreenViewModel = entry.sharedViewModel(navHostController)
             RestorePasswordScreen(
                 screenState = restorePasswordScreenViewModel.viewState.collectAsStateWithLifecycle(),
                 uiState = restorePasswordScreenViewModel.uiState,
-                handleEvent = { restorePasswordScreenViewModel.handleRestoreEvent(it) },
-                onBack = { screenNavigator?.goBack() },
-                onRestore = { email -> screenNavigator?.navigate(LoginRoutes.EmailConfirm.getDestination(email)) },
+                handleEvent = { restorePasswordScreenViewModel.handleRestoreEvent(it) }
             )
         }
         composable(
@@ -55,15 +49,10 @@ fun NavGraphBuilder.loginNavGraph(
             arguments = LoginRoutes.EmailConfirm.argumentList
         ) { entry ->
             val (email) = LoginRoutes.EmailConfirm.parseArguments(entry)
-            val restorePasswordScreenViewModel: RestorePasswordScreenViewModel = entry.sharedViewModel(screenNavigator)
+            val restorePasswordScreenViewModel: RestorePasswordScreenViewModel = entry.sharedViewModel(navHostController)
             EmailConfirmScreen(
                 email = email,
-                onLogin = {
-                    screenNavigator?.navigate(LoginRoutes.VerifyEmail.getDestination(email, ""))
-                },
-                onSendAgain = {
-                    restorePasswordScreenViewModel.handleRestoreEvent(RestorePasswordEvent.SendEmail)
-                }
+                handleEvent = { restorePasswordScreenViewModel.handleRestoreEvent(it) }
             )
         }
         composable(
@@ -78,10 +67,7 @@ fun NavGraphBuilder.loginNavGraph(
                 screenState = verifyEmailViewModel.viewState.collectAsStateWithLifecycle(),
                 uiState = verifyEmailViewModel.uiState,
                 title = "Відновлення паролю",
-                handleEvent = { verifyEmailViewModel.handleEvent(it) },
-                onRestore = { otp ->
-                    screenNavigator?.navigate(LoginRoutes.NewPassword.getDestination(email, otp)) },
-                onBack = { screenNavigator?.navigate(LoginRoutes.Login) }
+                handleEvent = { verifyEmailViewModel.handleEvent(it) }
             )
         }
         composable(
@@ -95,13 +81,11 @@ fun NavGraphBuilder.loginNavGraph(
             NewPasswordScreen(
                 screenState = newPasswordScreenViewModel.viewState.collectAsStateWithLifecycle(),
                 uiState = newPasswordScreenViewModel.uiState,
-                handleEvent = { newPasswordScreenViewModel.handleNewPasswordEvent(it) },
-                onRestore = { screenNavigator?.navigate(LoginRoutes.RestoreSuccess) },
-                onBack = { screenNavigator?.navigate(LoginRoutes.Login) }
+                handleEvent = { newPasswordScreenViewModel.handleNewPasswordEvent(it) }
             )
         }
         composable(LoginRoutes.RestoreSuccess.route) {
-            RestoreSuccessScreen { screenNavigator?.navigate(LoginRoutes.Login) }
+            RestoreSuccessScreen { navHostController.navigate(LoginRoutes.Login.destination) }
         }
     }
 }
