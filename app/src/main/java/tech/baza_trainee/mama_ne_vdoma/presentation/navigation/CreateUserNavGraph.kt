@@ -45,7 +45,8 @@ fun NavGraphBuilder.createUserNavGraph(
                 uiState = verifyEmailViewModel.uiState,
                 title = "Створити профіль",
                 handleEvent = { verifyEmailViewModel.handleEvent(it) },
-                onLogin = { navController.navigate(Graphs.UserProfile.route) }
+                onLogin = { navController.navigate(Graphs.UserProfile.route) },
+                onBack = { navController.popBackStack() }
             )
         }
     }

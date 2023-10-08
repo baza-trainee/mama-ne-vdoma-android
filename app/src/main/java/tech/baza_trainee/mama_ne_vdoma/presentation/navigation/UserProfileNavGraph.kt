@@ -95,8 +95,7 @@ fun NavGraphBuilder.userProfileGraph(
                 uiState = childScheduleViewModel.uiState,
                 comment = childScheduleViewModel.childComment,
                 handleEvent = { childScheduleViewModel.handleScheduleEvent(it) },
-                { navController.navigate(UserProfileRoutes.FullProfile.route) },
-                { navController.navigate(UserProfileRoutes.FullProfile.route) }
+                onNext = { navController.navigate(UserProfileRoutes.FullProfile.route) }
             )
         }
 //        composable(UserProfileRoutes.ChildrenInfo.route) {

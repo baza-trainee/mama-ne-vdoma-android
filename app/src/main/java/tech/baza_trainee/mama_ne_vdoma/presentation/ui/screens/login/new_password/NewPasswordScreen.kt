@@ -1,6 +1,7 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.new_password
 
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -34,11 +35,14 @@ fun NewPasswordScreen(
     screenState: State<NewPasswordViewState> = mutableStateOf(NewPasswordViewState()),
     uiState: State<CommonUiState> = mutableStateOf(CommonUiState.Idle),
     handleEvent: (NewPasswordEvent) -> Unit = { _ -> },
-    onRestore: () -> Unit = {}
+    onRestore: () -> Unit = {},
+    onBack: () -> Unit = {}
 ) {
     SurfaceWithSystemBars(
         modifier = modifier
     ) {
+        BackHandler { onBack() }
+
         val context = LocalContext.current
 
         when(val state = uiState.value) {

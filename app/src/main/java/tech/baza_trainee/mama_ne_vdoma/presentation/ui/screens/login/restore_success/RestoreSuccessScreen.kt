@@ -1,5 +1,6 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.restore_success
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -26,6 +27,7 @@ fun RestoreSuccessScreen(
     SurfaceWithNavigationBars(
         modifier = modifier
     ) {
+        BackHandler { goToMain() }
         ConstraintLayout(
             modifier = modifier.fillMaxWidth()
         ) {

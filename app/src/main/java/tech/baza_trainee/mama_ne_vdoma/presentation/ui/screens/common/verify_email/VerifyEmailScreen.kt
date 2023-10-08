@@ -1,6 +1,7 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.verify_email
 
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -38,8 +39,11 @@ fun VerifyEmailScreen(
     title: String = "0",
     handleEvent: (VerifyEmailEvent) -> Unit = { _ -> },
     onRestore: (String) -> Unit = {},
-    onLogin: () -> Unit = {}
+    onLogin: () -> Unit = {},
+    onBack: () -> Unit = {}
 ) {
+    BackHandler { onBack() }
+
     SurfaceWithSystemBars {
         val context = LocalContext.current
 

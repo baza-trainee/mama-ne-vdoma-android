@@ -17,8 +17,7 @@ fun ChildScheduleScreen(
     uiState: State<CommonUiState> = mutableStateOf(CommonUiState.Idle),
     comment: State<String> = mutableStateOf(""),
     handleEvent: (ScheduleEvent) -> Unit = {},
-    onNext: () -> Unit,
-    onBack: () -> Unit
+    onNext: () -> Unit = {}
 ) {
     val context = LocalContext.current
 
@@ -41,7 +40,7 @@ fun ChildScheduleScreen(
         onUpdateSchedule = { day, period -> handleEvent(ScheduleEvent.UpdateChildSchedule(day, period)) },
         onUpdateComment = { handleEvent(ScheduleEvent.UpdateChildComment(it)) },
         onNext = { handleEvent(ScheduleEvent.PatchChildSchedule) },
-        onBack = onBack
+        onBack = onNext
     )
 
     if (screenState.value.isLoading) LoadingIndicator()

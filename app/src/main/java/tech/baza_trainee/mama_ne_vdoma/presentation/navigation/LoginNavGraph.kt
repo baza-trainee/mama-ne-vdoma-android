@@ -64,7 +64,7 @@ fun NavGraphBuilder.loginNavGraph(
                 },
                 onSendAgain = {
                     restorePasswordScreenViewModel.handleRestoreEvent(RestorePasswordEvent.SendEmail)
-                },
+                }
             )
         }
         composable(
@@ -81,7 +81,8 @@ fun NavGraphBuilder.loginNavGraph(
                 title = "Відновлення паролю",
                 handleEvent = { verifyEmailViewModel.handleEvent(it) },
                 onRestore = { otp ->
-                    navController.navigate(LoginRoutes.NewPassword.getDestination(email, otp)) }
+                    navController.navigate(LoginRoutes.NewPassword.getDestination(email, otp)) },
+                onBack = { navController.navigate(LoginRoutes.Login.route) }
             )
         }
         composable(
@@ -96,7 +97,9 @@ fun NavGraphBuilder.loginNavGraph(
                 screenState = newPasswordScreenViewModel.viewState.collectAsStateWithLifecycle(),
                 uiState = newPasswordScreenViewModel.uiState,
                 handleEvent = { newPasswordScreenViewModel.handleNewPasswordEvent(it) },
-            ) { navController.navigate(LoginRoutes.RestoreSuccess.route) }
+                onRestore = { navController.navigate(LoginRoutes.RestoreSuccess.route) },
+                onBack = { navController.navigate(LoginRoutes.Login.route) }
+            )
         }
         composable(LoginRoutes.RestoreSuccess.route) {
             RestoreSuccessScreen { navController.navigate(LoginRoutes.Login.route) }
