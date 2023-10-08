@@ -2,7 +2,6 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.navigation
 
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import org.koin.androidx.compose.navigation.koinNavViewModel
@@ -15,7 +14,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.Creat
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.UserCreateViewModel
 
 fun NavGraphBuilder.createUserNavGraph(
-    navController: NavHostController
+    screenNavigator: ScreenNavigator?
 ) {
     navigation(
         route = Graphs.CreateUser.route,
@@ -27,9 +26,9 @@ fun NavGraphBuilder.createUserNavGraph(
                 screenState = userCreateViewModel.viewState.collectAsStateWithLifecycle(),
                 uiState = userCreateViewModel.uiState,
                 handleEvent = { userCreateViewModel.handleUserCreateEvent(it) },
-                onCreateUser = { email, password -> navController.navigate(CreateUserRoute.VerifyEmail.getDestination(email, password)) },
-                onLogin = { navController.navigate(Graphs.Login.route) },
-                onBack = { navController.navigate(Graphs.Start.route) }
+                onCreateUser = { email, password -> screenNavigator?.navigate(CreateUserRoute.VerifyEmail.getDestination(email, password)) },
+                onLogin = { screenNavigator?.navigate(Graphs.Login) },
+                onBack = { screenNavigator?.navigate(Graphs.Start) }
             )
         }
         composable(
@@ -45,8 +44,8 @@ fun NavGraphBuilder.createUserNavGraph(
                 uiState = verifyEmailViewModel.uiState,
                 title = "Створити профіль",
                 handleEvent = { verifyEmailViewModel.handleEvent(it) },
-                onLogin = { navController.navigate(Graphs.UserProfile.route) },
-                onBack = { navController.popBackStack() }
+                onLogin = { screenNavigator?.navigate(Graphs.UserProfile) },
+                onBack = { screenNavigator?.goBack() }
             )
         }
     }

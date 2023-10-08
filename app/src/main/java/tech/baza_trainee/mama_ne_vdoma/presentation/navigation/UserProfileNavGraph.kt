@@ -2,7 +2,6 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.navigation
 
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import org.koin.androidx.compose.navigation.koinNavViewModel
@@ -24,7 +23,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.user
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.user_location.UserLocationViewModel
 
 fun NavGraphBuilder.userProfileGraph(
-    navController: NavHostController
+    screenNavigator: ScreenNavigator?
 ) {
     navigation(
         route = Graphs.UserProfile.route,
@@ -35,12 +34,12 @@ fun NavGraphBuilder.userProfileGraph(
             FullInfoScreen(
                 screenState = fullInfoViewModel.fullInfoViewState.collectAsStateWithLifecycle(),
                 handleEvent = { fullInfoViewModel.handleFullProfileEvent(it) },
-                onBack = { navController.navigate(Graphs.Login.route) },
+                onBack = { screenNavigator?.navigate(Graphs.Login) },
                 onNext = {},
-                onEditUser = { navController.navigate(UserProfileRoutes.UserInfo.route) },
-                onAddChild = { navController.navigate(UserProfileRoutes.ChildInfo.route) },
-                onEditChild = { navController.navigate(UserProfileRoutes.ChildSchedule.route) },
-                onDelete = { navController.navigate(Graphs.CreateUser.route) }
+                onEditUser = { screenNavigator?.navigate(UserProfileRoutes.UserInfo) },
+                onAddChild = { screenNavigator?.navigate(UserProfileRoutes.ChildInfo) },
+                onEditChild = { screenNavigator?.navigate(UserProfileRoutes.ChildSchedule) },
+                onDelete = { screenNavigator?.navigate(Graphs.CreateUser) }
             )
         }
         composable(UserProfileRoutes.UserInfo.route) {
@@ -49,8 +48,8 @@ fun NavGraphBuilder.userProfileGraph(
                 screenState = userInfoViewModel.userInfoScreenState.collectAsStateWithLifecycle(),
                 uiState = userInfoViewModel.uiState,
                 handleEvent = { userInfoViewModel.handleUserInfoEvent(it)},
-                onNext = { navController.navigate(UserProfileRoutes.UserLocation.route) },
-                onEditPhoto = { navController.navigate(UserProfileRoutes.ImageCrop.route) }
+                onNext = { screenNavigator?.navigate(UserProfileRoutes.UserLocation) },
+                onEditPhoto = { screenNavigator?.navigate(UserProfileRoutes.ImageCrop) }
             )
         }
         composable(UserProfileRoutes.ImageCrop.route) {
@@ -58,7 +57,7 @@ fun NavGraphBuilder.userProfileGraph(
             ImageCropScreen(
                 imageForCrop = imageCropViewModel.getUserAvatarBitmap(),
                 onHandleCropEvent = { imageCropViewModel.saveCroppedImage(it) }
-            ) { navController.navigate(UserProfileRoutes.UserInfo.route) }
+            ) { screenNavigator?.navigate(UserProfileRoutes.UserInfo) }
         }
         composable(UserProfileRoutes.UserLocation.route) {
             val userLocationViewModel: UserLocationViewModel = koinNavViewModel()
@@ -66,7 +65,7 @@ fun NavGraphBuilder.userProfileGraph(
                 screenState = userLocationViewModel.locationScreenState.collectAsStateWithLifecycle(),
                 uiState = userLocationViewModel.uiState,
                 handleEvent = { userLocationViewModel.handleUserLocationEvent(it) }
-            ) { navController.navigate(UserProfileRoutes.ParentSchedule.route) }
+            ) { screenNavigator?.navigate(UserProfileRoutes.ParentSchedule) }
         }
         composable(UserProfileRoutes.ParentSchedule.route) {
             val parentScheduleViewModel: ParentScheduleViewModel = koinNavViewModel()
@@ -74,8 +73,8 @@ fun NavGraphBuilder.userProfileGraph(
                 screenState = parentScheduleViewModel.parentScheduleViewState.collectAsStateWithLifecycle(),
                 uiState = parentScheduleViewModel.uiState,
                 handleEvent = { parentScheduleViewModel.handleScheduleEvent(it) },
-                onNext = { navController.navigate(UserProfileRoutes.FullProfile.route) },
-                onBack = { navController.popBackStack() }
+                onNext = { screenNavigator?.navigate(UserProfileRoutes.FullProfile) },
+                onBack = { screenNavigator?.goBack() }
             )
         }
         composable(UserProfileRoutes.ChildInfo.route) {
@@ -84,8 +83,8 @@ fun NavGraphBuilder.userProfileGraph(
                 screenState = childInfoViewModel.childInfoScreenState.collectAsStateWithLifecycle(),
                 uiState = childInfoViewModel.uiState,
                 handleEvent = { childInfoViewModel.handleChildInfoEvent(it) },
-                onNext = { navController.navigate(UserProfileRoutes.ChildSchedule.route,) },
-                onBack = { navController.navigate(UserProfileRoutes.FullProfile.route) }
+                onNext = { screenNavigator?.navigate(UserProfileRoutes.ChildSchedule) },
+                onBack = { screenNavigator?.navigate(UserProfileRoutes.FullProfile) }
             )
         }
         composable(UserProfileRoutes.ChildSchedule.route) {
@@ -95,7 +94,7 @@ fun NavGraphBuilder.userProfileGraph(
                 uiState = childScheduleViewModel.uiState,
                 comment = childScheduleViewModel.childComment,
                 handleEvent = { childScheduleViewModel.handleScheduleEvent(it) },
-                onNext = { navController.navigate(UserProfileRoutes.FullProfile.route) }
+                onNext = { screenNavigator?.navigate(UserProfileRoutes.FullProfile) }
             )
         }
 //        composable(UserProfileRoutes.ChildrenInfo.route) {

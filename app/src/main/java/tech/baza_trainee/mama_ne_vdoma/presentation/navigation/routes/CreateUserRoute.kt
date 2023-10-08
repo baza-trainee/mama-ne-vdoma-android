@@ -37,11 +37,13 @@ sealed class CreateUserRoute(val route: String) {
                 )
             }
 
-            fun getDestination(email: String, password: String): String {
-                return "${BASE_ROUTE}?" +
+            fun getDestination(email: String, password: String): CommonRoute {
+                return CommonRoute(
+                    "${BASE_ROUTE}?" +
                         "${EMAIL}=$email," +
                         "${PASSWORD}=$password" +
                         ""
+                )
             }
         }
     }

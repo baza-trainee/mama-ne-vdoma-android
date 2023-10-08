@@ -1,6 +1,6 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes
 
-sealed class UserProfileRoutes(val route: String) {
+sealed class UserProfileRoutes(val route: String): CommonRoute(route) {
 
     object UserInfo: UserProfileRoutes("user_info_screen")
     object ImageCrop: UserProfileRoutes("user_crop_screen")

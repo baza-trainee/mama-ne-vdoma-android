@@ -5,7 +5,7 @@ import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 
-sealed class LoginRoutes(val route: String) {
+sealed class LoginRoutes(val route: String): CommonRoute(route) {
     object Login: LoginRoutes("login_screen")
     object RestorePassword: LoginRoutes("restore_password_screen")
     object RestoreSuccess: LoginRoutes("restore_success_screen")
@@ -38,11 +38,13 @@ sealed class LoginRoutes(val route: String) {
                 )
             }
 
-            fun getDestination(email: String, password: String): String {
-                return "$BASE_ROUTE_VERIFY?" +
+            fun getDestination(email: String, password: String): CommonRoute {
+                return CommonRoute(
+                    "$BASE_ROUTE_VERIFY?" +
                         "$EMAIL=$email," +
                         "$PASSWORD=$password" +
                         ""
+                )
             }
         }
     }
@@ -75,11 +77,13 @@ sealed class LoginRoutes(val route: String) {
                 )
             }
 
-            fun getDestination(email: String, otp: String): String {
-                return "$BASE_ROUTE_PASSWORD?" +
+            fun getDestination(email: String, otp: String): CommonRoute {
+                return CommonRoute(
+                    "$BASE_ROUTE_PASSWORD?" +
                         "$EMAIL=$email," +
                         "$OTP=$otp" +
                         ""
+                )
             }
         }
     }
@@ -107,10 +111,12 @@ sealed class LoginRoutes(val route: String) {
                 )
             }
 
-            fun getDestination(email: String): String {
-                return "$BASE_ROUTE_EMAIL?" +
+            fun getDestination(email: String): CommonRoute {
+                return CommonRoute(
+                    "$BASE_ROUTE_EMAIL?" +
                         "$EMAIL=$email" +
                         ""
+                )
             }
         }
     }
