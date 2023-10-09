@@ -9,6 +9,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,6 +21,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -37,6 +40,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.app.ActivityCompat
@@ -53,11 +57,13 @@ import java.io.File
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
+@Preview
 fun UserAvatarWithCameraAndGallery(
     modifier: Modifier = Modifier,
     avatar: Bitmap = BitmapHelper.DEFAULT_BITMAP,
-    setUriForCrop: (Uri) -> Unit,
-    onEditPhoto: () -> Unit
+    setUriForCrop: (Uri) -> Unit = {},
+    onEditPhoto: () -> Unit = {},
+    onDeletePhoto: () -> Unit = {}
 ) {
     var showPickerDialog by rememberSaveable { mutableStateOf(false) }
     var photoUri by remember { mutableStateOf(Uri.EMPTY) }
@@ -121,32 +127,44 @@ fun UserAvatarWithCameraAndGallery(
             }
         }
 
-    if (avatar != BitmapHelper.DEFAULT_BITMAP)
-        Image(
-            bitmap = avatar.asImageBitmap(),
-            contentDescription = "avatar",
-            contentScale = ContentScale.Fit,
-            modifier = modifier
-                .width(172.dp)
-                .height(172.dp)
-                .clip(CircleShape)
-                .clickable {
-                    showPickerDialog = true
-                }
-        )
-    else
-        Image(
-            painter = painterResource(id = R.drawable.no_photo),
-            contentDescription = "avatar",
-            contentScale = ContentScale.Fit,
-            modifier = modifier
-                .width(172.dp)
-                .height(172.dp)
-                .clip(CircleShape)
-                .clickable {
-                    showPickerDialog = true
-                }
-        )
+    Box(
+        modifier = Modifier
+            .width(172.dp)
+            .height(172.dp)
+            .clickable {
+                showPickerDialog = true
+            }
+    ) {
+        if (avatar != BitmapHelper.DEFAULT_BITMAP) {
+            Image(
+                bitmap = avatar.asImageBitmap(),
+                contentDescription = "avatar",
+                contentScale = ContentScale.Fit,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(CircleShape)
+            )
+
+            IconButton(
+                modifier = Modifier.align(Alignment.TopEnd),
+                onClick = { onDeletePhoto() }
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_delete),
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary
+                )
+            }
+        } else
+            Image(
+                painter = painterResource(id = R.drawable.no_photo),
+                contentDescription = "avatar",
+                contentScale = ContentScale.Fit,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(CircleShape)
+            )
+    }
 
     if (showPickerDialog) {
         AlertDialog(

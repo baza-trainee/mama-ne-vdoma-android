@@ -67,6 +67,8 @@ class UserInfoViewModel(
             UserInfoEvent.SaveInfo -> saveUserInfo()
             UserInfoEvent.ResetUiState -> _uiState.value = UserInfoUiState.Idle
             UserInfoEvent.OnEditPhoto -> navigator.navigate(UserProfileRoutes.ImageCrop)
+            UserInfoEvent.OnDeletePhoto -> deleteUserAvatar()
+            UserInfoEvent.OnBack -> navigator.navigate(UserProfileRoutes.FullProfile)
         }
     }
 
@@ -74,16 +76,49 @@ class UserInfoViewModel(
         communicator.uriForCrop = uri
     }
 
+    private fun deleteUserAvatar() {
+        networkExecutor {
+            execute {
+                userProfileRepository.deleteUserAvatar()
+            }
+            onSuccess {
+                communicator.apply {
+                    uriForCrop = Uri.EMPTY
+                    userAvatar = BitmapHelper.DEFAULT_BITMAP
+                    avatar = null
+                }
+                _userInfoScreenState.update {
+                    it.copy(
+                        userAvatar = BitmapHelper.DEFAULT_BITMAP
+                    )
+                }
+            }
+            onError { error ->
+                _uiState.value = UserInfoUiState.OnError(error)
+            }
+            onLoading { isLoading ->
+                _userInfoScreenState.update {
+                    it.copy(
+                        isLoading = isLoading
+                    )
+                }
+            }
+        }
+    }
+
     private fun saveUserAvatar(image: Bitmap) {
         viewModelScope.launch(Dispatchers.IO) {
-            val newImage = Bitmap.createScaledBitmap(image, 512, 512, true)
+            val newImage = if (image.height > IMAGE_DIM)
+                Bitmap.createScaledBitmap(image, IMAGE_DIM, IMAGE_DIM, true)
+            else image
             val newImageSize = bitmapHelper.getSize(newImage)
             if (newImageSize < IMAGE_SIZE) {
                 _userInfoScreenState.update {
                     it.copy(
-                        userAvatar = image
+                        userAvatar = newImage
                     )
                 }
+                uploadUserAvatar(newImage)
             } else {
                 _uiState.value = UserInfoUiState.OnAvatarError
             }
@@ -131,6 +166,27 @@ class UserInfoViewModel(
         }
     }
 
+    private fun uploadUserAvatar(image: Bitmap) {
+        networkExecutor<String> {
+            execute {
+                userProfileRepository.saveUserAvatar(image)
+            }
+            onSuccess {
+                communicator.avatar = it
+            }
+            onError { error ->
+                _uiState.value = UserInfoUiState.OnError(error)
+            }
+            onLoading { isLoading ->
+                _userInfoScreenState.update {
+                    it.copy(
+                        isLoading = isLoading
+                    )
+                }
+            }
+        }
+    }
+
     private fun saveUserInfo() {
         networkExecutor {
             execute {
@@ -139,7 +195,7 @@ class UserInfoViewModel(
                         name = _userInfoScreenState.value.name,
                         phone = _userInfoScreenState.value.phone,
                         countryCode = _userInfoScreenState.value.code,
-                        avatar = bitmapHelper.encodeToBase64(_userInfoScreenState.value.userAvatar),
+                        avatar = communicator.avatar,
                         schedule = communicator.schedule
                     )
                 )
@@ -147,7 +203,6 @@ class UserInfoViewModel(
             onSuccess {
                 communicator.apply {
                     name = _userInfoScreenState.value.name
-                    userAvatar = _userInfoScreenState.value.userAvatar
                     code = _userInfoScreenState.value.code
                     phone = _userInfoScreenState.value.phone
                 }
@@ -170,5 +225,6 @@ class UserInfoViewModel(
 
         private val NAME_LENGTH = 2..18
         private const val IMAGE_SIZE = 10 * 1024 * 1024
+        private const val IMAGE_DIM = 512
     }
 }

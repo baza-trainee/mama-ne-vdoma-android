@@ -2,10 +2,13 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.utils
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.util.Base64
+import okhttp3.ResponseBody
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.decodeBitmap
 import java.io.ByteArrayOutputStream
+import java.io.File
 
 class BitmapHelper(private val context: Context) {
 
@@ -27,9 +30,28 @@ class BitmapHelper(private val context: Context) {
         return uri.decodeBitmap(context.contentResolver)
     }
 
+    fun bitmapToMultiPart(bitmap: Bitmap): File {
+        val filename = AVATAR
+        context.openFileOutput(filename, Context.MODE_PRIVATE)
+            .use {
+                bitmap.compress(Bitmap.CompressFormat.PNG, PNG_QUALITY, it)
+                it.flush()
+                it.close()
+            }
+        return File(context.filesDir, filename)
+    }
+
+    fun bitmapFromBody(body: ResponseBody?): Bitmap {
+        body?.let {
+            val fileContents = body.bytes()
+            return BitmapFactory.decodeByteArray(fileContents, 0, fileContents.size)
+        } ?: return DEFAULT_BITMAP
+    }
+
     companion object {
 
         private const val PNG_QUALITY = 75
+        private const val AVATAR = "avatar.png"
 
         val DEFAULT_BITMAP = Bitmap.createBitmap(200, 200, Bitmap.Config.ARGB_8888)
     }

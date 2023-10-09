@@ -66,7 +66,7 @@ class ParentScheduleViewModel(
                         name = communicator.name,
                         phone = communicator.phone,
                         countryCode = communicator.code,
-                        avatar = bitmapHelper.encodeToBase64(communicator.userAvatar),
+                        avatar = communicator.avatar,
                         schedule = _parentScheduleViewState.value.schedule
                     )
                 )

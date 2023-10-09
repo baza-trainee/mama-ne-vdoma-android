@@ -66,7 +66,7 @@ val repoModule = module {
     single { createUserProfileApi(get(), get()) }
     single { createCustomApi<AuthApi>(get()) }
     factory<AuthRepository> { AuthRepositoryImpl(get()) }
-    factory<UserProfileRepository> { UserProfileRepositoryImpl(get()) }
+    factory<UserProfileRepository> { UserProfileRepositoryImpl(get(), get()) }
     factory<LocationDataSource> { LocationDataSourceImpl(androidApplication()) }
     factory<LocationRepository> { LocationRepositoryImpl(get()) }
 

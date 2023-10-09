@@ -1,10 +1,12 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.user_info
 
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
@@ -61,6 +63,8 @@ fun UserInfoScreen(
     SurfaceWithSystemBars(
         modifier = modifier
     ) {
+        BackHandler { handleEvent(UserInfoEvent.OnBack) }
+
         val context = LocalContext.current
 
         when(val state = uiState.value) {
@@ -112,22 +116,25 @@ fun UserInfoScreen(
                     fontFamily = redHatDisplayFontFamily
                 )
 
+                Spacer(modifier = modifier.height(16.dp))
+
                 UserAvatarWithCameraAndGallery(
                     modifier = modifier
-                        .padding(horizontal = 24.dp)
-                        .padding(top = 32.dp),
+                        .padding(horizontal = 24.dp),
                     avatar = screenState.value.userAvatar,
                     setUriForCrop = {
                         handleEvent(UserInfoEvent.SetImageToCrop(it))
                     },
-                    onEditPhoto = { handleEvent(UserInfoEvent.OnEditPhoto) }
+                    onEditPhoto = { handleEvent(UserInfoEvent.OnEditPhoto) },
+                    onDeletePhoto = { handleEvent(UserInfoEvent.OnDeletePhoto) }
                 )
+
+                Spacer(modifier = modifier.height(32.dp))
 
                 OutlinedTextFieldWithError(
                     modifier = modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 24.dp)
-                        .padding(top = 32.dp),
+                        .padding(horizontal = 24.dp),
                     text = screenState.value.name,
                     label = "Вкажіть своє ім'я",
                     onValueChange = { handleEvent(UserInfoEvent.ValidateUserName(it)) },
@@ -135,22 +142,24 @@ fun UserInfoScreen(
                     errorText = "Ви ввели некоректнe ім'я"
                 )
 
+                Spacer(modifier = modifier.height(4.dp))
+
                 Text(
                     modifier = modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 24.dp)
-                        .padding(top = 4.dp),
+                        .padding(horizontal = 24.dp),
                     text = "Ваше ім’я повинне складатись із 2-18 символів і може містити букви та цифри, а також пробіли та дефіси",
                     textAlign = TextAlign.Start,
                     fontFamily = redHatDisplayFontFamily
                 )
 
+                Spacer(modifier = modifier.height(16.dp))
+
                 var isPhoneFocused by remember { mutableStateOf(false) }
 
                 Row(
                     modifier = modifier
-                        .fillMaxWidth()
-                        .padding(top = 16.dp),
+                        .fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     OutlinedTextField(
@@ -208,6 +217,8 @@ fun UserInfoScreen(
                     )
                 }
                 if (screenState.value.phoneValid == ValidField.INVALID && isPhoneFocused) {
+                    Spacer(modifier = modifier.height(4.dp))
+
                     Text(
                         text = "Ви ввели некоректний номер",
                         color = Color.Red,

@@ -1,5 +1,9 @@
 package tech.baza_trainee.mama_ne_vdoma.data.repository
 
+import android.graphics.Bitmap
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
 import tech.baza_trainee.mama_ne_vdoma.data.api.UserProfileApi
 import tech.baza_trainee.mama_ne_vdoma.data.mapper.toDataModel
 import tech.baza_trainee.mama_ne_vdoma.data.mapper.toDomainModel
@@ -12,9 +16,13 @@ import tech.baza_trainee.mama_ne_vdoma.domain.model.UserInfoEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UserLocationEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UserProfileEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.BitmapHelper
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestResult
 
-class UserProfileRepositoryImpl(private val userProfileApi: UserProfileApi): UserProfileRepository {
+class UserProfileRepositoryImpl(
+    private val userProfileApi: UserProfileApi,
+    private val bitmapHelper: BitmapHelper
+): UserProfileRepository {
 
     override suspend fun getUserInfo(): RequestResult<UserProfileEntity?> {
         val result = userProfileApi.getUserInfo()
@@ -77,5 +85,35 @@ class UserProfileRepositoryImpl(private val userProfileApi: UserProfileApi): Use
         return if (result.isSuccessful)
             RequestResult.Success(Unit)
         else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage())
+    }
+
+    override suspend fun saveUserAvatar(image: Bitmap): RequestResult<String> {
+        val file = bitmapHelper.bitmapToMultiPart(image)
+        val fileBody = file.asRequestBody(MIME_IMAGE_PNG.toMediaTypeOrNull())
+        val filePart = MultipartBody.Part.createFormData(IMAGE, file.name, fileBody)
+        val result = userProfileApi.saveUserAvatar(filePart)
+        return if (result.isSuccessful)
+            RequestResult.Success(result.body().orEmpty())
+        else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage())
+    }
+
+    override suspend fun getUserAvatar(url: String): RequestResult<Bitmap> {
+        val result = userProfileApi.getUserAvatar(url)
+        return if (result.isSuccessful)
+            RequestResult.Success(bitmapHelper.bitmapFromBody(result.body()))
+        else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage())
+    }
+
+    override suspend fun deleteUserAvatar(): RequestResult<Unit> {
+        val result = userProfileApi.deleteUserAvatar()
+        return if (result.isSuccessful)
+            RequestResult.Success(Unit)
+        else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage())
+    }
+
+    companion object {
+
+        private const val IMAGE = "image"
+        private const val MIME_IMAGE_PNG = "image/png"
     }
 }

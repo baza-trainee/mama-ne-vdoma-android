@@ -9,6 +9,7 @@ class UserProfileCommunicator {
     var code = ""
     var phone = ""
     var address = ""
+    var avatar: String? = null
     var schedule = ScheduleModel()
     var uriForCrop: Uri = Uri.EMPTY
     var userAvatar = BitmapHelper.DEFAULT_BITMAP

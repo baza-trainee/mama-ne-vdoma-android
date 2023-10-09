@@ -22,7 +22,6 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.CommonUiSt
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.model.UserProfileCommunicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.BitmapHelper
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.decodeBase64ToBitmap
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.networkExecutor
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onError
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onLoading
@@ -123,16 +122,11 @@ class FullInfoViewModel(
                         !entity?.phone.isNullOrEmpty() &&
                         !entity?.schedule?.schedule.isNullOrEmpty()
 
-                val avatar = entity?.avatar.orEmpty()
-                val image = if (avatar.isEmpty())
-                    BitmapHelper.DEFAULT_BITMAP
-                else
-                    avatar.decodeBase64ToBitmap()
+                getUserAvatar(entity?.avatar.orEmpty())
 
                 _fullInfoViewState.update {
                     it.copy(
                         name = entity?.name.orEmpty(),
-                        userAvatar = image,
                         schedule = entity?.schedule.ifNullOrEmpty { ScheduleModel() },
                         isUserInfoFilled = _isUserInfoFilled
                     )
@@ -141,7 +135,6 @@ class FullInfoViewModel(
                 communicator.apply {
                     isUserInfoFilled = _isUserInfoFilled
                     name = entity?.name.orEmpty()
-                    userAvatar = image
                     code = entity?.countryCode.orEmpty()
                     phone = entity?.phone.orEmpty()
                     schedule = entity?.schedule.ifNullOrEmpty { ScheduleModel() }
@@ -169,6 +162,40 @@ class FullInfoViewModel(
             }
         }
     }
+
+    private fun getUserAvatar(avatarId: String) {
+        if (avatarId.isEmpty()) {
+            communicator.apply {
+                userAvatar = BitmapHelper.DEFAULT_BITMAP
+                avatar = null
+            }
+            _fullInfoViewState.update {
+                it.copy(
+                    userAvatar = BitmapHelper.DEFAULT_BITMAP
+                )
+            }
+        } else
+            networkExecutor {
+                execute { userProfileRepository.getUserAvatar(avatarId) }
+                onSuccess { bmp ->
+                    communicator.userAvatar = bmp
+                    _fullInfoViewState.update {
+                        it.copy(userAvatar = bmp)
+                    }
+                }
+                onError { error ->
+                    _uiState.value = CommonUiState.OnError(error)
+                }
+                onLoading { isLoading ->
+                    _fullInfoViewState.update {
+                        it.copy(
+                            isLoading = isLoading
+                        )
+                    }
+                }
+            }
+    }
+
 
     private fun getAddressFromLocation(latLng: LatLng) {
         networkExecutor<String?> {

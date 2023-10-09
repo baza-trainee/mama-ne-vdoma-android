@@ -1,5 +1,6 @@
 package tech.baza_trainee.mama_ne_vdoma.domain.repository
 
+import android.graphics.Bitmap
 import tech.baza_trainee.mama_ne_vdoma.domain.model.ChildEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.InitChildEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.PatchChildEntity
@@ -27,4 +28,10 @@ interface UserProfileRepository {
     suspend fun patchChildById(childId: String, data: PatchChildEntity): RequestResult<ChildEntity?>
 
     suspend fun deleteChildById(childId: String): RequestResult<Unit>
+
+    suspend fun saveUserAvatar(image: Bitmap): RequestResult<String>
+
+    suspend fun getUserAvatar(url: String): RequestResult<Bitmap>
+
+    suspend fun deleteUserAvatar(): RequestResult<Unit>
 }

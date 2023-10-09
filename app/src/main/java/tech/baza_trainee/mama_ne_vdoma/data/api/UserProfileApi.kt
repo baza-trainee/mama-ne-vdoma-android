@@ -1,11 +1,15 @@
 package tech.baza_trainee.mama_ne_vdoma.data.api
 
+import okhttp3.MultipartBody
+import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.Multipart
 import retrofit2.http.PATCH
 import retrofit2.http.POST
+import retrofit2.http.Part
 import retrofit2.http.Path
 import tech.baza_trainee.mama_ne_vdoma.data.model.ChildDto
 import tech.baza_trainee.mama_ne_vdoma.data.model.InitChildDto
@@ -42,4 +46,14 @@ interface UserProfileApi {
 
     @DELETE("api/child/{id}")
     suspend fun deleteChildById(@Path("id") childId: String): Response<Unit>
+
+    @POST("api/files/image")
+    @Multipart
+    suspend fun saveUserAvatar(@Part image: MultipartBody.Part): Response<String>
+
+    @GET("api/files/{url}")
+    suspend fun getUserAvatar(@Path("url") url: String): Response<ResponseBody>
+
+    @DELETE("api/parent/photo")
+    suspend fun deleteUserAvatar(): Response<Unit>
 }
