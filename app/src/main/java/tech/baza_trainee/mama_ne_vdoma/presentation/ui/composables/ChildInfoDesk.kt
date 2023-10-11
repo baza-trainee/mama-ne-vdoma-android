@@ -93,7 +93,7 @@ fun ChildInfoDesk(
                 Text(
                     text = String.format("%s р.", child.age),
                     fontFamily = redHatDisplayFontFamily,
-                    fontSize = 14.sp,
+                    fontSize = 14.sp
                 )
             }
             IconButton(onClick = { onEdit(child.childId) }) {
