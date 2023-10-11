@@ -3,8 +3,10 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.utils
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Color
 import android.net.Uri
 import android.util.Base64
+import androidx.core.graphics.applyCanvas
 import okhttp3.ResponseBody
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.decodeBitmap
 import java.io.ByteArrayOutputStream
@@ -53,6 +55,8 @@ class BitmapHelper(private val context: Context) {
         private const val PNG_QUALITY = 75
         private const val AVATAR = "avatar.png"
 
-        val DEFAULT_BITMAP = Bitmap.createBitmap(200, 200, Bitmap.Config.ARGB_8888)
+        val DEFAULT_BITMAP = Bitmap.createBitmap(200, 200, Bitmap.Config.ARGB_8888).applyCanvas {
+            drawColor(Color.RED)
+        }
     }
 }

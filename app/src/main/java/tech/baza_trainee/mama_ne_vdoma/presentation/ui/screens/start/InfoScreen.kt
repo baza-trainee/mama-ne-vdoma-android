@@ -32,6 +32,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -213,7 +214,13 @@ fun InfoScreen(
                                 }
                             }
                         ) {
-                            Text(text = ">", fontSize = 24.sp)
+                            Image(
+                                modifier = modifier
+                                    .rotate(180f),
+                                painter = painterResource(id = R.drawable.arrow_back),
+                                contentDescription = "start",
+                                alignment = Alignment.Center
+                            )
                         }
                     }
                 }
