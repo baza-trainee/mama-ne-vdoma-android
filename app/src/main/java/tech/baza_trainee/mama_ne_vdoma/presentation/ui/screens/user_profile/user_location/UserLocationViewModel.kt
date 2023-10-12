@@ -14,8 +14,8 @@ import tech.baza_trainee.mama_ne_vdoma.domain.repository.LocationRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.UserProfileRoutes
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.CommonUiState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.model.UserProfileCommunicator
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.networkExecutor
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onError
@@ -33,8 +33,8 @@ class UserLocationViewModel(
     private val _locationScreenState = MutableStateFlow(UserLocationViewState())
     val locationScreenState: StateFlow<UserLocationViewState> = _locationScreenState.asStateFlow()
 
-    private val _uiState = mutableStateOf<CommonUiState>(CommonUiState.Idle)
-    val uiState: State<CommonUiState>
+    private val _uiState = mutableStateOf<RequestState>(RequestState.Idle)
+    val uiState: State<RequestState>
         get() = _uiState
 
     init {
@@ -49,7 +49,7 @@ class UserLocationViewModel(
 
     fun handleUserLocationEvent(event: UserLocationEvent) {
         when(event) {
-            UserLocationEvent.ResetUiState -> _uiState.value = CommonUiState.Idle
+            UserLocationEvent.ResetUiState -> _uiState.value = RequestState.Idle
             UserLocationEvent.GetLocationFromAddress -> getLocationFromAddress()
             UserLocationEvent.RequestUserLocation -> requestCurrentLocation()
             is UserLocationEvent.UpdateUserAddress -> updateUserAddress(event.address)
@@ -89,7 +89,7 @@ class UserLocationViewModel(
                 navigator.navigateOnMain(viewModelScope, UserProfileRoutes.ParentSchedule)
             }
             onError { error ->
-                _uiState.value = CommonUiState.OnError(error)
+                _uiState.value = RequestState.OnError(error)
             }
             onLoading { isLoading ->
                 _locationScreenState.update {
@@ -117,7 +117,7 @@ class UserLocationViewModel(
                 }
             }
             onError { error ->
-                _uiState.value = CommonUiState.OnError(error)
+                _uiState.value = RequestState.OnError(error)
             }
             onLoading { isLoading ->
                 _locationScreenState.update {
@@ -154,7 +154,7 @@ class UserLocationViewModel(
                 }
             }
             onError { error ->
-                _uiState.value = CommonUiState.OnError(error)
+                _uiState.value = RequestState.OnError(error)
             }
             onLoading { isLoading ->
                 _locationScreenState.update {
@@ -175,7 +175,7 @@ class UserLocationViewModel(
                 updateUserAddress(it.orEmpty())
             }
             onError { error ->
-                _uiState.value = CommonUiState.OnError(error)
+                _uiState.value = RequestState.OnError(error)
             }
             onLoading { isLoading ->
                 _locationScreenState.update {

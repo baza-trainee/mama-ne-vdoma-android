@@ -14,8 +14,8 @@ import tech.baza_trainee.mama_ne_vdoma.domain.model.InitChildEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.UserProfileRoutes
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.CommonUiState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.model.UserProfileCommunicator
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.networkExecutor
@@ -32,14 +32,14 @@ class ChildInfoViewModel(
     private val _childInfoScreenState = MutableStateFlow(ChildInfoViewState())
     val childInfoScreenState: StateFlow<ChildInfoViewState> = _childInfoScreenState.asStateFlow()
 
-    private val _uiState = mutableStateOf<CommonUiState>(CommonUiState.Idle)
-    val uiState: State<CommonUiState>
+    private val _uiState = mutableStateOf<RequestState>(RequestState.Idle)
+    val uiState: State<RequestState>
         get() = _uiState
 
     fun handleChildInfoEvent(event: ChildInfoEvent) {
         when(event) {
             ChildInfoEvent.SaveChild -> saveChild()
-            ChildInfoEvent.ResetUiState -> _uiState.value = CommonUiState.Idle
+            ChildInfoEvent.ResetUiState -> _uiState.value = RequestState.Idle
             is ChildInfoEvent.SetGender -> setGender(event.gender)
             is ChildInfoEvent.ValidateAge -> validateAge(event.age)
             is ChildInfoEvent.ValidateChildName -> validateChildName(event.name)
@@ -92,7 +92,7 @@ class ChildInfoViewModel(
                 navigator.navigateOnMain(viewModelScope, UserProfileRoutes.ChildSchedule)
             }
             onError { error ->
-                _uiState.value = CommonUiState.OnError(error)
+                _uiState.value = RequestState.OnError(error)
             }
             onLoading { isLoading ->
                 _childInfoScreenState.update {

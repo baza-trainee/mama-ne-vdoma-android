@@ -32,15 +32,15 @@ import androidx.compose.ui.unit.sp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.LoadingIndicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.OutlinedTextFieldWithError
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.SurfaceWithSystemBars
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.CommonUiState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 
 @Composable
 fun RestorePasswordScreen(
     modifier: Modifier = Modifier,
     screenState: State<RestorePasswordViewState> = mutableStateOf(RestorePasswordViewState()),
-    uiState: State<CommonUiState> = mutableStateOf(CommonUiState.Idle),
+    uiState: State<RequestState> = mutableStateOf(RequestState.Idle),
     handleEvent: (RestorePasswordEvent) -> Unit = { _ -> }
 ) {
     SurfaceWithSystemBars(
@@ -49,8 +49,8 @@ fun RestorePasswordScreen(
         val context = LocalContext.current
 
         when(val state = uiState.value) {
-            CommonUiState.Idle -> Unit
-            is CommonUiState.OnError -> {
+            RequestState.Idle -> Unit
+            is RequestState.OnError -> {
                 if (state.error.isNotBlank()) Toast.makeText(
                     context,
                     state.error,

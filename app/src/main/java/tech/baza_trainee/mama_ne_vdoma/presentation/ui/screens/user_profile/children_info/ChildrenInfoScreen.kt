@@ -20,7 +20,6 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -47,8 +46,6 @@ fun  ChildrenInfoScreen(
     SurfaceWithNavigationBars(
         modifier = modifier
     ) {
-        val context = LocalContext.current
-
         ConstraintLayout(
             modifier = modifier
                 .imePadding()

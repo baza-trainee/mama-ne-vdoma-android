@@ -28,7 +28,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.LoadingIndica
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.OutlinedTextFieldWithError
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.RadioGroup
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.SurfaceWithNavigationBars
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.CommonUiState
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.ButtonText
 
@@ -36,7 +36,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.ButtonText
 fun ChildInfoScreen(
     modifier: Modifier = Modifier,
     screenState: State<ChildInfoViewState> = mutableStateOf(ChildInfoViewState()),
-    uiState: State<CommonUiState> = mutableStateOf(CommonUiState.Idle),
+    uiState: State<RequestState> = mutableStateOf(RequestState.Idle),
     handleEvent: (ChildInfoEvent) -> Unit = { _ -> }
 ) {
     SurfaceWithNavigationBars {
@@ -45,8 +45,8 @@ fun ChildInfoScreen(
         val context = LocalContext.current
 
         when(val state = uiState.value) {
-            CommonUiState.Idle -> Unit
-            is CommonUiState.OnError -> {
+            RequestState.Idle -> Unit
+            is RequestState.OnError -> {
                 if (state.error.isNotBlank()) Toast.makeText(
                     context,
                     state.error,

@@ -1,6 +1,5 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -22,7 +21,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 @Preview
 fun HeaderWithToolbar(
@@ -40,7 +38,7 @@ fun HeaderWithToolbar(
     ) {
         ToolbarWithAvatar(
             title = ""
-        )
+        ) { onBack() }
 
         Spacer(modifier = modifier.height(16.dp))
 

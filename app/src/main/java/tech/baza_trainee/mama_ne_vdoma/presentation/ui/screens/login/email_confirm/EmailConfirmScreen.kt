@@ -26,15 +26,15 @@ import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.HeaderWithOptArrow
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.SurfaceWithNavigationBars
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.getTextWithUnderline
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.CommonUiState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.restore_password.RestorePasswordEvent
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.ButtonText
 
 @Composable
 fun EmailConfirmScreen(
     modifier: Modifier = Modifier,
-    uiState: State<CommonUiState> = mutableStateOf(CommonUiState.Idle),
+    uiState: State<RequestState> = mutableStateOf(RequestState.Idle),
     email: String = "",
     handleEvent: (RestorePasswordEvent) -> Unit = { _ -> }
 ) {
@@ -44,8 +44,8 @@ fun EmailConfirmScreen(
         val context = LocalContext.current
 
         when(val state = uiState.value) {
-            CommonUiState.Idle -> Unit
-            is CommonUiState.OnError -> {
+            RequestState.Idle -> Unit
+            is RequestState.OnError -> {
                 if (state.error.isNotBlank()) Toast.makeText(
                     context,
                     state.error,

@@ -12,7 +12,7 @@ import tech.baza_trainee.mama_ne_vdoma.domain.model.RestorePasswordEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.AuthRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.LoginRoutes
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.CommonUiState
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.networkExecutor
@@ -31,8 +31,8 @@ class NewPasswordScreenViewModel(
     private val _viewState = MutableStateFlow(NewPasswordViewState())
     val viewState: StateFlow<NewPasswordViewState> = _viewState.asStateFlow()
 
-    private val _uiState = mutableStateOf<CommonUiState>(CommonUiState.Idle)
-    val uiState: State<CommonUiState>
+    private val _uiState = mutableStateOf<RequestState>(RequestState.Idle)
+    val uiState: State<RequestState>
         get() = _uiState
 
 
@@ -42,7 +42,7 @@ class NewPasswordScreenViewModel(
             NewPasswordEvent.ResetPassword -> resetPassword()
             is NewPasswordEvent.ValidatePassword -> validatePassword(event.password)
             is NewPasswordEvent.ValidateConfirmPassword -> validateConfirmPassword(event.confirmPassword)
-            NewPasswordEvent.ResetUiState -> _uiState.value = CommonUiState.Idle
+            NewPasswordEvent.ResetUiState -> _uiState.value = RequestState.Idle
         }
     }
 
@@ -92,7 +92,7 @@ class NewPasswordScreenViewModel(
                 navigator.navigateOnMain(viewModelScope, LoginRoutes.RestoreSuccess)
             }
             onError { error ->
-                _uiState.value = CommonUiState.OnError(error)
+                _uiState.value = RequestState.OnError(error)
             }
             onLoading { isLoading ->
                 _viewState.update {

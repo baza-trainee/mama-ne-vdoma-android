@@ -16,10 +16,10 @@ import tech.baza_trainee.mama_ne_vdoma.domain.model.ScheduleModel
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.UserProfileRoutes
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.CommonUiState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.model.UserProfileCommunicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.schedule.ScheduleEvent
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.schedule.ScheduleViewState
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.networkExecutor
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onError
@@ -36,8 +36,8 @@ class ChildScheduleViewModel(
     private val _childScheduleViewState = MutableStateFlow(ScheduleViewState())
     val childScheduleViewState: StateFlow<ScheduleViewState> = _childScheduleViewState.asStateFlow()
 
-    private val _uiState = mutableStateOf<CommonUiState>(CommonUiState.Idle)
-    val uiState: State<CommonUiState>
+    private val _uiState = mutableStateOf<RequestState>(RequestState.Idle)
+    val uiState: State<RequestState>
         get() = _uiState
 
 
@@ -53,7 +53,7 @@ class ChildScheduleViewModel(
         when(event) {
             ScheduleEvent.OnBack -> navigator.navigate(UserProfileRoutes.FullProfile)
             ScheduleEvent.PatchChildSchedule -> patchChild()
-            ScheduleEvent.ResetUiState -> _uiState.value = CommonUiState.Idle
+            ScheduleEvent.ResetUiState -> _uiState.value = RequestState.Idle
             is ScheduleEvent.UpdateChildComment -> updateChildComment(event.comment)
             is ScheduleEvent.UpdateChildSchedule -> updateChildSchedule(event.day, event.period)
             else -> Unit
@@ -179,7 +179,7 @@ class ChildScheduleViewModel(
                 }
             }
             onError { error ->
-                _uiState.value = CommonUiState.OnError(error)
+                _uiState.value = RequestState.OnError(error)
             }
             onLoading { isLoading ->
                 _childScheduleViewState.update {
@@ -207,7 +207,7 @@ class ChildScheduleViewModel(
                 navigator.navigateOnMain(viewModelScope, UserProfileRoutes.FullProfile)
             }
             onError { error ->
-                _uiState.value = CommonUiState.OnError(error)
+                _uiState.value = RequestState.OnError(error)
             }
             onLoading { isLoading ->
                 _childScheduleViewState.update {

@@ -14,11 +14,11 @@ import tech.baza_trainee.mama_ne_vdoma.domain.model.UserInfoEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.UserProfileRoutes
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.CommonUiState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.model.UserProfileCommunicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.schedule.ScheduleEvent
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.schedule.ScheduleViewState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.BitmapHelper
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.networkExecutor
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onError
@@ -36,8 +36,8 @@ class ParentScheduleViewModel(
     private val _parentScheduleViewState = MutableStateFlow(ScheduleViewState())
     val parentScheduleViewState: StateFlow<ScheduleViewState> = _parentScheduleViewState.asStateFlow()
 
-    private val _uiState = mutableStateOf<CommonUiState>(CommonUiState.Idle)
-    val uiState: State<CommonUiState>
+    private val _uiState = mutableStateOf<RequestState>(RequestState.Idle)
+    val uiState: State<RequestState>
         get() = _uiState
 
     init {
@@ -52,7 +52,7 @@ class ParentScheduleViewModel(
         when(event) {
             ScheduleEvent.OnBack -> navigator.goBack()
             ScheduleEvent.PatchParentSchedule -> saveParentSchedule()
-            ScheduleEvent.ResetUiState -> _uiState.value = CommonUiState.Idle
+            ScheduleEvent.ResetUiState -> _uiState.value = RequestState.Idle
             is ScheduleEvent.UpdateParentSchedule -> updateParentSchedule(event.day, event.period)
             else -> Unit
         }
@@ -76,7 +76,7 @@ class ParentScheduleViewModel(
                 navigator.navigateOnMain(viewModelScope, UserProfileRoutes.FullProfile)
             }
             onError { error ->
-                _uiState.value = CommonUiState.OnError(error)
+                _uiState.value = RequestState.OnError(error)
             }
             onLoading { isLoading ->
                 _parentScheduleViewState.update {

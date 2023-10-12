@@ -14,8 +14,8 @@ import tech.baza_trainee.mama_ne_vdoma.domain.repository.LocationRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.UserProfileRoutes
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.CommonUiState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.model.UserProfileCommunicator
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.networkExecutor
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onError
@@ -33,8 +33,8 @@ class SetAreaViewModel(
     private val _locationScreenState = MutableStateFlow(SetAreaViewState())
     val locationScreenState: StateFlow<SetAreaViewState> = _locationScreenState.asStateFlow()
 
-    private val _uiState = mutableStateOf<CommonUiState>(CommonUiState.Idle)
-    val uiState: State<CommonUiState>
+    private val _uiState = mutableStateOf<RequestState>(RequestState.Idle)
+    val uiState: State<RequestState>
         get() = _uiState
 
     init {
@@ -49,12 +49,13 @@ class SetAreaViewModel(
 
     fun handleUserLocationEvent(event: SetAreaEvent) {
         when(event) {
-            SetAreaEvent.ResetUiState -> _uiState.value = CommonUiState.Idle
+            SetAreaEvent.ResetUiState -> _uiState.value = RequestState.Idle
             SetAreaEvent.GetLocationFromAddress -> getLocationFromAddress()
-            SetAreaEvent.RequestSetArea -> requestCurrentLocation()
+            SetAreaEvent.RequestLocation -> requestCurrentLocation()
             is SetAreaEvent.UpdateUserAddress -> updateUserAddress(event.address)
-            SetAreaEvent.SaveSetArea -> saveUserLocation()
+            is SetAreaEvent.SetAreaRadius -> Unit
             is SetAreaEvent.OnMapClick -> setLocation(event.location)
+            SetAreaEvent.SaveLocation -> saveUserLocation()
         }
     }
 
@@ -89,7 +90,7 @@ class SetAreaViewModel(
                 navigator.navigateOnMain(viewModelScope, UserProfileRoutes.ParentSchedule)
             }
             onError { error ->
-                _uiState.value = CommonUiState.OnError(error)
+                _uiState.value = RequestState.OnError(error)
             }
             onLoading { isLoading ->
                 _locationScreenState.update {
@@ -117,7 +118,7 @@ class SetAreaViewModel(
                 }
             }
             onError { error ->
-                _uiState.value = CommonUiState.OnError(error)
+                _uiState.value = RequestState.OnError(error)
             }
             onLoading { isLoading ->
                 _locationScreenState.update {
@@ -154,7 +155,7 @@ class SetAreaViewModel(
                 }
             }
             onError { error ->
-                _uiState.value = CommonUiState.OnError(error)
+                _uiState.value = RequestState.OnError(error)
             }
             onLoading { isLoading ->
                 _locationScreenState.update {
@@ -175,7 +176,7 @@ class SetAreaViewModel(
                 updateUserAddress(it.orEmpty())
             }
             onError { error ->
-                _uiState.value = CommonUiState.OnError(error)
+                _uiState.value = RequestState.OnError(error)
             }
             onLoading { isLoading ->
                 _locationScreenState.update {

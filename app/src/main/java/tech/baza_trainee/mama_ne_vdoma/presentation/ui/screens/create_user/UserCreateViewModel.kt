@@ -12,7 +12,7 @@ import tech.baza_trainee.mama_ne_vdoma.domain.repository.AuthRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.CreateUserRoute
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.Graphs
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.CommonUiState
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.networkExecutor
@@ -30,14 +30,14 @@ class UserCreateViewModel(
     private val _viewState = MutableStateFlow(UserCreateViewState())
     val viewState: StateFlow<UserCreateViewState> = _viewState.asStateFlow()
 
-    private val _uiState = mutableStateOf<CommonUiState>(CommonUiState.Idle)
-    val uiState: State<CommonUiState>
+    private val _uiState = mutableStateOf<RequestState>(RequestState.Idle)
+    val uiState: State<RequestState>
         get() = _uiState
 
     fun handleUserCreateEvent(event: UserCreateEvent) {
         when(event) {
             UserCreateEvent.RegisterUser -> registerUser()
-            UserCreateEvent.ResetUiState -> _uiState.value = CommonUiState.Idle
+            UserCreateEvent.ResetUiState -> _uiState.value = RequestState.Idle
             is UserCreateEvent.UpdatePolicyCheck -> updatePolicyCheck(event.isChecked)
             is UserCreateEvent.ValidateConfirmPassword -> validateConfirmPassword(event.confirmPassword)
             is UserCreateEvent.ValidateEmail -> validateEmail(event.email)
@@ -125,7 +125,7 @@ class UserCreateViewModel(
                 navigator.navigate(CreateUserRoute.VerifyEmail.getDestination(_viewState.value.email, _viewState.value.password))
             }
             onError { error ->
-                _uiState.value = CommonUiState.OnError(error)
+                _uiState.value = RequestState.OnError(error)
             }
             onLoading { isLoading ->
                 _viewState.update {

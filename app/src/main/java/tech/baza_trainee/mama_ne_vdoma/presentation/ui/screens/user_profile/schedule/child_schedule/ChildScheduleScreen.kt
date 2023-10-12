@@ -7,22 +7,22 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.platform.LocalContext
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.LoadingIndicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.ScheduleScreen
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.CommonUiState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.schedule.ScheduleEvent
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.schedule.ScheduleViewState
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 
 @Composable
 fun ChildScheduleScreen(
     screenState: State<ScheduleViewState> = mutableStateOf(ScheduleViewState()),
-    uiState: State<CommonUiState> = mutableStateOf(CommonUiState.Idle),
+    uiState: State<RequestState> = mutableStateOf(RequestState.Idle),
     comment: State<String> = mutableStateOf(""),
     handleEvent: (ScheduleEvent) -> Unit = {}
 ) {
     val context = LocalContext.current
 
     when(val state = uiState.value) {
-        CommonUiState.Idle -> Unit
-        is CommonUiState.OnError -> {
+        RequestState.Idle -> Unit
+        is RequestState.OnError -> {
             if (state.error.isNotBlank()) Toast.makeText(context, state.error, Toast.LENGTH_LONG).show()
             handleEvent(ScheduleEvent.ResetUiState)
         }

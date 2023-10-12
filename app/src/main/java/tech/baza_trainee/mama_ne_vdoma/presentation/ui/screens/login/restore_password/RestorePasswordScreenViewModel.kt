@@ -12,7 +12,7 @@ import tech.baza_trainee.mama_ne_vdoma.domain.model.RequestWithEmailEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.AuthRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.LoginRoutes
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.CommonUiState
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.networkExecutor
@@ -29,15 +29,15 @@ class RestorePasswordScreenViewModel(
     private val _viewState = MutableStateFlow(RestorePasswordViewState())
     val viewState: StateFlow<RestorePasswordViewState> = _viewState.asStateFlow()
 
-    private val _uiState = mutableStateOf<CommonUiState>(CommonUiState.Idle)
-    val uiState: State<CommonUiState>
+    private val _uiState = mutableStateOf<RequestState>(RequestState.Idle)
+    val uiState: State<RequestState>
         get() = _uiState
 
     fun handleRestoreEvent(event: RestorePasswordEvent) {
         when(event) {
             RestorePasswordEvent.OnBack -> navigator.goBack()
             RestorePasswordEvent.SendEmail -> forgetPassword()
-            RestorePasswordEvent.ResetUiState -> _uiState.value = CommonUiState.Idle
+            RestorePasswordEvent.ResetUiState -> _uiState.value = RequestState.Idle
 
             is RestorePasswordEvent.ValidateEmail -> validateEmail(event.email)
             is RestorePasswordEvent.OnLogin -> navigator.navigate(LoginRoutes.VerifyEmail.getDestination(event.email, ""))
@@ -69,7 +69,7 @@ class RestorePasswordScreenViewModel(
                 navigator.navigateOnMain(viewModelScope, LoginRoutes.EmailConfirm.getDestination(_viewState.value.email))
             }
             onError { error ->
-                _uiState.value = CommonUiState.OnError(error)
+                _uiState.value = RequestState.OnError(error)
             }
             onLoading { isLoading ->
                 _viewState.update {

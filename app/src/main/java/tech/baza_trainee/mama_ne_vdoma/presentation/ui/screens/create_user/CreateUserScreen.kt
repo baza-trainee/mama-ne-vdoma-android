@@ -35,8 +35,8 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.PasswordTextF
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.SocialLoginBlock
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.SurfaceWithSystemBars
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.getTextWithUnderline
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.CommonUiState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.ButtonText
 
@@ -44,7 +44,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.ButtonText
 fun CreateUserScreen(
     modifier: Modifier = Modifier,
     screenState: State<UserCreateViewState> = mutableStateOf(UserCreateViewState()),
-    uiState: State<CommonUiState> = mutableStateOf(CommonUiState.Idle),
+    uiState: State<RequestState> = mutableStateOf(RequestState.Idle),
     handleEvent: (UserCreateEvent) -> Unit = { _ -> }
 ) {
     SurfaceWithSystemBars(
@@ -55,8 +55,8 @@ fun CreateUserScreen(
         val context = LocalContext.current
 
         when(val state = uiState.value) {
-            CommonUiState.Idle -> Unit
-            is CommonUiState.OnError -> {
+            RequestState.Idle -> Unit
+            is RequestState.OnError -> {
                 if (state.error.isNotBlank()) Toast.makeText(
                     context,
                     state.error,

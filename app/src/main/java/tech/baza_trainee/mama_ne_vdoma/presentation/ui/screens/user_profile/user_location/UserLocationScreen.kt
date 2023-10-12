@@ -39,14 +39,14 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.HeaderWithOpt
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.LoadingIndicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.LocationPermission
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.SurfaceWithNavigationBars
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.CommonUiState
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.ButtonText
 
 @Composable
 fun UserLocationScreen(
     modifier: Modifier = Modifier,
     screenState: State<UserLocationViewState> = mutableStateOf(UserLocationViewState()),
-    uiState: State<CommonUiState> = mutableStateOf(CommonUiState.Idle),
+    uiState: State<RequestState> = mutableStateOf(RequestState.Idle),
     handleEvent: (UserLocationEvent) -> Unit = { _ -> }
 ) {
     SurfaceWithNavigationBars(
@@ -55,8 +55,8 @@ fun UserLocationScreen(
         val context = LocalContext.current
 
         when(val state = uiState.value) {
-            CommonUiState.Idle -> Unit
-            is CommonUiState.OnError -> {
+            RequestState.Idle -> Unit
+            is RequestState.OnError -> {
                 if (state.error.isNotBlank()) Toast.makeText(
                     context,
                     state.error,

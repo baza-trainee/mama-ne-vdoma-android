@@ -18,9 +18,9 @@ import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.Graphs
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.UserProfileRoutes
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.CommonUiState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.model.UserProfileCommunicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.BitmapHelper
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.networkExecutor
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onError
@@ -37,8 +37,8 @@ class FullInfoViewModel(
     private val _fullInfoViewState = MutableStateFlow(FullInfoViewState())
     val fullInfoViewState: StateFlow<FullInfoViewState> = _fullInfoViewState.asStateFlow()
 
-    private val _uiState = mutableStateOf<CommonUiState>(CommonUiState.Idle)
-    val uiState: State<CommonUiState>
+    private val _uiState = mutableStateOf<RequestState>(RequestState.Idle)
+    val uiState: State<RequestState>
         get() = _uiState
 
     init {
@@ -57,7 +57,7 @@ class FullInfoViewModel(
             is FullInfoEvent.DeleteChild -> deleteChild(event.id)
             FullInfoEvent.AddChild -> resetCurrentChild()
             is FullInfoEvent.EditChild -> setCurrentChild(event.id)
-            FullInfoEvent.ResetUiState -> _uiState.value = CommonUiState.Idle
+            FullInfoEvent.ResetUiState -> _uiState.value = RequestState.Idle
             FullInfoEvent.EditUser -> navigator.navigate(UserProfileRoutes.UserInfo)
             FullInfoEvent.OnBack -> navigator.navigate(Graphs.Login)
             FullInfoEvent.OnNext -> TODO()
@@ -73,7 +73,7 @@ class FullInfoViewModel(
                 navigator.navigateOnMain(viewModelScope, Graphs.CreateUser)
             }
             onError { error ->
-                _uiState.value = CommonUiState.OnError(error)
+                _uiState.value = RequestState.OnError(error)
             }
             onLoading { isLoading ->
                 _fullInfoViewState.update {
@@ -100,7 +100,7 @@ class FullInfoViewModel(
                 communicator.isUserInfoFilled = entity.isNotEmpty()
             }
             onError { error ->
-                _uiState.value = CommonUiState.OnError(error)
+                _uiState.value = RequestState.OnError(error)
             }
             onLoading { isLoading ->
                 _fullInfoViewState.update {
@@ -151,7 +151,7 @@ class FullInfoViewModel(
                 getChildren()
             }
             onError { error ->
-                _uiState.value = CommonUiState.OnError(error)
+                _uiState.value = RequestState.OnError(error)
             }
             onLoading { isLoading ->
                 _fullInfoViewState.update {
@@ -184,7 +184,7 @@ class FullInfoViewModel(
                     }
                 }
                 onError { error ->
-                    _uiState.value = CommonUiState.OnError(error)
+                    _uiState.value = RequestState.OnError(error)
                 }
                 onLoading { isLoading ->
                     _fullInfoViewState.update {
@@ -212,7 +212,7 @@ class FullInfoViewModel(
                 }
             }
             onError { error ->
-                _uiState.value = CommonUiState.OnError(error)
+                _uiState.value = RequestState.OnError(error)
             }
             onLoading { isLoading ->
                 _fullInfoViewState.update {
@@ -238,7 +238,7 @@ class FullInfoViewModel(
                 getChildren()
             }
             onError { error ->
-                _uiState.value = CommonUiState.OnError(error)
+                _uiState.value = RequestState.OnError(error)
             }
             onLoading { isLoading ->
                 _fullInfoViewState.update {

@@ -38,16 +38,15 @@ import com.google.maps.android.compose.rememberCameraPositionState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.HeaderWithToolbar
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.LocationPermission
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.SurfaceWithNavigationBars
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.CommonUiState
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.user_location.UserLocationEvent
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.ButtonText
 
 @Composable
 fun SetAreaForSearchScreen(
     modifier: Modifier = Modifier,
     screenState: State<SetAreaViewState> = mutableStateOf(SetAreaViewState()),
-    uiState: State<CommonUiState> = mutableStateOf(CommonUiState.Idle),
-    handleEvent: (UserLocationEvent) -> Unit = { _ -> }
+    uiState: State<RequestState> = mutableStateOf(RequestState.Idle),
+    handleEvent: (SetAreaEvent) -> Unit = { _ -> }
 ) {
     SurfaceWithNavigationBars {
         BackHandler { }
