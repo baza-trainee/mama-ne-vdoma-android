@@ -6,7 +6,7 @@ import androidx.navigation.NavType
 import androidx.navigation.navArgument
 
 sealed class CreateUserRoute(val route: String) {
-    object CreateUser: CreateUserRoute("create_user_screen")
+    data object CreateUser: CreateUserRoute("create_user_screen")
 
 
     class VerifyEmail : CreateUserRoute(ROUTE) {

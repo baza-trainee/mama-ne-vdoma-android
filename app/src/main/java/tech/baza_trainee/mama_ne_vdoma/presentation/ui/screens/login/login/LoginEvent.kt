@@ -2,11 +2,11 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.login
 
 sealed interface LoginEvent {
 
-    object LoginUser: LoginEvent
-    object OnBack: LoginEvent
-    object OnRestore: LoginEvent
-    object OnCreate: LoginEvent
-    object ResetUiState: LoginEvent
+    data object LoginUser: LoginEvent
+    data object OnBack: LoginEvent
+    data object OnRestore: LoginEvent
+    data object OnCreate: LoginEvent
+    data object ResetUiState: LoginEvent
     data class ValidateEmail(val email: String) : LoginEvent
     data class ValidatePassword(val password: String) : LoginEvent
 }

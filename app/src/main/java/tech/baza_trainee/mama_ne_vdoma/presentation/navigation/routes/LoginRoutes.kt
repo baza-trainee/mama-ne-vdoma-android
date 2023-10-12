@@ -6,9 +6,9 @@ import androidx.navigation.NavType
 import androidx.navigation.navArgument
 
 sealed class LoginRoutes(val route: String): CommonRoute(route) {
-    object Login: LoginRoutes("login_screen")
-    object RestorePassword: LoginRoutes("restore_password_screen")
-    object RestoreSuccess: LoginRoutes("restore_success_screen")
+    data object Login: LoginRoutes("login_screen")
+    data object RestorePassword: LoginRoutes("restore_password_screen")
+    data object RestoreSuccess: LoginRoutes("restore_success_screen")
 
     class VerifyEmail : LoginRoutes(ROUTE) {
 

@@ -1,16 +1,16 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes
 
 sealed class Graphs(val route: String): CommonRoute(route) {
-    object Start : Graphs("start_graph")
-    object CreateUser : Graphs("create_user_graph")
-    object Login : Graphs("login_graph")
-    object UserProfile : Graphs("user_profile_graph")
-    object GroupSearch : Graphs("group_search_graph")
+    data object Start : Graphs("start_graph")
+    data object CreateUser : Graphs("create_user_graph")
+    data object Login : Graphs("login_graph")
+    data object UserProfile : Graphs("user_profile_graph")
+    data object GroupSearch : Graphs("group_search_graph")
 
     sealed class Host {
-        object Main : Graphs("main_graph")
-        object Groups : Graphs("groups_graph")
-        object Search : Graphs("search_graph")
-        object Settings : Graphs("settings_graph")
+        data object Main : Graphs("main_graph")
+        data object Groups : Graphs("groups_graph")
+        data object Search : Graphs("search_graph")
+        data object Settings : Graphs("settings_graph")
     }
 }
