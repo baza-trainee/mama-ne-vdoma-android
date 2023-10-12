@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -56,7 +57,7 @@ fun ToolbarWithAvatar(
     ) {
         if (showArrow) {
             IconButton(
-                modifier = modifier
+                modifier = Modifier
                     .padding(horizontal = 16.dp)
                     .height(24.dp)
                     .width(24.dp),
@@ -104,10 +105,11 @@ fun ToolbarWithAvatar(
                     .background(
                         color = Color.Red,
                         shape = CircleShape
-                    )
+                    ),
+                contentAlignment = Alignment.Center
             ) {
                 Text(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxSize(),
                     text = notificationCount,
                     textAlign = TextAlign.Center,
                     fontFamily = redHatDisplayFontFamily,

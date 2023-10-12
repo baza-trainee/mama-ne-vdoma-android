@@ -157,9 +157,7 @@ fun UserLocationScreen(
                         value = screenState.value.address,
                         onValueChange = {
                             handleEvent(
-                                UserLocationEvent.UpdateUserAddress(
-                                    it
-                                )
+                                UserLocationEvent.UpdateUserAddress(it)
                             )
                         },
                         modifier = modifier

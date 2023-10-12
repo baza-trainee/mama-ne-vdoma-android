@@ -1,4 +1,4 @@
-package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.search_group.set_area
+package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.search_group.set_area
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -14,7 +14,6 @@ import tech.baza_trainee.mama_ne_vdoma.domain.repository.LocationRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.UserProfileRoutes
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.model.UserProfileCommunicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.networkExecutor
@@ -24,43 +23,50 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onStart
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onSuccess
 
 class SetAreaViewModel(
-    private val communicator: UserProfileCommunicator,
     private val navigator: ScreenNavigator,
     private val userProfileRepository: UserProfileRepository,
     private val locationRepository: LocationRepository
 ): ViewModel() {
 
-    private val _locationScreenState = MutableStateFlow(SetAreaViewState())
-    val locationScreenState: StateFlow<SetAreaViewState> = _locationScreenState.asStateFlow()
+    private val _areaScreenState = MutableStateFlow(SetAreaViewState())
+    val areaScreenState: StateFlow<SetAreaViewState> = _areaScreenState.asStateFlow()
 
     private val _uiState = mutableStateOf<RequestState>(RequestState.Idle)
     val uiState: State<RequestState>
         get() = _uiState
 
     init {
-        _locationScreenState.update {
-            it.copy(
-                address = communicator.address
-            )
-        }
-        if (communicator.address.isNotEmpty())
-            getLocationFromAddress()
+//        _areaScreenState.update {
+//            it.copy(
+//                address = communicator.address
+//            )
+//        }
+//        if (communicator.address.isNotEmpty())
+//            getLocationFromAddress()
     }
 
-    fun handleUserLocationEvent(event: SetAreaEvent) {
+    fun handleSetAreaEvent(event: SetAreaEvent) {
         when(event) {
             SetAreaEvent.ResetUiState -> _uiState.value = RequestState.Idle
             SetAreaEvent.GetLocationFromAddress -> getLocationFromAddress()
-            SetAreaEvent.RequestLocation -> requestCurrentLocation()
+            SetAreaEvent.RequestUserLocation -> requestCurrentLocation()
             is SetAreaEvent.UpdateUserAddress -> updateUserAddress(event.address)
-            is SetAreaEvent.SetAreaRadius -> Unit
+            is SetAreaEvent.SetAreaRadius -> setRadius(event.radius)
             is SetAreaEvent.OnMapClick -> setLocation(event.location)
             SetAreaEvent.SaveLocation -> saveUserLocation()
         }
     }
 
+    private fun setRadius(radius: Float) {
+        _areaScreenState.update {
+            it.copy(
+                radius = radius
+            )
+        }
+    }
+
     private fun setLocation(location: LatLng) {
-        _locationScreenState.update {
+        _areaScreenState.update {
             it.copy(
                 currentLocation = location
             )
@@ -73,16 +79,16 @@ class SetAreaViewModel(
             onStart {
                 getAddressFromLocation(
                     LatLng(
-                        _locationScreenState.value.currentLocation.latitude,
-                        _locationScreenState.value.currentLocation.longitude
+                        _areaScreenState.value.currentLocation.latitude,
+                        _areaScreenState.value.currentLocation.longitude
                     )
                 )
             }
             execute {
                 userProfileRepository.saveUserLocation(
                     UserLocationEntity(
-                        lat = _locationScreenState.value.currentLocation.latitude,
-                        lon = _locationScreenState.value.currentLocation.longitude
+                        lat = _areaScreenState.value.currentLocation.latitude,
+                        lon = _areaScreenState.value.currentLocation.longitude
                     )
                 )
             }
@@ -93,7 +99,7 @@ class SetAreaViewModel(
                 _uiState.value = RequestState.OnError(error)
             }
             onLoading { isLoading ->
-                _locationScreenState.update {
+                _areaScreenState.update {
                     it.copy(
                         isLoading = isLoading
                     )
@@ -109,7 +115,7 @@ class SetAreaViewModel(
             }
             onSuccess { location ->
                 location?.let {
-                    _locationScreenState.update {
+                    _areaScreenState.update {
                         it.copy(
                             currentLocation = location
                         )
@@ -121,7 +127,7 @@ class SetAreaViewModel(
                 _uiState.value = RequestState.OnError(error)
             }
             onLoading { isLoading ->
-                _locationScreenState.update {
+                _areaScreenState.update {
                     it.copy(
                         isLoading = isLoading
                     )
@@ -131,8 +137,8 @@ class SetAreaViewModel(
     }
 
     private fun updateUserAddress(address: String) {
-        communicator.address = address
-        _locationScreenState.update {
+//        communicator.address = address
+        _areaScreenState.update {
             it.copy(
                 address = address
             )
@@ -142,12 +148,12 @@ class SetAreaViewModel(
     private fun getLocationFromAddress() {
         networkExecutor<LatLng?> {
             execute {
-                locationRepository.getLocationFromAddress(_locationScreenState.value.address)
+                locationRepository.getLocationFromAddress(_areaScreenState.value.address)
             }
             onSuccess { location ->
                 location?.let {
-                    if (_locationScreenState.value.currentLocation != location)
-                        _locationScreenState.update {
+                    if (_areaScreenState.value.currentLocation != location)
+                        _areaScreenState.update {
                             it.copy(
                                 currentLocation = location
                             )
@@ -158,7 +164,7 @@ class SetAreaViewModel(
                 _uiState.value = RequestState.OnError(error)
             }
             onLoading { isLoading ->
-                _locationScreenState.update {
+                _areaScreenState.update {
                     it.copy(
                         isLoading = isLoading
                     )
@@ -179,7 +185,7 @@ class SetAreaViewModel(
                 _uiState.value = RequestState.OnError(error)
             }
             onLoading { isLoading ->
-                _locationScreenState.update {
+                _areaScreenState.update {
                     it.copy(
                         isLoading = isLoading
                     )

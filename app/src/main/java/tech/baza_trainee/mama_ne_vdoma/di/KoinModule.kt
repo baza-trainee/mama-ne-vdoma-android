@@ -33,6 +33,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.UserC
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.login.LoginScreenViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.new_password.NewPasswordScreenViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.restore_password.RestorePasswordScreenViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.search_group.set_area.SetAreaViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.child_info.ChildInfoViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.children_info.ChildrenInfoViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.full_info.FullInfoViewModel
@@ -73,7 +74,7 @@ val repoModule = module {
     single<ScreenNavigator> { ScreenNavigatorImpl() }
 }
 
-val userKoinModule = module {
+val userCreateModule = module {
     single { PhoneNumberUtil.createInstance(androidContext()) }
     single { BitmapHelper(androidApplication()) }
     single { UserProfileCommunicator() }
@@ -106,6 +107,10 @@ val loginKoinModule = module {
     }
     viewModel {RestorePasswordScreenViewModel(get(), get())
     }
+}
+
+val mainModule = module {
+    viewModel { SetAreaViewModel(get(), get(), get()) }
 }
 
 const val BASE_URL = "https://tough-moth-trunks.cyclic.cloud/"

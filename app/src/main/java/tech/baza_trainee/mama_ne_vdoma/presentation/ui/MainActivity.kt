@@ -9,7 +9,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import org.koin.android.ext.android.inject
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.graphs.createUserNavGraph
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.graphs.groupSearchNavGraph
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.graphs.loginNavGraph
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.graphs.mainNavGraph
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.graphs.startNavGraph
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.graphs.userProfileGraph
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.NavigationEffects
@@ -46,6 +48,8 @@ class MainActivity : ComponentActivity() {
                     loginNavGraph(navController)
                     createUserNavGraph()
                     userProfileGraph()
+                    mainNavGraph(navController)
+                    groupSearchNavGraph()
                 }
             }
         }

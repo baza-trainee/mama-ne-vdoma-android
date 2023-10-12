@@ -16,8 +16,9 @@ fun initKoin(context: Context) {
             listOf(
                 repoModule,
                 verifyEmailModule,
-                userKoinModule,
-                loginKoinModule
+                userCreateModule,
+                loginKoinModule,
+                mainModule
             )
         )
     }
