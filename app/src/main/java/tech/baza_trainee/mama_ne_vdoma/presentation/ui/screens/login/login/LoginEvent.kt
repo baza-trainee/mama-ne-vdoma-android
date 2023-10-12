@@ -1,7 +1,7 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.login
 
 sealed interface LoginEvent {
-    object OnSuccessfulLogin: LoginEvent
+
     object LoginUser: LoginEvent
     object OnBack: LoginEvent
     object OnRestore: LoginEvent

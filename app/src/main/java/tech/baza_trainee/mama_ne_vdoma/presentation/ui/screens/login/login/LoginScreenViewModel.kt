@@ -12,6 +12,7 @@ import tech.baza_trainee.mama_ne_vdoma.domain.model.AuthUserEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.AuthRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.Graphs
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.HostScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.LoginRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
@@ -39,17 +40,21 @@ class LoginScreenViewModel(
         when(event) {
             LoginEvent.LoginUser -> loginUser()
             LoginEvent.ResetUiState -> _uiState.value = RequestState.Idle
-            LoginEvent.OnBack -> navigator.goBack()
-            LoginEvent.OnCreate -> navigator.navigate(Graphs.CreateUser)
-            LoginEvent.OnRestore -> navigator.navigate(LoginRoutes.RestorePassword)
+            LoginEvent.OnBack -> {
+                clearInputs()
+                navigator.goBack()
+            }
+            LoginEvent.OnCreate -> {
+                clearInputs()
+                navigator.navigate(Graphs.CreateUser)
+            }
+            LoginEvent.OnRestore -> {
+                clearInputs()
+                navigator.navigate(LoginRoutes.RestorePassword)
+            }
 
             is LoginEvent.ValidateEmail -> validateEmail(event.email)
             is LoginEvent.ValidatePassword -> validatePassword(event.password)
-            LoginEvent.OnSuccessfulLogin -> {
-                _viewState.update {
-                    LoginViewState()
-                }
-            }
         }
     }
 
@@ -86,7 +91,8 @@ class LoginScreenViewModel(
                 )
             }
             onSuccess {
-                navigator.navigateOnMain(viewModelScope, Graphs.UserProfile)
+                clearInputs()
+                navigator.navigateOnMain(viewModelScope, HostScreenRoutes.Host)
             }
             onError { error ->
                 _uiState.value = RequestState.OnError(error)
@@ -98,6 +104,12 @@ class LoginScreenViewModel(
                     )
                 }
             }
+        }
+    }
+
+    private fun clearInputs() {
+        _viewState.update {
+            LoginViewState()
         }
     }
 }

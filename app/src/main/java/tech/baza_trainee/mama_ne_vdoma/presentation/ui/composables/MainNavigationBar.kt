@@ -6,10 +6,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.BottomNavigation
-import androidx.compose.material.BottomNavigationItem
-import androidx.compose.material.Icon
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -24,20 +25,24 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import tech.baza_trainee.mama_ne_vdoma.R
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.Purple40
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.PurpleGrey80
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 
 @Composable
 @Preview
 fun MainNavigationBar(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onItemClicked: (Int) -> Unit = {}
 ) {
-    BottomNavigation(
-        modifier = Modifier.height(72.dp),
-        backgroundColor = MaterialTheme.colorScheme.surface,
+    NavigationBar(
+        modifier = Modifier
+            .height(72.dp)
+            .background(
+                color = MaterialTheme.colorScheme.surface,
+            ),
+        containerColor = MaterialTheme.colorScheme.surface,
         contentColor = MaterialTheme.colorScheme.onSurface,
-        elevation = 2.dp
+        tonalElevation = 0.dp
     ) {
         var selectedIndex by remember { mutableIntStateOf(0) }
         val tabContents = listOf(
@@ -47,7 +52,7 @@ fun MainNavigationBar(
             "Налаштування" to R.drawable.ic_settings
         )
         tabContents.forEachIndexed { index, pair: Pair<String, Int> ->
-            BottomNavigationItem(
+            NavigationBarItem(
                 icon = {
                     Box(
                         modifier = Modifier
@@ -85,8 +90,9 @@ fun MainNavigationBar(
                 onClick = {
                     selectedIndex = index
                 },
-                selectedContentColor = Purple40,
-                unselectedContentColor = MaterialTheme.colorScheme.onSurface
+                colors = NavigationBarItemDefaults.colors(
+                    indicatorColor = MaterialTheme.colorScheme.surface
+                )
             )
         }
     }
