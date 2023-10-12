@@ -46,10 +46,10 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.ChildInfoDesk
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.HeaderWithOptArrow
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.LoadingIndicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.ParentInfoDesk
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.SurfaceWithNavigationBars
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.TopBarWithOptArrow
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.CommonUiState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.SlateGray
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
@@ -108,7 +108,7 @@ fun FullInfoScreen(
 
             val topGuideline = createGuidelineFromTop(0.2f)
 
-            TopBarWithOptArrow(
+            HeaderWithOptArrow(
                 modifier = modifier
                     .constrainAs(topBar) {
                         top.linkTo(parent.top)

@@ -55,10 +55,8 @@ fun ParentInfoDesk(
     onEdit: () -> Unit = {},
     onDelete: () -> Unit = {}
 ) {
-    val localModifier = Modifier
-
     Column(
-        modifier = localModifier
+        modifier = Modifier
             .padding(horizontal = 16.dp)
             .fillMaxWidth()
             .background(
@@ -68,13 +66,13 @@ fun ParentInfoDesk(
             .padding(horizontal = 16.dp)
     ) {
         Row(
-            modifier = localModifier
+            modifier = Modifier
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.End
         ) {
             Image(
-                modifier = localModifier
+                modifier = Modifier
                     .height(48.dp)
                     .width(48.dp)
                     .clip(CircleShape),
@@ -83,7 +81,7 @@ fun ParentInfoDesk(
                 contentScale = ContentScale.Fit
             )
             Text(
-                modifier = localModifier
+                modifier = Modifier
                     .padding(horizontal = 8.dp)
                     .fillMaxWidth()
                     .weight(1f),
@@ -108,10 +106,10 @@ fun ParentInfoDesk(
             }
         }
 
-        Spacer(modifier = localModifier.height(8.dp))
+        Spacer(modifier = Modifier.height(8.dp))
 
         Text(
-            modifier = localModifier
+            modifier = Modifier
                 .padding(horizontal = 8.dp)
                 .fillMaxWidth(),
             text = "Ваша адреса",
@@ -120,7 +118,7 @@ fun ParentInfoDesk(
         )
 
         Text(
-            modifier = localModifier
+            modifier = Modifier
                 .padding(horizontal = 8.dp)
                 .fillMaxWidth(),
             text = address,
@@ -128,7 +126,7 @@ fun ParentInfoDesk(
             fontSize = 14.sp
         )
 
-        Spacer(modifier = localModifier.height(8.dp))
+        Spacer(modifier = Modifier.height(8.dp))
 
         val morning = schedule.schedule.filter { it.value.morning }.keys
         val noon = schedule.schedule.filter { it.value.noon }.keys

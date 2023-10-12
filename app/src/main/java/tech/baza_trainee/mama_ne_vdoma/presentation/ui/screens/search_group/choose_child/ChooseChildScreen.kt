@@ -1,4 +1,4 @@
-package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.search_group
+package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.search_group.choose_child
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
@@ -25,8 +25,8 @@ import androidx.constraintlayout.compose.Dimension
 import tech.baza_trainee.mama_ne_vdoma.domain.model.ChildEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.Gender
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.ChildCard
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.HeaderWithToolbar
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.SurfaceWithNavigationBars
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.TopBarWithOptArrow
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.ButtonText
 import kotlin.random.Random
@@ -56,7 +56,7 @@ fun ChooseChildScreen(
 
             val topGuideline = createGuidelineFromTop(0.2f)
 
-            TopBarWithOptArrow(
+            HeaderWithToolbar(
                 modifier = modifier
                     .constrainAs(topBar) {
                         top.linkTo(parent.top)

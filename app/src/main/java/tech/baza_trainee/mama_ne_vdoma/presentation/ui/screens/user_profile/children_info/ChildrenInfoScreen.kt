@@ -29,9 +29,9 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.ChildInfoDesk
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.HeaderWithOptArrow
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.LoadingIndicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.SurfaceWithNavigationBars
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.TopBarWithOptArrow
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.ButtonText
 
@@ -58,7 +58,7 @@ fun  ChildrenInfoScreen(
 
             val topGuideline = createGuidelineFromTop(0.2f)
 
-            TopBarWithOptArrow(
+            HeaderWithOptArrow(
                 modifier = modifier
                     .constrainAs(topBar) {
                         top.linkTo(parent.top)

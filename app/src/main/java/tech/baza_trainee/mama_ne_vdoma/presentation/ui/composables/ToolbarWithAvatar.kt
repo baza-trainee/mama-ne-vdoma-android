@@ -12,6 +12,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -37,9 +41,10 @@ fun ToolbarWithAvatar(
     avatar: Bitmap = BitmapHelper.DEFAULT_BITMAP,
     showArrow: Boolean = true,
     showTitle: Boolean = true,
-    title: String = "Title",
+    title: String = "",
     showNotification: Boolean = true,
-    notificationCount: String = "2"
+    notificationCount: String = "2",
+    onBack: () -> Unit = {}
 ) {
     Row(
         modifier = Modifier
@@ -50,16 +55,17 @@ fun ToolbarWithAvatar(
         verticalAlignment = Alignment.CenterVertically
     ) {
         if (showArrow) {
-            Box(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .padding(16.dp),
-                contentAlignment = Alignment.Center
+            IconButton(
+                modifier = modifier
+                    .padding(horizontal = 16.dp)
+                    .height(24.dp)
+                    .width(24.dp),
+                onClick = { onBack() }
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.arrow_back),
-                    contentDescription = "start",
-                    alignment = Alignment.Center
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onPrimary
                 )
             }
         }

@@ -1,10 +1,11 @@
-package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.user_location
+package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.search_group.set_area
 
-import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
@@ -22,7 +23,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -35,73 +35,57 @@ import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.HeaderWithOptArrow
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.LoadingIndicator
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.HeaderWithToolbar
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.LocationPermission
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.SurfaceWithNavigationBars
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.CommonUiState
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.user_location.UserLocationEvent
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.ButtonText
 
 @Composable
-fun UserLocationScreen(
+fun SetAreaForSearchScreen(
     modifier: Modifier = Modifier,
-    screenState: State<UserLocationViewState> = mutableStateOf(UserLocationViewState()),
+    screenState: State<SetAreaViewState> = mutableStateOf(SetAreaViewState()),
     uiState: State<CommonUiState> = mutableStateOf(CommonUiState.Idle),
     handleEvent: (UserLocationEvent) -> Unit = { _ -> }
 ) {
-    SurfaceWithNavigationBars(
-        modifier = modifier
-    ) {
-        val context = LocalContext.current
-
-        when(val state = uiState.value) {
-            CommonUiState.Idle -> Unit
-            is CommonUiState.OnError -> {
-                if (state.error.isNotBlank()) Toast.makeText(
-                    context,
-                    state.error,
-                    Toast.LENGTH_LONG
-                ).show()
-                handleEvent(UserLocationEvent.ResetUiState)
-            }
-        }
+    SurfaceWithNavigationBars {
+        BackHandler { }
 
         var isPermissionGranted by remember { mutableStateOf(false) }
         LocationPermission { isPermissionGranted = it }
 
         ConstraintLayout(
-            modifier = modifier
-                .imePadding()
-                .fillMaxWidth(),
+            modifier = modifier.fillMaxWidth()
         ) {
-            val (title, content, btnNext) = createRefs()
+            val (topBar, content, btnNext) = createRefs()
 
             val topGuideline = createGuidelineFromTop(0.2f)
 
-            HeaderWithOptArrow(
+            HeaderWithToolbar(
                 modifier = modifier
-                    .constrainAs(title) {
+                    .constrainAs(topBar) {
                         top.linkTo(parent.top)
                         bottom.linkTo(topGuideline)
                         height = Dimension.fillToConstraints
-                    }
-                    .fillMaxWidth(),
-                title = "Ваше місцезнаходження",
-                info = "Будь ласка, оберіть ваше місцерозташування," +
-                        " щоб ви могли підібрати найближчі групи до вас"
+                    },
+                title = "Пошук групи",
+                onBack = { }
             )
 
             if (isPermissionGranted) {
                 ConstraintLayout(
                     modifier = modifier
                         .fillMaxWidth()
+                        .verticalScroll(rememberScrollState())
+                        .padding(horizontal = 16.dp)
                         .constrainAs(content) {
-                            top.linkTo(topGuideline)
+                            top.linkTo(topGuideline, 16.dp)
                             bottom.linkTo(btnNext.top, 16.dp)
                             height = Dimension.fillToConstraints
                         }
                 ) {
-                    val (map, edit) = createRefs()
+                    val (map, edit, picker) = createRefs()
 
                     val cameraPositionState = rememberCameraPositionState {
                         val cameraPosition = CameraPosition.Builder()
@@ -113,7 +97,10 @@ fun UserLocationScreen(
 
                     LaunchedEffect(screenState.value.currentLocation) {
                         val newCameraPosition =
-                            CameraPosition.fromLatLngZoom(screenState.value.currentLocation, 15f)
+                            CameraPosition.fromLatLngZoom(
+                                screenState.value.currentLocation,
+                                15f
+                            )
                         cameraPositionState.animate(
                             CameraUpdateFactory.newCameraPosition(newCameraPosition),
                             1_000
@@ -138,13 +125,8 @@ fun UserLocationScreen(
                         cameraPositionState = cameraPositionState,
                         uiSettings = uiSettings,
                         properties = properties,
-                        onMyLocationButtonClick = {
-                            handleEvent(UserLocationEvent.RequestUserLocation)
-                            true
-                        },
-                        onMapClick = {
-                            handleEvent(UserLocationEvent.OnMapClick(it))
-                        }
+                        onMyLocationButtonClick = { true },
+                        onMapClick = {}
                     ) {
                         Marker(
                             state = MarkerState(position = screenState.value.currentLocation),
@@ -154,14 +136,8 @@ fun UserLocationScreen(
                     }
 
                     OutlinedTextField(
-                        value = screenState.value.address,
-                        onValueChange = {
-                            handleEvent(
-                                UserLocationEvent.UpdateUserAddress(
-                                    it
-                                )
-                            )
-                        },
+                        value = "",
+                        onValueChange = { },
                         modifier = modifier
                             .constrainAs(edit) {
                                 bottom.linkTo(parent.bottom, 16.dp)
@@ -178,7 +154,7 @@ fun UserLocationScreen(
                         ),
                         trailingIcon = {
                             IconButton(
-                                onClick = { handleEvent(UserLocationEvent.GetLocationFromAddress) }
+                                onClick = {  }
                             ) {
                                 Icon(
                                     imageVector = Icons.Filled.Search,
@@ -198,7 +174,8 @@ fun UserLocationScreen(
                         bottom.linkTo(parent.bottom)
                     }
                     .height(48.dp),
-                onClick = { handleEvent(UserLocationEvent.SaveUserLocation) }
+                onClick = { },
+                enabled = true
             ) {
                 ButtonText(
                     text = "Далі"
@@ -206,12 +183,12 @@ fun UserLocationScreen(
             }
         }
 
-        if (screenState.value.isLoading) LoadingIndicator()
+//        if (screenState.value.isLoading) LoadingIndicator()
     }
 }
 
 @Composable
 @Preview
-fun UserLocationPreview() {
-    UserLocationScreen()
+fun SetAreaForSearchScreenPreview() {
+    SetAreaForSearchScreen()
 }

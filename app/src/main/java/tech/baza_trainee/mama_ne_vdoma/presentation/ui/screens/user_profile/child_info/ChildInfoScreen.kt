@@ -23,11 +23,11 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import tech.baza_trainee.mama_ne_vdoma.domain.model.Gender
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.HeaderWithOptArrow
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.LoadingIndicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.OutlinedTextFieldWithError
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.RadioGroup
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.SurfaceWithNavigationBars
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.TopBarWithOptArrow
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.CommonUiState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.ButtonText
@@ -65,7 +65,7 @@ fun ChildInfoScreen(
 
             val topGuideline = createGuidelineFromTop(0.2f)
 
-            TopBarWithOptArrow(
+            HeaderWithOptArrow(
                 modifier = modifier
                     .constrainAs(topBar) {
                         top.linkTo(parent.top)
