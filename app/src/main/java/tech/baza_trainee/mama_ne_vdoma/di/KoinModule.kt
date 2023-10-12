@@ -11,6 +11,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidApplication
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -33,6 +34,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.UserC
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.login.LoginScreenViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.new_password.NewPasswordScreenViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.restore_password.RestorePasswordScreenViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.host.HostScreenViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.search_group.set_area.SetAreaViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.child_info.ChildInfoViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.children_info.ChildrenInfoViewModel
@@ -105,12 +107,13 @@ val loginKoinModule = module {
             get()
         )
     }
-    viewModel {RestorePasswordScreenViewModel(get(), get())
-    }
+    viewModel { RestorePasswordScreenViewModel(get(), get()) }
 }
 
 val mainModule = module {
+    single<ScreenNavigator>(named("MAIN")) { ScreenNavigatorImpl() }
     viewModel { SetAreaViewModel(get(), get(), get()) }
+    viewModel { HostScreenViewModel(get(), get(named("MAIN"))) }
 }
 
 const val BASE_URL = "https://tough-moth-trunks.cyclic.cloud/"

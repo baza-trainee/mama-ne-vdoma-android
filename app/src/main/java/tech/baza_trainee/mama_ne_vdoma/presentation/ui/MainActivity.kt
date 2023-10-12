@@ -9,6 +9,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import org.koin.android.ext.android.inject
+import org.koin.androidx.compose.navigation.koinNavViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.graphs.createUserNavGraph
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.graphs.loginNavGraph
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.graphs.startNavGraph
@@ -18,6 +19,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenN
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.Graphs
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.HostScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.host.HostScreen
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.host.HostScreenViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.Mama_ne_vdomaTheme
 
 class MainActivity : ComponentActivity() {
@@ -51,7 +53,11 @@ class MainActivity : ComponentActivity() {
                     userProfileGraph()
 
                     composable(HostScreenRoutes.Host.route) {
-                        HostScreen()
+                        val hostScreenViewModel: HostScreenViewModel = koinNavViewModel()
+                        HostScreen(
+                            navigator = hostScreenViewModel.screenNavigator,
+                            handleEvent = { hostScreenViewModel.handleEvent(it) }
+                        )
                     }
                 }
             }
