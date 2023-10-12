@@ -1,8 +1,98 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.search_group.found_group
 
+import android.widget.Toast
+import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.Dimension
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.HeaderWithToolbar
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.LoadingIndicator
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.SurfaceWithNavigationBars
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.ButtonText
 
 @Composable
-fun FoundGroupScreen() {
+fun FoundGroupScreen(
+    modifier: Modifier = Modifier,
+    screenState: State<FoundGroupViewState> = mutableStateOf(FoundGroupViewState()),
+    uiState: State<RequestState> = mutableStateOf(RequestState.Idle),
+    handleEvent: (FoundGroupEvent) -> Unit = { _ -> }
+) {
+    SurfaceWithNavigationBars {
+        BackHandler { }
 
+        val context = LocalContext.current
+
+        when (val state = uiState.value) {
+            RequestState.Idle -> Unit
+            is RequestState.OnError -> {
+                if (state.error.isNotBlank()) Toast.makeText(
+                    context,
+                    state.error,
+                    Toast.LENGTH_LONG
+                ).show()
+                handleEvent(FoundGroupEvent.ResetUiState)
+            }
+        }
+
+        ConstraintLayout(
+            modifier = modifier.fillMaxWidth()
+        ) {
+            val (topBar, content, btnNext) = createRefs()
+
+            val topGuideline = createGuidelineFromTop(0.2f)
+
+            HeaderWithToolbar(
+                modifier = modifier
+                    .constrainAs(topBar) {
+                        top.linkTo(parent.top)
+                        bottom.linkTo(topGuideline)
+                        height = Dimension.fillToConstraints
+                    },
+                title = "Пошук групи",
+                onBack = { }
+            )
+
+            Column {
+                screenState.value.groups.forEach {
+
+                }
+            }
+
+            Button(
+                modifier = modifier
+                    .padding(horizontal = 24.dp, vertical = 16.dp)
+                    .fillMaxWidth()
+                    .constrainAs(btnNext) {
+                        bottom.linkTo(parent.bottom)
+                    }
+                    .height(48.dp),
+                onClick = { },
+                enabled = true
+            ) {
+                ButtonText(
+                    text = "Приєднатися до групи"
+                )
+            }
+        }
+
+        if (screenState.value.isLoading) LoadingIndicator()
+    }
+}
+
+@Composable
+@Preview
+fun FoundGroupScreenPreview() {
+    FoundGroupScreen()
 }
