@@ -197,7 +197,6 @@ class FullInfoViewModel(
             }
     }
 
-
     private fun getAddressFromLocation(latLng: LatLng) {
         networkExecutor<String?> {
             execute {

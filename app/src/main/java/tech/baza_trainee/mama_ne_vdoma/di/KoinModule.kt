@@ -17,14 +17,17 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import tech.baza_trainee.mama_ne_vdoma.BuildConfig
 import tech.baza_trainee.mama_ne_vdoma.data.api.AuthApi
+import tech.baza_trainee.mama_ne_vdoma.data.api.GroupsApi
 import tech.baza_trainee.mama_ne_vdoma.data.api.UserProfileApi
 import tech.baza_trainee.mama_ne_vdoma.data.datasource.LocationDataSource
 import tech.baza_trainee.mama_ne_vdoma.data.datasource.impl.LocationDataSourceImpl
 import tech.baza_trainee.mama_ne_vdoma.data.interceptors.AuthInterceptor
 import tech.baza_trainee.mama_ne_vdoma.data.repository.AuthRepositoryImpl
+import tech.baza_trainee.mama_ne_vdoma.data.repository.GroupsRepositoryImpl
 import tech.baza_trainee.mama_ne_vdoma.data.repository.LocationRepositoryImpl
 import tech.baza_trainee.mama_ne_vdoma.data.repository.UserProfileRepositoryImpl
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.AuthRepository
+import tech.baza_trainee.mama_ne_vdoma.domain.repository.GroupsRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.LocationRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
@@ -34,7 +37,10 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.UserC
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.login.LoginScreenViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.new_password.NewPasswordScreenViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.restore_password.RestorePasswordScreenViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.choose_child.ChooseChildScreenViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.create_group.CreateGroupScreenViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.host.HostScreenViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.main.MainScreenViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.standalone.set_area.SetAreaViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.child_info.ChildInfoViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.children_info.ChildrenInfoViewModel
@@ -49,9 +55,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.BitmapHelper
 
 val repoModule = module {
     single {
-        ChuckerInterceptor.Builder(
-            androidContext()
-        )
+        ChuckerInterceptor.Builder(androidContext())
             .collector(ChuckerCollector(androidContext()))
             .maxContentLength(CHUCKER_CONTENT_MAX_LENGTH)
             .redactHeaders(emptySet())
@@ -66,12 +70,14 @@ val repoModule = module {
         )
     }
     single { createOkHttpClient(get(), get()) }
-    single { createUserProfileApi(get(), get()) }
-    single { createCustomApi<AuthApi>(get()) }
+    single<UserProfileApi> { createAuthorizedApi(get(), get()) }
+    single<GroupsApi> { createAuthorizedApi(get(), get()) }
+    single<AuthApi> { createCustomApi(get()) }
     factory<AuthRepository> { AuthRepositoryImpl(get()) }
     factory<UserProfileRepository> { UserProfileRepositoryImpl(get(), get()) }
     factory<LocationDataSource> { LocationDataSourceImpl(androidApplication()) }
     factory<LocationRepository> { LocationRepositoryImpl(get()) }
+    factory<GroupsRepository> { GroupsRepositoryImpl(get()) }
 
     single<ScreenNavigator> { ScreenNavigatorImpl() }
 }
@@ -114,6 +120,9 @@ val mainModule = module {
     single<ScreenNavigator>(named("MAIN")) { ScreenNavigatorImpl() }
     viewModel { SetAreaViewModel(get(), get(), get()) }
     viewModel { HostScreenViewModel(get(), get(named("MAIN"))) }
+    viewModel { MainScreenViewModel(get(), get(named("MAIN"))) }
+    viewModel { ChooseChildScreenViewModel(get(), get(named("MAIN"))) }
+    viewModel { (childId: String) -> CreateGroupScreenViewModel(childId, get(named("MAIN")), get(), get(), get()) }
 }
 
 const val BASE_URL = "https://tough-moth-trunks.cyclic.cloud/"
@@ -132,10 +141,10 @@ fun createGson(): Gson = GsonBuilder()
     .setLenient()
     .create()
 
-private fun createUserProfileApi(
+private inline fun <reified T: Any> createAuthorizedApi(
     httpLoggingInterceptor: HttpLoggingInterceptor,
     loggingInterceptor: ChuckerInterceptor
-): UserProfileApi {
+): T {
     val okHttpBuilder = OkHttpClient.Builder()
         .addInterceptor(AuthInterceptor())
         .addInterceptor(httpLoggingInterceptor)

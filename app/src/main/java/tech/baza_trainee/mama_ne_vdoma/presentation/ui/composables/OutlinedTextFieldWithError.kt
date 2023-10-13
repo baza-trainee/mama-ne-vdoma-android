@@ -86,19 +86,19 @@ fun OutlinedTextFieldWithError(
     ) {
         val focusRequester = remember { FocusRequester() }
 
-        var isEmailFocused by remember { mutableStateOf(false) }
+        var isFieldFocused by remember { mutableStateOf(false) }
 
         OutlinedTextField(
             modifier = modifier
                 .focusRequester(focusRequester)
                 .onFocusChanged {
-                    isEmailFocused = it.isFocused
+                    isFieldFocused = it.isFocused
                 }
                 .fillMaxWidth(),
             value = text,
             label = { Text(label) },
             onValueChange = { onValueChange(it) },
-            isError = isError && isEmailFocused,
+            isError = isError && isFieldFocused,
             colors = OutlinedTextFieldDefaults.colors(
                 focusedContainerColor = MaterialTheme.colorScheme.surface,
                 unfocusedContainerColor = MaterialTheme.colorScheme.surface,
@@ -121,7 +121,7 @@ fun OutlinedTextFieldWithError(
             ),
             maxLines = 1
         )
-        if (isError && isEmailFocused) {
+        if (isError && isFieldFocused) {
             Text(
                 text = errorText,
                 color = Color.Red,

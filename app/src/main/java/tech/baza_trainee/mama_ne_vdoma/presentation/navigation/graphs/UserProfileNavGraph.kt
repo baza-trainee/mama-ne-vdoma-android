@@ -31,6 +31,7 @@ fun NavGraphBuilder.userProfileGraph() {
             val fullInfoViewModel: FullInfoViewModel = koinNavViewModel()
             FullInfoScreen(
                 screenState = fullInfoViewModel.fullInfoViewState.collectAsStateWithLifecycle(),
+                uiState = fullInfoViewModel.uiState,
                 handleEvent = { fullInfoViewModel.handleFullProfileEvent(it) }
             )
         }

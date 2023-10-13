@@ -1,6 +1,7 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
@@ -40,13 +41,11 @@ fun ScheduleScreen(
     onNext: () -> Unit = {},
     onBack: () -> Unit = {}
 ) {
-    SurfaceWithNavigationBars(
-        modifier = modifier
-    ) {
+    SurfaceWithNavigationBars {
         BackHandler { onBack() }
 
         ConstraintLayout(
-            modifier = modifier
+            modifier = Modifier
                 .imePadding()
                 .fillMaxWidth()
         ) {
@@ -55,7 +54,7 @@ fun ScheduleScreen(
             val topGuideline = createGuidelineFromTop(0.2f)
 
             HeaderWithOptArrow(
-                modifier = modifier
+                modifier = Modifier
                     .constrainAs(topBar) {
                         top.linkTo(parent.top)
                         bottom.linkTo(topGuideline)
@@ -65,35 +64,27 @@ fun ScheduleScreen(
                 onBack = onBack
             )
 
-            ConstraintLayout(
-                modifier = modifier
+            Column(
+                modifier = Modifier
                     .verticalScroll(rememberScrollState())
                     .constrainAs(content) {
                         top.linkTo(topGuideline, 24.dp)
                         bottom.linkTo(btnNext.top, 16.dp)
                         height = Dimension.fillToConstraints
                     }
+                    .padding(horizontal = 24.dp)
             ) {
-                val (schedule, commentField) = createRefs()
-
                 ScheduleGroup(
-                    modifier = modifier
-                        .constrainAs(schedule) {
-                            top.linkTo(parent.top)
-                        },
+                    modifier = Modifier
+                        .fillMaxWidth(),
                     scheduleModel = screenState.value.schedule,
                     onValueChange = { day, period -> onUpdateSchedule(day, period) }
                 )
 
                 if (isCommentNeeded)
                     OutlinedTextField(
-                        modifier = modifier
-                            .padding(horizontal = 24.dp)
-                            .fillMaxWidth()
-                            .constrainAs(commentField) {
-                                top.linkTo(schedule.bottom, 16.dp)
-                                bottom.linkTo(parent.bottom, 16.dp)
-                            },
+                        modifier = Modifier
+                            .fillMaxWidth(),
                         value = comment.value,
                         label = { Text("Нотатка") },
                         onValueChange = { onUpdateComment(it) },
@@ -113,7 +104,7 @@ fun ScheduleScreen(
             }
 
             Button(
-                modifier = modifier
+                modifier = Modifier
                     .padding(horizontal = 24.dp, vertical = 16.dp)
                     .fillMaxWidth()
                     .constrainAs(btnNext) {

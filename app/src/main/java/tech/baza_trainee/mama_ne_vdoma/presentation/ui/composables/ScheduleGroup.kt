@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
@@ -35,14 +34,13 @@ fun ScheduleGroup(
     onValueChange: (DayOfWeek, Period) -> Unit = { _, _ -> }
 ) {
     Column(
-        modifier = modifier
-            .padding(horizontal = 24.dp)
+        modifier = Modifier
+            .fillMaxWidth()
             .background(MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(4.dp)),
-        verticalArrangement = Arrangement.SpaceAround
+        verticalArrangement = Arrangement.Top
     ) {
         Row(
-            modifier = modifier
-                .weight(1f)
+            modifier = Modifier
                 .padding(vertical = 8.dp)
                 .fillMaxWidth()
                 .height(48.dp),
@@ -50,38 +48,37 @@ fun ScheduleGroup(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                modifier = modifier
+                modifier = Modifier
                     .padding(horizontal = 8.dp)
                     .width(128.dp),
                 text = Period.WHOLE_DAY.period,
                 textAlign = TextAlign.Center
             )
             Text(
-                modifier = modifier
+                modifier = Modifier
                     .padding(horizontal = 8.dp),
                 text = Period.MORNING.period,
                 textAlign = TextAlign.Center
             )
             Text(
-                modifier = modifier
+                modifier = Modifier
                     .padding(horizontal = 8.dp),
                 text = Period.NOON.period,
                 textAlign = TextAlign.Center
             )
             Text(
-                modifier = modifier
+                modifier = Modifier
                     .padding(horizontal = 8.dp),
                 text = Period.AFTERNOON.period,
                 textAlign = TextAlign.Center
             )
         }
-        scheduleModel.schedule.keys.sortedBy { it.value }.forEach { day ->
+        DayOfWeek.values().sortedBy { it.value }.forEach { day ->
             Row(
-                modifier = modifier
+                modifier = Modifier
                     .padding(vertical = 8.dp)
                     .fillMaxWidth()
-                    .wrapContentHeight()
-                    .weight(1f),
+                    .height(48.dp),
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -89,7 +86,7 @@ fun ScheduleGroup(
                     .replaceFirstChar { it.uppercase() }
 
                 Box(
-                    modifier = modifier
+                    modifier = Modifier
                         .padding(horizontal = 8.dp)
                         .height(48.dp)
                         .width(128.dp)
@@ -111,7 +108,7 @@ fun ScheduleGroup(
                     )
                 }
                 Box(
-                    modifier = modifier
+                    modifier = Modifier
                         .padding(horizontal = 8.dp)
                         .height(48.dp),
                     contentAlignment = Alignment.Center
@@ -125,7 +122,7 @@ fun ScheduleGroup(
                 }
 
                 Box(
-                    modifier = modifier
+                    modifier = Modifier
                         .padding(horizontal = 8.dp)
                         .height(48.dp),
                     contentAlignment = Alignment.Center
@@ -139,7 +136,7 @@ fun ScheduleGroup(
                 }
 
                 Box(
-                    modifier = modifier
+                    modifier = Modifier
                         .padding(horizontal = 8.dp)
                         .height(48.dp),
                     contentAlignment = Alignment.Center

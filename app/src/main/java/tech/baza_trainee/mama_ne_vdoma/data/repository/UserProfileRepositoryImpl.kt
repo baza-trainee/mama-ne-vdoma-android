@@ -11,9 +11,9 @@ import tech.baza_trainee.mama_ne_vdoma.data.utils.asCustomResponse
 import tech.baza_trainee.mama_ne_vdoma.data.utils.getMessage
 import tech.baza_trainee.mama_ne_vdoma.domain.model.ChildEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.InitChildEntity
+import tech.baza_trainee.mama_ne_vdoma.domain.model.LocationPatchEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.PatchChildEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UserInfoEntity
-import tech.baza_trainee.mama_ne_vdoma.domain.model.UserLocationEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UserProfileEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.BitmapHelper
@@ -38,7 +38,7 @@ class UserProfileRepositoryImpl(
         else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage())
     }
 
-    override suspend fun saveUserLocation(location: UserLocationEntity): RequestResult<Unit> {
+    override suspend fun saveUserLocation(location: LocationPatchEntity): RequestResult<Unit> {
         val result = userProfileApi.saveUserLocation(location.toDataModel())
         return if (result.isSuccessful)
             RequestResult.Success(Unit)

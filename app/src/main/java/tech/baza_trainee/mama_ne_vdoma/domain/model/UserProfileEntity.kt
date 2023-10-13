@@ -9,7 +9,3 @@ data class UserProfileEntity(
     val location: LocationEntity = LocationEntity(),
     val schedule: ScheduleModel = ScheduleModel()
 )
-data class LocationEntity(
-    val type: String = "",
-    val coordinates: List<Double> = emptyList()
-)

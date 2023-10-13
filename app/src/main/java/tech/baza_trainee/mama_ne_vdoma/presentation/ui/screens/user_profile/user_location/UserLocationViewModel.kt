@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import tech.baza_trainee.mama_ne_vdoma.domain.model.UserLocationEntity
+import tech.baza_trainee.mama_ne_vdoma.domain.model.LocationPatchEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.LocationRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
@@ -79,7 +79,7 @@ class UserLocationViewModel(
             }
             execute {
                 userProfileRepository.saveUserLocation(
-                    UserLocationEntity(
+                    LocationPatchEntity(
                         lat = _locationScreenState.value.currentLocation.latitude,
                         lon = _locationScreenState.value.currentLocation.longitude
                     )

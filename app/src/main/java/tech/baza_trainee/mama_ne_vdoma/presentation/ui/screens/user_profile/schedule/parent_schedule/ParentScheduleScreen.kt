@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.Preview
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.LoadingIndicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.ScheduleScreen
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.schedule.ScheduleEvent
@@ -38,4 +39,10 @@ fun ParentScheduleScreen(
     )
 
     if (screenState.value.isLoading) LoadingIndicator()
+}
+
+@Composable
+@Preview
+fun ParentScheduleScreenPreview() {
+    ParentScheduleScreen()
 }

@@ -13,8 +13,8 @@ import retrofit2.http.Part
 import retrofit2.http.Path
 import tech.baza_trainee.mama_ne_vdoma.data.model.ChildDto
 import tech.baza_trainee.mama_ne_vdoma.data.model.InitChildDto
+import tech.baza_trainee.mama_ne_vdoma.data.model.LocationPatchDto
 import tech.baza_trainee.mama_ne_vdoma.data.model.UserInfoDto
-import tech.baza_trainee.mama_ne_vdoma.data.model.UserLocationDto
 import tech.baza_trainee.mama_ne_vdoma.data.model.UserProfileDto
 import tech.baza_trainee.mama_ne_vdoma.data.model.WeekScheduleDto
 
@@ -27,7 +27,7 @@ interface UserProfileApi {
     suspend fun saveUserInfo(@Body userInfo: UserInfoDto): Response<Unit>
 
     @PATCH("api/parent/geo")
-    suspend fun saveUserLocation(@Body location: UserLocationDto): Response<Unit>
+    suspend fun saveUserLocation(@Body location: LocationPatchDto): Response<Unit>
 
     @DELETE("api/parent")
     suspend fun deleteUser(): Response<Unit>

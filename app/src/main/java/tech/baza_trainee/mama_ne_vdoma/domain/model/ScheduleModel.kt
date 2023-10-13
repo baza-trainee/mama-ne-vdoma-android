@@ -22,7 +22,10 @@ data class DayPeriod(
     val noon: Boolean = false,
     val afternoon: Boolean = false,
     val wholeDay: Boolean = false
-)
+) {
+
+    fun isFilled() = morning || noon || afternoon || wholeDay
+}
 
 enum class Period(val period: String) {
     MORNING("Ранок"), NOON("Обід"), AFTERNOON("Вечір"), WHOLE_DAY("Цілий день")

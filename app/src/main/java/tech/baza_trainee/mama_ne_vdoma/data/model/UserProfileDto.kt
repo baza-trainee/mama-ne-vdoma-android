@@ -9,8 +9,3 @@ data class UserProfileDto(
     val location: LocationDto? = null,
     val week: Map<String, DayScheduleDto>? = null
 )
-
-data class LocationDto(
-    val type: String = "",
-    val coordinates: List<Double> = emptyList()
-)
