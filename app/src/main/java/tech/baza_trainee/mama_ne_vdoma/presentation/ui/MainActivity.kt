@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -56,6 +57,7 @@ class MainActivity : ComponentActivity() {
                         val hostScreenViewModel: HostScreenViewModel = koinNavViewModel()
                         HostScreen(
                             navigator = hostScreenViewModel.screenNavigator,
+                            screenState = hostScreenViewModel.viewState.collectAsStateWithLifecycle(),
                             handleEvent = { hostScreenViewModel.handleEvent(it) }
                         )
                     }

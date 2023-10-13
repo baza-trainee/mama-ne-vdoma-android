@@ -1,5 +1,6 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,10 +14,6 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -24,7 +21,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.PurpleGrey80
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 
@@ -32,6 +28,8 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFa
 @Preview
 fun MainNavigationBar(
     modifier: Modifier = Modifier,
+    items: List<MainNavigationItem> = emptyList(),
+    currentPage: Int = 0,
     onItemClicked: (Int) -> Unit = {}
 ) {
     NavigationBar(
@@ -44,14 +42,7 @@ fun MainNavigationBar(
         contentColor = MaterialTheme.colorScheme.onSurface,
         tonalElevation = 0.dp
     ) {
-        var selectedIndex by remember { mutableIntStateOf(0) }
-        val tabContents = listOf(
-            "Головна" to R.drawable.ic_home,
-            "Групи" to R.drawable.ic_group,
-            "Пошук" to R.drawable.ic_search,
-            "Налаштування" to R.drawable.ic_settings
-        )
-        tabContents.forEachIndexed { index, pair: Pair<String, Int> ->
+        items.forEachIndexed { index, item ->
             NavigationBarItem(
                 icon = {
                     Box(
@@ -60,16 +51,16 @@ fun MainNavigationBar(
                             .padding(horizontal = 16.dp)
                             .height(32.dp)
                             .background(
-                                color = if (selectedIndex == index) PurpleGrey80
+                                color = if (currentPage == index) PurpleGrey80
                                 else MaterialTheme.colorScheme.surface,
                                 shape = RoundedCornerShape(16.dp)
                             ),
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
-                            painter = painterResource(id = pair.second),
+                            painter = painterResource(id = item.icon),
                             contentDescription = null,
-                            tint = if (selectedIndex == index) MaterialTheme.colorScheme.primary
+                            tint = if (currentPage == index) MaterialTheme.colorScheme.primary
                             else MaterialTheme.colorScheme.onSurface
                         )
                     }
@@ -77,18 +68,18 @@ fun MainNavigationBar(
                 },
                 label = {
                     Text(
-                        text = pair.first,
+                        text = item.title,
                         fontSize = 10.sp,
                         fontFamily = redHatDisplayFontFamily,
                         textAlign = TextAlign.Center,
-                        color = if (selectedIndex == index) MaterialTheme.colorScheme.primary
+                        color = if (currentPage == index) MaterialTheme.colorScheme.primary
                         else MaterialTheme.colorScheme.onSurface
                     )
                 },
-                selected = selectedIndex == index,
+                selected = currentPage == index,
                 alwaysShowLabel = true,
                 onClick = {
-                    selectedIndex = index
+                    onItemClicked(index)
                 },
                 colors = NavigationBarItemDefaults.colors(
                     indicatorColor = MaterialTheme.colorScheme.surface
@@ -97,3 +88,8 @@ fun MainNavigationBar(
         }
     }
 }
+
+data class MainNavigationItem(
+    val title: String,
+    @DrawableRes val icon: Int
+)

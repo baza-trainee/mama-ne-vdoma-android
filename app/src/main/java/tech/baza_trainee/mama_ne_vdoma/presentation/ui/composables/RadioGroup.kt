@@ -23,7 +23,7 @@ fun <T> RadioGroup(
     onSelectedChange: (T) -> Unit = { }
 ) {
     Column(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxWidth()
             .height(IntrinsicSize.Min),
         horizontalAlignment = Alignment.Start,
@@ -31,7 +31,7 @@ fun <T> RadioGroup(
     ) {
         radioGroupOptions.forEach { value ->
             Row(
-                modifier = modifier
+                modifier = Modifier
                     .fillMaxWidth()
                     .selectable(
                         selected = (value == selected),

@@ -7,9 +7,9 @@ import androidx.navigation.navigation
 import org.koin.androidx.compose.navigation.koinNavViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.Graphs
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.GroupSearchRoutes
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.search_group.choose_child.ChooseChildScreen
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.search_group.set_area.SetAreaForSearchScreen
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.search_group.set_area.SetAreaViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.standalone.choose_child.ChooseChildScreen
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.standalone.set_area.SetAreaForSearchScreen
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.standalone.set_area.SetAreaViewModel
 
 fun NavGraphBuilder.groupSearchNavGraph() {
     navigation(

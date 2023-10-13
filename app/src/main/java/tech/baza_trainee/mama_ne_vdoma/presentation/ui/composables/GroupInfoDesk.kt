@@ -70,7 +70,7 @@ fun GroupInfoDesk(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
-                .padding(bottom = 2.dp, top = 4.dp)
+                .padding(bottom = 2.dp, top = 16.dp)
                 .height(88.dp),
             contentAlignment = Alignment.Center
         ) {
@@ -82,6 +82,7 @@ fun GroupInfoDesk(
                 contentDescription = "group_avatar",
                 contentScale = ContentScale.FillBounds
             )
+
             Row(
                 modifier = Modifier
                     .padding(8.dp)
@@ -108,6 +109,7 @@ fun GroupInfoDesk(
                 )
             }
         }
+
         Text(
             modifier = Modifier
                 .fillMaxWidth()
@@ -117,6 +119,7 @@ fun GroupInfoDesk(
             fontSize = 11.sp,
             fontFamily = redHatDisplayFontFamily
         )
+
         Text(
             modifier = Modifier
                 .fillMaxWidth()
@@ -127,6 +130,7 @@ fun GroupInfoDesk(
             fontFamily = redHatDisplayFontFamily,
             fontWeight = FontWeight.Bold
         )
+
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -142,6 +146,7 @@ fun GroupInfoDesk(
                 contentDescription = "children_age",
                 contentScale = ContentScale.Inside
             )
+
             Text(
                 text = age,
                 fontSize = 14.sp,

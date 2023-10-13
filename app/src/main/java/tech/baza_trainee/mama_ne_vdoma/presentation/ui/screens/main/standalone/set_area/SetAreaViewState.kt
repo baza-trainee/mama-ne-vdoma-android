@@ -1,4 +1,4 @@
-package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.search_group.set_area
+package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.standalone.set_area
 
 import com.google.android.gms.maps.model.LatLng
 

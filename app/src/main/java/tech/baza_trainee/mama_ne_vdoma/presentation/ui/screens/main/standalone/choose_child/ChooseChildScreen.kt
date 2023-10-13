@@ -1,4 +1,4 @@
-package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.search_group.choose_child
+package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.standalone.choose_child
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
