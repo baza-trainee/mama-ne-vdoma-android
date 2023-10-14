@@ -37,6 +37,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.UserC
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.login.LoginScreenViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.new_password.NewPasswordScreenViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.restore_password.RestorePasswordScreenViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.Communicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.choose_child.ChooseChildScreenViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.create_group.CreateGroupScreenViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.host.HostScreenViewModel
@@ -118,9 +119,10 @@ val loginKoinModule = module {
 
 val mainModule = module {
     single<ScreenNavigator>(named("MAIN")) { ScreenNavigatorImpl() }
+    single { Communicator() }
     viewModel { SetAreaViewModel(get(), get(), get()) }
-    viewModel { HostScreenViewModel(get(), get(named("MAIN"))) }
-    viewModel { MainScreenViewModel(get(), get(named("MAIN"))) }
+    viewModel { HostScreenViewModel(get(), get(named("MAIN")), get()) }
+    viewModel { MainScreenViewModel(get(), get(named("MAIN")), get()) }
     viewModel { ChooseChildScreenViewModel(get(), get(named("MAIN"))) }
     viewModel { (childId: String) -> CreateGroupScreenViewModel(childId, get(named("MAIN")), get(), get(), get()) }
 }

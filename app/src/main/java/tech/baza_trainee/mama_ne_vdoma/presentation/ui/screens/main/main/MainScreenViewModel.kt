@@ -6,10 +6,12 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.GroupsScreenRoutes
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.Communicator
 
 class MainScreenViewModel(
     private val mainNavigator: ScreenNavigator,
-    private val navigator: ScreenNavigator
+    private val navigator: ScreenNavigator,
+    private val communicator: Communicator
 ): ViewModel() {
 
     private val _viewState = MutableStateFlow(MainViewState())
@@ -17,7 +19,10 @@ class MainScreenViewModel(
 
     fun handleEvent(event: MainEvent) {
         when(event) {
-            MainEvent.CreateNewGroup -> navigator.navigate(GroupsScreenRoutes.ChooseChild)
+            MainEvent.CreateNewGroup -> {
+                navigator.navigate(GroupsScreenRoutes.ChooseChild)
+                communicator.setPage(1)
+            }
             MainEvent.ResetUiState -> TODO()
             MainEvent.Search -> TODO()
             is MainEvent.SetSearchOption -> TODO()
