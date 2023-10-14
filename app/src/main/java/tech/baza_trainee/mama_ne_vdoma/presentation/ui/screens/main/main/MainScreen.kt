@@ -43,7 +43,7 @@ fun MainScreen(
     uiState: State<RequestState> = mutableStateOf(RequestState.Idle),
     handleEvent: (MainEvent) -> Unit = {}
 ) {
-    BackHandler {}
+    BackHandler { handleEvent(MainEvent.OnBack) }
 
     val context = LocalContext.current
 

@@ -125,7 +125,7 @@ val mainModule = module {
     viewModel { HostScreenViewModel(get(named(SINGLETON_FOR_MAIN)), get(), get(named(SINGLETON_FOR_MAIN))) }
     viewModel { MainScreenViewModel(get(named(SINGLETON_FOR_MAIN)), get(), get(named(SINGLETON_FOR_MAIN))) }
     viewModel { ChooseChildScreenViewModel(get(), get(named(SINGLETON_FOR_MAIN))) }
-    viewModel { MyGroupsScreenViewModel(get(), get(), get(named(SINGLETON_FOR_MAIN))) }
+    viewModel { MyGroupsScreenViewModel(get(named(SINGLETON_FOR_MAIN)), get(), get(), get(named(SINGLETON_FOR_MAIN))) }
     viewModel { (childId: String) -> CreateGroupScreenViewModel(childId, get(named(SINGLETON_FOR_MAIN)), get(), get(), get()) }
 }
 

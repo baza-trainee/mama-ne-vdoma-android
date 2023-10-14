@@ -14,6 +14,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.MainScreen
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.GROUPS_PAGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.MAIN_PAGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.PAGE
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.PREV_PAGE
 
 class HostScreenViewModel(
     private val savedStateHandle: SavedStateHandle,
@@ -44,6 +45,7 @@ class HostScreenViewModel(
     }
 
     private fun navigateToTab(page: Int) {
+        savedStateHandle[PREV_PAGE] = _viewState.value.currentPage
         _viewState.update {
             it.copy(currentPage = page)
         }

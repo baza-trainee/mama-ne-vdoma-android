@@ -29,6 +29,7 @@ class MainScreenViewModel(
             MainEvent.Search -> TODO()
             is MainEvent.SetSearchOption -> TODO()
             is MainEvent.SetSearchRequest -> TODO()
+            MainEvent.OnBack -> mainNavigator.goBack()
         }
     }
 }

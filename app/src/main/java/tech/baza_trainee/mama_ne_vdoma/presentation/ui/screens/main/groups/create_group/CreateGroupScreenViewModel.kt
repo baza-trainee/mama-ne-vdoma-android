@@ -54,7 +54,7 @@ class CreateGroupScreenViewModel(
     fun handleEvent(event: CreateGroupEvent) {
         when(event) {
             CreateGroupEvent.ResetUiState -> _uiState.value = RequestState.Idle
-            CreateGroupEvent.OnBack -> TODO()
+            CreateGroupEvent.OnBack -> navigator.goBack()
             CreateGroupEvent.OnCreate -> createGroup()
             is CreateGroupEvent.UpdateGroupSchedule -> updateGroupSchedule(event.day, event.period)
             is CreateGroupEvent.UpdateName -> validateName(event.value)

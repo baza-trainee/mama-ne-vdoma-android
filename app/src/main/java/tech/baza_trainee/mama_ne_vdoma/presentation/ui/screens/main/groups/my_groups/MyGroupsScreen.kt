@@ -37,7 +37,7 @@ fun MyGroupsScreen(
     uiState: State<RequestState> = mutableStateOf(RequestState.Idle),
     handleEvent: (MyGroupsEvent) -> Unit = {}
 ) {
-    BackHandler {}
+    BackHandler { handleEvent(MyGroupsEvent.OnBack) }
 
     val context = LocalContext.current
 

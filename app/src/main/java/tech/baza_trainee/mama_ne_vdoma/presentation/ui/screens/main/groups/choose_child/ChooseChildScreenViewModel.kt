@@ -37,7 +37,7 @@ class ChooseChildScreenViewModel(
     fun handleEvent(event: ChooseChildEvent) {
         when (event) {
             ChooseChildEvent.ResetUiState -> _uiState.value = RequestState.Idle
-            ChooseChildEvent.OnBack -> TODO()
+            ChooseChildEvent.OnBack -> navigator.goBack()
             is ChooseChildEvent.OnChooseChild -> navigator.navigate(
                 GroupsScreenRoutes.CreateGroup.getDestination(
                     event.childId
