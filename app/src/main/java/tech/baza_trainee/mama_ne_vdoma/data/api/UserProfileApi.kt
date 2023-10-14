@@ -16,6 +16,7 @@ import tech.baza_trainee.mama_ne_vdoma.data.model.InitChildDto
 import tech.baza_trainee.mama_ne_vdoma.data.model.LocationPatchDto
 import tech.baza_trainee.mama_ne_vdoma.data.model.UserInfoDto
 import tech.baza_trainee.mama_ne_vdoma.data.model.UserProfileDto
+import tech.baza_trainee.mama_ne_vdoma.data.model.UserProfileResponse
 import tech.baza_trainee.mama_ne_vdoma.data.model.WeekScheduleDto
 
 interface UserProfileApi {
@@ -31,6 +32,9 @@ interface UserProfileApi {
 
     @DELETE("api/parent")
     suspend fun deleteUser(): Response<Unit>
+
+    @GET("api/parent/id/{parentId}")
+    suspend fun getUserById(@Path("parentId") parentId: String): Response<UserProfileResponse>
 
     @POST("api/child")
     suspend fun saveChild(@Body request: InitChildDto): Response<ChildDto>

@@ -37,7 +37,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import tech.baza_trainee.mama_ne_vdoma.R
-import tech.baza_trainee.mama_ne_vdoma.domain.model.GroupEntity
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.GroupUiModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.BitmapHelper
 
@@ -46,7 +46,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.BitmapHelper
 fun GroupInfoDesk(
     modifier: Modifier = Modifier,
     groupAvatar: Bitmap = BitmapHelper.DEFAULT_BITMAP,
-    group: GroupEntity = GroupEntity()
+    group: GroupUiModel = GroupUiModel()
 ) {
     Column(
         modifier = Modifier
@@ -138,7 +138,7 @@ fun GroupInfoDesk(
             )
 
             Text(
-                text = group.ages,
+                text = "${group.ages} р.",
                 fontSize = 14.sp,
                 fontFamily = redHatDisplayFontFamily
             )
@@ -162,7 +162,7 @@ fun GroupInfoDesk(
                             .height(24.dp)
                             .width(24.dp)
                             .clip(CircleShape),
-                        bitmap = BitmapHelper.DEFAULT_BITMAP.asImageBitmap(),
+                        bitmap = member.avatar.asImageBitmap(),
                         contentDescription = "member",
                         contentScale = ContentScale.Fit
                     )
@@ -254,12 +254,12 @@ fun GroupInfoDesk(
                                 .height(24.dp)
                                 .width(24.dp)
                                 .clip(CircleShape),
-                            bitmap = BitmapHelper.DEFAULT_BITMAP.asImageBitmap(),
+                            bitmap = it.avatar.asImageBitmap(),
                             contentDescription = "member",
                             contentScale = ContentScale.Fit
                         )
                         Text(
-                            text = it.parentId,
+                            text = it.name,
                             fontSize = 14.sp,
                             fontFamily = redHatDisplayFontFamily
                         )

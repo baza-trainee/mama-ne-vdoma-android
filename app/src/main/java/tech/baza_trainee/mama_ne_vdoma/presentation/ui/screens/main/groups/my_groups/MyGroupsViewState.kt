@@ -1,8 +1,8 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.my_groups
 
-import tech.baza_trainee.mama_ne_vdoma.domain.model.GroupEntity
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.GroupUiModel
 
 data class MyGroupsViewState(
-    val groups: List<GroupEntity> = emptyList(),
+    val groups: List<GroupUiModel> = emptyList(),
     val isLoading: Boolean = false
 )

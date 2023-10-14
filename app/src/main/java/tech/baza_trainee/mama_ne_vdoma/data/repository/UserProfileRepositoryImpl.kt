@@ -24,10 +24,10 @@ class UserProfileRepositoryImpl(
     private val bitmapHelper: BitmapHelper
 ): UserProfileRepository {
 
-    override suspend fun getUserInfo(): RequestResult<UserProfileEntity?> {
+    override suspend fun getUserInfo(): RequestResult<UserProfileEntity> {
         val result = userProfileApi.getUserInfo()
         return if (result.isSuccessful)
-            RequestResult.Success(result.body()?.toDomainModel())
+            RequestResult.Success(result.body()?.toDomainModel() ?: UserProfileEntity())
         else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage())
     }
 
@@ -49,6 +49,13 @@ class UserProfileRepositoryImpl(
         val result = userProfileApi.deleteUser()
         return if (result.isSuccessful)
             RequestResult.Success(Unit)
+        else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage())
+    }
+
+    override suspend fun getUserById(userId: String): RequestResult<UserProfileEntity> {
+        val result = userProfileApi.getUserById(userId)
+        return if (result.isSuccessful)
+            RequestResult.Success(result.body()?.user?.toDomainModel() ?: UserProfileEntity())
         else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage())
     }
 

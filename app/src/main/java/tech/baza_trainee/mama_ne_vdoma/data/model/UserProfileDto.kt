@@ -13,3 +13,7 @@ data class UserProfileDto(
     val location: LocationDto? = null,
     val week: Map<String, DayScheduleDto>? = null
 )
+
+data class UserProfileResponse(
+    val user: UserProfileDto
+)

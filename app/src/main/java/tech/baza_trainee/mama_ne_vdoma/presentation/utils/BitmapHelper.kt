@@ -56,7 +56,7 @@ class BitmapHelper(private val context: Context) {
         private const val AVATAR = "avatar.png"
 
         val DEFAULT_BITMAP = Bitmap.createBitmap(200, 200, Bitmap.Config.ARGB_8888).applyCanvas {
-            drawColor(Color.RED)
+            drawColor(Color.GRAY)
         }
     }
 }
