@@ -8,6 +8,7 @@ import androidx.navigation.navArgument
 sealed class GroupsScreenRoutes(val route: String): CommonRoute(route) {
     data object Groups: GroupsScreenRoutes("groups_screen")
     data object ChooseChild: GroupsScreenRoutes("choose_child_screen")
+    data object ImageCrop: GroupsScreenRoutes("user_crop_screen")
 
 
     class CreateGroup: GroupsScreenRoutes(ROUTE) {

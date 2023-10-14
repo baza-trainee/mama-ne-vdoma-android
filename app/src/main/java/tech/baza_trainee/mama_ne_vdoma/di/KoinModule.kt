@@ -38,8 +38,10 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.UserC
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.login.LoginScreenViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.new_password.NewPasswordScreenViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.restore_password.RestorePasswordScreenViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.GroupImageCommunicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.choose_child.ChooseChildScreenViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.create_group.CreateGroupScreenViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.image_crop.GroupImageCropViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.my_groups.MyGroupsScreenViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.host.HostScreenViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.main.MainScreenViewModel
@@ -122,11 +124,44 @@ val mainModule = module {
     single<ScreenNavigator>(named(SINGLETON_FOR_MAIN)) { ScreenNavigatorImpl() }
     single(named(SINGLETON_FOR_MAIN)) { SavedStateHandle() }
     viewModel { SetAreaViewModel(get(), get(), get()) }
-    viewModel { HostScreenViewModel(get(named(SINGLETON_FOR_MAIN)), get(), get(named(SINGLETON_FOR_MAIN))) }
-    viewModel { MainScreenViewModel(get(named(SINGLETON_FOR_MAIN)), get(), get(named(SINGLETON_FOR_MAIN))) }
+    viewModel {
+        HostScreenViewModel(
+            get(named(SINGLETON_FOR_MAIN)),
+            get(),
+            get(named(SINGLETON_FOR_MAIN))
+        )
+    }
+    viewModel {
+        MainScreenViewModel(
+            get(named(SINGLETON_FOR_MAIN)),
+            get(),
+            get(named(SINGLETON_FOR_MAIN))
+        )
+    }
     viewModel { ChooseChildScreenViewModel(get(), get(named(SINGLETON_FOR_MAIN))) }
-    viewModel { MyGroupsScreenViewModel(get(named(SINGLETON_FOR_MAIN)), get(), get(), get(), get(named(SINGLETON_FOR_MAIN))) }
-    viewModel { (childId: String) -> CreateGroupScreenViewModel(childId, get(named(SINGLETON_FOR_MAIN)), get(), get(), get()) }
+    viewModel {
+        MyGroupsScreenViewModel(
+            get(named(SINGLETON_FOR_MAIN)),
+            get(),
+            get(),
+            get(),
+            get(named(SINGLETON_FOR_MAIN))
+        )
+    }
+
+    single { GroupImageCommunicator() }
+    viewModel { (childId: String) ->
+        CreateGroupScreenViewModel(
+            childId,
+            get(),
+            get(named(SINGLETON_FOR_MAIN)),
+            get(),
+            get(),
+            get(),
+            get()
+        )
+    }
+    viewModel { GroupImageCropViewModel(get(), get(named(SINGLETON_FOR_MAIN)), get()) }
 }
 
 const val BASE_URL = "https://tough-moth-trunks.cyclic.cloud/"

@@ -12,6 +12,8 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.choos
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.choose_child.ChooseChildScreenViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.create_group.CreateGroupScreen
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.create_group.CreateGroupScreenViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.image_crop.GroupImageCropScreen
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.image_crop.GroupImageCropViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.my_groups.MyGroupsScreen
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.my_groups.MyGroupsScreenViewModel
 
@@ -48,6 +50,13 @@ fun NavGraphBuilder.groupNavGraph() {
                 screenState = createGroupScreenViewModel.viewState.collectAsStateWithLifecycle(),
                 uiState = createGroupScreenViewModel.uiState,
                 handleEvent = { createGroupScreenViewModel.handleEvent(it) }
+            )
+        }
+        composable(GroupsScreenRoutes.ImageCrop.route) {
+            val imageCropViewModel: GroupImageCropViewModel = koinNavViewModel()
+            GroupImageCropScreen(
+                imageForCrop = imageCropViewModel.getUserAvatarBitmap(),
+                handleEvent = { imageCropViewModel.saveCroppedImage(it) }
             )
         }
     }

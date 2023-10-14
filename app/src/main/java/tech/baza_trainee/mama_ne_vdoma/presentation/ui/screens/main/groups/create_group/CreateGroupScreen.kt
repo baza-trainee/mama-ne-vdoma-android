@@ -2,19 +2,15 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.crea
 
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -33,13 +29,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -47,11 +40,11 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.GroupAvatarWithCameraAndGallery
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.LoadingIndicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.OutlinedTextFieldWithError
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.ScheduleGroup
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.ButtonText
 
@@ -59,7 +52,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.ButtonText
 fun CreateGroupScreen(
     modifier: Modifier = Modifier,
     screenState: State<CreateGroupViewState> = mutableStateOf(CreateGroupViewState()),
-    uiState: State<RequestState> = mutableStateOf(RequestState.Idle),
+    uiState: State<CreateGroupUiState> = mutableStateOf(CreateGroupUiState.Idle),
     handleEvent: (CreateGroupEvent) -> Unit = {}
 ) {
     BackHandler { handleEvent(CreateGroupEvent.OnBack) }
@@ -67,10 +60,18 @@ fun CreateGroupScreen(
     val context = LocalContext.current
 
     when (val state = uiState.value) {
-        RequestState.Idle -> Unit
-        is RequestState.OnError -> {
+        CreateGroupUiState.Idle -> Unit
+        is CreateGroupUiState.OnError -> {
             if (state.error.isNotBlank()) Toast.makeText(context, state.error, Toast.LENGTH_LONG)
                 .show()
+            handleEvent(CreateGroupEvent.ResetUiState)
+        }
+        CreateGroupUiState.OnAvatarError -> {
+            Toast.makeText(
+                context,
+                "Аватарка має розмір більше 1МБ. Будь ласка, оберіть інше фото і повторіть",
+                Toast.LENGTH_LONG
+            ).show()
             handleEvent(CreateGroupEvent.ResetUiState)
         }
     }
@@ -268,22 +269,16 @@ fun CreateGroupScreen(
 
         Spacer(modifier = Modifier.width(4.dp))
 
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp)
-                .height(88.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            Image(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .clip(RoundedCornerShape(4.dp)),
-                bitmap = screenState.value.avatar.asImageBitmap(),
-                contentDescription = "group_avatar",
-                contentScale = ContentScale.FillBounds
-            )
-        }
+        GroupAvatarWithCameraAndGallery(
+            modifier = modifier
+                .padding(horizontal = 24.dp),
+            avatar = screenState.value.avatar,
+            setUriForCrop = {
+                handleEvent(CreateGroupEvent.SetImageToCrop(it))
+            },
+            onEditPhoto = { handleEvent(CreateGroupEvent.OnEditPhoto) },
+            onDeletePhoto = { handleEvent(CreateGroupEvent.OnDeletePhoto) }
+        )
 
         OutlinedTextField(
             modifier = Modifier

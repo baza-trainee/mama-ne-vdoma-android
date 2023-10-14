@@ -7,13 +7,12 @@ import android.os.Environment
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -47,7 +46,7 @@ import java.io.File
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 @Preview
-fun UserAvatarWithCameraAndGallery(
+fun GroupAvatarWithCameraAndGallery(
     modifier: Modifier = Modifier,
     avatar: Bitmap = BitmapHelper.DEFAULT_BITMAP,
     setUriForCrop: (Uri) -> Unit = {},
@@ -100,8 +99,12 @@ fun UserAvatarWithCameraAndGallery(
 
     Box(
         modifier = Modifier
-            .width(172.dp)
-            .height(172.dp)
+            .fillMaxWidth()
+            .height(88.dp)
+            .background(
+                color = MaterialTheme.colorScheme.surface,
+                shape = RoundedCornerShape(4.dp)
+            )
             .clickable {
                 showPickerDialog = true
             }
@@ -110,10 +113,10 @@ fun UserAvatarWithCameraAndGallery(
             Image(
                 bitmap = avatar.asImageBitmap(),
                 contentDescription = "avatar",
-                contentScale = ContentScale.FillBounds,
+                contentScale = ContentScale.Fit,
                 modifier = Modifier
-                    .fillMaxSize()
-                    .clip(CircleShape)
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(4.dp))
             )
 
             IconButton(
@@ -133,7 +136,7 @@ fun UserAvatarWithCameraAndGallery(
                 contentScale = ContentScale.Fit,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clip(CircleShape)
+                    .clip(RoundedCornerShape(4.dp))
             )
     }
 

@@ -20,7 +20,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -34,6 +33,7 @@ import com.smarttoolfactory.cropper.settings.CropOutlineProperty
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.LoadingIndicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.SurfaceWithSystemBars
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.ButtonText
 
 @Composable
 fun ImageCropScreen(
@@ -41,19 +41,16 @@ fun ImageCropScreen(
     imageForCrop: ImageBitmap = ImageBitmap(512, 512),
     handleEvent: (Bitmap) -> Unit = {}
 ) {
-    SurfaceWithSystemBars(
-        modifier = modifier
-    ) {
+    SurfaceWithSystemBars {
         var isCropping by remember { mutableStateOf(false) }
 
         Column(
-            modifier = modifier
-                .fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.SpaceBetween,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                modifier = modifier
+                modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 24.dp)
                     .padding(top = 16.dp),
@@ -64,7 +61,7 @@ fun ImageCropScreen(
                 fontFamily = redHatDisplayFontFamily
             )
 
-            Spacer(modifier = modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
             val handleSize: Float = LocalDensity.current.run { 20.dp.toPx() }
             var crop by remember { mutableStateOf(false) }
@@ -96,10 +93,10 @@ fun ImageCropScreen(
                 }
             )
 
-            Spacer(modifier = modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(32.dp))
 
             Button(
-                modifier = modifier
+                modifier = Modifier
                     .padding(horizontal = 24.dp, vertical = 16.dp)
                     .fillMaxWidth()
                     .height(48.dp),
@@ -107,10 +104,8 @@ fun ImageCropScreen(
                     crop = true
                 }
             ) {
-                Text(
-                    text = "Зберегти",
-                    fontWeight = FontWeight.Bold,
-                    fontFamily = redHatDisplayFontFamily
+                ButtonText(
+                    text = "Зберегти"
                 )
             }
         }

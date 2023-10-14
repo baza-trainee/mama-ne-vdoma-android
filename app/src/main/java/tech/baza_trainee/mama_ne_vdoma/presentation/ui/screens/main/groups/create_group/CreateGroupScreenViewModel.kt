@@ -1,13 +1,17 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.create_group
 
+import android.graphics.Bitmap
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.model.LatLng
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import tech.baza_trainee.mama_ne_vdoma.domain.model.ChildEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.CreateGroupEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.DayPeriod
@@ -20,8 +24,10 @@ import tech.baza_trainee.mama_ne_vdoma.domain.repository.GroupsRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.LocationRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.GroupsScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.MainScreenRoutes
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.GroupImageCommunicator
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.BitmapHelper
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.networkExecutor
@@ -32,28 +38,34 @@ import java.time.DayOfWeek
 
 class CreateGroupScreenViewModel(
     private val childId: String,
+    private val communicator: GroupImageCommunicator,
     private val navigator: ScreenNavigator,
     private val userProfileRepository: UserProfileRepository,
     private val locationRepository: LocationRepository,
-    private val groupsRepository: GroupsRepository
+    private val groupsRepository: GroupsRepository,
+    private val bitmapHelper: BitmapHelper
 ): ViewModel() {
 
 
     private val _viewState = MutableStateFlow(CreateGroupViewState())
     val viewState: StateFlow<CreateGroupViewState> = _viewState.asStateFlow()
 
-    private val _uiState = mutableStateOf<RequestState>(RequestState.Idle)
-    val uiState: State<RequestState>
+    private val _uiState = mutableStateOf<CreateGroupUiState>(CreateGroupUiState.Idle)
+    val uiState: State<CreateGroupUiState>
         get() = _uiState
 
     init {
         getUserInfo()
         getChildren()
+        if (communicator.croppedImage != BitmapHelper.DEFAULT_BITMAP) {
+            saveGroupAvatar(communicator.croppedImage)
+            communicator.croppedImage = BitmapHelper.DEFAULT_BITMAP
+        }
     }
 
     fun handleEvent(event: CreateGroupEvent) {
         when(event) {
-            CreateGroupEvent.ResetUiState -> _uiState.value = RequestState.Idle
+            CreateGroupEvent.ResetUiState -> _uiState.value = CreateGroupUiState.Idle
             CreateGroupEvent.OnBack -> navigator.goBack()
             CreateGroupEvent.OnCreate -> createGroup()
             is CreateGroupEvent.UpdateGroupSchedule -> updateGroupSchedule(event.day, event.period)
@@ -61,6 +73,33 @@ class CreateGroupScreenViewModel(
             is CreateGroupEvent.UpdateMaxAge -> validateMaxAge(event.value)
             is CreateGroupEvent.UpdateMinAge -> validateMinAge(event.value)
             is CreateGroupEvent.UpdateDescription -> updateDescription(event.value)
+            CreateGroupEvent.OnDeletePhoto -> TODO()
+            CreateGroupEvent.OnEditPhoto -> navigator.navigate(GroupsScreenRoutes.ImageCrop)
+            is CreateGroupEvent.SetImageToCrop -> communicator.uriForCrop = event.uri
+        }
+    }
+
+    private fun saveGroupAvatar(image: Bitmap) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val newImage = if (image.height > IMAGE_HEIGHT)
+                Bitmap.createScaledBitmap(
+                    image,
+                    IMAGE_WIDTH,
+                    IMAGE_HEIGHT,
+                    true
+                )
+            else image
+            val newImageSize = bitmapHelper.getSize(newImage)
+            if (newImageSize < IMAGE_SIZE) {
+                _viewState.update {
+                    it.copy(
+                        avatar = newImage
+                    )
+                }
+                //uploadUserAvatar(newImage)
+            } else {
+                _uiState.value = CreateGroupUiState.OnAvatarError
+            }
         }
     }
 
@@ -77,7 +116,7 @@ class CreateGroupScreenViewModel(
             }
             onSuccess { updateGroup(it.id) }
             onError { error ->
-                _uiState.value = RequestState.OnError(error)
+                _uiState.value = CreateGroupUiState.OnError(error)
             }
             onLoading { isLoading ->
                 _viewState.update {
@@ -106,7 +145,7 @@ class CreateGroupScreenViewModel(
             }
             onSuccess { navigator.navigate(MainScreenRoutes.Main) }
             onError { error ->
-                _uiState.value = RequestState.OnError(error)
+                _uiState.value = CreateGroupUiState.OnError(error)
             }
             onLoading { isLoading ->
                 _viewState.update {
@@ -133,7 +172,7 @@ class CreateGroupScreenViewModel(
                     )
             }
             onError { error ->
-                _uiState.value = RequestState.OnError(error)
+                _uiState.value = CreateGroupUiState.OnError(error)
             }
             onLoading { isLoading ->
                 _viewState.update {
@@ -158,7 +197,7 @@ class CreateGroupScreenViewModel(
                 }
             }
             onError { error ->
-                _uiState.value = RequestState.OnError(error)
+                _uiState.value = CreateGroupUiState.OnError(error)
             }
             onLoading { isLoading ->
                 _viewState.update {
@@ -188,7 +227,7 @@ class CreateGroupScreenViewModel(
                 }
             }
             onError { error ->
-                _uiState.value = RequestState.OnError(error)
+                _uiState.value = CreateGroupUiState.OnError(error)
             }
             onLoading { isLoading ->
                 _viewState.update {
@@ -370,5 +409,8 @@ class CreateGroupScreenViewModel(
         private val NAME_LENGTH = 6..18
         private const val MIN_AGE = 1
         private const val MAX_AGE = 18
+        private const val IMAGE_SIZE = 1 * 1024 * 1024
+        private const val IMAGE_HEIGHT = 960
+        private const val IMAGE_WIDTH = 360
     }
 }

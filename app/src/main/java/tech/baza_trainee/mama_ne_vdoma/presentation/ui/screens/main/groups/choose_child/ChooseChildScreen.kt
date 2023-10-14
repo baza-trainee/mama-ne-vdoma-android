@@ -64,7 +64,7 @@ fun ChooseChildScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
-                text = "Для кого шукаємо групу?",
+                text = "Для кого створюємо групу?",
                 fontFamily = redHatDisplayFontFamily,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold
