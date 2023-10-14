@@ -1,5 +1,6 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.host
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -10,12 +11,14 @@ import kotlinx.coroutines.launch
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.GroupsScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.MainScreenRoutes
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.Communicator
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.GROUPS_PAGE
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.MAIN_PAGE
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.PAGE
 
 class HostScreenViewModel(
+    private val savedStateHandle: SavedStateHandle,
     private val mainNavigator: ScreenNavigator,
-    private val navigator: ScreenNavigator,
-    private val communicator: Communicator
+    private val navigator: ScreenNavigator
 ): ViewModel() {
 
     val screenNavigator get() = navigator
@@ -25,7 +28,7 @@ class HostScreenViewModel(
 
     init {
         viewModelScope.launch {
-            communicator.pageFlow.collect { page ->
+            savedStateHandle.getStateFlow(PAGE, MAIN_PAGE).collect { page ->
                 _viewState.update {
                     it.copy(currentPage = page)
                 }
@@ -45,8 +48,8 @@ class HostScreenViewModel(
             it.copy(currentPage = page)
         }
         when(page) {
-            0 -> navigator.navigate(MainScreenRoutes.Main)
-            1 -> navigator.navigate(GroupsScreenRoutes.Groups)
+            MAIN_PAGE -> navigator.navigate(MainScreenRoutes.Main)
+            GROUPS_PAGE -> navigator.navigate(GroupsScreenRoutes.Groups)
         }
     }
 }

@@ -1,17 +1,19 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.main
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.GroupsScreenRoutes
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.Communicator
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.GROUPS_PAGE
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.PAGE
 
 class MainScreenViewModel(
+    private val savedStateHandle: SavedStateHandle,
     private val mainNavigator: ScreenNavigator,
-    private val navigator: ScreenNavigator,
-    private val communicator: Communicator
+    private val navigator: ScreenNavigator
 ): ViewModel() {
 
     private val _viewState = MutableStateFlow(MainViewState())
@@ -21,7 +23,7 @@ class MainScreenViewModel(
         when(event) {
             MainEvent.CreateNewGroup -> {
                 navigator.navigate(GroupsScreenRoutes.ChooseChild)
-                communicator.setPage(1)
+                savedStateHandle[PAGE] = GROUPS_PAGE
             }
             MainEvent.ResetUiState -> TODO()
             MainEvent.Search -> TODO()

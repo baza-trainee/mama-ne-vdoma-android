@@ -1,5 +1,6 @@
 package tech.baza_trainee.mama_ne_vdoma.di
 
+import androidx.lifecycle.SavedStateHandle
 import com.chuckerteam.chucker.api.ChuckerCollector
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.google.gson.Gson
@@ -37,7 +38,6 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.UserC
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.login.LoginScreenViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.new_password.NewPasswordScreenViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.restore_password.RestorePasswordScreenViewModel
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.Communicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.choose_child.ChooseChildScreenViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.create_group.CreateGroupScreenViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.my_groups.MyGroupsScreenViewModel
@@ -119,14 +119,14 @@ val loginKoinModule = module {
 }
 
 val mainModule = module {
-    single<ScreenNavigator>(named("MAIN")) { ScreenNavigatorImpl() }
-    single { Communicator() }
+    single<ScreenNavigator>(named(SINGLETON_FOR_MAIN)) { ScreenNavigatorImpl() }
+    single(named(SINGLETON_FOR_MAIN)) { SavedStateHandle() }
     viewModel { SetAreaViewModel(get(), get(), get()) }
-    viewModel { HostScreenViewModel(get(), get(named("MAIN")), get()) }
-    viewModel { MainScreenViewModel(get(), get(named("MAIN")), get()) }
-    viewModel { ChooseChildScreenViewModel(get(), get(named("MAIN"))) }
-    viewModel { MyGroupsScreenViewModel(get(), get(), get(named("MAIN"))) }
-    viewModel { (childId: String) -> CreateGroupScreenViewModel(childId, get(named("MAIN")), get(), get(), get()) }
+    viewModel { HostScreenViewModel(get(named(SINGLETON_FOR_MAIN)), get(), get(named(SINGLETON_FOR_MAIN))) }
+    viewModel { MainScreenViewModel(get(named(SINGLETON_FOR_MAIN)), get(), get(named(SINGLETON_FOR_MAIN))) }
+    viewModel { ChooseChildScreenViewModel(get(), get(named(SINGLETON_FOR_MAIN))) }
+    viewModel { MyGroupsScreenViewModel(get(), get(), get(named(SINGLETON_FOR_MAIN))) }
+    viewModel { (childId: String) -> CreateGroupScreenViewModel(childId, get(named(SINGLETON_FOR_MAIN)), get(), get(), get()) }
 }
 
 const val BASE_URL = "https://tough-moth-trunks.cyclic.cloud/"
@@ -176,3 +176,4 @@ fun createOkHttpClient(
 }
 
 private const val CHUCKER_CONTENT_MAX_LENGTH = 250000L
+private const val SINGLETON_FOR_MAIN = "MAIN"
