@@ -52,6 +52,7 @@ fun MyGroupsScreen(
             handleEvent(MyGroupsEvent.ResetUiState)
         }
     }
+
     Column(
         modifier = Modifier
             .verticalScroll(rememberScrollState())

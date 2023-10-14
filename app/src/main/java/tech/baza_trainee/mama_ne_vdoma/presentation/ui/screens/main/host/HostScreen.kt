@@ -1,5 +1,6 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.host
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -8,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
@@ -23,15 +25,30 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.MainNavigatio
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.MainNavigationItem
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.SurfaceWithNavigationBars
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.ToolbarWithAvatar
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 
 @Composable
 fun HostScreen(
     modifier: Modifier = Modifier,
     navigator: ScreenNavigator,
     screenState: State<HostViewState> = mutableStateOf(HostViewState()),
+    uiState: State<RequestState> = mutableStateOf(RequestState.Idle),
     handleEvent: (HostEvent) -> Unit = {}
 ) {
     SurfaceWithNavigationBars {
+        val context = LocalContext.current
+
+        when (val state = uiState.value) {
+            RequestState.Idle -> Unit
+            is RequestState.OnError -> {
+                if (state.error.isNotBlank()) Toast.makeText(
+                    context,
+                    state.error,
+                    Toast.LENGTH_LONG
+                ).show()
+                handleEvent(HostEvent.ResetUiState)
+            }
+        }
 
         val tabContents = listOf(
             MainNavigationItem("Головна", R.drawable.ic_home),
@@ -44,7 +61,9 @@ fun HostScreen(
             modifier = modifier.fillMaxSize(),
             topBar = {
                 ToolbarWithAvatar(
-                    title = tabContents[screenState.value.currentPage].title
+                    title = tabContents[screenState.value.currentPage].title,
+                    avatar = screenState.value.avatar,
+                    showNotification = false,
                 )
             },
             bottomBar = {

@@ -128,7 +128,8 @@ val mainModule = module {
         HostScreenViewModel(
             get(named(SINGLETON_FOR_MAIN)),
             get(),
-            get(named(SINGLETON_FOR_MAIN))
+            get(named(SINGLETON_FOR_MAIN)),
+            get()
         )
     }
     viewModel {

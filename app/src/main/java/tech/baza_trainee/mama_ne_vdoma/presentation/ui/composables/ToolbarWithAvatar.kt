@@ -86,40 +86,42 @@ fun ToolbarWithAvatar(
             color = MaterialTheme.colorScheme.onPrimary
         )
 
-        Box(
-            modifier = Modifier
-                .fillMaxHeight()
-                .padding(16.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            Image(
-                modifier = Modifier
-                    .height(32.dp)
-                    .width(32.dp),
-                painter = painterResource(id = R.drawable.ic_notification),
-                contentDescription = "notification",
-                contentScale = ContentScale.Fit
-            )
-
+        if (showNotification) {
             Box(
                 modifier = Modifier
-                    .height(16.dp)
-                    .width(16.dp)
-                    .align(Alignment.TopEnd)
-                    .background(
-                        color = Color.Red,
-                        shape = CircleShape
-                    ),
+                    .fillMaxHeight()
+                    .padding(16.dp),
                 contentAlignment = Alignment.Center
             ) {
-                Text(
-                    modifier = Modifier.fillMaxSize(),
-                    text = notificationCount,
-                    textAlign = TextAlign.Center,
-                    fontFamily = redHatDisplayFontFamily,
-                    fontSize = 11.sp,
-                    color = MaterialTheme.colorScheme.onPrimary
+                Image(
+                    modifier = Modifier
+                        .height(32.dp)
+                        .width(32.dp),
+                    painter = painterResource(id = R.drawable.ic_notification),
+                    contentDescription = "notification",
+                    contentScale = ContentScale.Fit
                 )
+
+                Box(
+                    modifier = Modifier
+                        .height(16.dp)
+                        .width(16.dp)
+                        .align(Alignment.TopEnd)
+                        .background(
+                            color = Color.Red,
+                            shape = CircleShape
+                        ),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        modifier = Modifier.fillMaxSize(),
+                        text = notificationCount,
+                        textAlign = TextAlign.Center,
+                        fontFamily = redHatDisplayFontFamily,
+                        fontSize = 11.sp,
+                        color = MaterialTheme.colorScheme.onPrimary
+                    )
+                }
             }
         }
 
