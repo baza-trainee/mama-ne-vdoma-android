@@ -40,6 +40,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.restore_pas
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.Communicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.choose_child.ChooseChildScreenViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.create_group.CreateGroupScreenViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.my_groups.MyGroupsScreenViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.host.HostScreenViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.main.MainScreenViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.standalone.set_area.SetAreaViewModel
@@ -124,6 +125,7 @@ val mainModule = module {
     viewModel { HostScreenViewModel(get(), get(named("MAIN")), get()) }
     viewModel { MainScreenViewModel(get(), get(named("MAIN")), get()) }
     viewModel { ChooseChildScreenViewModel(get(), get(named("MAIN"))) }
+    viewModel { MyGroupsScreenViewModel(get(), get(), get(named("MAIN"))) }
     viewModel { (childId: String) -> CreateGroupScreenViewModel(childId, get(named("MAIN")), get(), get(), get()) }
 }
 

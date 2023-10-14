@@ -9,7 +9,7 @@ data class GroupEntity(
     val schedule: ScheduleModel = ScheduleModel(),
     val members: List<MemberEntity> = emptyList(),
     val location: LocationEntity = LocationEntity(),
-    val askingJoin: List<String> = emptyList(),
+    val askingJoin: List<String> = emptyList()
 )
 
 data class MemberEntity(

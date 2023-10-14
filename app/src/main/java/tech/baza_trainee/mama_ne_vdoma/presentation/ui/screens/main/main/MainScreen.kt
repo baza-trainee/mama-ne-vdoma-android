@@ -1,5 +1,6 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.main
 
+import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -23,22 +24,40 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.GroupInfoDesk
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.LoadingIndicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.RadioGroup
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 
 @Composable
 fun MainScreen(
     modifier: Modifier = Modifier,
     screenState: State<MainViewState> = mutableStateOf(MainViewState()),
+    uiState: State<RequestState> = mutableStateOf(RequestState.Idle),
     handleEvent: (MainEvent) -> Unit = {}
 ) {
     BackHandler {}
+
+    val context = LocalContext.current
+
+    when (val state = uiState.value) {
+        RequestState.Idle -> Unit
+        is RequestState.OnError -> {
+            if (state.error.isNotBlank()) Toast.makeText(
+                context,
+                state.error,
+                Toast.LENGTH_LONG
+            ).show()
+            handleEvent(MainEvent.ResetUiState)
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -57,7 +76,8 @@ fun MainScreen(
             fontFamily = redHatDisplayFontFamily,
             fontSize = 14.sp,
             textDecoration = TextDecoration.Underline,
-            textAlign = TextAlign.End
+            textAlign = TextAlign.End,
+            color = MaterialTheme.colorScheme.primary
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -121,6 +141,8 @@ fun MainScreen(
             onSelectedChange = { handleEvent(MainEvent.SetSearchOption(items.indexOf(it))) }
         )
     }
+
+    if (screenState.value.isLoading) LoadingIndicator()
 }
 
 @Composable

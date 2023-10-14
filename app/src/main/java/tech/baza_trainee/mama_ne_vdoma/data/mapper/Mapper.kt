@@ -60,6 +60,7 @@ fun UserInfoEntity.toDataModel() = UserInfoDto(
 fun LocationPatchEntity.toDataModel() = LocationPatchDto(lat, lon)
 
 fun UserProfileDto.toDomainModel() = UserProfileEntity(
+    id,
     email,
     name.orEmpty(),
     countryCode.orEmpty(),

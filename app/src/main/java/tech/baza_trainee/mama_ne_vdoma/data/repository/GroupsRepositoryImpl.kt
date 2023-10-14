@@ -44,4 +44,11 @@ class GroupsRepositoryImpl(
             RequestResult.Success(Unit)
         else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage())
     }
+
+    override suspend fun getGroupsForParent(parent: String): RequestResult<List<GroupEntity>> {
+        val result = groupsApi.getGroupsForParent(parent)
+        return if (result.isSuccessful)
+            RequestResult.Success(result.body()?.map { it.toDomainModel() }?.toList() ?: emptyList())
+        else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage())
+    }
 }

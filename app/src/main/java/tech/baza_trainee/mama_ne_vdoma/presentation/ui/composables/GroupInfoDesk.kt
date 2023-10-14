@@ -37,7 +37,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import tech.baza_trainee.mama_ne_vdoma.R
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.model.GroupMember
+import tech.baza_trainee.mama_ne_vdoma.domain.model.GroupEntity
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.BitmapHelper
 
@@ -46,17 +46,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.BitmapHelper
 fun GroupInfoDesk(
     modifier: Modifier = Modifier,
     groupAvatar: Bitmap = BitmapHelper.DEFAULT_BITMAP,
-    groupId: String = "Group ID",
-    title: String = "Group title",
-    rating: String = "5.0",
-    age: String = "Age",
-    location: String = "Location",
-    groupDesc: String = "Це місце, де ви можете знайти підтримку та друзів, які розуміють ваші потреби. Ми підтримуємо один одного у важких ситуаціях та ділимося успіхами. Приєднуйтеся до нас, щоб знайти спільноту і ресурси, необхідні для розвитку вашоєї кар'єри та забезпечення добробуту дітей.",
-    members: List<GroupMember> = mutableListOf<GroupMember>().apply {
-        repeat(10) {
-            add(GroupMember())
-        }
-    }
+    group: GroupEntity = GroupEntity()
 ) {
     Column(
         modifier = Modifier
@@ -103,7 +93,7 @@ fun GroupInfoDesk(
                     contentDescription = "rating"
                 )
                 Text(
-                    text = rating,
+                    text = "rating",
                     fontSize = 14.sp,
                     fontFamily = redHatDisplayFontFamily
                 )
@@ -115,7 +105,7 @@ fun GroupInfoDesk(
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
                 .padding(bottom = 4.dp),
-            text = groupId,
+            text = group.id,
             fontSize = 11.sp,
             fontFamily = redHatDisplayFontFamily
         )
@@ -125,7 +115,7 @@ fun GroupInfoDesk(
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
                 .padding(bottom = 4.dp),
-            text = title,
+            text = group.name,
             fontSize = 16.sp,
             fontFamily = redHatDisplayFontFamily,
             fontWeight = FontWeight.Bold
@@ -148,7 +138,7 @@ fun GroupInfoDesk(
             )
 
             Text(
-                text = age,
+                text = group.ages,
                 fontSize = 14.sp,
                 fontFamily = redHatDisplayFontFamily
             )
@@ -164,7 +154,7 @@ fun GroupInfoDesk(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Start
         ) {
-            members.forEachIndexed { index, member ->
+            group.members.forEachIndexed { index, member ->
                 if (index < 3) {
                     Image(
                         modifier = Modifier
@@ -172,13 +162,13 @@ fun GroupInfoDesk(
                             .height(24.dp)
                             .width(24.dp)
                             .clip(CircleShape),
-                        bitmap = member.avatar.asImageBitmap(),
+                        bitmap = BitmapHelper.DEFAULT_BITMAP.asImageBitmap(),
                         contentDescription = "member",
                         contentScale = ContentScale.Fit
                     )
                 }
             }
-            if (members.size > 3)
+            if (group.members.size > 3)
                 Box(
                     modifier = Modifier
                         .height(24.dp)
@@ -190,7 +180,7 @@ fun GroupInfoDesk(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = "+${members.size - 3}",
+                        text = "+${group.members.size - 3}",
                         color = MaterialTheme.colorScheme.onPrimary,
                         fontSize = 10.sp,
                         fontFamily = redHatDisplayFontFamily
@@ -236,7 +226,7 @@ fun GroupInfoDesk(
                         contentScale = ContentScale.Inside
                     )
                     Text(
-                        text = location,
+                        text = group.location.toString(),
                         fontSize = 14.sp,
                         fontFamily = redHatDisplayFontFamily
                     )
@@ -245,12 +235,12 @@ fun GroupInfoDesk(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(bottom = 8.dp),
-                    text = groupDesc,
+                    text = group.description,
                     fontSize = 11.sp,
                     fontFamily = redHatDisplayFontFamily
                 )
 
-                members.forEach {
+                group.members.forEach {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -264,12 +254,12 @@ fun GroupInfoDesk(
                                 .height(24.dp)
                                 .width(24.dp)
                                 .clip(CircleShape),
-                            bitmap = it.avatar.asImageBitmap(),
+                            bitmap = BitmapHelper.DEFAULT_BITMAP.asImageBitmap(),
                             contentDescription = "member",
                             contentScale = ContentScale.Fit
                         )
                         Text(
-                            text = it.name,
+                            text = it.parentId,
                             fontSize = 14.sp,
                             fontFamily = redHatDisplayFontFamily
                         )

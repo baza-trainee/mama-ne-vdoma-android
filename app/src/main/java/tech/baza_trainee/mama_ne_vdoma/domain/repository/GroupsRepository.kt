@@ -13,4 +13,6 @@ interface GroupsRepository {
     suspend fun updateGroup(groupId: String, updateGroupInfo: UpdateGroupEntity): RequestResult<Unit>
 
     suspend fun updateGroupLocation(groupId: String, location: LocationPatchEntity): RequestResult<Unit>
+
+    suspend fun getGroupsForParent(parent: String): RequestResult<List<GroupEntity>>
 }

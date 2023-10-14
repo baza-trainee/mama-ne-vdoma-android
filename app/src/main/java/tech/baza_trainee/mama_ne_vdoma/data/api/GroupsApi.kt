@@ -2,6 +2,7 @@ package tech.baza_trainee.mama_ne_vdoma.data.api
 
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.GET
 import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.Path
@@ -20,4 +21,7 @@ interface GroupsApi {
 
     @PATCH("api/group/geo/{groupId}")
     suspend fun updateGroupLocation(@Path("groupId") groupId: String, @Body location: LocationPatchDto): Response<Unit>
+
+    @GET("api/group/find/{parentId}")
+    suspend fun getGroupsForParent(@Path("parentId") parentId: String): Response<List<GroupDto>>
 }

@@ -12,12 +12,22 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.choos
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.choose_child.ChooseChildScreenViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.create_group.CreateGroupScreen
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.create_group.CreateGroupScreenViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.my_groups.MyGroupsScreen
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.my_groups.MyGroupsScreenViewModel
 
 fun NavGraphBuilder.groupNavGraph() {
     navigation(
         route = Graphs.Host.Groups.route,
         startDestination = GroupsScreenRoutes.Groups.route
     ) {
+        composable(GroupsScreenRoutes.Groups.route) {
+            val myGroupsScreenViewModel: MyGroupsScreenViewModel = koinNavViewModel()
+            MyGroupsScreen(
+                screenState = myGroupsScreenViewModel.viewState.collectAsStateWithLifecycle(),
+                uiState = myGroupsScreenViewModel.uiState,
+                handleEvent = { myGroupsScreenViewModel.handleEvent(it) }
+            )
+        }
         composable(GroupsScreenRoutes.ChooseChild.route) {
             val chooseChildScreenViewModel: ChooseChildScreenViewModel = koinNavViewModel()
             ChooseChildScreen(
