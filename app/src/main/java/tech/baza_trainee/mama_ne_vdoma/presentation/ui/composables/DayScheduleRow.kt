@@ -9,8 +9,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SelectableChipColors
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -33,7 +33,7 @@ fun DayScheduleRow(
 
     val localModifier = Modifier
 
-    val chipColors = SelectableChipColors(
+    val chipColors = FilterChipDefaults.filterChipColors(
         containerColor = MaterialTheme.colorScheme.surface,
         selectedContainerColor = MaterialTheme.colorScheme.primary,
         disabledContainerColor = MaterialTheme.colorScheme.surface,
@@ -41,10 +41,8 @@ fun DayScheduleRow(
         labelColor = MaterialTheme.colorScheme.onBackground,
         selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
         disabledLabelColor = MaterialTheme.colorScheme.onBackground,
-        leadingIconColor = MaterialTheme.colorScheme.onBackground,
         disabledLeadingIconColor = MaterialTheme.colorScheme.onBackground,
         selectedLeadingIconColor = MaterialTheme.colorScheme.onPrimary,
-        trailingIconColor = MaterialTheme.colorScheme.onBackground,
         disabledTrailingIconColor = MaterialTheme.colorScheme.onBackground,
         selectedTrailingIconColor = MaterialTheme.colorScheme.onPrimary
     )

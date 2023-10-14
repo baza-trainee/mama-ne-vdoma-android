@@ -187,7 +187,7 @@ fun SetAreaForSearchScreen(
                             activeTrackColor = SliderColor
                         ),
                         valueRange = 1f..100f,
-                        thumb = {
+                        thumb = { position ->
                             Column(
                                 modifier = modifier
                                     .padding(bottom = 36.dp),
@@ -203,7 +203,7 @@ fun SetAreaForSearchScreen(
                                     Text(
                                         modifier = modifier
                                             .padding(bottom = 8.dp),
-                                        text = it.value.toInt().toString(),
+                                        text = position.value.toInt().toString(),
                                         fontFamily = redHatDisplayFontFamily,
                                         fontSize = 12.sp,
                                         color = MaterialTheme.colorScheme.onPrimary
