@@ -4,8 +4,10 @@ import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -26,7 +28,6 @@ import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -41,16 +42,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.model.CameraPosition
 import com.google.maps.android.compose.Circle
-import com.google.maps.android.compose.GoogleMap
-import com.google.maps.android.compose.MapProperties
-import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
-import com.google.maps.android.compose.rememberCameraPositionState
 import tech.baza_trainee.mama_ne_vdoma.R
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.CustomGoogleMap
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.HeaderWithToolbar
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.LoadingIndicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.LocationPermission
@@ -92,14 +88,14 @@ fun SetAreaForSearchScreen(
         }
 
         ConstraintLayout(
-            modifier = modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth()
         ) {
             val (topBar, content, btnNext) = createRefs()
 
             val topGuideline = createGuidelineFromTop(0.2f)
 
             HeaderWithToolbar(
-                modifier = modifier
+                modifier = Modifier
                     .constrainAs(topBar) {
                         top.linkTo(parent.top)
                         bottom.linkTo(topGuideline)
@@ -110,77 +106,44 @@ fun SetAreaForSearchScreen(
             )
 
             if (isPermissionGranted) {
-                ConstraintLayout(
-                    modifier = modifier
+                Column(
+                    modifier = Modifier
                         .fillMaxWidth()
                         .verticalScroll(rememberScrollState())
                         .constrainAs(content) {
                             top.linkTo(topGuideline, 16.dp)
                             bottom.linkTo(btnNext.top, 16.dp)
                             height = Dimension.fillToConstraints
-                        }
-                ) {
-                    val (map, edit, slider) = createRefs()
-
-                    val cameraPositionState = rememberCameraPositionState {
-                        val cameraPosition = CameraPosition.Builder()
-                            .target(screenState.value.currentLocation)
-                            .zoom(15f)
-                            .build()
-                        position = cameraPosition
-                    }
-
-                    LaunchedEffect(screenState.value.currentLocation) {
-                        val newCameraPosition =
-                            CameraPosition.fromLatLngZoom(
-                                screenState.value.currentLocation,
-                                15f
-                            )
-                        cameraPositionState.animate(
-                            CameraUpdateFactory.newCameraPosition(newCameraPosition),
-                            1_000
-                        )
-                    }
-
-                    val uiSettings = remember {
-                        MapUiSettings(myLocationButtonEnabled = true)
-                    }
-                    val properties by remember {
-                        mutableStateOf(MapProperties(isMyLocationEnabled = true))
-                    }
-
-                    GoogleMap(
-                        modifier = modifier
-                            .fillMaxWidth()
-                            .constrainAs(map) {
-                                top.linkTo(parent.top)
-                                bottom.linkTo(edit.top, 16.dp)
-                                height = Dimension.fillToConstraints
-                            },
-                        cameraPositionState = cameraPositionState,
-                        uiSettings = uiSettings,
-                        properties = properties,
-                        onMyLocationButtonClick = {
-                            handleEvent(SetAreaEvent.RequestUserLocation)
-                            true
                         },
-                        onMapClick = {
-                            handleEvent(SetAreaEvent.OnMapClick(it))
-                        }
+                    verticalArrangement = Arrangement.Top
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1f)
                     ) {
-                        Marker(
-                            state = MarkerState(position = screenState.value.currentLocation),
-                            title = "Ви тут",
-                            snippet = "поточне місцезнаходження"
-                        )
+                        CustomGoogleMap(
+                            modifier = Modifier.fillMaxWidth(),
+                            location = screenState.value.currentLocation,
+                            onMyLocationButtonClick = { handleEvent(SetAreaEvent.RequestUserLocation) },
+                            onMapClick = { handleEvent(SetAreaEvent.OnMapClick(it)) }
+                        ) {
+                            Marker(
+                                state = MarkerState(position = screenState.value.currentLocation),
+                                title = "Ви тут",
+                                snippet = "поточне місцезнаходження"
+                            )
 
-                        Circle(
-                            center = screenState.value.currentLocation,
-                            radius = KM * screenState.value.radius.toDouble(),
-                            strokeColor = MaterialTheme.colorScheme.primary,
-                            fillColor = SemiTransparent
-                        )
+                            Circle(
+                                center = screenState.value.currentLocation,
+                                radius = KM * screenState.value.radius.toDouble(),
+                                strokeColor = MaterialTheme.colorScheme.primary,
+                                fillColor = SemiTransparent
+                            )
+                        }
                     }
+
+                    Spacer(modifier = Modifier.height(8.dp))
 
                     OutlinedTextField(
                         value = screenState.value.address,
@@ -190,9 +153,6 @@ fun SetAreaForSearchScreen(
                             )
                         },
                         modifier = modifier
-                            .constrainAs(edit) {
-                                bottom.linkTo(slider.top, 16.dp)
-                            }
                             .fillMaxWidth()
                             .padding(horizontal = 24.dp),
                         label = { Text("Введіть вашу адресу") },
@@ -217,9 +177,6 @@ fun SetAreaForSearchScreen(
 
                     Slider(
                         modifier = modifier
-                            .constrainAs(slider) {
-                                bottom.linkTo(parent.bottom, 16.dp)
-                            }
                             .fillMaxWidth()
                             .padding(horizontal = 24.dp),
                         value = screenState.value.radius,

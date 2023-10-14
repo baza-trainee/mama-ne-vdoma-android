@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -38,8 +39,7 @@ fun ChildCard(
             .fillMaxWidth()
             .height(82.dp)
             .background(
-                color = if (isSelected) MaterialTheme.colorScheme.primary
-                else MaterialTheme.colorScheme.surface,
+                color = MaterialTheme.colorScheme.surface,
                 shape = RoundedCornerShape(8.dp)
             )
             .clickable {
@@ -52,8 +52,7 @@ fun ChildCard(
         Icon(
             painter = painterResource(id = if (child.gender == Gender.BOY) R.drawable.ic_boy else R.drawable.ic_girl),
             contentDescription = null,
-            tint = if (isSelected) MaterialTheme.colorScheme.onPrimary
-            else MaterialTheme.colorScheme.primary
+            tint = MaterialTheme.colorScheme.primary
         )
         Column(
             modifier = Modifier
@@ -66,16 +65,18 @@ fun ChildCard(
                 fontFamily = redHatDisplayFontFamily,
                 fontSize = 21.sp,
                 fontWeight = FontWeight.Bold,
-                color = if (isSelected) MaterialTheme.colorScheme.onPrimary
-                else MaterialTheme.colorScheme.onBackground
+                color = MaterialTheme.colorScheme.onBackground
             )
             Text(
                 text = String.format("%s р.", child.age),
                 fontFamily = redHatDisplayFontFamily,
                 fontSize = 14.sp,
-                color = if (isSelected) MaterialTheme.colorScheme.onPrimary
-                else MaterialTheme.colorScheme.onBackground
+                color = MaterialTheme.colorScheme.onBackground
             )
         }
+        Checkbox(
+            checked = isSelected,
+            onCheckedChange = { onSelected(child) }
+        )
     }
 }

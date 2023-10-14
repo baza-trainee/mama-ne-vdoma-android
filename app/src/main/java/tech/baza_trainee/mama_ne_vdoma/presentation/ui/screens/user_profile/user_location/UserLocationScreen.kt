@@ -1,6 +1,10 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.user_location
 
 import android.widget.Toast
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
@@ -15,7 +19,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -27,14 +30,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.model.CameraPosition
-import com.google.maps.android.compose.GoogleMap
-import com.google.maps.android.compose.MapProperties
-import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
-import com.google.maps.android.compose.rememberCameraPositionState
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.CustomGoogleMap
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.HeaderWithOptArrow
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.LoadingIndicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.LocationPermission
@@ -49,9 +47,7 @@ fun UserLocationScreen(
     uiState: State<RequestState> = mutableStateOf(RequestState.Idle),
     handleEvent: (UserLocationEvent) -> Unit = { _ -> }
 ) {
-    SurfaceWithNavigationBars(
-        modifier = modifier
-    ) {
+    SurfaceWithNavigationBars {
         val context = LocalContext.current
 
         when(val state = uiState.value) {
@@ -70,7 +66,7 @@ fun UserLocationScreen(
         LocationPermission { isPermissionGranted = it }
 
         ConstraintLayout(
-            modifier = modifier
+            modifier = Modifier
                 .imePadding()
                 .fillMaxWidth(),
         ) {
@@ -79,7 +75,7 @@ fun UserLocationScreen(
             val topGuideline = createGuidelineFromTop(0.2f)
 
             HeaderWithOptArrow(
-                modifier = modifier
+                modifier = Modifier
                     .constrainAs(title) {
                         top.linkTo(parent.top)
                         bottom.linkTo(topGuideline)
@@ -92,66 +88,36 @@ fun UserLocationScreen(
             )
 
             if (isPermissionGranted) {
-                ConstraintLayout(
-                    modifier = modifier
+                Column(
+                    modifier = Modifier
                         .fillMaxWidth()
                         .constrainAs(content) {
                             top.linkTo(topGuideline)
                             bottom.linkTo(btnNext.top, 16.dp)
                             height = Dimension.fillToConstraints
-                        }
-                ) {
-                    val (map, edit) = createRefs()
-
-                    val cameraPositionState = rememberCameraPositionState {
-                        val cameraPosition = CameraPosition.Builder()
-                            .target(screenState.value.currentLocation)
-                            .zoom(15f)
-                            .build()
-                        position = cameraPosition
-                    }
-
-                    LaunchedEffect(screenState.value.currentLocation) {
-                        val newCameraPosition =
-                            CameraPosition.fromLatLngZoom(screenState.value.currentLocation, 15f)
-                        cameraPositionState.animate(
-                            CameraUpdateFactory.newCameraPosition(newCameraPosition),
-                            1_000
-                        )
-                    }
-
-                    val uiSettings = remember {
-                        MapUiSettings(myLocationButtonEnabled = true)
-                    }
-                    val properties by remember {
-                        mutableStateOf(MapProperties(isMyLocationEnabled = true))
-                    }
-
-                    GoogleMap(
-                        modifier = modifier
-                            .fillMaxWidth()
-                            .constrainAs(map) {
-                                top.linkTo(parent.top)
-                                bottom.linkTo(edit.top, 16.dp)
-                                height = Dimension.fillToConstraints
-                            },
-                        cameraPositionState = cameraPositionState,
-                        uiSettings = uiSettings,
-                        properties = properties,
-                        onMyLocationButtonClick = {
-                            handleEvent(UserLocationEvent.RequestUserLocation)
-                            true
                         },
-                        onMapClick = {
-                            handleEvent(UserLocationEvent.OnMapClick(it))
-                        }
+                    verticalArrangement = Arrangement.Top
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1f)
                     ) {
-                        Marker(
-                            state = MarkerState(position = screenState.value.currentLocation),
-                            title = "Ви тут",
-                            snippet = "поточне місцезнаходження"
-                        )
+                        CustomGoogleMap(
+                            modifier = Modifier.fillMaxWidth(),
+                            location = screenState.value.currentLocation,
+                            onMyLocationButtonClick = { handleEvent(UserLocationEvent.RequestUserLocation) },
+                            onMapClick = { handleEvent(UserLocationEvent.OnMapClick(it)) }
+                        ) {
+                            Marker(
+                                state = MarkerState(position = screenState.value.currentLocation),
+                                title = "Ви тут",
+                                snippet = "поточне місцезнаходження"
+                            )
+                        }
                     }
+
+                    Spacer(modifier = Modifier.height(8.dp))
 
                     OutlinedTextField(
                         value = screenState.value.address,
@@ -160,10 +126,7 @@ fun UserLocationScreen(
                                 UserLocationEvent.UpdateUserAddress(it)
                             )
                         },
-                        modifier = modifier
-                            .constrainAs(edit) {
-                                bottom.linkTo(parent.bottom, 16.dp)
-                            }
+                        modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 24.dp),
                         label = { Text("Введіть вашу адресу") },
@@ -183,13 +146,14 @@ fun UserLocationScreen(
                                     contentDescription = "search_location"
                                 )
                             }
-                        }
+                        },
+                        maxLines = 2
                     )
                 }
             }
 
             Button(
-                modifier = modifier
+                modifier = Modifier
                     .padding(horizontal = 24.dp, vertical = 16.dp)
                     .fillMaxWidth()
                     .constrainAs(btnNext) {

@@ -87,7 +87,7 @@ fun ChooseChildScreen(
                     fontWeight = FontWeight.Bold
                 )
 
-                Spacer(modifier = modifier.height(4.dp))
+                Spacer(modifier = modifier.height(8.dp))
 
                 children.forEach { childEntity ->
                     ChildCard(

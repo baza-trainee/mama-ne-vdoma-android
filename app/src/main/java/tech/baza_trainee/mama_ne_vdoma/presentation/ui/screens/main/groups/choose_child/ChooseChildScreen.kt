@@ -71,7 +71,7 @@ fun ChooseChildScreen(
             )
 
             screenState.value.children.forEach { childEntity ->
-                Spacer(modifier = Modifier.height(4.dp))
+                Spacer(modifier = Modifier.height(8.dp))
 
                 ChildCard(
                     modifier = Modifier.fillMaxWidth(),

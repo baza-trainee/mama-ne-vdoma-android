@@ -19,10 +19,8 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Error
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -93,28 +91,18 @@ fun CreateGroupScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        OutlinedTextField(
-            value = screenState.value.address,
-            onValueChange = { },
+        Text(
             modifier = Modifier.fillMaxWidth(),
-            label = { Text("Введіть вашу адресу") },
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedContainerColor = MaterialTheme.colorScheme.surface,
-                unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-                disabledContainerColor = MaterialTheme.colorScheme.surface,
-                focusedBorderColor = MaterialTheme.colorScheme.primary,
-                unfocusedBorderColor = MaterialTheme.colorScheme.surface,
-            ),
-            trailingIcon = {
-                IconButton(
-                    onClick = { }
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.Search,
-                        contentDescription = "search_location"
-                    )
-                }
-            }
+            text = "Адреса групи",
+            fontFamily = redHatDisplayFontFamily,
+            fontSize = 14.sp
+        )
+
+        Text(
+            modifier = Modifier.fillMaxWidth(),
+            text = screenState.value.address,
+            fontFamily = redHatDisplayFontFamily,
+            fontSize = 14.sp
         )
 
         Spacer(modifier = Modifier.height(8.dp))
