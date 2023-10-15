@@ -86,6 +86,7 @@ fun HostScreen(
                 modifier = modifier
                     .padding(it)
                     .consumeWindowInsets(it)
+                    .fillMaxSize()
                     .padding(horizontal = 24.dp),
                 navController = navController,
                 startDestination = Graphs.Host.Main.route

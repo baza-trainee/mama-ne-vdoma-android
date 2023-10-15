@@ -270,8 +270,7 @@ fun CreateGroupScreen(
         Spacer(modifier = Modifier.width(4.dp))
 
         GroupAvatarWithCameraAndGallery(
-            modifier = modifier
-                .padding(horizontal = 24.dp),
+            modifier = modifier.fillMaxWidth(),
             avatar = screenState.value.avatar,
 //            setUriForCrop = {
 //                handleEvent(CreateGroupEvent.SetImageToCrop(it))
@@ -281,8 +280,7 @@ fun CreateGroupScreen(
         )
 
         OutlinedTextField(
-            modifier = Modifier
-                .fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             value = screenState.value.description,
             label = { Text("Опис групи") },
             onValueChange = { handleEvent(CreateGroupEvent.UpdateDescription(it)) },
@@ -302,8 +300,8 @@ fun CreateGroupScreen(
 
         Button(
             modifier = modifier
-                .padding(horizontal = 24.dp, vertical = 16.dp)
                 .fillMaxWidth()
+                .padding(vertical = 16.dp)
                 .height(48.dp),
             onClick = {
                 handleEvent(CreateGroupEvent.OnCreate)
