@@ -12,6 +12,7 @@ import androidx.navigation.compose.rememberNavController
 import org.koin.android.ext.android.inject
 import org.koin.androidx.compose.navigation.koinNavViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.graphs.createUserNavGraph
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.graphs.firstGroupSearchNavGraph
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.graphs.loginNavGraph
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.graphs.startNavGraph
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.graphs.userProfileGraph
@@ -52,6 +53,7 @@ class MainActivity : ComponentActivity() {
                     loginNavGraph(navController)
                     createUserNavGraph()
                     userProfileGraph()
+                    firstGroupSearchNavGraph()
 
                     composable(HostScreenRoutes.Host.route) {
                         val hostViewModel: HostViewModel = koinNavViewModel()

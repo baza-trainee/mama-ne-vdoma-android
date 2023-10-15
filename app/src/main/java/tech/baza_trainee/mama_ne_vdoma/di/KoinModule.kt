@@ -39,6 +39,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.login.Login
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.new_password.NewPasswordScreenViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.restore_password.RestorePasswordScreenViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.GroupImageCommunicator
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.GroupSearchStandaloneCommunicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.SearchResultsCommunicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.choose_child.ChooseChildViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.create_group.CreateGroupViewModel
@@ -48,6 +49,8 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.host.HostVie
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.main.MainViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.search.search_results.SearchResultsViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.search.search_user.SearchUserViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.standalone.choose_child.ChooseChildStandaloneViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.standalone.found_group.FoundGroupsStandaloneViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.standalone.set_area.SetAreaViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.child_info.ChildInfoViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.children_info.ChildrenInfoViewModel
@@ -123,10 +126,16 @@ val loginKoinModule = module {
     viewModel { RestorePasswordScreenViewModel(get(), get()) }
 }
 
+val standaloneGroupSearchModule = module {
+    single { GroupSearchStandaloneCommunicator() }
+    viewModel { ChooseChildStandaloneViewModel(get(), get(), get()) }
+    viewModel { SetAreaViewModel(get(), get(), get(), get()) }
+    viewModel { FoundGroupsStandaloneViewModel(get(), get(), get(), get(), get()) }
+}
+
 val mainModule = module {
     single<ScreenNavigator>(named(SINGLETON_FOR_MAIN)) { ScreenNavigatorImpl() }
     single(named(SINGLETON_FOR_MAIN)) { SavedStateHandle() }
-    viewModel { SetAreaViewModel(get(), get(), get()) }
     viewModel {
         HostViewModel(
             get(named(SINGLETON_FOR_MAIN)),

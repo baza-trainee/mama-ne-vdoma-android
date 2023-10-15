@@ -5,7 +5,7 @@ sealed class Graphs(val route: String): CommonRoute(route) {
     data object CreateUser : Graphs("create_user_graph")
     data object Login : Graphs("login_graph")
     data object UserProfile : Graphs("user_profile_graph")
-    data object GroupSearch : Graphs("group_search_graph")
+    data object FirstGroupSearch : Graphs("first_group_search_graph")
 
     sealed class Host {
         data object Main : Graphs("main_graph")

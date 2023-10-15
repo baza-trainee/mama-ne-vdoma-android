@@ -6,25 +6,41 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import org.koin.androidx.compose.navigation.koinNavViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.Graphs
-import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.GroupSearchRoutes
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.standalone.choose_child.ChooseChildScreen
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.InitialGroupSearchRoutes
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.standalone.choose_child.ChooseChildStandaloneScreen
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.standalone.choose_child.ChooseChildStandaloneViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.standalone.found_group.FoundGroupScreen
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.standalone.found_group.FoundGroupsStandaloneViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.standalone.set_area.SetAreaForSearchScreen
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.standalone.set_area.SetAreaViewModel
 
-fun NavGraphBuilder.groupSearchNavGraph() {
+fun NavGraphBuilder.firstGroupSearchNavGraph() {
     navigation(
-        route = Graphs.GroupSearch.route,
-        startDestination = GroupSearchRoutes.ChooseChild.route
+        route = Graphs.FirstGroupSearch.route,
+        startDestination = InitialGroupSearchRoutes.ChooseChild.route
     ) {
-        composable(GroupSearchRoutes.ChooseChild.route) {
-            ChooseChildScreen()
+        composable(InitialGroupSearchRoutes.ChooseChild.route) {
+            val chooseChildViewModel: ChooseChildStandaloneViewModel = koinNavViewModel()
+            ChooseChildStandaloneScreen(
+                screenState = chooseChildViewModel.viewState.collectAsStateWithLifecycle(),
+                uiState = chooseChildViewModel.uiState,
+                handleEvent = { chooseChildViewModel.handleEvent(it) }
+            )
         }
-        composable(GroupSearchRoutes.SetArea.route) {
+        composable(InitialGroupSearchRoutes.SetArea.route) {
             val setAreaViewModel: SetAreaViewModel = koinNavViewModel()
             SetAreaForSearchScreen(
-                screenState = setAreaViewModel.areaScreenState.collectAsStateWithLifecycle(),
+                screenState = setAreaViewModel.viewState.collectAsStateWithLifecycle(),
                 uiState = setAreaViewModel.uiState,
-                handleEvent = { setAreaViewModel.handleSetAreaEvent(it) }
+                handleEvent = { setAreaViewModel.handleEvent(it) }
+            )
+        }
+        composable(InitialGroupSearchRoutes.GroupsFound.route) {
+            val foundGroupViewModel: FoundGroupsStandaloneViewModel = koinNavViewModel()
+            FoundGroupScreen(
+                screenState = foundGroupViewModel.viewState.collectAsStateWithLifecycle(),
+                uiState = foundGroupViewModel.uiState,
+                handleEvent = { foundGroupViewModel.handleEvent(it) }
             )
         }
     }

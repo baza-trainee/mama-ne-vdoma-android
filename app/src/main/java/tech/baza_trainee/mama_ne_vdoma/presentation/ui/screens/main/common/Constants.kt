@@ -6,3 +6,5 @@ const val MAIN_PAGE = 0
 const val GROUPS_PAGE = 1
 const val SEARCH_PAGE = 2
 const val SETTINGS_PAGE = 3
+
+const val CHILD_ID = "child_id"

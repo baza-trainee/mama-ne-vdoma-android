@@ -1,4 +1,4 @@
-package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.choose_child
+package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common
 
 sealed interface ChooseChildEvent {
     data object OnBack: ChooseChildEvent

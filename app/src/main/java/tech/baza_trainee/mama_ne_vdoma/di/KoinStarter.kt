@@ -18,6 +18,7 @@ fun initKoin(context: Context) {
                 verifyEmailModule,
                 userCreateModule,
                 loginKoinModule,
+                standaloneGroupSearchModule,
                 mainModule
             )
         )

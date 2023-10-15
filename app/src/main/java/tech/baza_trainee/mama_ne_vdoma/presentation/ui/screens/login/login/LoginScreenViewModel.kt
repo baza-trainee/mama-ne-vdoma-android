@@ -12,8 +12,8 @@ import tech.baza_trainee.mama_ne_vdoma.domain.model.AuthUserEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.AuthRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.Graphs
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.InitialGroupSearchRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.LoginRoutes
-import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.UserProfileRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
@@ -92,7 +92,7 @@ class LoginScreenViewModel(
             }
             onSuccess {
                 clearInputs()
-                navigator.navigateOnMain(viewModelScope, UserProfileRoutes.FullProfile)
+                navigator.navigateOnMain(viewModelScope, InitialGroupSearchRoutes.ChooseChild) //TODO temp choose to HostScreenRoutes.Host
             }
             onError { error ->
                 _uiState.value = RequestState.OnError(error)

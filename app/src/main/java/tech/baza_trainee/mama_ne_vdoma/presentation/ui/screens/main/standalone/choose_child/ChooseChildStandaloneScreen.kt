@@ -1,5 +1,6 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.standalone.choose_child
 
+import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -11,11 +12,13 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -23,31 +26,41 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import tech.baza_trainee.mama_ne_vdoma.domain.model.ChildEntity
-import tech.baza_trainee.mama_ne_vdoma.domain.model.Gender
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.ChildCard
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.HeaderWithToolbar
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.LoadingIndicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.SurfaceWithNavigationBars
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.ChooseChildEvent
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.ChooseChildViewState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.ButtonText
-import kotlin.random.Random
 
 @Composable
-fun ChooseChildScreen(
+fun ChooseChildStandaloneScreen(
     modifier: Modifier = Modifier,
-    children: List<ChildEntity> = mutableListOf<ChildEntity>().apply {
-        repeat(4) {
-            add(
-                ChildEntity(
-                    name = "Child ${it + 1}",
-                    age = Random.nextInt(it + 1).toString(),
-                    gender = if (it / 2 == 0) Gender.BOY else Gender.GIRL
-                )
-            )
-        }
-    }
+    screenState: State<ChooseChildViewState> = mutableStateOf(ChooseChildViewState()),
+    uiState: State<RequestState> = mutableStateOf(RequestState.Idle),
+    handleEvent: (ChooseChildEvent) -> Unit = {}
 ) {
     SurfaceWithNavigationBars {
-        BackHandler { }
+        BackHandler { handleEvent(ChooseChildEvent.OnBack) }
+
+        val context = LocalContext.current
+
+        when(val state = uiState.value) {
+            RequestState.Idle -> Unit
+            is RequestState.OnError -> {
+                if (state.error.isNotBlank()) Toast.makeText(
+                    context,
+                    state.error,
+                    Toast.LENGTH_LONG
+                ).show()
+                handleEvent(ChooseChildEvent.ResetUiState)
+            }
+        }
+
+        var selectedChild: ChildEntity? by remember { mutableStateOf(null) }
 
         ConstraintLayout(
             modifier = modifier.fillMaxWidth()
@@ -64,10 +77,10 @@ fun ChooseChildScreen(
                         height = Dimension.fillToConstraints
                     },
                 title = "Пошук групи",
-                onBack = { }
+                avatar = screenState.value.avatar,
+                showNotification = false,
+                onBack = { handleEvent(ChooseChildEvent.OnBack) }
             )
-
-            var selectedChild: ChildEntity? by remember { mutableStateOf(null) }
 
             Column(
                 modifier = modifier
@@ -89,7 +102,9 @@ fun ChooseChildScreen(
 
                 Spacer(modifier = modifier.height(8.dp))
 
-                children.forEach { childEntity ->
+                screenState.value.children.forEach { childEntity ->
+                    Spacer(modifier = Modifier.height(8.dp))
+
                     ChildCard(
                         modifier = modifier.fillMaxWidth(),
                         child = childEntity,
@@ -109,7 +124,7 @@ fun ChooseChildScreen(
                         bottom.linkTo(parent.bottom)
                     }
                     .height(48.dp),
-                onClick = { },
+                onClick = { handleEvent(ChooseChildEvent.OnChooseChild(selectedChild?.childId.orEmpty())) },
                 enabled = selectedChild != null
             ) {
                 ButtonText(
@@ -118,12 +133,12 @@ fun ChooseChildScreen(
             }
         }
 
-//        if (screenState.value.isLoading) LoadingIndicator()
+        if (screenState.value.isLoading) LoadingIndicator()
     }
 }
 
 @Composable
 @Preview
 fun ChooseChildScreenPreview() {
-    ChooseChildScreen()
+    ChooseChildStandaloneScreen()
 }

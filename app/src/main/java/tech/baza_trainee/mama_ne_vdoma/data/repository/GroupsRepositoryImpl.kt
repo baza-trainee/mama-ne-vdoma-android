@@ -51,4 +51,15 @@ class GroupsRepositoryImpl(
             RequestResult.Success(result.body()?.map { it.toDomainModel() }?.toList() ?: emptyList())
         else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage())
     }
+
+    override suspend fun getGroupsByArea(
+        lat: Double,
+        lng: Double,
+        radius: Int
+    ): RequestResult<List<GroupEntity>> {
+        val result = groupsApi.getGroupsByArea(lat, lng, radius)
+        return if (result.isSuccessful)
+            RequestResult.Success(result.body()?.map { it.toDomainModel() }?.toList() ?: emptyList())
+        else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage())
+    }
 }

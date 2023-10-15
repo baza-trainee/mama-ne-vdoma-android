@@ -3,8 +3,9 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.standalone.
 import com.google.android.gms.maps.model.LatLng
 
 sealed interface SetAreaEvent {
+    data object OnBack: SetAreaEvent
     data object ResetUiState: SetAreaEvent
-    data object SaveLocation: SetAreaEvent
+    data object SaveArea: SetAreaEvent
     data object RequestUserLocation : SetAreaEvent
     data class OnMapClick(val location: LatLng) : SetAreaEvent
     data object GetLocationFromAddress : SetAreaEvent

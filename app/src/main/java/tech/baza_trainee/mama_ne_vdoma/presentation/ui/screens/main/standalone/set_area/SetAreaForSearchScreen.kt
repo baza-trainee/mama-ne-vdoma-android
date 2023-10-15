@@ -68,7 +68,7 @@ fun SetAreaForSearchScreen(
     val KM = 1000
 
     SurfaceWithNavigationBars {
-        BackHandler { }
+        BackHandler { handleEvent(SetAreaEvent.OnBack) }
 
         var isPermissionGranted by remember { mutableStateOf(false) }
         LocationPermission { isPermissionGranted = it }
@@ -102,7 +102,9 @@ fun SetAreaForSearchScreen(
                         height = Dimension.fillToConstraints
                     },
                 title = "Пошук групи",
-                onBack = { }
+                avatar = screenState.value.avatar,
+                showNotification = false,
+                onBack = { handleEvent(SetAreaEvent.OnBack) }
             )
 
             if (isPermissionGranted) {
@@ -175,6 +177,8 @@ fun SetAreaForSearchScreen(
                         }
                     )
 
+                    Spacer(modifier = Modifier.height(8.dp))
+
                     Slider(
                         modifier = modifier
                             .fillMaxWidth()
@@ -186,7 +190,7 @@ fun SetAreaForSearchScreen(
                         colors = SliderDefaults.colors(
                             activeTrackColor = SliderColor
                         ),
-                        valueRange = 1f..100f,
+                        valueRange = 1f..25f,
                         thumb = { position ->
                             Column(
                                 modifier = modifier
@@ -233,7 +237,7 @@ fun SetAreaForSearchScreen(
                         bottom.linkTo(parent.bottom)
                     }
                     .height(48.dp),
-                onClick = { },
+                onClick = { handleEvent(SetAreaEvent.SaveArea) },
                 enabled = true
             ) {
                 ButtonText(
