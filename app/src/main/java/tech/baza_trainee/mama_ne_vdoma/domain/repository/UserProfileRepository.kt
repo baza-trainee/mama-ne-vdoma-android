@@ -19,13 +19,15 @@ interface UserProfileRepository {
 
     suspend fun getUserById(userId: String): RequestResult<UserProfileEntity>
 
+    suspend fun getUserByEmail(email: String): RequestResult<UserProfileEntity>
+
     suspend fun deleteUser(): RequestResult<Unit>
 
     suspend fun saveChild(request: InitChildEntity): RequestResult<ChildEntity?>
 
     suspend fun getChildren(): RequestResult<List<ChildEntity>>
 
-    suspend fun getChildById(childId: String): RequestResult<ChildEntity?>
+    suspend fun getChildById(childId: String): RequestResult<ChildEntity>
 
     suspend fun patchChildById(childId: String, data: PatchChildEntity): RequestResult<ChildEntity?>
 

@@ -7,6 +7,7 @@ import okhttp3.RequestBody.Companion.asRequestBody
 import tech.baza_trainee.mama_ne_vdoma.data.api.UserProfileApi
 import tech.baza_trainee.mama_ne_vdoma.data.mapper.toDataModel
 import tech.baza_trainee.mama_ne_vdoma.data.mapper.toDomainModel
+import tech.baza_trainee.mama_ne_vdoma.data.model.UserSearchRequest
 import tech.baza_trainee.mama_ne_vdoma.data.utils.asCustomResponse
 import tech.baza_trainee.mama_ne_vdoma.data.utils.getMessage
 import tech.baza_trainee.mama_ne_vdoma.domain.model.ChildEntity
@@ -59,6 +60,13 @@ class UserProfileRepositoryImpl(
         else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage())
     }
 
+    override suspend fun getUserByEmail(email: String): RequestResult<UserProfileEntity> {
+        val result = userProfileApi.getUserById(UserSearchRequest(email))
+        return if (result.isSuccessful)
+            RequestResult.Success(result.body()?.user?.toDomainModel() ?: UserProfileEntity())
+        else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage())
+    }
+
     override suspend fun saveChild(request: InitChildEntity): RequestResult<ChildEntity?> {
         val result = userProfileApi.saveChild(request.toDataModel())
         return if (result.isSuccessful)
@@ -73,10 +81,10 @@ class UserProfileRepositoryImpl(
         else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage())
     }
 
-    override suspend fun getChildById(childId: String): RequestResult<ChildEntity?> {
+    override suspend fun getChildById(childId: String): RequestResult<ChildEntity> {
         val result = userProfileApi.getChildById(childId)
         return if (result.isSuccessful)
-            RequestResult.Success(result.body()?.toDomainModel())
+            RequestResult.Success(result.body()?.toDomainModel() ?: ChildEntity())
         else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage())
     }
 
