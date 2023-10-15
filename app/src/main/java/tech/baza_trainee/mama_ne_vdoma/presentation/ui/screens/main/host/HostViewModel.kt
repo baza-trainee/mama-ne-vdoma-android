@@ -29,6 +29,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onLoading
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onSuccess
 
 class HostViewModel(
+    private val page: Int,
     private val savedStateHandle: SavedStateHandle,
     private val mainNavigator: ScreenNavigator,
     private val navigator: ScreenNavigator,
@@ -45,6 +46,11 @@ class HostViewModel(
         get() = _uiState
 
     init {
+        if (page != -1)
+            _viewState.update {
+                it.copy(currentPage = page)
+            }
+
         viewModelScope.launch {
             savedStateHandle.getStateFlow(PAGE, MAIN_PAGE).collect { page ->
                 _viewState.update {
@@ -52,6 +58,7 @@ class HostViewModel(
                 }
             }
         }
+
         getUserInfo()
     }
 

@@ -30,4 +30,6 @@ interface GroupsRepository {
         lng: Double,
         radius: Int
     ): RequestResult<List<GroupEntity>>
+
+    suspend fun joinToGroup(groupId: String, childId: String) : RequestResult<Unit>
 }

@@ -14,7 +14,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.search.searc
 
 fun NavGraphBuilder.searchNavGraph() {
     navigation(
-        route = Graphs.Host.Search.route,
+        route = Graphs.HostNested.Search.route,
         startDestination = SearchScreenRoutes.SearchUser.route
     ) {
         composable(SearchScreenRoutes.SearchUser.route) {

@@ -5,23 +5,18 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import org.koin.android.ext.android.inject
-import org.koin.androidx.compose.navigation.koinNavViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.graphs.createUserNavGraph
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.graphs.firstGroupSearchNavGraph
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.graphs.loginNavGraph
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.graphs.main_host.hostNavGraph
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.graphs.startNavGraph
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.graphs.userProfileGraph
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.NavigationEffects
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.Graphs
-import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.HostScreenRoutes
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.host.HostScreen
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.host.HostViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.Mama_ne_vdomaTheme
 
 class MainActivity : ComponentActivity() {
@@ -54,15 +49,7 @@ class MainActivity : ComponentActivity() {
                     createUserNavGraph()
                     userProfileGraph()
                     firstGroupSearchNavGraph()
-
-                    composable(HostScreenRoutes.Host.route) {
-                        val hostViewModel: HostViewModel = koinNavViewModel()
-                        HostScreen(
-                            navigator = hostViewModel.screenNavigator,
-                            screenState = hostViewModel.viewState.collectAsStateWithLifecycle(),
-                            handleEvent = { hostViewModel.handleEvent(it) }
-                        )
-                    }
+                    hostNavGraph()
                 }
             }
         }

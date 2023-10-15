@@ -12,7 +12,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.main.MainVie
 
 fun NavGraphBuilder.mainNavGraph() {
     navigation(
-        route = Graphs.Host.Main.route,
+        route = Graphs.HostNested.Main.route,
         startDestination = MainScreenRoutes.Main.route
     ) {
         composable(MainScreenRoutes.Main.route) {

@@ -41,4 +41,7 @@ interface GroupsApi {
         @Query("lon") lng: Double,
         @Query("radius") radius: Int
     ): Response<List<GroupDto>>
+
+    @POST("api/group/join/{groupId}/{childId}")
+    suspend fun joinRequest(@Path("groupId") groupId: String, @Path("childId") childId: String): Response<Unit>
 }

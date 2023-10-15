@@ -9,7 +9,7 @@ data class GroupDto(
     val ages: String,
     val members: List<MemberDto>,
     val location: LocationDto,
-    val askingJoin: List<String>,
+    val askingJoin: List<MemberDto>,
     val week: Map<String, DayScheduleDto>?,
     @SerializedName("_id")
     val id: String

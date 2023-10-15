@@ -8,6 +8,6 @@ data class SetAreaViewState(
     val avatar: Bitmap = BitmapHelper.DEFAULT_BITMAP,
     val address: String = "",
     val currentLocation: LatLng = LatLng(0.0,0.0),
-    val radius: Float = 0f,
+    val radius: Float = 1f,
     val isLoading: Boolean = false
 )

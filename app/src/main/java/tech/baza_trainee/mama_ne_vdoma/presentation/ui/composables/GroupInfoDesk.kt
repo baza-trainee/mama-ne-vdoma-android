@@ -46,7 +46,8 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.BitmapHelper
 fun GroupInfoDesk(
     modifier: Modifier = Modifier,
     groupAvatar: Bitmap = BitmapHelper.DEFAULT_BITMAP,
-    group: GroupUiModel = GroupUiModel()
+    group: GroupUiModel = GroupUiModel(),
+    onSelect: (String) -> Unit = {}
 ) {
     Column(
         modifier = Modifier
@@ -309,8 +310,8 @@ fun GroupInfoDesk(
             Spacer(modifier = Modifier.weight(1f))
 
             Checkbox(
-                checked = false,
-                onCheckedChange = {}
+                checked = group.isChecked,
+                onCheckedChange = { onSelect(group.id) }
             )
         }
     }

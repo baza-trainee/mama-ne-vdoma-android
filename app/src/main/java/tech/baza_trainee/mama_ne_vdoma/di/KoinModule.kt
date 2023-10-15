@@ -136,8 +136,9 @@ val standaloneGroupSearchModule = module {
 val mainModule = module {
     single<ScreenNavigator>(named(SINGLETON_FOR_MAIN)) { ScreenNavigatorImpl() }
     single(named(SINGLETON_FOR_MAIN)) { SavedStateHandle() }
-    viewModel {
+    viewModel { (page: Int) ->
         HostViewModel(
+            page,
             get(named(SINGLETON_FOR_MAIN)),
             get(),
             get(named(SINGLETON_FOR_MAIN)),

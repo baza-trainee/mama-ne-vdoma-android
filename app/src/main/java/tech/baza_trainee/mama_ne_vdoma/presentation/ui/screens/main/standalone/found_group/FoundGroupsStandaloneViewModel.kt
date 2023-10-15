@@ -14,10 +14,11 @@ import tech.baza_trainee.mama_ne_vdoma.domain.repository.GroupsRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.LocationRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.HostScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.GroupSearchStandaloneCommunicator
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.MAIN_PAGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.GroupUiModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.MemberUiModel
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.networkExecutor
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onError
@@ -35,8 +36,8 @@ class FoundGroupsStandaloneViewModel(
     private val _viewState = MutableStateFlow(FoundGroupViewState())
     val viewState: StateFlow<FoundGroupViewState> = _viewState.asStateFlow()
 
-    private val _uiState = mutableStateOf<RequestState>(RequestState.Idle)
-    val uiState: State<RequestState>
+    private val _uiState = mutableStateOf<FoundGroupUiState>(FoundGroupUiState.Idle)
+    val uiState: State<FoundGroupUiState>
         get() = _uiState
 
     init {
@@ -50,8 +51,46 @@ class FoundGroupsStandaloneViewModel(
 
     fun handleEvent(event: FoundGroupEvent) {
         when (event) {
-            FoundGroupEvent.ResetUiState -> _uiState.value = RequestState.Idle
+            FoundGroupEvent.ResetUiState -> _uiState.value = FoundGroupUiState.Idle
             FoundGroupEvent.OnBack -> navigator.goBack()
+            FoundGroupEvent.OnJoin -> sendJoinRequest()
+            is FoundGroupEvent.OnSelect -> setSelectedGroup(event.group)
+            FoundGroupEvent.GoToMain -> navigator.navigate(HostScreenRoutes.Host.getDestination(MAIN_PAGE))
+        }
+    }
+
+    private fun sendJoinRequest() {
+        networkExecutor {
+            execute {
+                val groupId = _viewState.value.groups.first { it.isChecked }.id
+                groupsRepository.joinToGroup(groupId, communicator.childId)
+            }
+            onSuccess {
+                _uiState.value = FoundGroupUiState.OnRequestSent
+            }
+            onError { error ->
+                _uiState.value = FoundGroupUiState.OnError(error)
+            }
+            onLoading { isLoading ->
+                _viewState.update {
+                    it.copy(
+                        isLoading = isLoading
+                    )
+                }
+            }
+        }
+    }
+
+    private fun setSelectedGroup(groupId: String) {
+        _viewState.update { state ->
+            val groups = mutableListOf<GroupUiModel>()
+            state.groups.forEach {
+                val group = it.copy(isChecked = it.id == groupId)
+                groups.add(group)
+            }
+            state.copy(
+                groups = groups
+            )
         }
     }
 
@@ -92,7 +131,7 @@ class FoundGroupsStandaloneViewModel(
                 }
             }
             onError { error ->
-                _uiState.value = RequestState.OnError(error)
+                _uiState.value = FoundGroupUiState.OnError(error)
             }
             onLoading { isLoading ->
                 _viewState.update {
@@ -131,7 +170,7 @@ class FoundGroupsStandaloneViewModel(
                 }
             }
             onError { error ->
-                _uiState.value = RequestState.OnError(error)
+                _uiState.value = FoundGroupUiState.OnError(error)
             }
             onLoading { isLoading ->
                 _viewState.update {
@@ -170,7 +209,7 @@ class FoundGroupsStandaloneViewModel(
                 }
             }
             onError { error ->
-                _uiState.value = RequestState.OnError(error)
+                _uiState.value = FoundGroupUiState.OnError(error)
             }
             onLoading { isLoading ->
                 _viewState.update {
@@ -202,7 +241,7 @@ class FoundGroupsStandaloneViewModel(
                 }
             }
             onError { error ->
-                _uiState.value = RequestState.OnError(error)
+                _uiState.value = FoundGroupUiState.OnError(error)
             }
             onLoading { isLoading ->
                 _viewState.update {

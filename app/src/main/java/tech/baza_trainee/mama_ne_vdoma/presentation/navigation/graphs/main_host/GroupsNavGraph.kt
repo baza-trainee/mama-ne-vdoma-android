@@ -19,7 +19,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.my_gr
 
 fun NavGraphBuilder.groupNavGraph() {
     navigation(
-        route = Graphs.Host.Groups.route,
+        route = Graphs.HostNested.Groups.route,
         startDestination = GroupsScreenRoutes.Groups.route
     ) {
         composable(GroupsScreenRoutes.Groups.route) {

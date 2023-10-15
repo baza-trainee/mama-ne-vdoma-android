@@ -7,7 +7,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.SettingsSc
 
 fun NavGraphBuilder.settingsNavGraph() {
     navigation(
-        route = Graphs.Host.Settings.route,
+        route = Graphs.HostNested.Settings.route,
         startDestination = SettingsScreenRoutes.Settings.route
     ) {
 //        composable(SettingsScreenRoutes.Settings.route) {

@@ -62,4 +62,11 @@ class GroupsRepositoryImpl(
             RequestResult.Success(result.body()?.map { it.toDomainModel() }?.toList() ?: emptyList())
         else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage())
     }
+
+    override suspend fun joinToGroup(groupId: String, childId: String): RequestResult<Unit> {
+        val result = groupsApi.joinRequest(groupId, childId)
+        return if (result.isSuccessful)
+            RequestResult.Success(Unit)
+        else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage())
+    }
 }
