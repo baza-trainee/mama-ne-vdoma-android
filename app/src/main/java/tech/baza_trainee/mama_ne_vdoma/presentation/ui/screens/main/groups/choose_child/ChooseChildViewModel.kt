@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import tech.baza_trainee.mama_ne_vdoma.domain.model.ChildEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
-import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.PageNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.GroupsScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.ChooseChildEvent
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.ChooseChildViewState
@@ -22,7 +22,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onSuccess
 
 class ChooseChildViewModel(
     private val userProfileRepository: UserProfileRepository,
-    private val navigator: ScreenNavigator
+    private val navigator: PageNavigator
 ): ViewModel() {
 
     private val _viewState = MutableStateFlow(ChooseChildViewState())

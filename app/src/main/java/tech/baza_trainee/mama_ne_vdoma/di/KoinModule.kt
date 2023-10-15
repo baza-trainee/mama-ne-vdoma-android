@@ -1,6 +1,5 @@
 package tech.baza_trainee.mama_ne_vdoma.di
 
-import androidx.lifecycle.SavedStateHandle
 import com.chuckerteam.chucker.api.ChuckerCollector
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.google.gson.Gson
@@ -12,7 +11,6 @@ import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidApplication
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
-import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -31,6 +29,8 @@ import tech.baza_trainee.mama_ne_vdoma.domain.repository.AuthRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.GroupsRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.LocationRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.PageNavigator
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.PageNavigatorImpl
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigatorImpl
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.verify_email.VerifyEmailViewModel
@@ -134,32 +134,28 @@ val standaloneGroupSearchModule = module {
 }
 
 val mainModule = module {
-    single<ScreenNavigator>(named(SINGLETON_FOR_MAIN)) { ScreenNavigatorImpl() }
-    single(named(SINGLETON_FOR_MAIN)) { SavedStateHandle() }
+    single<PageNavigator> { PageNavigatorImpl() }
     viewModel { (page: Int) ->
         HostViewModel(
             page,
-            get(named(SINGLETON_FOR_MAIN)),
             get(),
-            get(named(SINGLETON_FOR_MAIN)),
+            get(),
             get()
         )
     }
     viewModel {
         MainViewModel(
-            get(named(SINGLETON_FOR_MAIN)),
             get(),
-            get(named(SINGLETON_FOR_MAIN))
+            get()
         )
     }
-    viewModel { ChooseChildViewModel(get(), get(named(SINGLETON_FOR_MAIN))) }
+    viewModel { ChooseChildViewModel(get(), get()) }
     viewModel {
         MyGroupsViewModel(
-            get(named(SINGLETON_FOR_MAIN)),
             get(),
             get(),
             get(),
-            get(named(SINGLETON_FOR_MAIN))
+            get()
         )
     }
 
@@ -168,18 +164,18 @@ val mainModule = module {
         CreateGroupViewModel(
             childId,
             get(),
-            get(named(SINGLETON_FOR_MAIN)),
+            get(),
             get(),
             get(),
             get(),
             get()
         )
     }
-    viewModel { GroupImageCropViewModel(get(), get(named(SINGLETON_FOR_MAIN)), get()) }
+    viewModel { GroupImageCropViewModel(get(), get(), get()) }
 
     single { SearchResultsCommunicator() }
-    viewModel { SearchUserViewModel(get(named(SINGLETON_FOR_MAIN)), get(), get()) }
-    viewModel { SearchResultsViewModel(get(named(SINGLETON_FOR_MAIN)), get(), get()) }
+    viewModel { SearchUserViewModel(get(), get(), get()) }
+    viewModel { SearchResultsViewModel(get(), get(), get()) }
 }
 
 const val BASE_URL = "https://tough-moth-trunks.cyclic.cloud/"

@@ -23,7 +23,7 @@ import tech.baza_trainee.mama_ne_vdoma.domain.model.UserProfileEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.GroupsRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.LocationRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
-import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.PageNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.GroupsScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.MainScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.GroupImageCommunicator
@@ -39,7 +39,7 @@ import java.time.DayOfWeek
 class CreateGroupViewModel(
     private val childId: String,
     private val communicator: GroupImageCommunicator,
-    private val navigator: ScreenNavigator,
+    private val navigator: PageNavigator,
     private val userProfileRepository: UserProfileRepository,
     private val locationRepository: LocationRepository,
     private val groupsRepository: GroupsRepository,

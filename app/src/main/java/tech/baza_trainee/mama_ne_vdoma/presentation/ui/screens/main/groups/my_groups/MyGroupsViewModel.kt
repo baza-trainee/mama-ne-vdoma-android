@@ -2,7 +2,6 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.my_g
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,12 +13,8 @@ import tech.baza_trainee.mama_ne_vdoma.domain.model.UserProfileEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.GroupsRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.LocationRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
-import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.PageNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.GroupsScreenRoutes
-import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.MainScreenRoutes
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.MAIN_PAGE
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.PAGE
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.PREV_PAGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.GroupUiModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.MemberUiModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
@@ -30,11 +25,10 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onLoading
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onSuccess
 
 class MyGroupsViewModel(
-    private val savedStateHandle: SavedStateHandle,
     private val userProfileRepository: UserProfileRepository,
     private val groupsRepository: GroupsRepository,
     private val locationRepository: LocationRepository,
-    private val navigator: ScreenNavigator
+    private val navigator: PageNavigator
 ): ViewModel() {
 
     private val _viewState = MutableStateFlow(MyGroupsViewState())
@@ -51,13 +45,7 @@ class MyGroupsViewModel(
     fun handleEvent(event: MyGroupsEvent) {
         when (event) {
             MyGroupsEvent.ResetUiState -> _uiState.value = RequestState.Idle
-            MyGroupsEvent.OnBack -> {
-                val prevPage = savedStateHandle.get<Int>(PREV_PAGE) ?: MAIN_PAGE
-                when(prevPage) {
-                    MAIN_PAGE -> navigator.navigate(MainScreenRoutes.Main)
-                }
-                savedStateHandle[PAGE] = prevPage
-            }
+            MyGroupsEvent.OnBack -> navigator.goToPrevious()
             MyGroupsEvent.CreateNewGroup -> navigator.navigate(GroupsScreenRoutes.ChooseChild)
         }
     }

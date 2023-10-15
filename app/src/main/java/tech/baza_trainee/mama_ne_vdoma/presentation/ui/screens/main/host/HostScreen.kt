@@ -19,7 +19,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.graphs.main_host.
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.graphs.main_host.searchNavGraph
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.graphs.main_host.settingsNavGraph
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.NavigationEffects
-import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.PageNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.Graphs
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.MainNavigationBar
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.MainNavigationItem
@@ -30,7 +30,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 @Composable
 fun HostScreen(
     modifier: Modifier = Modifier,
-    navigator: ScreenNavigator,
+    navigator: PageNavigator,
     screenState: State<HostViewState> = mutableStateOf(HostViewState()),
     uiState: State<RequestState> = mutableStateOf(RequestState.Idle),
     handleEvent: (HostEvent) -> Unit = {}
@@ -64,6 +64,7 @@ fun HostScreen(
                     title = tabContents[screenState.value.currentPage].title,
                     avatar = screenState.value.avatar,
                     showNotification = false,
+                    onBack = { handleEvent(HostEvent.OnBackLocal) }
                 )
             },
             bottomBar = {
