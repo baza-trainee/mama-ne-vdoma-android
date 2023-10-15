@@ -49,7 +49,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.standalone.s
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.child_info.ChildInfoViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.children_info.ChildrenInfoViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.full_info.FullInfoViewModel
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.image_crop.ImageCropViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.image_crop.UserImageCropViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.model.UserProfileCommunicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.schedule.child_schedule.ChildScheduleViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.schedule.parent_schedule.ParentScheduleViewModel
@@ -91,7 +91,7 @@ val userCreateModule = module {
     single { BitmapHelper(androidApplication()) }
     single { UserProfileCommunicator() }
     viewModel { UserInfoViewModel(get(), get(), get(), get(), get()) }
-    viewModel { ImageCropViewModel(get(), get(), get()) }
+    viewModel { UserImageCropViewModel(get(), get(), get()) }
     viewModel { UserLocationViewModel(get(), get(), get(), get()) }
     viewModel { ChildInfoViewModel(get(), get(), get()) }
     viewModel { ChildScheduleViewModel(get(), get(), get()) }

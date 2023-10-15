@@ -25,10 +25,10 @@ class MainScreenViewModel(
                 navigator.navigate(GroupsScreenRoutes.ChooseChild)
                 savedStateHandle[PAGE] = GROUPS_PAGE
             }
-            MainEvent.ResetUiState -> TODO()
-            MainEvent.Search -> TODO()
-            is MainEvent.SetSearchOption -> TODO()
-            is MainEvent.SetSearchRequest -> TODO()
+            MainEvent.ResetUiState -> Unit //TODO()
+            MainEvent.Search -> Unit //TODO()
+            is MainEvent.SetSearchOption -> Unit //TODO()
+            is MainEvent.SetSearchRequest -> Unit //TODO()
             MainEvent.OnBack -> mainNavigator.goBack()
         }
     }

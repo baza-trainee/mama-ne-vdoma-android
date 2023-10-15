@@ -11,8 +11,8 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.chil
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.child_info.ChildInfoViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.full_info.FullInfoScreen
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.full_info.FullInfoViewModel
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.image_crop.ImageCropScreen
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.image_crop.ImageCropViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.image_crop.UserImageCropScreen
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.image_crop.UserImageCropViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.schedule.child_schedule.ChildScheduleScreen
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.schedule.child_schedule.ChildScheduleViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.schedule.parent_schedule.ParentScheduleScreen
@@ -44,10 +44,10 @@ fun NavGraphBuilder.userProfileGraph() {
             )
         }
         composable(UserProfileRoutes.ImageCrop.route) {
-            val imageCropViewModel: ImageCropViewModel = koinNavViewModel()
-            ImageCropScreen(
-                imageForCrop = imageCropViewModel.getUserAvatarBitmap(),
-                handleEvent = { imageCropViewModel.saveCroppedImage(it) }
+            val userImageCropViewModel: UserImageCropViewModel = koinNavViewModel()
+            UserImageCropScreen(
+                imageForCrop = userImageCropViewModel.getUserAvatarBitmap(),
+                handleEvent = { userImageCropViewModel.saveCroppedImage(it) }
             )
         }
         composable(UserProfileRoutes.UserLocation.route) {

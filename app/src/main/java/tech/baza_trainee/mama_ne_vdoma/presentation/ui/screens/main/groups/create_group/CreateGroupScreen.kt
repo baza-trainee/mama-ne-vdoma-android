@@ -273,11 +273,11 @@ fun CreateGroupScreen(
             modifier = modifier
                 .padding(horizontal = 24.dp),
             avatar = screenState.value.avatar,
-            setUriForCrop = {
-                handleEvent(CreateGroupEvent.SetImageToCrop(it))
-            },
-            onEditPhoto = { handleEvent(CreateGroupEvent.OnEditPhoto) },
-            onDeletePhoto = { handleEvent(CreateGroupEvent.OnDeletePhoto) }
+//            setUriForCrop = {
+//                handleEvent(CreateGroupEvent.SetImageToCrop(it))
+//            },
+//            onEditPhoto = { handleEvent(CreateGroupEvent.OnEditPhoto) },
+//            onDeletePhoto = { handleEvent(CreateGroupEvent.OnDeletePhoto) }
         )
 
         OutlinedTextField(

@@ -8,7 +8,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.UserProfil
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.model.UserProfileCommunicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.BitmapHelper
 
-class ImageCropViewModel(
+class UserImageCropViewModel(
     private val communicator: UserProfileCommunicator,
     private val navigator: ScreenNavigator,
     private val bitmapHelper: BitmapHelper

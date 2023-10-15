@@ -2,6 +2,7 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.ima
 
 import android.graphics.Bitmap
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,19 +20,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asAndroidBitmap
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.smarttoolfactory.cropper.ImageCropper
-import com.smarttoolfactory.cropper.model.AspectRatio
-import com.smarttoolfactory.cropper.model.OutlineType
-import com.smarttoolfactory.cropper.model.OvalCropShape
 import com.smarttoolfactory.cropper.settings.CropDefaults
-import com.smarttoolfactory.cropper.settings.CropOutlineProperty
+import com.smarttoolfactory.cropper.settings.CropProperties
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.LoadingIndicator
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.SurfaceWithSystemBars
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.ButtonText
 
@@ -39,11 +34,14 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.ButtonText
 fun ImageCropScreen(
     modifier: Modifier = Modifier,
     imageForCrop: ImageBitmap = ImageBitmap(512, 512),
-    handleEvent: (Bitmap) -> Unit = {}
+    cropProperties: CropProperties,
+    onImageCrop: (Bitmap) -> Unit = {}
 ) {
-    SurfaceWithSystemBars {
-        var isCropping by remember { mutableStateOf(false) }
+    var isCropping by remember { mutableStateOf(false) }
 
+    Box(
+        modifier = Modifier.fillMaxWidth()
+    ) {
         Column(
             modifier = Modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.SpaceBetween,
@@ -62,8 +60,6 @@ fun ImageCropScreen(
             )
 
             Spacer(modifier = Modifier.height(8.dp))
-
-            val handleSize: Float = LocalDensity.current.run { 20.dp.toPx() }
             var crop by remember { mutableStateOf(false) }
 
             ImageCropper(
@@ -73,21 +69,13 @@ fun ImageCropScreen(
                 imageBitmap = imageForCrop,
                 contentDescription = "Image Cropper",
                 cropStyle = CropDefaults.style(),
-                cropProperties = CropDefaults.properties(
-                    cropOutlineProperty = CropOutlineProperty(
-                        OutlineType.Oval,
-                        OvalCropShape(0, "Oval")
-                    ),
-                    handleSize = handleSize,
-                    aspectRatio = AspectRatio(1f),
-                    fixedAspectRatio = true
-                ),
+                cropProperties = cropProperties,
                 crop = crop,
                 onCropStart = {
                     isCropping = true
                 },
                 onCropSuccess = {
-                    handleEvent(it.asAndroidBitmap())
+                    onImageCrop(it.asAndroidBitmap())
                     crop = false
                     isCropping = false
                 }
@@ -109,13 +97,7 @@ fun ImageCropScreen(
                 )
             }
         }
-
-        if (isCropping) LoadingIndicator()
     }
-}
 
-@Composable
-@Preview
-fun ImageCropPreview() {
-    ImageCropScreen()
+    if (isCropping) LoadingIndicator()
 }
