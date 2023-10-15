@@ -29,7 +29,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onError
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onLoading
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onSuccess
 
-class MyGroupsScreenViewModel(
+class MyGroupsViewModel(
     private val savedStateHandle: SavedStateHandle,
     private val userProfileRepository: UserProfileRepository,
     private val groupsRepository: GroupsRepository,

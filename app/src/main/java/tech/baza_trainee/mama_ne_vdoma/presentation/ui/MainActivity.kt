@@ -20,7 +20,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenN
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.Graphs
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.HostScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.host.HostScreen
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.host.HostScreenViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.host.HostViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.Mama_ne_vdomaTheme
 
 class MainActivity : ComponentActivity() {
@@ -54,11 +54,11 @@ class MainActivity : ComponentActivity() {
                     userProfileGraph()
 
                     composable(HostScreenRoutes.Host.route) {
-                        val hostScreenViewModel: HostScreenViewModel = koinNavViewModel()
+                        val hostViewModel: HostViewModel = koinNavViewModel()
                         HostScreen(
-                            navigator = hostScreenViewModel.screenNavigator,
-                            screenState = hostScreenViewModel.viewState.collectAsStateWithLifecycle(),
-                            handleEvent = { hostScreenViewModel.handleEvent(it) }
+                            navigator = hostViewModel.screenNavigator,
+                            screenState = hostViewModel.viewState.collectAsStateWithLifecycle(),
+                            handleEvent = { hostViewModel.handleEvent(it) }
                         )
                     }
                 }

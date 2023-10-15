@@ -39,12 +39,12 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.login.Login
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.new_password.NewPasswordScreenViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.restore_password.RestorePasswordScreenViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.GroupImageCommunicator
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.choose_child.ChooseChildScreenViewModel
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.create_group.CreateGroupScreenViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.choose_child.ChooseChildViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.create_group.CreateGroupViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.image_crop.GroupImageCropViewModel
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.my_groups.MyGroupsScreenViewModel
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.host.HostScreenViewModel
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.main.MainScreenViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.my_groups.MyGroupsViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.host.HostViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.main.MainViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.standalone.set_area.SetAreaViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.child_info.ChildInfoViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.children_info.ChildrenInfoViewModel
@@ -125,7 +125,7 @@ val mainModule = module {
     single(named(SINGLETON_FOR_MAIN)) { SavedStateHandle() }
     viewModel { SetAreaViewModel(get(), get(), get()) }
     viewModel {
-        HostScreenViewModel(
+        HostViewModel(
             get(named(SINGLETON_FOR_MAIN)),
             get(),
             get(named(SINGLETON_FOR_MAIN)),
@@ -133,15 +133,15 @@ val mainModule = module {
         )
     }
     viewModel {
-        MainScreenViewModel(
+        MainViewModel(
             get(named(SINGLETON_FOR_MAIN)),
             get(),
             get(named(SINGLETON_FOR_MAIN))
         )
     }
-    viewModel { ChooseChildScreenViewModel(get(), get(named(SINGLETON_FOR_MAIN))) }
+    viewModel { ChooseChildViewModel(get(), get(named(SINGLETON_FOR_MAIN))) }
     viewModel {
-        MyGroupsScreenViewModel(
+        MyGroupsViewModel(
             get(named(SINGLETON_FOR_MAIN)),
             get(),
             get(),
@@ -152,7 +152,7 @@ val mainModule = module {
 
     single { GroupImageCommunicator() }
     viewModel { (childId: String) ->
-        CreateGroupScreenViewModel(
+        CreateGroupViewModel(
             childId,
             get(),
             get(named(SINGLETON_FOR_MAIN)),

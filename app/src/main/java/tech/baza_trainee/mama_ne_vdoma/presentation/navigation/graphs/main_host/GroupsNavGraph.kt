@@ -9,13 +9,13 @@ import org.koin.core.parameter.parametersOf
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.Graphs
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.GroupsScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.choose_child.ChooseChildScreen
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.choose_child.ChooseChildScreenViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.choose_child.ChooseChildViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.create_group.CreateGroupScreen
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.create_group.CreateGroupScreenViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.create_group.CreateGroupViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.image_crop.GroupImageCropScreen
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.image_crop.GroupImageCropViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.my_groups.MyGroupsScreen
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.my_groups.MyGroupsScreenViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.my_groups.MyGroupsViewModel
 
 fun NavGraphBuilder.groupNavGraph() {
     navigation(
@@ -23,19 +23,19 @@ fun NavGraphBuilder.groupNavGraph() {
         startDestination = GroupsScreenRoutes.Groups.route
     ) {
         composable(GroupsScreenRoutes.Groups.route) {
-            val myGroupsScreenViewModel: MyGroupsScreenViewModel = koinNavViewModel()
+            val myGroupsViewModel: MyGroupsViewModel = koinNavViewModel()
             MyGroupsScreen(
-                screenState = myGroupsScreenViewModel.viewState.collectAsStateWithLifecycle(),
-                uiState = myGroupsScreenViewModel.uiState,
-                handleEvent = { myGroupsScreenViewModel.handleEvent(it) }
+                screenState = myGroupsViewModel.viewState.collectAsStateWithLifecycle(),
+                uiState = myGroupsViewModel.uiState,
+                handleEvent = { myGroupsViewModel.handleEvent(it) }
             )
         }
         composable(GroupsScreenRoutes.ChooseChild.route) {
-            val chooseChildScreenViewModel: ChooseChildScreenViewModel = koinNavViewModel()
+            val chooseChildViewModel: ChooseChildViewModel = koinNavViewModel()
             ChooseChildScreen(
-                screenState = chooseChildScreenViewModel.viewState.collectAsStateWithLifecycle(),
-                uiState = chooseChildScreenViewModel.uiState,
-                handleEvent = { chooseChildScreenViewModel.handleEvent(it) }
+                screenState = chooseChildViewModel.viewState.collectAsStateWithLifecycle(),
+                uiState = chooseChildViewModel.uiState,
+                handleEvent = { chooseChildViewModel.handleEvent(it) }
             )
         }
         composable(
@@ -43,13 +43,13 @@ fun NavGraphBuilder.groupNavGraph() {
             arguments = GroupsScreenRoutes.CreateGroup.argumentList
         ) { entry ->
             val (child) = GroupsScreenRoutes.CreateGroup.parseArguments(entry)
-            val createGroupScreenViewModel: CreateGroupScreenViewModel = koinNavViewModel {
+            val createGroupViewModel: CreateGroupViewModel = koinNavViewModel {
                 parametersOf(child)
             }
             CreateGroupScreen(
-                screenState = createGroupScreenViewModel.viewState.collectAsStateWithLifecycle(),
-                uiState = createGroupScreenViewModel.uiState,
-                handleEvent = { createGroupScreenViewModel.handleEvent(it) }
+                screenState = createGroupViewModel.viewState.collectAsStateWithLifecycle(),
+                uiState = createGroupViewModel.uiState,
+                handleEvent = { createGroupViewModel.handleEvent(it) }
             )
         }
         composable(GroupsScreenRoutes.ImageCrop.route) {

@@ -18,7 +18,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onError
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onLoading
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onSuccess
 
-class ChooseChildScreenViewModel(
+class ChooseChildViewModel(
     private val userProfileRepository: UserProfileRepository,
     private val navigator: ScreenNavigator
 ): ViewModel() {

@@ -8,7 +8,7 @@ import org.koin.androidx.compose.navigation.koinNavViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.Graphs
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.MainScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.main.MainScreen
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.main.MainScreenViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.main.MainViewModel
 
 fun NavGraphBuilder.mainNavGraph() {
     navigation(
@@ -16,10 +16,10 @@ fun NavGraphBuilder.mainNavGraph() {
         startDestination = MainScreenRoutes.Main.route
     ) {
         composable(MainScreenRoutes.Main.route) {
-            val mainScreenViewModel: MainScreenViewModel = koinNavViewModel()
+            val mainViewModel: MainViewModel = koinNavViewModel()
             MainScreen(
-                screenState = mainScreenViewModel.viewState.collectAsStateWithLifecycle(),
-                handleEvent = { mainScreenViewModel.handleEvent(it) }
+                screenState = mainViewModel.viewState.collectAsStateWithLifecycle(),
+                handleEvent = { mainViewModel.handleEvent(it) }
             )
         }
     }

@@ -36,7 +36,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onLoading
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onSuccess
 import java.time.DayOfWeek
 
-class CreateGroupScreenViewModel(
+class CreateGroupViewModel(
     private val childId: String,
     private val communicator: GroupImageCommunicator,
     private val navigator: ScreenNavigator,

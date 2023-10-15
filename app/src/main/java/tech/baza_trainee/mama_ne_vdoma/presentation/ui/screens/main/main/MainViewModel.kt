@@ -10,7 +10,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.GroupsScre
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.GROUPS_PAGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.PAGE
 
-class MainScreenViewModel(
+class MainViewModel(
     private val savedStateHandle: SavedStateHandle,
     private val mainNavigator: ScreenNavigator,
     private val navigator: ScreenNavigator

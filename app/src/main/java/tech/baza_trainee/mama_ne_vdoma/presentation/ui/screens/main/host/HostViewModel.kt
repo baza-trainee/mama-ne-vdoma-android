@@ -15,10 +15,12 @@ import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.GroupsScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.MainScreenRoutes
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.SearchScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.GROUPS_PAGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.MAIN_PAGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.PAGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.PREV_PAGE
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.SEARCH_PAGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.networkExecutor
@@ -26,7 +28,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onError
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onLoading
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onSuccess
 
-class HostScreenViewModel(
+class HostViewModel(
     private val savedStateHandle: SavedStateHandle,
     private val mainNavigator: ScreenNavigator,
     private val navigator: ScreenNavigator,
@@ -69,6 +71,7 @@ class HostScreenViewModel(
         when(page) {
             MAIN_PAGE -> navigator.navigate(MainScreenRoutes.Main)
             GROUPS_PAGE -> navigator.navigate(GroupsScreenRoutes.Groups)
+            SEARCH_PAGE -> navigator.navigate(SearchScreenRoutes.SearchUser)
         }
     }
 
