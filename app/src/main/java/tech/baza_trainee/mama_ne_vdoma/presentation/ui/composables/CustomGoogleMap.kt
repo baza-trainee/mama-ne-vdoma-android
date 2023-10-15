@@ -15,6 +15,7 @@ import com.google.maps.android.compose.GoogleMapComposable
 import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.rememberCameraPositionState
+import kotlinx.coroutines.delay
 
 @Composable
 fun CustomGoogleMap(
@@ -33,6 +34,7 @@ fun CustomGoogleMap(
     }
 
     LaunchedEffect(location) {
+        delay(1000)
         val newCameraPosition =
             CameraPosition.fromLatLngZoom(location, 15f)
         cameraPositionState.animate(

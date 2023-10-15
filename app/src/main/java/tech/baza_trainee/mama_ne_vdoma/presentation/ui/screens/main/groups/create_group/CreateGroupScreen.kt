@@ -123,7 +123,7 @@ fun CreateGroupScreen(
             modifier = modifier
                 .fillMaxWidth()
                 .padding(horizontal = 8.dp),
-            text = "Назва групи повинна складатись від 6 до 18 символів, може містити латинські чи кириличні букви та цифри, не є унікальною",
+            text = "Назва групи повинна складатись від 6 до 18 символів, може містити латинські чи кириличні букви та цифри, пробіли, дефіси. НЕ є унікальною",
             fontFamily = redHatDisplayFontFamily,
             fontSize = 12.sp
         )

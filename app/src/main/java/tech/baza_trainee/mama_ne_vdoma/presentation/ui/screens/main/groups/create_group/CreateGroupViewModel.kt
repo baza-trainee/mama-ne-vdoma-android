@@ -342,7 +342,8 @@ class CreateGroupViewModel(
     }
 
     private fun validateName(name: String) {
-        val nameValid = if (name.length in NAME_LENGTH && name.all { it.isLetter() || it.isDigit() }) ValidField.VALID
+        val nameValid = if (name.length in NAME_LENGTH &&
+            name.all { it.isLetter() || it.isDigit() || it.isWhitespace() || it == '-' }) ValidField.VALID
         else ValidField.INVALID
         _viewState.update {
             it.copy(

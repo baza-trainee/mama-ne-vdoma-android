@@ -65,13 +65,8 @@ fun SetAreaForSearchScreen(
     uiState: State<RequestState> = mutableStateOf(RequestState.Idle),
     handleEvent: (SetAreaEvent) -> Unit = { _ -> }
 ) {
-    val KM = 1000
-
     SurfaceWithNavigationBars {
         BackHandler { handleEvent(SetAreaEvent.OnBack) }
-
-        var isPermissionGranted by remember { mutableStateOf(false) }
-        LocationPermission { isPermissionGranted = it }
 
         val context = LocalContext.current
 
@@ -86,6 +81,11 @@ fun SetAreaForSearchScreen(
                 handleEvent(SetAreaEvent.ResetUiState)
             }
         }
+
+        var isPermissionGranted by remember { mutableStateOf(false) }
+        LocationPermission { isPermissionGranted = it }
+
+        val KM = 1000
 
         ConstraintLayout(
             modifier = Modifier.fillMaxWidth()
@@ -154,7 +154,7 @@ fun SetAreaForSearchScreen(
                                 SetAreaEvent.UpdateUserAddress(it)
                             )
                         },
-                        modifier = modifier
+                        modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 24.dp),
                         label = { Text("Введіть вашу адресу") },
@@ -180,7 +180,7 @@ fun SetAreaForSearchScreen(
                     Spacer(modifier = Modifier.height(8.dp))
 
                     Slider(
-                        modifier = modifier
+                        modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 24.dp),
                         value = screenState.value.radius,
@@ -193,7 +193,7 @@ fun SetAreaForSearchScreen(
                         valueRange = 1f..25f,
                         thumb = { position ->
                             Column(
-                                modifier = modifier
+                                modifier = Modifier
                                     .padding(bottom = 36.dp),
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
@@ -205,7 +205,7 @@ fun SetAreaForSearchScreen(
                                         contentDescription = "thumb"
                                     )
                                     Text(
-                                        modifier = modifier
+                                        modifier = Modifier
                                             .padding(bottom = 8.dp),
                                         text = position.value.toInt().toString(),
                                         fontFamily = redHatDisplayFontFamily,
@@ -214,7 +214,7 @@ fun SetAreaForSearchScreen(
                                     )
                                 }
                                 Box(
-                                    modifier = modifier
+                                    modifier = Modifier
                                         .width(20.dp)
                                         .height(20.dp)
                                         .background(
@@ -230,15 +230,14 @@ fun SetAreaForSearchScreen(
             }
 
             Button(
-                modifier = modifier
+                modifier = Modifier
                     .padding(horizontal = 24.dp, vertical = 16.dp)
                     .fillMaxWidth()
                     .constrainAs(btnNext) {
                         bottom.linkTo(parent.bottom)
                     }
                     .height(48.dp),
-                onClick = { handleEvent(SetAreaEvent.SaveArea) },
-                enabled = true
+                onClick = { handleEvent(SetAreaEvent.SaveArea) }
             ) {
                 ButtonText(
                     text = "Далі"

@@ -82,9 +82,7 @@ class SetAreaViewModel(
                         )
                     }
 
-                    getAddressFromLocation(
-                        latLng = location
-                    )
+                    getAddressFromLocation(location)
                 }
             }
             onError { error ->
