@@ -1,6 +1,6 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables
 
-import android.graphics.Bitmap
+import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -27,25 +27,26 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.BitmapHelper
 
 @Composable
 @Preview
 fun ToolbarWithAvatar(
     modifier: Modifier = Modifier,
-    avatar: Bitmap = BitmapHelper.DEFAULT_BITMAP,
+    avatar: Uri = Uri.EMPTY,
     showArrow: Boolean = true,
     showTitle: Boolean = true,
-    title: String = "",
+    title: String = "Title",
     showNotification: Boolean = true,
     notificationCount: String = "2",
     onBack: () -> Unit = {}
@@ -75,16 +76,18 @@ fun ToolbarWithAvatar(
             }
         }
 
-        Text(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f),
-            text = title,
-            textAlign = TextAlign.Center,
-            fontFamily = redHatDisplayFontFamily,
-            fontSize = 22.sp,
-            color = MaterialTheme.colorScheme.onPrimary
-        )
+        if (showTitle) {
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f),
+                text = title,
+                textAlign = TextAlign.Center,
+                fontFamily = redHatDisplayFontFamily,
+                fontSize = 22.sp,
+                color = MaterialTheme.colorScheme.onPrimary
+            )
+        }
 
         if (showNotification) {
             Box(
@@ -125,13 +128,17 @@ fun ToolbarWithAvatar(
             }
         }
 
-        Image(
+        AsyncImage(
             modifier = Modifier
                 .padding(end = 8.dp)
                 .height(32.dp)
                 .width(32.dp)
                 .clip(CircleShape),
-            bitmap = avatar.asImageBitmap(),
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(avatar)
+                .crossfade(true)
+                .build(),
+            placeholder = painterResource(id = R.drawable.no_photo),
             contentDescription = "avatar",
             contentScale = ContentScale.Fit
         )

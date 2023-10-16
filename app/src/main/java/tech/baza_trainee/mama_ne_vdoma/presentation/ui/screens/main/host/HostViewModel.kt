@@ -4,12 +4,15 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UserProfileEntity
+import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatastoreManager
+import tech.baza_trainee.mama_ne_vdoma.domain.repository.LocationRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.PageNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
@@ -30,7 +33,9 @@ class HostViewModel(
     private val page: Int,
     private val mainNavigator: ScreenNavigator,
     private val navigator: PageNavigator,
-    private val userProfileRepository: UserProfileRepository
+    private val userProfileRepository: UserProfileRepository,
+    private val locationRepository: LocationRepository,
+    private val preferencesDatastoreManager: UserPreferencesDatastoreManager
 ): ViewModel() {
 
     val screenNavigator get() = navigator
@@ -83,13 +88,30 @@ class HostViewModel(
     }
 
     private fun getUserInfo() {
-        networkExecutor<UserProfileEntity?> {
+        networkExecutor<UserProfileEntity> {
             execute {
                 userProfileRepository.getUserInfo()
             }
             onSuccess { entity ->
-                entity?.avatar?.let {
-                    getUserAvatar(it)
+                preferencesDatastoreManager.apply {
+                    id = entity.id
+                    name = entity.name
+                    email = entity.email
+                }
+
+                getUserAvatar(entity.avatar)
+
+                if (entity.location.coordinates.isNotEmpty()) {
+                    getAddressFromLocation(
+                        latLng = LatLng(
+                            entity.location.coordinates[1],
+                            entity.location.coordinates[0]
+                        )
+                    )
+                    preferencesDatastoreManager.apply {
+                        latitude = entity.location.coordinates[1]
+                        longitude = entity.location.coordinates[0]
+                    }
                 }
             }
             onError { error ->
@@ -108,10 +130,32 @@ class HostViewModel(
     private fun getUserAvatar(avatarId: String) {
         networkExecutor {
             execute { userProfileRepository.getUserAvatar(avatarId) }
-            onSuccess { bmp ->
+            onSuccess { uri ->
+                preferencesDatastoreManager.avatar = uri.toString()
                 _viewState.update {
-                    it.copy(avatar = bmp)
+                    it.copy(avatar = uri)
                 }
+            }
+            onError { error ->
+                _uiState.value = RequestState.OnError(error)
+            }
+            onLoading { isLoading ->
+                _viewState.update {
+                    it.copy(
+                        isLoading = isLoading
+                    )
+                }
+            }
+        }
+    }
+
+    private fun getAddressFromLocation(latLng: LatLng) {
+        networkExecutor<String?> {
+            execute {
+                locationRepository.getAddressFromLocation(latLng)
+            }
+            onSuccess { address ->
+                preferencesDatastoreManager.address = address.orEmpty()
             }
             onError { error ->
                 _uiState.value = RequestState.OnError(error)

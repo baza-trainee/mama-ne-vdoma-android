@@ -1,7 +1,6 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model
 
-import android.graphics.Bitmap
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.BitmapHelper
+import android.net.Uri
 
 data class GroupUiModel(
     val id: String = "",
@@ -16,5 +15,5 @@ data class GroupUiModel(
 data class MemberUiModel(
     val id: String = "",
     val name: String = "",
-    val avatar: Bitmap = BitmapHelper.DEFAULT_BITMAP
+    val avatar: Uri = Uri.EMPTY
 )

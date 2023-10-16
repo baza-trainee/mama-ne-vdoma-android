@@ -10,11 +10,11 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import tech.baza_trainee.mama_ne_vdoma.domain.model.LocationPatchEntity
+import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatastoreManager
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.LocationRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.UserProfileRoutes
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.model.UserProfileCommunicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.networkExecutor
@@ -24,7 +24,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onStart
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onSuccess
 
 class UserLocationViewModel(
-    private val communicator: UserProfileCommunicator,
+    private val preferencesDatastoreManager: UserPreferencesDatastoreManager,
     private val navigator: ScreenNavigator,
     private val userProfileRepository: UserProfileRepository,
     private val locationRepository: LocationRepository
@@ -40,10 +40,10 @@ class UserLocationViewModel(
     init {
         _locationScreenState.update {
             it.copy(
-                address = communicator.address
+                address = preferencesDatastoreManager.address
             )
         }
-        if (communicator.address.isNotEmpty())
+        if (preferencesDatastoreManager.address.isNotEmpty())
             getLocationFromAddress()
     }
 
@@ -114,6 +114,11 @@ class UserLocationViewModel(
                         )
                     }
                     getAddressFromLocation(location)
+
+                    preferencesDatastoreManager.apply {
+                        latitude = location.latitude
+                        longitude = location.latitude
+                    }
                 }
             }
             onError { error ->
@@ -130,7 +135,7 @@ class UserLocationViewModel(
     }
 
     private fun updateUserAddress(address: String) {
-        communicator.address = address
+        preferencesDatastoreManager.address = address
         _locationScreenState.update {
             it.copy(
                 address = address

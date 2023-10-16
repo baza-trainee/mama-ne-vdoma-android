@@ -1,6 +1,7 @@
 package tech.baza_trainee.mama_ne_vdoma.data.repository
 
 import android.graphics.Bitmap
+import android.net.Uri
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
@@ -103,7 +104,7 @@ class UserProfileRepositoryImpl(
     }
 
     override suspend fun saveUserAvatar(image: Bitmap): RequestResult<String> {
-        val file = bitmapHelper.bitmapToMultiPart(image)
+        val file = bitmapHelper.bitmapToFile(image)
         val fileBody = file.asRequestBody(MIME_IMAGE_PNG.toMediaTypeOrNull())
         val filePart = MultipartBody.Part.createFormData(IMAGE, file.name, fileBody)
         val result = userProfileApi.saveUserAvatar(filePart)
@@ -112,10 +113,10 @@ class UserProfileRepositoryImpl(
         else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage())
     }
 
-    override suspend fun getUserAvatar(url: String): RequestResult<Bitmap> {
+    override suspend fun getUserAvatar(url: String): RequestResult<Uri> {
         val result = userProfileApi.getUserAvatar(url)
         return if (result.isSuccessful)
-            RequestResult.Success(bitmapHelper.bitmapFromBody(result.body()))
+            RequestResult.Success(bitmapHelper.bitmapUriFromBody(result.body()))
         else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage())
     }
 

@@ -1,5 +1,6 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.full_info
 
+import android.net.Uri
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -13,6 +14,7 @@ import tech.baza_trainee.mama_ne_vdoma.domain.model.ChildEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.ScheduleModel
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UserProfileEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.ifNullOrEmpty
+import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatastoreManager
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.LocationRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
@@ -21,7 +23,6 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.HostScreen
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.UserProfileRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.MAIN_PAGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.model.UserProfileCommunicator
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.BitmapHelper
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.networkExecutor
@@ -33,7 +34,8 @@ class FullInfoViewModel(
     private val communicator: UserProfileCommunicator,
     private val navigator: ScreenNavigator,
     private val userProfileRepository: UserProfileRepository,
-    private val locationRepository: LocationRepository
+    private val locationRepository: LocationRepository,
+    private val preferencesDatastoreManager: UserPreferencesDatastoreManager
 ): ViewModel() {
 
     private val _fullInfoViewState = MutableStateFlow(FullInfoViewState())
@@ -115,40 +117,47 @@ class FullInfoViewModel(
     }
 
     private fun getUserInfo() {
-        networkExecutor<UserProfileEntity?> {
+        networkExecutor<UserProfileEntity> {
             execute {
                 userProfileRepository.getUserInfo()
             }
             onSuccess { entity ->
-                val _isUserInfoFilled = !entity?.name.isNullOrEmpty() &&
-                        !entity?.phone.isNullOrEmpty() &&
-                        !entity?.schedule?.schedule.isNullOrEmpty()
+                val _isUserInfoFilled = entity.name.isNotEmpty() &&
+                        entity.phone.isNotEmpty() &&
+                        !entity.schedule.schedule.isEmpty()
 
-                getUserAvatar(entity?.avatar.orEmpty())
+                getUserAvatar(entity.avatar)
 
                 _fullInfoViewState.update {
                     it.copy(
-                        name = entity?.name.orEmpty(),
-                        schedule = entity?.schedule.ifNullOrEmpty { ScheduleModel() },
+                        name = entity.name,
+                        schedule = entity.schedule.ifNullOrEmpty { ScheduleModel() },
                         isUserInfoFilled = _isUserInfoFilled
                     )
                 }
 
                 communicator.apply {
                     isUserInfoFilled = _isUserInfoFilled
-                    name = entity?.name.orEmpty()
-                    code = entity?.countryCode.orEmpty()
-                    phone = entity?.phone.orEmpty()
-                    schedule = entity?.schedule.ifNullOrEmpty { ScheduleModel() }
+                    schedule = entity.schedule.ifNullOrEmpty { ScheduleModel() }
+                }
+                preferencesDatastoreManager.apply {
+                    name = entity.name
+                    code = entity.countryCode
+                    phone = entity.phone
                 }
 
-                if (!entity?.location?.coordinates.isNullOrEmpty())
+                if (entity.location.coordinates.isNotEmpty()) {
                     getAddressFromLocation(
                         latLng = LatLng(
-                            entity?.location?.coordinates?.get(1) ?: 0.00,
-                            entity?.location?.coordinates?.get(0) ?: 0.00
+                            entity.location.coordinates[1],
+                            entity.location.coordinates[0]
                         )
                     )
+                    preferencesDatastoreManager.apply {
+                        latitude = entity.location.coordinates[1]
+                        longitude = entity.location.coordinates[0]
+                    }
+                }
 
                 getChildren()
             }
@@ -168,21 +177,22 @@ class FullInfoViewModel(
     private fun getUserAvatar(avatarId: String) {
         if (avatarId.isEmpty()) {
             communicator.apply {
-                userAvatar = BitmapHelper.DEFAULT_BITMAP
-                avatar = null
+                avatarServerPath = null
             }
+            preferencesDatastoreManager.avatar = Uri.EMPTY.toString()
+
             _fullInfoViewState.update {
                 it.copy(
-                    userAvatar = BitmapHelper.DEFAULT_BITMAP
+                    userAvatar = Uri.EMPTY
                 )
             }
         } else
             networkExecutor {
                 execute { userProfileRepository.getUserAvatar(avatarId) }
-                onSuccess { bmp ->
-                    communicator.userAvatar = bmp
+                onSuccess { uri ->
+                    preferencesDatastoreManager.avatar = uri.toString()
                     _fullInfoViewState.update {
-                        it.copy(userAvatar = bmp)
+                        it.copy(userAvatar = uri)
                     }
                 }
                 onError { error ->
@@ -204,7 +214,7 @@ class FullInfoViewModel(
                 locationRepository.getAddressFromLocation(latLng)
             }
             onSuccess { address ->
-                communicator.address = address.orEmpty()
+                preferencesDatastoreManager.address = address.orEmpty()
 
                 _fullInfoViewState.update {
                     it.copy(

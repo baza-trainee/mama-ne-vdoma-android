@@ -7,6 +7,7 @@ import android.graphics.Color
 import android.net.Uri
 import android.util.Base64
 import androidx.core.graphics.applyCanvas
+import androidx.core.net.toUri
 import okhttp3.ResponseBody
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.decodeBitmap
 import java.io.ByteArrayOutputStream
@@ -32,8 +33,8 @@ class BitmapHelper(private val context: Context) {
         return uri.decodeBitmap(context.contentResolver)
     }
 
-    fun bitmapToMultiPart(bitmap: Bitmap): File {
-        val filename = AVATAR
+    fun bitmapToFile(bitmap: Bitmap): File {
+        val filename = "${System.currentTimeMillis()}_$AVATAR"
         context.openFileOutput(filename, Context.MODE_PRIVATE)
             .use {
                 bitmap.compress(Bitmap.CompressFormat.PNG, PNG_QUALITY, it)
@@ -43,11 +44,12 @@ class BitmapHelper(private val context: Context) {
         return File(context.filesDir, filename)
     }
 
-    fun bitmapFromBody(body: ResponseBody?): Bitmap {
+    fun bitmapUriFromBody(body: ResponseBody?): Uri {
         body?.let {
             val fileContents = body.bytes()
-            return BitmapFactory.decodeByteArray(fileContents, 0, fileContents.size)
-        } ?: return DEFAULT_BITMAP
+            val bitmap = BitmapFactory.decodeByteArray(fileContents, 0, fileContents.size)
+            return bitmapToFile(bitmap).toUri()
+        } ?: return Uri.EMPTY
     }
 
     companion object {

@@ -76,6 +76,9 @@ dependencies {
     implementation("androidx.compose.ui:ui-text-google-fonts:1.5.3")
     implementation("androidx.compose.material:material:1.5.3")
 
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
+
     //Google Maps
     implementation("com.google.maps.android:maps-compose:2.4.0")
     implementation("com.google.android.gms:play-services-maps:18.1.0")
@@ -107,6 +110,8 @@ dependencies {
     releaseImplementation("com.github.chuckerteam.chucker:library-no-op:4.0.0")
 
     implementation("io.michaelrocks:libphonenumber-android:8.13.17")
+
+    implementation("io.coil-kt:coil-compose:2.4.0")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")

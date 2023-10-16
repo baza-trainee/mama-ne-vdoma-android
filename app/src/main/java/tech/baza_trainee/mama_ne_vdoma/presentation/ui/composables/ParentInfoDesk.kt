@@ -1,6 +1,6 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables
 
-import androidx.compose.foundation.Image
+import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -21,13 +21,15 @@ import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.domain.model.DayPeriod
 import tech.baza_trainee.mama_ne_vdoma.domain.model.Period
@@ -40,7 +42,7 @@ import java.time.DayOfWeek
 fun ParentInfoDesk(
     name: String = "Somebody",
     address: String = "Somewhere",
-    avatar: ImageBitmap = ImageBitmap(48, 48),
+    avatar: Uri = Uri.EMPTY,
     schedule: ScheduleModel = ScheduleModel(
         mutableStateMapOf(
             DayOfWeek.MONDAY to DayPeriod(morning = true),
@@ -71,12 +73,16 @@ fun ParentInfoDesk(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.End
         ) {
-            Image(
+            AsyncImage(
                 modifier = Modifier
                     .height(48.dp)
                     .width(48.dp)
                     .clip(CircleShape),
-                bitmap = avatar,
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(avatar)
+                    .crossfade(true)
+                    .build(),
+                placeholder = painterResource(id = R.drawable.no_photo),
                 contentDescription = null,
                 contentScale = ContentScale.Fit
             )

@@ -1,5 +1,6 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.standalone.choose_child
 
+import android.net.Uri
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -9,6 +10,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import tech.baza_trainee.mama_ne_vdoma.domain.model.ChildEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UserProfileEntity
+import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatastoreManager
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.InitialGroupSearchRoutes
@@ -25,7 +27,8 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onSuccess
 class ChooseChildStandaloneViewModel(
     private val communicator: GroupSearchStandaloneCommunicator,
     private val userProfileRepository: UserProfileRepository,
-    private val navigator: ScreenNavigator
+    private val navigator: ScreenNavigator,
+    private val preferencesDatastoreManager: UserPreferencesDatastoreManager
 ): ViewModel() {
 
     private val _viewState = MutableStateFlow(ChooseChildViewState())
@@ -54,11 +57,25 @@ class ChooseChildStandaloneViewModel(
     }
 
     private fun getUserInfo() {
-        networkExecutor<UserProfileEntity?> {
+        networkExecutor<UserProfileEntity> {
             execute {
                 userProfileRepository.getUserInfo()
             }
-            onSuccess { entity ->getUserAvatar(entity?.avatar.orEmpty())
+            onSuccess { entity ->
+                preferencesDatastoreManager.apply {
+                    id = entity.id
+                    name = entity.name
+                    email = entity.email
+                }
+
+                if (entity.location.coordinates.isNotEmpty()) {
+                    preferencesDatastoreManager.apply {
+                        latitude = entity.location.coordinates[1]
+                        longitude = entity.location.coordinates[0]
+                    }
+                }
+
+                getUserAvatar(entity.avatar)
             }
             onError { error ->
                 _uiState.value = RequestState.OnError(error)
@@ -74,12 +91,12 @@ class ChooseChildStandaloneViewModel(
     }
 
     private fun getUserAvatar(avatarId: String) {
-        networkExecutor {
+        networkExecutor<Uri> {
             execute { userProfileRepository.getUserAvatar(avatarId) }
-            onSuccess { bmp ->
-                communicator.avatar = bmp
+            onSuccess { uri ->
+                preferencesDatastoreManager.avatar = uri.toString()
                 _viewState.update {
-                    it.copy(avatar = bmp)
+                    it.copy(avatar = uri)
                 }
             }
             onError { error ->

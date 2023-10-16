@@ -11,13 +11,13 @@ import kotlinx.coroutines.flow.update
 import tech.baza_trainee.mama_ne_vdoma.domain.model.DayPeriod
 import tech.baza_trainee.mama_ne_vdoma.domain.model.Period
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UserInfoEntity
+import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatastoreManager
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.UserProfileRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.model.UserProfileCommunicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.schedule.ScheduleEvent
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.schedule.ScheduleViewState
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.BitmapHelper
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.networkExecutor
@@ -30,7 +30,7 @@ class ParentScheduleViewModel(
     private val communicator: UserProfileCommunicator,
     private val navigator: ScreenNavigator,
     private val userProfileRepository: UserProfileRepository,
-    private val bitmapHelper: BitmapHelper
+    private val preferencesDatastoreManager: UserPreferencesDatastoreManager
 ): ViewModel() {
 
     private val _parentScheduleViewState = MutableStateFlow(ScheduleViewState())
@@ -63,10 +63,10 @@ class ParentScheduleViewModel(
             execute {
                 userProfileRepository.saveUserInfo(
                     UserInfoEntity(
-                        name = communicator.name,
-                        phone = communicator.phone,
-                        countryCode = communicator.code,
-                        avatar = communicator.avatar,
+                        name = preferencesDatastoreManager.name,
+                        phone = preferencesDatastoreManager.phone,
+                        countryCode = preferencesDatastoreManager.code,
+                        avatar = communicator.avatarServerPath,
                         schedule = _parentScheduleViewState.value.schedule
                     )
                 )

@@ -1,5 +1,6 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.standalone.found_group
 
+import android.net.Uri
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -10,6 +11,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import tech.baza_trainee.mama_ne_vdoma.domain.model.GroupEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UserProfileEntity
+import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatastoreManager
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.GroupsRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.LocationRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
@@ -30,7 +32,8 @@ class FoundGroupsStandaloneViewModel(
     private val userProfileRepository: UserProfileRepository,
     private val groupsRepository: GroupsRepository,
     private val locationRepository: LocationRepository,
-    private val navigator: ScreenNavigator
+    private val navigator: ScreenNavigator,
+    private val preferencesDatastoreManager: UserPreferencesDatastoreManager
 ): ViewModel() {
 
     private val _viewState = MutableStateFlow(FoundGroupViewState())
@@ -44,7 +47,7 @@ class FoundGroupsStandaloneViewModel(
         findGroupsByLocation()
         _viewState.update {
             it.copy(
-                avatar = communicator.avatar
+                avatar = Uri.parse(preferencesDatastoreManager.avatar)
             )
         }
     }
@@ -98,9 +101,9 @@ class FoundGroupsStandaloneViewModel(
         networkExecutor<List<GroupEntity>> {
             execute {
                 groupsRepository.getGroupsByArea(
-                    communicator.location.latitude,
-                    communicator.location.longitude,
-                    KM * communicator.radius.toInt()
+                    preferencesDatastoreManager.latitude,
+                    preferencesDatastoreManager.longitude,
+                    KM * preferencesDatastoreManager.radius
                 )
             }
             onSuccess { entityList ->
@@ -185,7 +188,7 @@ class FoundGroupsStandaloneViewModel(
     private fun getUserAvatar(avatarId: String, groupId: String, userId: String) {
         networkExecutor {
             execute { userProfileRepository.getUserAvatar(avatarId) }
-            onSuccess { bmp ->
+            onSuccess { uri ->
                 val currentGroups = _viewState.value.groups.toMutableList()
                 var currentGroup = currentGroups.find { it.id == groupId }
                 val indexOfGroup = currentGroups.indexOf(currentGroup)
@@ -193,7 +196,7 @@ class FoundGroupsStandaloneViewModel(
                 var currentUser = currentGroup?.members?.find { it.id == userId } ?: MemberUiModel()
                 val indexOfUser = currentGroup?.members?.indexOf(currentUser) ?: 0
                 currentUser = currentUser.copy(
-                    avatar = bmp
+                    avatar = uri
                 )
                 currentMembers?.apply{
                     removeAt(indexOfUser)

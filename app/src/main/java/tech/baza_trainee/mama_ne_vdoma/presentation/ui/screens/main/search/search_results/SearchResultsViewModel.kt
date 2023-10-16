@@ -50,10 +50,10 @@ class SearchResultsViewModel(
     private fun getUserAvatar(avatarId: String, userId: String) {
         networkExecutor {
             execute { userProfileRepository.getUserAvatar(avatarId) }
-            onSuccess { bmp ->
+            onSuccess { uri ->
                 _viewState.update {
                     val currentParent = _viewState.value.parent.copy(
-                        avatar = bmp
+                        avatar = uri
                     )
                     it.copy(parent = currentParent)
                 }

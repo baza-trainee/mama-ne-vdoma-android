@@ -25,6 +25,7 @@ import tech.baza_trainee.mama_ne_vdoma.data.repository.AuthRepositoryImpl
 import tech.baza_trainee.mama_ne_vdoma.data.repository.GroupsRepositoryImpl
 import tech.baza_trainee.mama_ne_vdoma.data.repository.LocationRepositoryImpl
 import tech.baza_trainee.mama_ne_vdoma.data.repository.UserProfileRepositoryImpl
+import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatastoreManager
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.AuthRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.GroupsRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.LocationRepository
@@ -90,20 +91,21 @@ val repoModule = module {
     factory<GroupsRepository> { GroupsRepositoryImpl(get()) }
 
     single<ScreenNavigator> { ScreenNavigatorImpl() }
+    single { BitmapHelper(androidApplication()) }
+    single { UserPreferencesDatastoreManager(androidContext()) }
 }
 
 val userCreateModule = module {
     single { PhoneNumberUtil.createInstance(androidContext()) }
-    single { BitmapHelper(androidApplication()) }
     single { UserProfileCommunicator() }
-    viewModel { UserInfoViewModel(get(), get(), get(), get(), get()) }
+    viewModel { UserInfoViewModel(get(), get(), get(), get(), get(), get()) }
     viewModel { UserImageCropViewModel(get(), get(), get()) }
     viewModel { UserLocationViewModel(get(), get(), get(), get()) }
     viewModel { ChildInfoViewModel(get(), get(), get()) }
     viewModel { ChildScheduleViewModel(get(), get(), get()) }
     viewModel { ChildrenInfoViewModel(get(), get()) }
     viewModel { ParentScheduleViewModel(get(), get(), get(), get()) }
-    viewModel { FullInfoViewModel(get(), get(), get(), get()) }
+    viewModel { FullInfoViewModel(get(), get(), get(), get(), get()) }
     viewModel { UserCreateViewModel(get(), get()) }
 }
 
@@ -128,9 +130,9 @@ val loginKoinModule = module {
 
 val standaloneGroupSearchModule = module {
     single { GroupSearchStandaloneCommunicator() }
-    viewModel { ChooseChildStandaloneViewModel(get(), get(), get()) }
-    viewModel { SetAreaViewModel(get(), get(), get(), get()) }
-    viewModel { FoundGroupsStandaloneViewModel(get(), get(), get(), get(), get()) }
+    viewModel { ChooseChildStandaloneViewModel(get(), get(), get(), get()) }
+    viewModel { SetAreaViewModel(get(), get(), get()) }
+    viewModel { FoundGroupsStandaloneViewModel(get(), get(), get(), get(), get(), get()) }
 }
 
 val mainModule = module {
@@ -138,6 +140,8 @@ val mainModule = module {
     viewModel { (page: Int) ->
         HostViewModel(
             page,
+            get(),
+            get(),
             get(),
             get(),
             get()

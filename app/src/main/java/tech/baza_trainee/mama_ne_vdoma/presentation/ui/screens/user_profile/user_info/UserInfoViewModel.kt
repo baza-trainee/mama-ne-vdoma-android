@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.net.Uri
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
@@ -14,6 +15,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UserInfoEntity
+import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatastoreManager
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.UserProfileRoutes
@@ -31,7 +33,8 @@ class UserInfoViewModel(
     private val navigator: ScreenNavigator,
     private val userProfileRepository: UserProfileRepository,
     private val phoneNumberUtil: PhoneNumberUtil,
-    private val bitmapHelper: BitmapHelper
+    private val bitmapHelper: BitmapHelper,
+    private val preferencesDatastoreManager: UserPreferencesDatastoreManager
 ): ViewModel() {
 
     private val _userInfoScreenState = MutableStateFlow(UserInfoViewState())
@@ -44,12 +47,12 @@ class UserInfoViewModel(
     init {
         _userInfoScreenState.update {
             it.copy(
-                name = communicator.name,
-                nameValid = if (communicator.name.isEmpty()) ValidField.EMPTY else ValidField.VALID,
-                code = communicator.code,
-                phone = communicator.phone,
-                phoneValid = if (communicator.phone.isEmpty()) ValidField.EMPTY else ValidField.VALID,
-                userAvatar = communicator.userAvatar
+                name = preferencesDatastoreManager.name,
+                nameValid = if (preferencesDatastoreManager.name.isEmpty()) ValidField.EMPTY else ValidField.VALID,
+                code = preferencesDatastoreManager.code,
+                phone = preferencesDatastoreManager.phone,
+                phoneValid = if (preferencesDatastoreManager.phone.isEmpty()) ValidField.EMPTY else ValidField.VALID,
+                userAvatar = Uri.parse(preferencesDatastoreManager.avatar)
             )
         }
         if (communicator.croppedImage != BitmapHelper.DEFAULT_BITMAP) {
@@ -84,12 +87,12 @@ class UserInfoViewModel(
             onSuccess {
                 communicator.apply {
                     uriForCrop = Uri.EMPTY
-                    userAvatar = BitmapHelper.DEFAULT_BITMAP
-                    avatar = null
+                    avatarServerPath = null
                 }
+                preferencesDatastoreManager.avatar = Uri.EMPTY.toString()
                 _userInfoScreenState.update {
                     it.copy(
-                        userAvatar = BitmapHelper.DEFAULT_BITMAP
+                        userAvatar = Uri.EMPTY
                     )
                 }
             }
@@ -113,9 +116,10 @@ class UserInfoViewModel(
             else image
             val newImageSize = bitmapHelper.getSize(newImage)
             if (newImageSize < IMAGE_SIZE) {
+                val uri = bitmapHelper.bitmapToFile(newImage).toUri()
                 _userInfoScreenState.update {
                     it.copy(
-                        userAvatar = newImage
+                        userAvatar = uri
                     )
                 }
                 uploadUserAvatar(newImage)
@@ -172,7 +176,7 @@ class UserInfoViewModel(
                 userProfileRepository.saveUserAvatar(image)
             }
             onSuccess {
-                communicator.avatar = it
+                communicator.avatarServerPath = it
             }
             onError { error ->
                 _uiState.value = UserInfoUiState.OnError(error)
@@ -195,13 +199,13 @@ class UserInfoViewModel(
                         name = _userInfoScreenState.value.name,
                         phone = _userInfoScreenState.value.phone,
                         countryCode = _userInfoScreenState.value.code,
-                        avatar = communicator.avatar,
+                        avatar = communicator.avatarServerPath,
                         schedule = communicator.schedule
                     )
                 )
             }
             onSuccess {
-                communicator.apply {
+                preferencesDatastoreManager.apply {
                     name = _userInfoScreenState.value.name
                     code = _userInfoScreenState.value.code
                     phone = _userInfoScreenState.value.phone

@@ -1,6 +1,6 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables
 
-import android.graphics.Bitmap
+import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -21,14 +21,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.BitmapHelper
 
 @Composable
 @Preview
 fun HeaderWithToolbar(
     modifier: Modifier = Modifier,
     title: String = "Title",
-    avatar: Bitmap = BitmapHelper.DEFAULT_BITMAP,
+    avatar: Uri = Uri.EMPTY,
     showNotification: Boolean = true,
     notificationCount: String = "2",
     onBack: () -> Unit = {},
@@ -42,8 +41,8 @@ fun HeaderWithToolbar(
         verticalArrangement = Arrangement.Top
     ) {
         ToolbarWithAvatar(
-            title = "",
             avatar = avatar,
+            showTitle = false,
             showNotification = showNotification,
             notificationCount = notificationCount
         ) { onBack() }

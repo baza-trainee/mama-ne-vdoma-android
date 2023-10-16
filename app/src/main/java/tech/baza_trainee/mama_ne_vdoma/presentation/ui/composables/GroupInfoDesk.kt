@@ -31,11 +31,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.GroupUiModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
@@ -157,13 +160,17 @@ fun GroupInfoDesk(
         ) {
             group.members.forEachIndexed { index, member ->
                 if (index < 3) {
-                    Image(
+                    AsyncImage(
                         modifier = Modifier
                             .padding(end = 2.dp)
                             .height(24.dp)
                             .width(24.dp)
                             .clip(CircleShape),
-                        bitmap = member.avatar.asImageBitmap(),
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(member.avatar)
+                            .crossfade(true)
+                            .build(),
+                        placeholder = painterResource(id = R.drawable.no_photo),
                         contentDescription = "member",
                         contentScale = ContentScale.Fit
                     )
@@ -249,13 +256,17 @@ fun GroupInfoDesk(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Start
                     ) {
-                        Image(
+                        AsyncImage(
                             modifier = Modifier
                                 .padding(end = 8.dp)
                                 .height(24.dp)
                                 .width(24.dp)
                                 .clip(CircleShape),
-                            bitmap = it.avatar.asImageBitmap(),
+                            model = ImageRequest.Builder(LocalContext.current)
+                                .data(it.avatar)
+                                .crossfade(true)
+                                .build(),
+                            placeholder = painterResource(id = R.drawable.no_photo),
                             contentDescription = "member",
                             contentScale = ContentScale.Fit
                         )
