@@ -91,7 +91,7 @@ fun UserInfoScreen(
         val scrollState = rememberScrollState()
 
         Column(
-            modifier = modifier
+            modifier = Modifier
                 .verticalScroll(scrollState)
                 .imePadding()
                 .fillMaxWidth(),
@@ -99,13 +99,13 @@ fun UserInfoScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Column(
-                modifier = modifier
+                modifier = Modifier
                     .fillMaxWidth(),
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    modifier = modifier
+                    modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 24.dp)
                         .padding(top = 16.dp),
@@ -119,7 +119,7 @@ fun UserInfoScreen(
                 Spacer(modifier = modifier.height(16.dp))
 
                 UserAvatarWithCameraAndGallery(
-                    modifier = modifier
+                    modifier = Modifier
                         .padding(horizontal = 24.dp),
                     avatar = screenState.value.userAvatar,
                     setUriForCrop = {
@@ -129,10 +129,10 @@ fun UserInfoScreen(
                     onDeletePhoto = { handleEvent(UserInfoEvent.OnDeletePhoto) }
                 )
 
-                Spacer(modifier = modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(32.dp))
 
                 OutlinedTextFieldWithError(
-                    modifier = modifier
+                    modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 24.dp),
                     text = screenState.value.name,
@@ -142,10 +142,10 @@ fun UserInfoScreen(
                     errorText = "Ви ввели некоректнe ім'я"
                 )
 
-                Spacer(modifier = modifier.height(4.dp))
+                Spacer(modifier = Modifier.height(4.dp))
 
                 Text(
-                    modifier = modifier
+                    modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 24.dp),
                     text = "Ваше ім’я повинне складатись із 2-18 символів і може містити букви та цифри, а також пробіли та дефіси",
@@ -153,17 +153,17 @@ fun UserInfoScreen(
                     fontFamily = redHatDisplayFontFamily
                 )
 
-                Spacer(modifier = modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
                 var isPhoneFocused by remember { mutableStateOf(false) }
 
                 Row(
-                    modifier = modifier
+                    modifier = Modifier
                         .fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     OutlinedTextField(
-                        modifier = modifier
+                        modifier = Modifier
                             .weight(.25f)
                             .padding(start = 24.dp)
                             .clickable {
@@ -188,7 +188,7 @@ fun UserInfoScreen(
                     val focusRequester = remember { FocusRequester() }
 
                     OutlinedTextField(
-                        modifier = modifier
+                        modifier = Modifier
                             .focusRequester(focusRequester)
                             .onFocusChanged {
                                 isPhoneFocused = it.isFocused
@@ -234,7 +234,7 @@ fun UserInfoScreen(
             }
 
             Button(
-                modifier = modifier
+                modifier = Modifier
                     .padding(horizontal = 24.dp, vertical = 16.dp)
                     .fillMaxWidth()
                     .height(48.dp),
