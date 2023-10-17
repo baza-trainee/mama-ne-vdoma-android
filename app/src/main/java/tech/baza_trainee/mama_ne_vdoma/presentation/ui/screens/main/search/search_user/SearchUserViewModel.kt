@@ -30,14 +30,14 @@ class SearchUserViewModel(
     private val _viewState = MutableStateFlow(SearchUserViewState())
     val viewState: StateFlow<SearchUserViewState> = _viewState.asStateFlow()
 
-    private val _uiState = mutableStateOf<SearchUserState>(SearchUserState.Idle)
-    val uiState: State<SearchUserState>
+    private val _uiState = mutableStateOf<SearchUserUiState>(SearchUserUiState.Idle)
+    val uiState: State<SearchUserUiState>
         get() = _uiState
 
     fun handleEvent(event: SearchUserEvent) {
         when(event) {
             SearchUserEvent.OnBack -> navigator.goToPrevious()
-            SearchUserEvent.ResetUiState -> _uiState.value = SearchUserState.Idle
+            SearchUserEvent.ResetUiState -> _uiState.value = SearchUserUiState.Idle
             SearchUserEvent.OnSearch -> searchUser()
             is SearchUserEvent.ValidateEmail -> validateEmail(event.value)
             is SearchUserEvent.ValidateName -> validateName(event.value)
@@ -88,7 +88,7 @@ class SearchUserViewModel(
                 navigator.navigate(SearchScreenRoutes.SearchResults)
             }
             onError { error ->
-                _uiState.value = SearchUserState.OnError(error)
+                _uiState.value = SearchUserUiState.OnError(error)
             }
             onLoading { isLoading ->
                 _viewState.update {

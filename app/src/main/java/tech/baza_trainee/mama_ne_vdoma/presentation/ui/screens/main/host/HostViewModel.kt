@@ -21,9 +21,11 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenN
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.GroupsScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.MainScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.SearchScreenRoutes
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.SettingsScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.GROUPS_PAGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.MAIN_PAGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.SEARCH_PAGE
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.SETTINGS_PAGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.networkExecutor
@@ -88,6 +90,7 @@ class HostViewModel(
             MAIN_PAGE -> navigator.navigate(MainScreenRoutes.Main)
             GROUPS_PAGE -> navigator.navigate(GroupsScreenRoutes.Groups)
             SEARCH_PAGE -> navigator.navigate(SearchScreenRoutes.SearchUser)
+            SETTINGS_PAGE -> navigator.navigate(SettingsScreenRoutes.Settings)
         }
     }
 
@@ -101,6 +104,8 @@ class HostViewModel(
                     id = entity.id
                     name = entity.name
                     email = entity.email
+                    code = entity.countryCode
+                    phone = entity.phone
                 }
 
                 getUserAvatar(entity.avatar)

@@ -50,6 +50,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.host.HostVie
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.main.MainViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.search.search_results.SearchResultsViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.search.search_user.SearchUserViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.main.ProfileSettingsViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.standalone.choose_child.ChooseChildStandaloneViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.standalone.found_group.FoundGroupsStandaloneViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.standalone.set_area.SetAreaViewModel
@@ -181,6 +182,7 @@ val mainModule = module {
     single { SearchResultsCommunicator() }
     viewModel { SearchUserViewModel(get(), get(), get()) }
     viewModel { SearchResultsViewModel(get(), get(), get()) }
+    viewModel { ProfileSettingsViewModel(get(), get(), get(), get()) }
 }
 
 const val BASE_URL = "http://75.119.137.204:3000/"

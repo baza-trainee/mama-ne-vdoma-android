@@ -9,10 +9,7 @@ import java.io.IOException
 class AuthInterceptor() : Interceptor {
     companion object {
         const val AUTH_HEADER = "Authorization"
-        //        const val EMPTY_TOKEN = "V0VCOg=="//WEB: in base64
-        const val EMPTY_TOKEN = "TU9CSUxFOg=="//MOBILE: in base64
-        var TOKEN_TYPE: String = "Bearer"
-        var LIMPOPO = ""
+        const val EMPTY_TOKEN = ""
         var AUTH_TOKEN = EMPTY_TOKEN
 
         private const val BEARER_TEMPLATE = "Bearer %s"

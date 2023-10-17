@@ -36,7 +36,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.ButtonText
 fun SearchUserScreen(
     modifier: Modifier = Modifier,
     screenState: State<SearchUserViewState> = mutableStateOf(SearchUserViewState()),
-    uiState: State<SearchUserState> = mutableStateOf(SearchUserState.Idle),
+    uiState: State<SearchUserUiState> = mutableStateOf(SearchUserUiState.Idle),
     handleEvent: (SearchUserEvent) -> Unit = {}
 ) {
     BackHandler { handleEvent(SearchUserEvent.OnBack) }
@@ -44,14 +44,14 @@ fun SearchUserScreen(
     val context = LocalContext.current
 
     when (val state = uiState.value) {
-        SearchUserState.Idle -> Unit
-        is SearchUserState.OnError -> {
+        SearchUserUiState.Idle -> Unit
+        is SearchUserUiState.OnError -> {
             if (state.error.isNotBlank()) Toast.makeText(context, state.error, Toast.LENGTH_LONG)
                 .show()
             handleEvent(SearchUserEvent.ResetUiState)
         }
 
-        SearchUserState.OnNothingFound -> Unit
+        SearchUserUiState.OnNothingFound -> Unit
     }
 
     Column(

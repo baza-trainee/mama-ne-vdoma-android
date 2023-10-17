@@ -63,6 +63,7 @@ fun HostScreen(
                 ToolbarWithAvatar(
                     title = tabContents[screenState.value.currentPage].title,
                     avatar = screenState.value.avatar,
+                    showArrow = screenState.value.currentPage != 0,
                     showNotification = screenState.value.notifications != 0,
                     notificationCount = screenState.value.notifications,
                     onBack = { handleEvent(HostEvent.OnBackLocal) }
