@@ -32,11 +32,11 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.CustomGoogleMap
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.HeaderWithOptArrow
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.LoadingIndicator
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.LocationPermission
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.SurfaceWithNavigationBars
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.CustomGoogleMap
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.LoadingIndicator
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.SurfaceWithNavigationBars
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.functions.LocationPermission
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.headers.HeaderWithOptArrow
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.ButtonText
 

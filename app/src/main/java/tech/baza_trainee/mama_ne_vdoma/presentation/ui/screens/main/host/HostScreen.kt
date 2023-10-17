@@ -21,10 +21,10 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.graphs.main_host.
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.NavigationEffects
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.PageNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.Graphs
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.MainNavigationBar
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.MainNavigationItem
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.SurfaceWithNavigationBars
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.ToolbarWithAvatar
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.MainNavigationBar
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.MainNavigationItem
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.SurfaceWithNavigationBars
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.headers.ToolbarWithAvatar
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 
 @Composable
@@ -63,7 +63,8 @@ fun HostScreen(
                 ToolbarWithAvatar(
                     title = tabContents[screenState.value.currentPage].title,
                     avatar = screenState.value.avatar,
-                    showNotification = false,
+                    showNotification = screenState.value.notifications != 0,
+                    notificationCount = screenState.value.notifications,
                     onBack = { handleEvent(HostEvent.OnBackLocal) }
                 )
             },

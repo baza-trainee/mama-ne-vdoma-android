@@ -10,8 +10,10 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import tech.baza_trainee.mama_ne_vdoma.domain.model.GroupEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UserProfileEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatastoreManager
+import tech.baza_trainee.mama_ne_vdoma.domain.repository.GroupsRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.LocationRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.PageNavigator
@@ -35,6 +37,7 @@ class HostViewModel(
     private val navigator: PageNavigator,
     private val userProfileRepository: UserProfileRepository,
     private val locationRepository: LocationRepository,
+    private val groupsRepository: GroupsRepository,
     private val preferencesDatastoreManager: UserPreferencesDatastoreManager
 ): ViewModel() {
 
@@ -61,15 +64,16 @@ class HostViewModel(
     }
 
     fun handleEvent(event: HostEvent) {
-        when(event) {
+        when (event) {
             HostEvent.OnBack -> mainNavigator.goBack()
             is HostEvent.SwitchTab -> navigator.goToPage(event.index)
             HostEvent.ResetUiState -> _uiState.value = RequestState.Idle
             HostEvent.OnBackLocal -> {
-                when(navigator.getCurrentRoute()) {
+                when (navigator.getCurrentRoute()) {
                     MainScreenRoutes.Main.route -> mainNavigator.goBack()
                     GroupsScreenRoutes.Groups.route,
                     SearchScreenRoutes.SearchUser.route -> navigator.goToPrevious()
+
                     else -> navigator.goBack()
                 }
             }
@@ -80,7 +84,7 @@ class HostViewModel(
         _viewState.update {
             it.copy(currentPage = page)
         }
-        when(page) {
+        when (page) {
             MAIN_PAGE -> navigator.navigate(MainScreenRoutes.Main)
             GROUPS_PAGE -> navigator.navigate(GroupsScreenRoutes.Groups)
             SEARCH_PAGE -> navigator.navigate(SearchScreenRoutes.SearchUser)
@@ -100,6 +104,8 @@ class HostViewModel(
                 }
 
                 getUserAvatar(entity.avatar)
+
+                getGroups(entity.id)
 
                 if (entity.location.coordinates.isNotEmpty()) {
                     getAddressFromLocation(
@@ -134,6 +140,32 @@ class HostViewModel(
                 preferencesDatastoreManager.avatar = uri.toString()
                 _viewState.update {
                     it.copy(avatar = uri)
+                }
+            }
+            onError { error ->
+                _uiState.value = RequestState.OnError(error)
+            }
+            onLoading { isLoading ->
+                _viewState.update {
+                    it.copy(
+                        isLoading = isLoading
+                    )
+                }
+            }
+        }
+    }
+
+    private fun getGroups(parent: String) {
+        networkExecutor<List<GroupEntity>> {
+            execute {
+                groupsRepository.getGroupsForParent(parent)
+            }
+            onSuccess { entityList ->
+                val notifications = entityList.flatMap { it.askingJoin }.size
+                _viewState.update { state ->
+                    state.copy(
+                        notifications = notifications
+                    )
                 }
             }
             onError { error ->

@@ -51,14 +51,12 @@ class MyGroupsViewModel(
     }
 
     private fun getUserInfo() {
-        networkExecutor<UserProfileEntity?> {
+        networkExecutor<UserProfileEntity> {
             execute {
                 userProfileRepository.getUserInfo()
             }
             onSuccess { entity ->
-                entity?.id?.let {
-                    getGroups(it)
-                }
+                getGroups(entity.id)
             }
             onError { error ->
                 _uiState.value = RequestState.OnError(error)
