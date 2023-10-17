@@ -2,7 +2,9 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.ma
 
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -52,6 +54,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFa
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.ButtonText
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ProfileSettingsScreen(
     modifier: Modifier = Modifier,
@@ -143,6 +146,7 @@ fun ProfileSettingsScreen(
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .basicMarquee()
                     .weight(1f),
                 text = screenState.value.address,
                 fontSize = 16.sp,

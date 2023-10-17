@@ -17,7 +17,9 @@ import tech.baza_trainee.mama_ne_vdoma.domain.repository.GroupsRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.LocationRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.PageNavigator
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.PageWithRoute
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.CommonRoute
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.GroupsScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.MainScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.SearchScreenRoutes
@@ -60,7 +62,7 @@ class HostViewModel(
         }
 
         if (page != -1)
-            navigateToTab(page)
+            navigateToTab(PageWithRoute(page, CommonRoute("")))
 
         getUserInfo()
     }
@@ -82,16 +84,18 @@ class HostViewModel(
         }
     }
 
-    private fun navigateToTab(page: Int) {
+    private fun navigateToTab(page: PageWithRoute) {
         _viewState.update {
-            it.copy(currentPage = page)
+            it.copy(currentPage = page.page)
         }
-        when (page) {
-            MAIN_PAGE -> navigator.navigate(MainScreenRoutes.Main)
-            GROUPS_PAGE -> navigator.navigate(GroupsScreenRoutes.Groups)
-            SEARCH_PAGE -> navigator.navigate(SearchScreenRoutes.SearchUser)
-            SETTINGS_PAGE -> navigator.navigate(SettingsScreenRoutes.Settings)
-        }
+        if (page.route.destination.isEmpty()) {
+            when (page.page) {
+                MAIN_PAGE -> navigator.navigate(MainScreenRoutes.Main)
+                GROUPS_PAGE -> navigator.navigate(GroupsScreenRoutes.Groups)
+                SEARCH_PAGE -> navigator.navigate(SearchScreenRoutes.SearchUser)
+                SETTINGS_PAGE -> navigator.navigate(SettingsScreenRoutes.Settings)
+            }
+        } else navigator.navigate(page.route)
     }
 
     private fun getUserInfo() {

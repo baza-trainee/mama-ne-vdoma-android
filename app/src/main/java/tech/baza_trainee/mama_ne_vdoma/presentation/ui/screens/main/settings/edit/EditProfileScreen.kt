@@ -3,6 +3,8 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.ed
 import android.net.Uri
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -22,6 +24,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -51,6 +54,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.canopas.campose.countrypicker.CountryPickerBottomSheet
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.UserAvatarWithCameraAndGallery
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.text_fields.OutlinedTextFieldWithError
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.text_fields.PasswordTextFieldWithError
@@ -58,6 +62,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.SlateGray
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun EditProfileScreen(
     modifier: Modifier = Modifier,
@@ -170,13 +175,13 @@ fun EditProfileScreen(
                     .clickable(
                         indication = null,
                         interactionSource = remember { MutableInteractionSource() }
-                    ) {  handleEvent(EditProfileEvent.VerifyEmail)  },
+                    ) { handleEvent(EditProfileEvent.VerifyEmail) },
                 text = "Перевірити емейл",
                 fontFamily = redHatDisplayFontFamily,
                 fontSize = 14.sp,
                 textDecoration = TextDecoration.Underline,
                 textAlign = TextAlign.End,
-                color = SlateGray
+                color = MaterialTheme.colorScheme.primary
             )
         }
 
@@ -294,7 +299,12 @@ fun EditProfileScreen(
                     }
                     .weight(.75f),
                 value = screenState.value.phone,
-                label = { Text("Введіть свій номер телефону") },
+                label = {
+                    Text(
+                        modifier = Modifier.basicMarquee(),
+                        text = "Введіть свій номер телефону"
+                    )
+                        },
                 onValueChange = { handleEvent(EditProfileEvent.ValidatePhone(it)) },
                 isError = screenState.value.phoneValid == ValidField.INVALID && isPhoneFocused,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
@@ -327,6 +337,30 @@ fun EditProfileScreen(
                     fontFamily = redHatDisplayFontFamily
                 ),
                 fontSize = 14.sp
+            )
+        }
+
+        if (openBottomSheet) {
+            CountryPickerBottomSheet(
+                bottomSheetTitle = {
+                    Text(
+                        modifier = Modifier
+                            .imePadding()
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        text = "Виберіть код",
+                        textAlign = TextAlign.Center,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 20.sp
+                    )
+                },
+                containerColor = MaterialTheme.colorScheme.surface,
+                onItemSelected = {
+                    handleEvent(EditProfileEvent.SetCode(it.dial_code, it.code))
+                    openBottomSheet = false
+                }, onDismissRequest = {
+                    openBottomSheet = false
+                }
             )
         }
     }

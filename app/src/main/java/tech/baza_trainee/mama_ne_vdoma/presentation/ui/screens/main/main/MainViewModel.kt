@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.PageNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.GroupsScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.GROUPS_PAGE
 
 class MainViewModel(
@@ -18,7 +19,7 @@ class MainViewModel(
 
     fun handleEvent(event: MainEvent) {
         when(event) {
-            MainEvent.CreateNewGroup ->  navigator.goToPage(GROUPS_PAGE)
+            MainEvent.CreateNewGroup ->  navigator.goToPageWithRoute(GROUPS_PAGE, GroupsScreenRoutes.ChooseChild)
             MainEvent.ResetUiState -> Unit //TODO()
             MainEvent.Search -> Unit //TODO()
             is MainEvent.SetSearchOption -> Unit //TODO()

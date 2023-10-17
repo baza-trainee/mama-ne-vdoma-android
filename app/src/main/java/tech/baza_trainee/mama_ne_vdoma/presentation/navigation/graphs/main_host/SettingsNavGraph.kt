@@ -7,6 +7,7 @@ import androidx.navigation.navigation
 import org.koin.androidx.compose.navigation.koinNavViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.Graphs
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.SettingsScreenRoutes
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.edit.EditProfileScreen
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.main.ProfileSettingsScreen
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.main.ProfileSettingsViewModel
 
@@ -21,6 +22,14 @@ fun NavGraphBuilder.settingsNavGraph() {
                 screenState = viewModel.viewState.collectAsStateWithLifecycle(),
                 uiState = viewModel.uiState,
                 handleEvent = {viewModel.handleEvent(it) }
+            )
+        }
+        composable(SettingsScreenRoutes.EditProfile.route) {
+//            val viewModel: ProfileSettingsViewModel = koinNavViewModel()
+            EditProfileScreen(
+//                screenState = viewModel.viewState.collectAsStateWithLifecycle(),
+//                uiState = viewModel.uiState,
+//                handleEvent = {viewModel.handleEvent(it) }
             )
         }
     }

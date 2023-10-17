@@ -219,7 +219,7 @@ fun CreateGroupScreen(
         }
 
         val minAgeErrorText = "Не може бути менше 1 та більше за макс. вік"
-        val maxAgeErrorText = "Не може бути більше 18 та менше за макс. вік"
+        val maxAgeErrorText = "Не може бути більше 18 та менше за мін. вік"
         val errorText = when {
             screenState.value.maxAgeValid == ValidField.INVALID && isMaxAgeFocused -> maxAgeErrorText
             screenState.value.minAgeValid == ValidField.INVALID && isMinAgeFocused -> minAgeErrorText
@@ -311,6 +311,7 @@ fun CreateGroupScreen(
             enabled = screenState.value.nameValid == ValidField.VALID &&
                     screenState.value.minAgeValid == ValidField.VALID &&
                     screenState.value.maxAgeValid == ValidField.VALID &&
+                    screenState.value.description.isNotEmpty() &&
                     screenState.value.schedule.schedule.values.any { it.isFilled() }
         ) {
             ButtonText(

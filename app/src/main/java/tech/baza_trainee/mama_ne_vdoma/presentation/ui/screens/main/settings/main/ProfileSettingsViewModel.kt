@@ -17,6 +17,7 @@ import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.PageNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.LoginRoutes
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.SettingsScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.networkExecutor
@@ -57,7 +58,7 @@ class ProfileSettingsViewModel(
         when (event) {
             ProfileSettingsEvent.OnBack -> navigator.goToPrevious()
             ProfileSettingsEvent.ResetUiState -> _uiState.value = RequestState.Idle
-            ProfileSettingsEvent.EditProfile -> Unit
+            ProfileSettingsEvent.EditProfile -> navigator.navigate(SettingsScreenRoutes.EditProfile)
             ProfileSettingsEvent.LogOut -> {
                 AuthInterceptor.AUTH_TOKEN = AuthInterceptor.EMPTY_TOKEN
                 mainNavigator.navigate(LoginRoutes.Login)

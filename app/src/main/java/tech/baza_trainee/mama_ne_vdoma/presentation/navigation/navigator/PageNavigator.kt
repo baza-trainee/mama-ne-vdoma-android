@@ -21,7 +21,7 @@ interface PageNavigator {
 
     val navigationChannel: Channel<NavigationIntent>
 
-    val pagesFlow: StateFlow<Int>
+    val pagesFlow: StateFlow<PageWithRoute>
 
     fun goBack()
 
@@ -33,6 +33,8 @@ interface PageNavigator {
 
     fun goToPage(page: Int)
 
+    fun goToPageWithRoute(page: Int, route: CommonRoute)
+
     fun goToPrevious()
 
     fun getCurrentRoute(): String
@@ -40,9 +42,10 @@ interface PageNavigator {
 
 class PageNavigatorImpl: PageNavigator {
 
-    override val pagesFlow: StateFlow<Int>
+    override val pagesFlow: StateFlow<PageWithRoute>
         get() = _pagesFlow.asStateFlow()
-    private val _pagesFlow = MutableStateFlow(MAIN_PAGE)
+    private val _pagesFlow = MutableStateFlow(PageWithRoute())
+
     private val pagesQueue: Deque<Int> = LinkedList()
 
     private val routesQueue: Deque<String> = LinkedList()
@@ -94,7 +97,19 @@ class PageNavigatorImpl: PageNavigator {
         }
         pagesQueue.offerLast(page)
         _pagesFlow.update {
-            page
+            PageWithRoute(page, CommonRoute(""))
+        }
+    }
+
+    override fun goToPageWithRoute(page: Int, route: CommonRoute) {
+        if (page == MAIN_PAGE) {
+            pagesQueue.clear()
+            routesQueue.clear()
+        }
+        pagesQueue.offerLast(page)
+        routesQueue.offerLast(route.destination)
+        _pagesFlow.update {
+            PageWithRoute(page, route)
         }
     }
 
@@ -108,10 +123,14 @@ class PageNavigatorImpl: PageNavigator {
             routesQueue.clear()
         }
         _pagesFlow.update {
-
-            page
+            PageWithRoute(page, CommonRoute(""))
         }
     }
 
     override fun getCurrentRoute() = routesQueue.peekLast() ?: MainScreenRoutes.Main.destination
 }
+
+data class PageWithRoute(
+    val page: Int = MAIN_PAGE,
+    val route: CommonRoute = CommonRoute("")
+)

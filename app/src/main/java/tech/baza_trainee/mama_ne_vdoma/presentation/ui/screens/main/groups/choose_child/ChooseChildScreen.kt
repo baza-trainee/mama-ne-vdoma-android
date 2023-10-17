@@ -2,6 +2,7 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.choo
 
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,6 +18,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -53,7 +55,9 @@ fun ChooseChildScreen(
     }
 
     Column(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.SpaceBetween
     ) {
         var selectedChild: ChildEntity? by remember { mutableStateOf(null) }
 
@@ -61,7 +65,6 @@ fun ChooseChildScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .verticalScroll(rememberScrollState())
-                .padding(horizontal = 16.dp)
         ) {
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -88,7 +91,7 @@ fun ChooseChildScreen(
 
         Button(
             modifier = Modifier
-                .padding(horizontal = 24.dp, vertical = 16.dp)
+                .padding(vertical = 16.dp)
                 .fillMaxWidth()
                 .height(48.dp),
             onClick = { handleEvent(ChooseChildEvent.OnChooseChild(selectedChild?.childId.orEmpty())) },
