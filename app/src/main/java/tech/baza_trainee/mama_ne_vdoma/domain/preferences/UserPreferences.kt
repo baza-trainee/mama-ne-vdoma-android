@@ -10,5 +10,8 @@ data class UserPreferences(
     val address: String,
     val radius: Int,
     val latitude: Double,
-    val longitude: Double
+    val longitude: Double,
+    val notificationCount: Int
 )
+
+

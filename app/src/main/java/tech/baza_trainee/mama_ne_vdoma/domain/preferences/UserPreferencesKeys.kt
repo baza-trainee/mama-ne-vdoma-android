@@ -15,4 +15,5 @@ object UserPreferencesKeys {
     val KEY_RADIUS = intPreferencesKey(RADIUS)
     val KEY_LOCATION_LAT = doublePreferencesKey(LOCATION_LAT)
     val KEY_LOCATION_LNG = doublePreferencesKey(LOCATION_LNG)
+    val KEY_NOTIFICATION = intPreferencesKey(NOTIFICATION)
 }

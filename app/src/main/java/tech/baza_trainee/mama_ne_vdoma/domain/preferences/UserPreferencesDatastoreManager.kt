@@ -21,6 +21,7 @@ import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesKeys.KE
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesKeys.KEY_LOCATION_LAT
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesKeys.KEY_LOCATION_LNG
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesKeys.KEY_NAME
+import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesKeys.KEY_NOTIFICATION
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesKeys.KEY_PHONE_NUMBER
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesKeys.KEY_RADIUS
 import java.io.IOException
@@ -51,7 +52,8 @@ class UserPreferencesDatastoreManager(private val context: Context) {
             val radius = preferences[KEY_RADIUS] ?: 0
             val latitude = preferences[KEY_LOCATION_LAT] ?: 0.00
             val longitude = preferences[KEY_LOCATION_LNG] ?: 0.00
-            UserPreferences(id, avatar, name, code, phone, email, address, radius, latitude, longitude)
+            val notificationCount = preferences[KEY_NOTIFICATION] ?: 0
+            UserPreferences(id, avatar, name, code, phone, email, address, radius, latitude, longitude, notificationCount)
         }
 
     var id: String
@@ -190,6 +192,20 @@ class UserPreferencesDatastoreManager(private val context: Context) {
             withContext(Dispatchers.Default ) {
                 userDataStore.edit {
                     it[KEY_LOCATION_LNG] = value
+                }
+            }
+        }
+
+    var notifications: Int
+        get() = runBlocking {
+            withContext(Dispatchers.Default) {
+                userPreferencesFlow.first().notificationCount
+            }
+        }
+        set(value) = runBlocking {
+            withContext(Dispatchers.Default ) {
+                userDataStore.edit {
+                    it[KEY_NOTIFICATION] = value
                 }
             }
         }
