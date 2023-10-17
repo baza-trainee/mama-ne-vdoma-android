@@ -10,6 +10,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import tech.baza_trainee.mama_ne_vdoma.data.interceptors.AuthInterceptor
 import tech.baza_trainee.mama_ne_vdoma.domain.model.ChildEntity
+import tech.baza_trainee.mama_ne_vdoma.domain.model.UserInfoEntity
+import tech.baza_trainee.mama_ne_vdoma.domain.model.UserProfileEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatastoreManager
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.PageNavigator
@@ -44,7 +46,8 @@ class ProfileSettingsViewModel(
                 email = preferencesDatastoreManager.email,
                 phone = preferencesDatastoreManager.phone,
                 code = preferencesDatastoreManager.code,
-                avatar = Uri.parse(preferencesDatastoreManager.avatar)
+                avatar = Uri.parse(preferencesDatastoreManager.avatar),
+                sendEmails = preferencesDatastoreManager.sendEmail
             )
         }
         getChildren()
@@ -60,13 +63,7 @@ class ProfileSettingsViewModel(
                 mainNavigator.navigate(LoginRoutes.Login)
             }
 
-            ProfileSettingsEvent.ToggleEmail -> {
-                _viewState.update {
-                    it.copy(
-                        sendEmails = !it.sendEmails
-                    )
-                }
-            }
+            ProfileSettingsEvent.ToggleEmail -> getUserInfo()
         }
     }
 
@@ -79,6 +76,61 @@ class ProfileSettingsViewModel(
                 _viewState.update {
                     it.copy(
                         children = entity
+                    )
+                }
+            }
+            onError { error ->
+                _uiState.value = RequestState.OnError(error)
+            }
+            onLoading { isLoading ->
+                _viewState.update {
+                    it.copy(
+                        isLoading = isLoading
+                    )
+                }
+            }
+        }
+    }
+
+    private fun getUserInfo() {
+        networkExecutor<UserProfileEntity> {
+            execute {
+                userProfileRepository.getUserInfo()
+            }
+            onSuccess {
+                val entity = UserInfoEntity(
+                    name = it.name,
+                    avatar = it.avatar,
+                    countryCode = it.countryCode,
+                    phone = it.phone,
+                    schedule = it.schedule,
+                    sendingEmails = !_viewState.value.sendEmails
+                )
+                saveUserInfo(entity)
+            }
+            onError { error ->
+                _uiState.value = RequestState.OnError(error)
+            }
+            onLoading { isLoading ->
+                _viewState.update {
+                    it.copy(
+                        isLoading = isLoading
+                    )
+                }
+            }
+        }
+    }
+
+    private fun saveUserInfo(userInfoEntity: UserInfoEntity) {
+        networkExecutor {
+            execute {
+                userProfileRepository.saveUserInfo(userInfoEntity)
+            }
+            onSuccess {
+                preferencesDatastoreManager.sendEmail = !_viewState.value.sendEmails
+                _viewState.update {
+                    it.copy(
+                        sendEmails = !it.sendEmails
                     )
                 }
             }

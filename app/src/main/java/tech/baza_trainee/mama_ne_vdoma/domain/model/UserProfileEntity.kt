@@ -6,6 +6,7 @@ data class UserProfileEntity(
     val name: String = "",
     val countryCode: String = "",
     val phone: String = "",
+    val sendingEmails: Boolean = true,
     val avatar: String = "",
     val location: LocationEntity = LocationEntity(),
     val schedule: ScheduleModel = ScheduleModel()

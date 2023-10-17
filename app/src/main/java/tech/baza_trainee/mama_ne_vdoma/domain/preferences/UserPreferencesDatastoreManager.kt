@@ -24,6 +24,7 @@ import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesKeys.KE
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesKeys.KEY_NOTIFICATION
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesKeys.KEY_PHONE_NUMBER
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesKeys.KEY_RADIUS
+import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesKeys.KEY_SEND_EMAIL
 import java.io.IOException
 
 class UserPreferencesDatastoreManager(private val context: Context) {
@@ -53,7 +54,8 @@ class UserPreferencesDatastoreManager(private val context: Context) {
             val latitude = preferences[KEY_LOCATION_LAT] ?: 0.00
             val longitude = preferences[KEY_LOCATION_LNG] ?: 0.00
             val notificationCount = preferences[KEY_NOTIFICATION] ?: 0
-            UserPreferences(id, avatar, name, code, phone, email, address, radius, latitude, longitude, notificationCount)
+            val sendEmail = preferences[KEY_SEND_EMAIL] ?: true
+            UserPreferences(id, avatar, name, code, phone, email, address, radius, latitude, longitude, notificationCount, sendEmail)
         }
 
     var id: String
@@ -206,6 +208,20 @@ class UserPreferencesDatastoreManager(private val context: Context) {
             withContext(Dispatchers.Default ) {
                 userDataStore.edit {
                     it[KEY_NOTIFICATION] = value
+                }
+            }
+        }
+
+    var sendEmail: Boolean
+        get() = runBlocking {
+            withContext(Dispatchers.Default) {
+                userPreferencesFlow.first().sendEmail
+            }
+        }
+        set(value) = runBlocking {
+            withContext(Dispatchers.Default ) {
+                userDataStore.edit {
+                    it[KEY_SEND_EMAIL] = value
                 }
             }
         }

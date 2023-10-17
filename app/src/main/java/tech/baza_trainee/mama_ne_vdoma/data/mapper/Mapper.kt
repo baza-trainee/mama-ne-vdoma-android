@@ -49,6 +49,7 @@ fun UserInfoEntity.toDataModel() = UserInfoDto(
     name,
     countryCode,
     phone,
+    sendingEmails,
     avatar,
     week = mutableMapOf<String, DayScheduleDto>().also { map ->
         schedule.schedule.forEach {
@@ -65,6 +66,7 @@ fun UserProfileDto.toDomainModel() = UserProfileEntity(
     name.orEmpty(),
     countryCode.orEmpty(),
     phone.orEmpty(),
+    sendingEmails,
     avatar.orEmpty(),
     location.toDomainModel(),
     schedule = ScheduleModel(

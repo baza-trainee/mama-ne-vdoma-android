@@ -11,7 +11,8 @@ data class UserPreferences(
     val radius: Int,
     val latitude: Double,
     val longitude: Double,
-    val notificationCount: Int
+    val notificationCount: Int,
+    val sendEmail: Boolean
 )
 
 

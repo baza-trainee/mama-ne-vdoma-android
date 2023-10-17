@@ -1,5 +1,6 @@
 package tech.baza_trainee.mama_ne_vdoma.domain.preferences
 
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.doublePreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
@@ -16,4 +17,5 @@ object UserPreferencesKeys {
     val KEY_LOCATION_LAT = doublePreferencesKey(LOCATION_LAT)
     val KEY_LOCATION_LNG = doublePreferencesKey(LOCATION_LNG)
     val KEY_NOTIFICATION = intPreferencesKey(NOTIFICATION)
+    val KEY_SEND_EMAIL = booleanPreferencesKey(SEND_EMAIL)
 }

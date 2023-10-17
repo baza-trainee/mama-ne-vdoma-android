@@ -106,6 +106,7 @@ class HostViewModel(
                     email = entity.email
                     code = entity.countryCode
                     phone = entity.phone
+                    sendEmail = entity.sendingEmails
                 }
 
                 getUserAvatar(entity.avatar)
@@ -167,6 +168,7 @@ class HostViewModel(
             }
             onSuccess { entityList ->
                 val notifications = entityList.flatMap { it.askingJoin }.size
+                preferencesDatastoreManager.notifications = notifications
                 _viewState.update { state ->
                     state.copy(
                         notifications = notifications
