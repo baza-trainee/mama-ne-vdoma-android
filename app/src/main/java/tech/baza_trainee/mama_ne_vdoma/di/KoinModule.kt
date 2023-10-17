@@ -183,7 +183,7 @@ val mainModule = module {
     viewModel { SearchResultsViewModel(get(), get(), get()) }
 }
 
-const val BASE_URL = "https://tough-moth-trunks.cyclic.cloud/"
+const val BASE_URL = "http://75.119.137.204:3000/"
 
 inline fun <reified T> createWebService(
     okHttpClient: OkHttpClient
