@@ -5,6 +5,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.CommonRoute
@@ -35,6 +36,7 @@ class ScreenNavigatorImpl: ScreenNavigator {
 
     override fun goBackOnMain(scope: CoroutineScope) {
         scope.launch {
+            delay(1000)
             withContext(Dispatchers.Main) {
                 navigationChannel.send(NavigationIntent.NavigateBack)
             }
@@ -47,6 +49,7 @@ class ScreenNavigatorImpl: ScreenNavigator {
 
     override fun navigateOnMain(scope: CoroutineScope, route: CommonRoute) {
         scope.launch {
+            delay(1000)
             withContext(Dispatchers.Main) {
                 navigationChannel.send(NavigationIntent.NavigateTo(route))
             }

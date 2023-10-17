@@ -5,6 +5,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -65,6 +66,7 @@ class PageNavigatorImpl: PageNavigator {
     override fun goBackOnMain(scope: CoroutineScope) {
         routesQueue.pollLast()
         scope.launch {
+            delay(1000)
             withContext(Dispatchers.Main) {
                 navigationChannel.send(NavigationIntent.NavigateBack)
             }
@@ -84,6 +86,7 @@ class PageNavigatorImpl: PageNavigator {
             routesQueue.offerLast(route.destination)
         goBack = false
         scope.launch {
+            delay(1000)
             withContext(Dispatchers.Main) {
                 navigationChannel.send(NavigationIntent.NavigateTo(route))
             }

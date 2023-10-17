@@ -19,9 +19,8 @@ import tech.baza_trainee.mama_ne_vdoma.domain.repository.LocationRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.Graphs
-import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.HostScreenRoutes
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.InitialGroupSearchRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.UserProfileRoutes
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.MAIN_PAGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.model.UserProfileCommunicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
@@ -64,7 +63,7 @@ class FullInfoViewModel(
             FullInfoEvent.ResetUiState -> _uiState.value = RequestState.Idle
             FullInfoEvent.EditUser -> navigator.navigate(UserProfileRoutes.UserInfo)
             FullInfoEvent.OnBack -> navigator.navigate(Graphs.Login)
-            FullInfoEvent.OnNext -> navigator.navigate(HostScreenRoutes.Host.getDestination(MAIN_PAGE))
+            FullInfoEvent.OnNext -> navigator.navigate(InitialGroupSearchRoutes.ChooseChild)
         }
     }
 

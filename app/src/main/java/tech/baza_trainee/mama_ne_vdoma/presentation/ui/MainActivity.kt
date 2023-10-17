@@ -47,7 +47,7 @@ class MainActivity : ComponentActivity() {
                     startNavGraph(navController)
                     loginNavGraph(navController)
                     createUserNavGraph()
-                    userProfileGraph(navController)
+                    userProfileGraph()
                     firstGroupSearchNavGraph()
                     hostNavGraph()
                 }

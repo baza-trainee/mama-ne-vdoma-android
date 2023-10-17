@@ -2,7 +2,6 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.navigation.graphs
 
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import org.koin.androidx.compose.navigation.koinNavViewModel
@@ -13,6 +12,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.chil
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.full_info.FullInfoScreen
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.full_info.FullInfoViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.image_crop.UserImageCropScreen
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.image_crop.UserImageCropViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.schedule.child_schedule.ChildScheduleScreen
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.schedule.child_schedule.ChildScheduleViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.schedule.parent_schedule.ParentScheduleScreen
@@ -21,9 +21,8 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.user
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.user_info.UserInfoViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.user_location.UserLocationScreen
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.user_location.UserLocationViewModel
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.sharedViewModel
 
-fun NavGraphBuilder.userProfileGraph(navController: NavHostController) {
+fun NavGraphBuilder.userProfileGraph() {
     navigation(
         route = Graphs.UserProfile.route,
         startDestination = UserProfileRoutes.FullProfile.route
@@ -37,7 +36,7 @@ fun NavGraphBuilder.userProfileGraph(navController: NavHostController) {
             )
         }
         composable(UserProfileRoutes.UserInfo.route) {
-            val userInfoViewModel: UserInfoViewModel = it.sharedViewModel(navController = navController)
+            val userInfoViewModel: UserInfoViewModel = koinNavViewModel()
             UserInfoScreen(
                 screenState = userInfoViewModel.userInfoScreenState.collectAsStateWithLifecycle(),
                 uiState = userInfoViewModel.uiState,
@@ -45,10 +44,10 @@ fun NavGraphBuilder.userProfileGraph(navController: NavHostController) {
             )
         }
         composable(UserProfileRoutes.ImageCrop.route) {
-            val userInfoViewModel: UserInfoViewModel = it.sharedViewModel(navController = navController)
+            val userImageCropViewModel: UserImageCropViewModel = koinNavViewModel()
             UserImageCropScreen(
-                imageForCrop = userInfoViewModel.getUserAvatarBitmap(),
-                handleEvent = { userInfoViewModel.handleUserInfoEvent(it) }
+                imageForCrop = userImageCropViewModel.getUserAvatarBitmap(),
+                handleEvent = { userImageCropViewModel.saveCroppedImage(it) }
             )
         }
         composable(UserProfileRoutes.UserLocation.route) {

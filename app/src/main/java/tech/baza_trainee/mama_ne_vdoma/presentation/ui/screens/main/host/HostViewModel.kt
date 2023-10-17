@@ -24,6 +24,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.GroupsScre
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.MainScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.SearchScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.SettingsScreenRoutes
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.UserProfileRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.GROUPS_PAGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.MAIN_PAGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.SEARCH_PAGE
@@ -104,29 +105,33 @@ class HostViewModel(
                 userProfileRepository.getUserInfo()
             }
             onSuccess { entity ->
-                preferencesDatastoreManager.apply {
-                    id = entity.id
-                    name = entity.name
-                    email = entity.email
-                    code = entity.countryCode
-                    phone = entity.phone
-                    sendEmail = entity.sendingEmails
-                }
-
-                getUserAvatar(entity.avatar)
-
-                getGroups(entity.id)
-
-                if (entity.location.coordinates.isNotEmpty()) {
-                    getAddressFromLocation(
-                        latLng = LatLng(
-                            entity.location.coordinates[1],
-                            entity.location.coordinates[0]
-                        )
-                    )
+                if (entity.name.isEmpty() || entity.location.coordinates.isEmpty())
+                    mainNavigator.navigateOnMain(viewModelScope, UserProfileRoutes.FullProfile)
+                else {
                     preferencesDatastoreManager.apply {
-                        latitude = entity.location.coordinates[1]
-                        longitude = entity.location.coordinates[0]
+                        id = entity.id
+                        name = entity.name
+                        email = entity.email
+                        code = entity.countryCode
+                        phone = entity.phone
+                        sendEmail = entity.sendingEmails
+                    }
+
+                    getUserAvatar(entity.avatar)
+
+                    getGroups(entity.id)
+
+                    if (entity.location.coordinates.isNotEmpty()) {
+                        getAddressFromLocation(
+                            latLng = LatLng(
+                                entity.location.coordinates[1],
+                                entity.location.coordinates[0]
+                            )
+                        )
+                        preferencesDatastoreManager.apply {
+                            latitude = entity.location.coordinates[1]
+                            longitude = entity.location.coordinates[0]
+                        }
                     }
                 }
             }
