@@ -141,6 +141,7 @@ fun UpdateGroupEntity.toDataModel() = UpdateGroupDto(
     name = name,
     desc = desc,
     ages = ages,
+    avatar = avatar,
     week = mutableMapOf<String, DayScheduleDto>().also { map ->
         schedule.schedule.forEach {
             map[it.key.name.lowercase()] = it.value.toDataModel()
@@ -158,6 +159,7 @@ fun GroupDto.toDomainModel() = GroupEntity(
     askingJoin = askingJoin.map { it.toDomainModel() }.toList(),
     members = members.map { it.toDomainModel() }.toList(),
     ages = ages,
+    avatar = avatar.orEmpty(),
     location = location.toDomainModel(),
     schedule = ScheduleModel(
         schedule = mutableStateMapOf<DayOfWeek, DayPeriod>().also { map ->

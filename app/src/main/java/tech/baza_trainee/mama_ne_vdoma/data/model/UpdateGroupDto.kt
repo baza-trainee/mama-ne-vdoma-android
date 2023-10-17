@@ -4,5 +4,6 @@ data class UpdateGroupDto(
     val name: String = "",
     val desc: String = "",
     val ages: String = "",
+    val avatar: String = "",
     val week: Map<String, DayScheduleDto>
 )

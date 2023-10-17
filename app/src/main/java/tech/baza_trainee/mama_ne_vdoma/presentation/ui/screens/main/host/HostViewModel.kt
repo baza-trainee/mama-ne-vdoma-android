@@ -13,6 +13,7 @@ import kotlinx.coroutines.launch
 import tech.baza_trainee.mama_ne_vdoma.domain.model.GroupEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UserProfileEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatastoreManager
+import tech.baza_trainee.mama_ne_vdoma.domain.repository.FilesRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.GroupsRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.LocationRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
@@ -41,6 +42,7 @@ class HostViewModel(
     private val mainNavigator: ScreenNavigator,
     private val navigator: PageNavigator,
     private val userProfileRepository: UserProfileRepository,
+    private val filesRepository: FilesRepository,
     private val locationRepository: LocationRepository,
     private val groupsRepository: GroupsRepository,
     private val preferencesDatastoreManager: UserPreferencesDatastoreManager
@@ -150,7 +152,7 @@ class HostViewModel(
 
     private fun getUserAvatar(avatarId: String) {
         networkExecutor {
-            execute { userProfileRepository.getUserAvatar(avatarId) }
+            execute { filesRepository.getAvatar(avatarId) }
             onSuccess { uri ->
                 preferencesDatastoreManager.avatar = uri.toString()
                 _viewState.update {

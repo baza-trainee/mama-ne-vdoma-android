@@ -4,7 +4,6 @@ import android.graphics.Bitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.lifecycle.ViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.PageNavigator
-import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.UserProfileRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.GroupImageCommunicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.BitmapHelper
 
@@ -17,7 +16,7 @@ class GroupImageCropViewModel(
     fun getUserAvatarBitmap() = bitmapHelper.bitmapFromUri(communicator.uriForCrop).asImageBitmap()
 
     fun saveCroppedImage(image: Bitmap) {
-        communicator.croppedImage = image
-        navigator.navigate(UserProfileRoutes.UserInfo)
+        communicator.setCroppedImage(image)
+        navigator.goBack()
     }
 }

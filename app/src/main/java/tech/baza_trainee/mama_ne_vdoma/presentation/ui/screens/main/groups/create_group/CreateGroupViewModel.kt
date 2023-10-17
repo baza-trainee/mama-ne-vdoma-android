@@ -20,6 +20,7 @@ import tech.baza_trainee.mama_ne_vdoma.domain.model.Period
 import tech.baza_trainee.mama_ne_vdoma.domain.model.ScheduleModel
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UpdateGroupEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UserProfileEntity
+import tech.baza_trainee.mama_ne_vdoma.domain.repository.FilesRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.GroupsRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.LocationRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
@@ -40,6 +41,7 @@ class CreateGroupViewModel(
     private val communicator: GroupImageCommunicator,
     private val navigator: PageNavigator,
     private val userProfileRepository: UserProfileRepository,
+    private val filesRepository: FilesRepository,
     private val locationRepository: LocationRepository,
     private val groupsRepository: GroupsRepository,
     private val bitmapHelper: BitmapHelper
@@ -53,12 +55,14 @@ class CreateGroupViewModel(
     val uiState: State<CreateGroupUiState>
         get() = _uiState
 
+    private var avatarServerPath = ""
+
     init {
         getUserInfo()
         getChildren()
-        if (communicator.croppedImage != BitmapHelper.DEFAULT_BITMAP) {
-            saveGroupAvatar(communicator.croppedImage)
-            communicator.croppedImage = BitmapHelper.DEFAULT_BITMAP
+
+        viewModelScope.launch {
+            communicator.croppedImageFlow.collect(::saveGroupAvatar)
         }
     }
 
@@ -79,25 +83,49 @@ class CreateGroupViewModel(
     }
 
     private fun saveGroupAvatar(image: Bitmap) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val newImage = if (image.height > IMAGE_HEIGHT)
-                Bitmap.createScaledBitmap(
-                    image,
-                    IMAGE_WIDTH,
-                    IMAGE_HEIGHT,
-                    true
-                )
-            else image
-            val newImageSize = bitmapHelper.getSize(newImage)
-            if (newImageSize < IMAGE_SIZE) {
+        if (image != BitmapHelper.DEFAULT_BITMAP) {
+            viewModelScope.launch(Dispatchers.IO) {
+                val newImage = if (image.height > IMAGE_HEIGHT)
+                    Bitmap.createScaledBitmap(
+                        image,
+                        IMAGE_WIDTH,
+                        IMAGE_HEIGHT,
+                        true
+                    )
+                else image
+                val newImageSize = bitmapHelper.getSize(newImage)
+                if (newImageSize < IMAGE_SIZE) {
+                    _viewState.update {
+                        it.copy(
+                            avatar = newImage
+                        )
+                    }
+                    uploadAvatar(newImage)
+                } else {
+                    _uiState.value = CreateGroupUiState.OnAvatarError
+                }
+            }
+        }
+    }
+
+    private fun uploadAvatar(image: Bitmap) {
+        networkExecutor<String> {
+            execute {
+                filesRepository.saveAvatar(image)
+            }
+            onSuccess {
+                avatarServerPath = it
+                communicator.setCroppedImage(null)
+            }
+            onError { error ->
+                _uiState.value = CreateGroupUiState.OnError(error)
+            }
+            onLoading { isLoading ->
                 _viewState.update {
                     it.copy(
-                        avatar = newImage
+                        isLoading = isLoading
                     )
                 }
-                //uploadUserAvatar(newImage)
-            } else {
-                _uiState.value = CreateGroupUiState.OnAvatarError
             }
         }
     }
@@ -138,7 +166,8 @@ class CreateGroupViewModel(
                         name = _viewState.value.name,
                         desc = _viewState.value.description,
                         ages = ages,
-                        schedule = _viewState.value.schedule
+                        schedule = _viewState.value.schedule,
+                        avatar = avatarServerPath
                     )
                 )
             }

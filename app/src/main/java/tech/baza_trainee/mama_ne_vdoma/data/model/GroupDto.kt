@@ -7,6 +7,7 @@ data class GroupDto(
     val desc: String,
     val adminId: String,
     val ages: String,
+    val avatar: String?,
     val members: List<MemberDto>,
     val location: LocationDto,
     val askingJoin: List<MemberDto>,

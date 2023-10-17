@@ -7,6 +7,7 @@ data class GroupUiModel(
     val name: String = "",
     val description: String = "",
     val ages: String = "",
+    val avatar: Uri = Uri.EMPTY,
     val location: String = "",
     val members: List<MemberUiModel> = mutableListOf(),
     val isChecked: Boolean = false

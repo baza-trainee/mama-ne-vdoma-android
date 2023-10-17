@@ -7,13 +7,15 @@ import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
 import org.koin.androidx.compose.koinViewModel
 import org.koin.androidx.compose.navigation.koinNavViewModel
+import org.koin.core.parameter.ParametersDefinition
 
 
 @Composable
 inline fun <reified T : ViewModel> NavBackStackEntry.sharedViewModel(
-    navController: NavHostController
+    navController: NavHostController,
+    noinline parameters: ParametersDefinition? = null
 ): T {
-    val navGraphRoute = destination.parent?.route ?: return koinViewModel()
+    val navGraphRoute = destination.parent?.route ?: return koinViewModel(parameters = parameters)
     val parentEntry = remember(this) { navController.getBackStackEntry(navGraphRoute) }
-    return koinNavViewModel(viewModelStoreOwner = parentEntry)
+    return koinNavViewModel(viewModelStoreOwner = parentEntry, parameters = parameters)
 }

@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.update
 import tech.baza_trainee.mama_ne_vdoma.domain.model.ChildEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UserProfileEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatastoreManager
+import tech.baza_trainee.mama_ne_vdoma.domain.repository.FilesRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.InitialGroupSearchRoutes
@@ -27,6 +28,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onSuccess
 class ChooseChildStandaloneViewModel(
     private val communicator: GroupSearchStandaloneCommunicator,
     private val userProfileRepository: UserProfileRepository,
+    private val filesRepository: FilesRepository,
     private val navigator: ScreenNavigator,
     private val preferencesDatastoreManager: UserPreferencesDatastoreManager
 ): ViewModel() {
@@ -92,7 +94,7 @@ class ChooseChildStandaloneViewModel(
 
     private fun getUserAvatar(avatarId: String) {
         networkExecutor<Uri> {
-            execute { userProfileRepository.getUserAvatar(avatarId) }
+            execute { filesRepository.getAvatar(avatarId) }
             onSuccess { uri ->
                 preferencesDatastoreManager.avatar = uri.toString()
                 _viewState.update {

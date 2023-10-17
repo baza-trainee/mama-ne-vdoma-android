@@ -29,7 +29,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -68,13 +67,17 @@ fun GroupInfoDesk(
                 .height(88.dp),
             contentAlignment = Alignment.Center
         ) {
-            Image(
+            AsyncImage(
                 modifier = Modifier
                     .fillMaxSize()
                     .clip(RoundedCornerShape(4.dp)),
-                bitmap = groupAvatar.asImageBitmap(),
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(group.avatar)
+                    .crossfade(true)
+                    .build(),
+                placeholder = painterResource(id = R.drawable.no_photo),
                 contentDescription = "group_avatar",
-                contentScale = ContentScale.FillBounds
+                contentScale = ContentScale.Fit
             )
 
             Row(

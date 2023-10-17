@@ -274,11 +274,12 @@ fun CreateGroupScreen(
         GroupAvatarWithCameraAndGallery(
             modifier = modifier.fillMaxWidth(),
             avatar = screenState.value.avatar,
-//            setUriForCrop = {
-//                handleEvent(CreateGroupEvent.SetImageToCrop(it))
-//            },
-//            onEditPhoto = { handleEvent(CreateGroupEvent.OnEditPhoto) },
-//            onDeletePhoto = { handleEvent(CreateGroupEvent.OnDeletePhoto) }
+            canDelete = false,
+            setUriForCrop = {
+                handleEvent(CreateGroupEvent.SetImageToCrop(it))
+            },
+            onEditPhoto = { handleEvent(CreateGroupEvent.OnEditPhoto) },
+            onDeletePhoto = { handleEvent(CreateGroupEvent.OnDeletePhoto) }
         )
 
         OutlinedTextField(

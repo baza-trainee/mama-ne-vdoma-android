@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UserInfoEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatastoreManager
+import tech.baza_trainee.mama_ne_vdoma.domain.repository.FilesRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.UserProfileRoutes
@@ -32,6 +33,7 @@ class UserInfoViewModel(
     private val communicator: UserProfileCommunicator,
     private val navigator: ScreenNavigator,
     private val userProfileRepository: UserProfileRepository,
+    private val filesRepository: FilesRepository,
     private val phoneNumberUtil: PhoneNumberUtil,
     private val bitmapHelper: BitmapHelper,
     private val preferencesDatastoreManager: UserPreferencesDatastoreManager
@@ -176,7 +178,7 @@ class UserInfoViewModel(
     private fun uploadUserAvatar(image: Bitmap) {
         networkExecutor<String> {
             execute {
-                userProfileRepository.saveUserAvatar(image)
+                filesRepository.saveAvatar(image)
             }
             onSuccess {
                 communicator.avatarServerPath = it

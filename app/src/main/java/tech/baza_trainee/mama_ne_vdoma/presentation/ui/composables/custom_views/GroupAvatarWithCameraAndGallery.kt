@@ -52,6 +52,7 @@ import java.io.File
 fun GroupAvatarWithCameraAndGallery(
     modifier: Modifier = Modifier,
     avatar: Bitmap = BitmapHelper.DEFAULT_BITMAP,
+    canDelete: Boolean = true,
     setUriForCrop: (Uri) -> Unit = {},
     onEditPhoto: () -> Unit = {},
     onDeletePhoto: () -> Unit = {}
@@ -122,15 +123,17 @@ fun GroupAvatarWithCameraAndGallery(
                     .clip(RoundedCornerShape(4.dp))
             )
 
-            IconButton(
-                modifier = Modifier.align(Alignment.TopEnd),
-                onClick = { onDeletePhoto() }
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_delete),
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary
-                )
+            if (canDelete) {
+                IconButton(
+                    modifier = Modifier.align(Alignment.TopEnd),
+                    onClick = { onDeletePhoto() }
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_delete),
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                }
             }
         } else
             Image(

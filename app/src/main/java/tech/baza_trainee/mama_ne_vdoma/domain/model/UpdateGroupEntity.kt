@@ -4,5 +4,6 @@ data class UpdateGroupEntity(
     val name: String = "",
     val desc: String = "",
     val ages: String = "",
+    val avatar: String = "",
     val schedule: ScheduleModel
 )

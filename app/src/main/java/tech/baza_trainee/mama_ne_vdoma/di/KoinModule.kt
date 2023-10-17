@@ -16,17 +16,20 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import tech.baza_trainee.mama_ne_vdoma.BuildConfig
 import tech.baza_trainee.mama_ne_vdoma.data.api.AuthApi
+import tech.baza_trainee.mama_ne_vdoma.data.api.FilesApi
 import tech.baza_trainee.mama_ne_vdoma.data.api.GroupsApi
 import tech.baza_trainee.mama_ne_vdoma.data.api.UserProfileApi
 import tech.baza_trainee.mama_ne_vdoma.data.datasource.LocationDataSource
 import tech.baza_trainee.mama_ne_vdoma.data.datasource.impl.LocationDataSourceImpl
 import tech.baza_trainee.mama_ne_vdoma.data.interceptors.AuthInterceptor
 import tech.baza_trainee.mama_ne_vdoma.data.repository.AuthRepositoryImpl
+import tech.baza_trainee.mama_ne_vdoma.data.repository.FilesRepositoryImpl
 import tech.baza_trainee.mama_ne_vdoma.data.repository.GroupsRepositoryImpl
 import tech.baza_trainee.mama_ne_vdoma.data.repository.LocationRepositoryImpl
 import tech.baza_trainee.mama_ne_vdoma.data.repository.UserProfileRepositoryImpl
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatastoreManager
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.AuthRepository
+import tech.baza_trainee.mama_ne_vdoma.domain.repository.FilesRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.GroupsRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.LocationRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
@@ -83,10 +86,12 @@ val repoModule = module {
     }
     single { createOkHttpClient(get(), get()) }
     single<UserProfileApi> { createAuthorizedApi(get(), get()) }
+    single<FilesApi> { createAuthorizedApi(get(), get()) }
     single<GroupsApi> { createAuthorizedApi(get(), get()) }
     single<AuthApi> { createCustomApi(get()) }
     factory<AuthRepository> { AuthRepositoryImpl(get()) }
-    factory<UserProfileRepository> { UserProfileRepositoryImpl(get(), get()) }
+    factory<UserProfileRepository> { UserProfileRepositoryImpl(get()) }
+    factory<FilesRepository> { FilesRepositoryImpl(get(), get()) }
     factory<LocationDataSource> { LocationDataSourceImpl(androidApplication()) }
     factory<LocationRepository> { LocationRepositoryImpl(get()) }
     factory<GroupsRepository> { GroupsRepositoryImpl(get()) }
@@ -99,14 +104,14 @@ val repoModule = module {
 val userCreateModule = module {
     single { PhoneNumberUtil.createInstance(androidContext()) }
     single { UserProfileCommunicator() }
-    viewModel { UserInfoViewModel(get(), get(), get(), get(), get(), get()) }
+    viewModel { UserInfoViewModel(get(), get(), get(), get(), get(), get(), get()) }
     viewModel { UserImageCropViewModel(get(), get(), get()) }
     viewModel { UserLocationViewModel(get(), get(), get(), get()) }
     viewModel { ChildInfoViewModel(get(), get(), get()) }
     viewModel { ChildScheduleViewModel(get(), get(), get()) }
     viewModel { ChildrenInfoViewModel(get(), get()) }
     viewModel { ParentScheduleViewModel(get(), get(), get(), get()) }
-    viewModel { FullInfoViewModel(get(), get(), get(), get(), get()) }
+    viewModel { FullInfoViewModel(get(), get(), get(), get(), get(), get()) }
     viewModel { UserCreateViewModel(get(), get()) }
 }
 
@@ -131,9 +136,9 @@ val loginKoinModule = module {
 
 val standaloneGroupSearchModule = module {
     single { GroupSearchStandaloneCommunicator() }
-    viewModel { ChooseChildStandaloneViewModel(get(), get(), get(), get()) }
+    viewModel { ChooseChildStandaloneViewModel(get(), get(), get(), get(), get()) }
     viewModel { SetAreaViewModel(get(), get(), get()) }
-    viewModel { FoundGroupsStandaloneViewModel(get(), get(), get(), get(), get(), get()) }
+    viewModel { FoundGroupsStandaloneViewModel(get(), get(), get(), get(), get(), get(), get()) }
 }
 
 val mainModule = module {
@@ -141,6 +146,7 @@ val mainModule = module {
     viewModel { (page: Int) ->
         HostViewModel(
             page,
+            get(),
             get(),
             get(),
             get(),
@@ -161,6 +167,7 @@ val mainModule = module {
             get(),
             get(),
             get(),
+            get(),
             get()
         )
     }
@@ -169,6 +176,7 @@ val mainModule = module {
     viewModel { (childId: String) ->
         CreateGroupViewModel(
             childId,
+            get(),
             get(),
             get(),
             get(),

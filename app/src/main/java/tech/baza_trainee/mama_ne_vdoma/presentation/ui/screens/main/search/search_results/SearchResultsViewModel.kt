@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
+import tech.baza_trainee.mama_ne_vdoma.domain.repository.FilesRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.PageNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.SearchResultsCommunicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
@@ -20,7 +20,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onSuccess
 class SearchResultsViewModel(
     private val navigator: PageNavigator,
     private val communicator: SearchResultsCommunicator,
-    private val userProfileRepository: UserProfileRepository
+    private val filesRepository: FilesRepository
 ): ViewModel() {
 
     private val _viewState = MutableStateFlow(SearchResultsViewState())
@@ -49,7 +49,7 @@ class SearchResultsViewModel(
 
     private fun getUserAvatar(avatarId: String, userId: String) {
         networkExecutor {
-            execute { userProfileRepository.getUserAvatar(avatarId) }
+            execute { filesRepository.getAvatar(avatarId) }
             onSuccess { uri ->
                 _viewState.update {
                     val currentParent = _viewState.value.parent.copy(

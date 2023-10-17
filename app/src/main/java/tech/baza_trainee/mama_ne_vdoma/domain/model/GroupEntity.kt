@@ -6,6 +6,7 @@ data class GroupEntity(
     val name: String = "",
     val description: String = "",
     val ages: String = "",
+    val avatar: String = "",
     val schedule: ScheduleModel = ScheduleModel(),
     val members: List<MemberEntity> = emptyList(),
     val location: LocationEntity = LocationEntity(),

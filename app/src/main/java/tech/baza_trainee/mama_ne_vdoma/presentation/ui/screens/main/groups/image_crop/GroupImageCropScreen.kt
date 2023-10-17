@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -23,6 +24,10 @@ fun GroupImageCropScreen(
     val handleSize: Float = LocalDensity.current.run { 20.dp.toPx() }
 
     ImageCropScreen(
+        modifier = Modifier
+        .onGloballyPositioned { layoutCoordinates ->
+            val size = layoutCoordinates.size
+        },
         imageForCrop = imageForCrop,
         cropProperties = CropDefaults.properties(
             cropOutlineProperty = CropOutlineProperty(
