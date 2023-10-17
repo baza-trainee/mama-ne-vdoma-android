@@ -47,9 +47,7 @@ fun LoginUserScreen(
     uiState: State<RequestState> = mutableStateOf(RequestState.Idle),
     handleEvent: (LoginEvent) -> Unit = { _ -> }
 ) {
-    SurfaceWithSystemBars(
-        modifier = modifier
-    ) {
+    SurfaceWithSystemBars {
         BackHandler { handleEvent(LoginEvent.OnBack) }
 
         val context = LocalContext.current
@@ -66,7 +64,8 @@ fun LoginUserScreen(
             modifier = modifier
                 .imePadding()
                 .fillMaxWidth(),
-            verticalArrangement = Arrangement.SpaceBetween
+            verticalArrangement = Arrangement.SpaceBetween,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Column(
                 modifier = modifier.fillMaxWidth()

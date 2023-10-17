@@ -85,6 +85,8 @@ fun InfoScreen(
                 state = pagerState,
                 modifier = Modifier
                     .constrainAs(pager) {
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
                         top.linkTo(parent.top)
                         bottom.linkTo(footer.top, 16.dp)
                     }
@@ -145,7 +147,8 @@ fun InfoScreen(
                     .constrainAs(footer) {
                         bottom.linkTo(parent.bottom, 16.dp)
                         height = Dimension.preferredValue(70.dp)
-                    }
+                    },
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 val isLastPage by remember {
                     derivedStateOf { pagerState.currentPage == 2 }

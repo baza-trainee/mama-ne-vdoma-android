@@ -52,6 +52,8 @@ fun RestoreSuccessScreen(
             Image(
                 modifier = modifier
                     .constrainAs(image) {
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
                         top.linkTo(topGuideline)
                         bottom.linkTo(btnMain.top, 64.dp)
                         height = Dimension.fillToConstraints

@@ -17,8 +17,8 @@ import tech.baza_trainee.mama_ne_vdoma.domain.repository.LocationRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.HostScreenRoutes
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.GROUPS_PAGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.GroupSearchStandaloneCommunicator
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.MAIN_PAGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.GroupUiModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.MemberUiModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
@@ -58,7 +58,8 @@ class FoundGroupsStandaloneViewModel(
             FoundGroupEvent.OnBack -> navigator.goBack()
             FoundGroupEvent.OnJoin -> sendJoinRequest()
             is FoundGroupEvent.OnSelect -> setSelectedGroup(event.group)
-            FoundGroupEvent.GoToMain -> navigator.navigate(HostScreenRoutes.Host.getDestination(MAIN_PAGE))
+            FoundGroupEvent.GoToMain ->
+                navigator.navigate(HostScreenRoutes.Host.getDestination(GROUPS_PAGE))
         }
     }
 

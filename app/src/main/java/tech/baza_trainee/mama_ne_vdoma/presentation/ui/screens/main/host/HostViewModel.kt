@@ -53,14 +53,14 @@ class HostViewModel(
         get() = _uiState
 
     init {
-        if (page != -1)
-            navigateToTab(page)
-
         viewModelScope.launch {
             navigator.pagesFlow.collect { page ->
                 navigateToTab(page)
             }
         }
+
+        if (page != -1)
+            navigateToTab(page)
 
         getUserInfo()
     }

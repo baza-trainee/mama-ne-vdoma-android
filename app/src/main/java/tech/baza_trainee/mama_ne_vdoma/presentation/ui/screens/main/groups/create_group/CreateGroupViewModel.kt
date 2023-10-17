@@ -25,7 +25,6 @@ import tech.baza_trainee.mama_ne_vdoma.domain.repository.LocationRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.PageNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.GroupsScreenRoutes
-import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.MainScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.GroupImageCommunicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.BitmapHelper
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
@@ -143,7 +142,7 @@ class CreateGroupViewModel(
                     )
                 )
             }
-            onSuccess { navigator.navigate(MainScreenRoutes.Main) }
+            onSuccess { navigator.navigate(GroupsScreenRoutes.Groups) }
             onError { error ->
                 _uiState.value = CreateGroupUiState.OnError(error)
             }

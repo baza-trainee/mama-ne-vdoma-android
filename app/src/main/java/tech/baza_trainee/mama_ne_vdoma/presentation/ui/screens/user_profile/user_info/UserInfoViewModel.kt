@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.net.Uri
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -72,7 +73,15 @@ class UserInfoViewModel(
             UserInfoEvent.OnEditPhoto -> navigator.navigate(UserProfileRoutes.ImageCrop)
             UserInfoEvent.OnDeletePhoto -> deleteUserAvatar()
             UserInfoEvent.OnBack -> navigator.navigate(UserProfileRoutes.FullProfile)
+            is UserInfoEvent.SetCroppedImage -> saveCroppedImage(event.bitmap)
         }
+    }
+
+    fun getUserAvatarBitmap() = bitmapHelper.bitmapFromUri(communicator.uriForCrop).asImageBitmap()
+
+    private fun saveCroppedImage(image: Bitmap) {
+        communicator.croppedImage = image
+        navigator.navigate(UserProfileRoutes.UserInfo)
     }
 
     private fun setUriForCrop(uri: Uri) {

@@ -43,9 +43,7 @@ fun RestorePasswordScreen(
     uiState: State<RequestState> = mutableStateOf(RequestState.Idle),
     handleEvent: (RestorePasswordEvent) -> Unit = { _ -> }
 ) {
-    SurfaceWithSystemBars(
-        modifier = modifier
-    ) {
+    SurfaceWithSystemBars {
         val context = LocalContext.current
 
         when(val state = uiState.value) {
@@ -65,7 +63,8 @@ fun RestorePasswordScreen(
                 .imePadding()
                 .fillMaxWidth()
                 .padding(bottom = 16.dp),
-            verticalArrangement = Arrangement.SpaceBetween
+            verticalArrangement = Arrangement.SpaceBetween,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Column(
                 modifier = modifier.fillMaxWidth(),

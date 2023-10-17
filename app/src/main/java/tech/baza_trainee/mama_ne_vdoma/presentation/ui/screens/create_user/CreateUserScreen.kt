@@ -47,9 +47,7 @@ fun CreateUserScreen(
     uiState: State<RequestState> = mutableStateOf(RequestState.Idle),
     handleEvent: (UserCreateEvent) -> Unit = { _ -> }
 ) {
-    SurfaceWithSystemBars(
-        modifier = modifier
-    ) {
+    SurfaceWithSystemBars {
         BackHandler { handleEvent(UserCreateEvent.OnBack) }
 
         val context = LocalContext.current
@@ -73,7 +71,8 @@ fun CreateUserScreen(
                 .verticalScroll(scrollState)
                 .imePadding()
                 .fillMaxWidth(),
-            verticalArrangement = Arrangement.SpaceBetween
+            verticalArrangement = Arrangement.SpaceBetween,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Column(
                 modifier = modifier.fillMaxWidth()

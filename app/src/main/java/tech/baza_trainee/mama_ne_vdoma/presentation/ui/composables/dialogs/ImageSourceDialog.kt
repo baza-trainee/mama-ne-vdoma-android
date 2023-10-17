@@ -68,7 +68,7 @@ fun ImageSourceDialog(
                     .padding(top = 16.dp)
                     .padding(horizontal = 16.dp)
                     .fillMaxWidth()
-                    .clickable { onPickFromGallery() },
+                    .clickable { onPickFromCamera() },
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Image(

@@ -53,6 +53,8 @@ fun Start(
             Image(
                 modifier = modifier
                     .constrainAs(image) {
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
                         top.linkTo(parent.top, margin = 24.dp)
                         bottom.linkTo(btnStart.top, margin = 24.dp)
                         height = Dimension.fillToConstraints

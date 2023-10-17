@@ -15,6 +15,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
@@ -36,9 +37,7 @@ fun NewPasswordScreen(
     uiState: State<RequestState> = mutableStateOf(RequestState.Idle),
     handleEvent: (NewPasswordEvent) -> Unit = { _ -> }
 ) {
-    SurfaceWithSystemBars(
-        modifier = modifier
-    ) {
+    SurfaceWithSystemBars {
         BackHandler { handleEvent(NewPasswordEvent.OnBack) }
 
         val context = LocalContext.current
@@ -60,7 +59,8 @@ fun NewPasswordScreen(
                 .imePadding()
                 .fillMaxWidth()
                 .padding(top = 16.dp),
-            verticalArrangement = Arrangement.SpaceBetween
+            verticalArrangement = Arrangement.SpaceBetween,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Column(
                 modifier = modifier.fillMaxWidth(),

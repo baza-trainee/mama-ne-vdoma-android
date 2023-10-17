@@ -94,6 +94,8 @@ fun MyGroupsScreen(
                 group = it
             )
         }
+
+        Spacer(modifier = Modifier.height(16.dp))
     }
 
     if (screenState.value.isLoading) LoadingIndicator()

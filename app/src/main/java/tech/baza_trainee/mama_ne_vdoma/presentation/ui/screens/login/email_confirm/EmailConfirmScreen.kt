@@ -38,9 +38,7 @@ fun EmailConfirmScreen(
     email: String = "",
     handleEvent: (RestorePasswordEvent) -> Unit = { _ -> }
 ) {
-    SurfaceWithNavigationBars(
-        modifier = modifier
-    ) {
+    SurfaceWithNavigationBars {
         val context = LocalContext.current
 
         when(val state = uiState.value) {
@@ -79,6 +77,8 @@ fun EmailConfirmScreen(
             Image(
                 modifier = modifier
                     .constrainAs(image) {
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
                         top.linkTo(topGuideline)
                         bottom.linkTo(btnStart.top, 64.dp)
                         height = Dimension.fillToConstraints
