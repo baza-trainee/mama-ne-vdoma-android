@@ -36,7 +36,7 @@ class ScreenNavigatorImpl: ScreenNavigator {
 
     override fun goBackOnMain(scope: CoroutineScope) {
         scope.launch {
-            delay(1000)
+            delay(500)
             withContext(Dispatchers.Main) {
                 navigationChannel.send(NavigationIntent.NavigateBack)
             }
@@ -49,7 +49,7 @@ class ScreenNavigatorImpl: ScreenNavigator {
 
     override fun navigateOnMain(scope: CoroutineScope, route: CommonRoute) {
         scope.launch {
-            delay(1000)
+            delay(500)
             withContext(Dispatchers.Main) {
                 navigationChannel.send(NavigationIntent.NavigateTo(route))
             }

@@ -66,7 +66,7 @@ class PageNavigatorImpl: PageNavigator {
     override fun goBackOnMain(scope: CoroutineScope) {
         routesQueue.pollLast()
         scope.launch {
-            delay(1000)
+            delay(500)
             withContext(Dispatchers.Main) {
                 navigationChannel.send(NavigationIntent.NavigateBack)
             }
@@ -86,7 +86,7 @@ class PageNavigatorImpl: PageNavigator {
             routesQueue.offerLast(route.destination)
         goBack = false
         scope.launch {
-            delay(1000)
+            delay(500)
             withContext(Dispatchers.Main) {
                 navigationChannel.send(NavigationIntent.NavigateTo(route))
             }
