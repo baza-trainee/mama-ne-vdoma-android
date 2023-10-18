@@ -107,32 +107,35 @@ fun GroupInfoDesk(
             }
         }
 
-        Text(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp)
-                .padding(bottom = 4.dp),
-            text = group.id,
-            fontSize = 11.sp,
-            fontFamily = redHatDisplayFontFamily
-        )
+        Spacer(modifier = Modifier.height(8.dp))
 
         Text(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp)
-                .padding(bottom = 4.dp),
+                .padding(horizontal = 16.dp),
+            text = "ID: ${group.id}",
+            fontSize = 11.sp,
+            fontFamily = redHatDisplayFontFamily
+        )
+
+        Spacer(modifier = Modifier.height(4.dp))
+
+        Text(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
             text = group.name,
             fontSize = 16.sp,
             fontFamily = redHatDisplayFontFamily,
             fontWeight = FontWeight.Bold
         )
 
+        Spacer(modifier = Modifier.height(4.dp))
+
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp)
-                .padding(bottom = 4.dp),
+                .padding(horizontal = 16.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Start
         ) {
@@ -151,13 +154,14 @@ fun GroupInfoDesk(
             )
         }
 
+        Spacer(modifier = Modifier.height(4.dp))
+
         var toggleMoreInfo by remember { mutableStateOf(false) }
 
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp)
-                .padding(bottom = 4.dp),
+                .padding(horizontal = 16.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Start
         ) {
@@ -216,6 +220,8 @@ fun GroupInfoDesk(
             }
         }
 
+        Spacer(modifier = Modifier.height(4.dp))
+
         if (toggleMoreInfo) {
             Column(
                 modifier = Modifier
@@ -223,39 +229,38 @@ fun GroupInfoDesk(
                     .padding(horizontal = 16.dp)
             ) {
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 8.dp),
+                    modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Start
                 ) {
                     Image(
-                        modifier = Modifier
-                            .padding(end = 4.dp),
+                        modifier = Modifier.padding(end = 4.dp),
                         painter = painterResource(id = R.drawable.ic_group_location),
                         contentDescription = "group_location",
                         contentScale = ContentScale.Inside
                     )
+
                     Text(
-                        text = group.location.toString(),
+                        text = group.location,
                         fontSize = 14.sp,
                         fontFamily = redHatDisplayFontFamily
                     )
                 }
+
+                Spacer(modifier = Modifier.height(8.dp))
+
                 Text(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 8.dp),
+                    modifier = Modifier.fillMaxWidth(),
                     text = group.description,
                     fontSize = 11.sp,
                     fontFamily = redHatDisplayFontFamily
                 )
 
+                Spacer(modifier = Modifier.height(8.dp))
+
                 group.members.forEach {
                     Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(bottom = 8.dp),
+                        modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Start
                     ) {
@@ -301,6 +306,8 @@ fun GroupInfoDesk(
                             )
                         }
                     }
+
+                    Spacer(modifier = Modifier.height(4.dp))
                 }
             }
         }
@@ -308,8 +315,7 @@ fun GroupInfoDesk(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp)
-                .padding(bottom = 4.dp),
+                .padding(horizontal = 16.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Start
         ) {
