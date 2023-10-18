@@ -11,10 +11,10 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.NetworkRequestBuilder
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestResult
 
 fun <T> ViewModel.networkExecutor(networkBuilder: NetworkRequestBuilder<T>.() -> Unit) {
-    viewModelScope.networkOperation(networkBuilder)
+    viewModelScope.networkExecutor(networkBuilder)
 }
 
-fun <T> CoroutineScope.networkOperation(networkRequestBuilder: NetworkRequestBuilder<T>.() -> Unit) {
+fun <T> CoroutineScope.networkExecutor(networkRequestBuilder: NetworkRequestBuilder<T>.() -> Unit) {
 
     val builder = NetworkRequestBuilder<T>().apply { networkRequestBuilder() }
 

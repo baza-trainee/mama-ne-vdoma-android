@@ -23,11 +23,15 @@ import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatasto
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.FilesRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.LocationRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
+import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.NetworkEventsListener
+import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.UserInfoInteractor
+import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.UserInfoInteractorImpl
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.PageNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.Graphs
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.SettingsScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.UserProfileRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.image_crop.CropImageCommunicator
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.user_info.UserInfoUiState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.BitmapHelper
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
@@ -46,8 +50,9 @@ class EditProfileViewModel(
     private val locationRepository: LocationRepository,
     private val phoneNumberUtil: PhoneNumberUtil,
     private val bitmapHelper: BitmapHelper,
-    private val preferencesDatastoreManager: UserPreferencesDatastoreManager
-): ViewModel() {
+    private val preferencesDatastoreManager: UserPreferencesDatastoreManager,
+    userInfoInteractor: UserInfoInteractor = UserInfoInteractorImpl(userProfileRepository, filesRepository, phoneNumberUtil, bitmapHelper, preferencesDatastoreManager)
+): ViewModel(), UserInfoInteractor by userInfoInteractor, NetworkEventsListener {
 
     private val _viewState = MutableStateFlow(EditProfileViewState())
     val viewState: StateFlow<EditProfileViewState> = _viewState.asStateFlow()
@@ -59,11 +64,28 @@ class EditProfileViewModel(
     private var avatarServerPath = ""
 
     init {
+        userInfoInteractor.apply {
+            setCoroutineScope(viewModelScope)
+            setNetworkListener(this@EditProfileViewModel)
+        }
+
         getUserInfo()
 
         viewModelScope.launch {
             communicator.croppedImageFlow.collect(::saveUserAvatar)
         }
+    }
+
+    override fun onLoading(state: Boolean) {
+        _viewState.update {
+            it.copy(
+                isLoading = state
+            )
+        }
+    }
+
+    override fun onError(error: String) {
+        _uiState.value = EditProfileUiState.OnError(error)
     }
 
     fun handleEvent(event: EditProfileEvent) {
@@ -94,23 +116,8 @@ class EditProfileViewModel(
     }
 
     private fun deleteUser() {
-        networkExecutor {
-            execute {
-                userProfileRepository.deleteUser()
-            }
-            onSuccess {
-                navigator.navigateOnMain(viewModelScope, Graphs.CreateUser)
-            }
-            onError { error ->
-                _uiState.value = EditProfileUiState.OnError(error)
-            }
-            onLoading { isLoading ->
-                _viewState.update {
-                    it.copy(
-                        isLoading = isLoading
-                    )
-                }
-            }
+        deleteUser {
+            navigator.navigateOnMain(viewModelScope, Graphs.CreateUser)
         }
     }
 
@@ -204,23 +211,9 @@ class EditProfileViewModel(
                 )
             }
         } else
-            networkExecutor {
-                execute { filesRepository.getAvatar(avatarId) }
-                onSuccess { uri ->
-                    preferencesDatastoreManager.avatar = uri.toString()
-                    _viewState.update {
-                        it.copy(userAvatar = uri)
-                    }
-                }
-                onError { error ->
-                    _uiState.value = EditProfileUiState.OnError(error)
-                }
-                onLoading { isLoading ->
-                    _viewState.update {
-                        it.copy(
-                            isLoading = isLoading
-                        )
-                    }
+            getUsetAvatar(avatarId) { uri ->
+                _viewState.update {
+                    it.copy(userAvatar = uri)
                 }
             }
     }
@@ -316,27 +309,11 @@ class EditProfileViewModel(
     }
 
     private fun deleteUserAvatar() {
-        networkExecutor {
-            execute {
-                userProfileRepository.deleteUserAvatar()
-            }
-            onSuccess {
-                preferencesDatastoreManager.avatar = Uri.EMPTY.toString()
-                _viewState.update {
-                    it.copy(
-                        userAvatar = Uri.EMPTY
-                    )
-                }
-            }
-            onError { error ->
-                _uiState.value = EditProfileUiState.OnError(error)
-            }
-            onLoading { isLoading ->
-                _viewState.update {
-                    it.copy(
-                        isLoading = isLoading
-                    )
-                }
+        deleteUserAvatar {
+            _viewState.update {
+                it.copy(
+                    userAvatar = Uri.EMPTY
+                )
             }
         }
     }
@@ -352,36 +329,25 @@ class EditProfileViewModel(
     }
 
     private fun validatePhone(phone: String) {
-        val phoneValid = try {
-            val fullNumber = _viewState.value.code + phone
-            val phoneNumber = phoneNumberUtil.parse(fullNumber, _viewState.value.country)
-            if (phoneNumberUtil.isPossibleNumber(phoneNumber)) ValidField.VALID
-            else ValidField.INVALID
-        } catch (e: Exception) {
-            ValidField.INVALID
+        validatePhone(phone, _viewState.value.country) { valid ->
+            _viewState.update {
+                it.copy(
+                    phone = phone,
+                    phoneValid = valid
+                )
+            }
         }
-        preferencesDatastoreManager.phone = phone
-        _viewState.update {
-            it.copy(
-                phone = phone,
-                phoneValid = phoneValid
-            )
-        }
+
     }
 
     private fun validateUserName(name: String) {
-        val nameValid = if (name.length in NAME_LENGTH &&
-            name.all { it.isLetter() || it.isDigit() || it == ' ' || it == '-' })
-            ValidField.VALID
-        else
-            ValidField.INVALID
-
-        preferencesDatastoreManager.name = name
-        _viewState.update {
-            it.copy(
-                name =  name,
-                nameValid = nameValid
-            )
+        validateName(name) { valid ->
+            _viewState.update {
+                it.copy(
+                    name =  name,
+                    nameValid = valid
+                )
+            }
         }
     }
 
@@ -467,50 +433,25 @@ class EditProfileViewModel(
     }
 
     private fun saveUserAvatar(image: Bitmap) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val newImage = if (image.height > IMAGE_DIM)
-                Bitmap.createScaledBitmap(image, IMAGE_DIM, IMAGE_DIM, true)
-            else image
-            val newImageSize = bitmapHelper.getSize(newImage)
-            if (newImageSize < IMAGE_SIZE) {
-                val uri = bitmapHelper.bitmapToFile(newImage).toUri()
+        saveUserAvatar(
+            avatar = image,
+            onSuccess = { newImage, uri ->
                 _viewState.update {
                     it.copy(
                         userAvatar = uri
                     )
                 }
                 uploadUserAvatar(newImage)
-            } else {
+            },
+            onError = {
                 _uiState.value = EditProfileUiState.OnAvatarError
             }
-        }
+        )
     }
 
     private fun uploadUserAvatar(image: Bitmap) {
-        networkExecutor<String> {
-            execute {
-                filesRepository.saveAvatar(image)
-            }
-            onSuccess {
-                avatarServerPath = it
-            }
-            onError { error ->
-                _uiState.value = EditProfileUiState.OnError(error)
-            }
-            onLoading { isLoading ->
-                _viewState.update {
-                    it.copy(
-                        isLoading = isLoading
-                    )
-                }
-            }
+        uploadUserAvatar(image) {
+            avatarServerPath = it
         }
-    }
-
-    companion object {
-
-        private val NAME_LENGTH = 2..18
-        private const val IMAGE_SIZE = 1 * 1024 * 1024
-        private const val IMAGE_DIM = 512
     }
 }

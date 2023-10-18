@@ -18,6 +18,9 @@ import tech.baza_trainee.mama_ne_vdoma.domain.model.UserInfoEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatastoreManager
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.FilesRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
+import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.NetworkEventsListener
+import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.UserInfoInteractor
+import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.UserInfoInteractorImpl
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.UserProfileRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.model.UserProfileCommunicator
@@ -36,8 +39,9 @@ class UserInfoViewModel(
     private val filesRepository: FilesRepository,
     private val phoneNumberUtil: PhoneNumberUtil,
     private val bitmapHelper: BitmapHelper,
-    private val preferencesDatastoreManager: UserPreferencesDatastoreManager
-): ViewModel() {
+    private val preferencesDatastoreManager: UserPreferencesDatastoreManager,
+    userInfoInteractor: UserInfoInteractor = UserInfoInteractorImpl(userProfileRepository, filesRepository, phoneNumberUtil, bitmapHelper, preferencesDatastoreManager)
+): ViewModel(), UserInfoInteractor by userInfoInteractor, NetworkEventsListener {
 
     private val _userInfoScreenState = MutableStateFlow(UserInfoViewState())
     val userInfoScreenState: StateFlow<UserInfoViewState> = _userInfoScreenState.asStateFlow()
@@ -47,6 +51,10 @@ class UserInfoViewModel(
         get() = _uiState
 
     init {
+        userInfoInteractor.apply {
+            setCoroutineScope(viewModelScope)
+            setNetworkListener(this@UserInfoViewModel)
+        }
         _userInfoScreenState.update {
             it.copy(
                 name = preferencesDatastoreManager.name,
@@ -61,6 +69,18 @@ class UserInfoViewModel(
             saveUserAvatar(communicator.croppedImage)
             communicator.croppedImage = BitmapHelper.DEFAULT_BITMAP
         }
+    }
+
+    override fun onLoading(state: Boolean) {
+        _userInfoScreenState.update {
+            it.copy(
+                isLoading = state
+            )
+        }
+    }
+
+    override fun onError(error: String) {
+        _uiState.value = UserInfoUiState.OnError(error)
     }
 
     fun handleUserInfoEvent(event: UserInfoEvent) {
@@ -82,53 +102,35 @@ class UserInfoViewModel(
     }
 
     private fun deleteUserAvatar() {
-        networkExecutor {
-            execute {
-                userProfileRepository.deleteUserAvatar()
+        deleteUserAvatar {
+            communicator.apply {
+                uriForCrop = Uri.EMPTY
+                avatarServerPath = null
             }
-            onSuccess {
-                communicator.apply {
-                    uriForCrop = Uri.EMPTY
-                    avatarServerPath = null
-                }
-                preferencesDatastoreManager.avatar = Uri.EMPTY.toString()
-                _userInfoScreenState.update {
-                    it.copy(
-                        userAvatar = Uri.EMPTY
-                    )
-                }
-            }
-            onError { error ->
-                _uiState.value = UserInfoUiState.OnError(error)
-            }
-            onLoading { isLoading ->
-                _userInfoScreenState.update {
-                    it.copy(
-                        isLoading = isLoading
-                    )
-                }
+
+            _userInfoScreenState.update {
+                it.copy(
+                    userAvatar = Uri.EMPTY
+                )
             }
         }
     }
 
     private fun saveUserAvatar(image: Bitmap) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val newImage = if (image.height > IMAGE_DIM)
-                Bitmap.createScaledBitmap(image, IMAGE_DIM, IMAGE_DIM, true)
-            else image
-            val newImageSize = bitmapHelper.getSize(newImage)
-            if (newImageSize < IMAGE_SIZE) {
-                val uri = bitmapHelper.bitmapToFile(newImage).toUri()
+        saveUserAvatar(
+            avatar = image,
+            onSuccess = { bitmap, uri ->
                 _userInfoScreenState.update {
                     it.copy(
                         userAvatar = uri
                     )
                 }
-                uploadUserAvatar(newImage)
-            } else {
+                uploadUserAvatar(bitmap)
+            },
+            onError = {
                 _uiState.value = UserInfoUiState.OnAvatarError
             }
-        }
+        )
     }
 
     private fun setCode(code: String, country: String) {
@@ -142,57 +144,33 @@ class UserInfoViewModel(
     }
 
     private fun validatePhone(phone: String) {
-        val phoneValid = try {
-            val fullNumber = _userInfoScreenState.value.code + phone
-            val phoneNumber = phoneNumberUtil.parse(fullNumber, _userInfoScreenState.value.country)
-            if (phoneNumberUtil.isPossibleNumber(phoneNumber)) ValidField.VALID
-            else ValidField.INVALID
-        } catch (e: Exception) {
-            ValidField.INVALID
-        }
-        preferencesDatastoreManager.phone = phone
-        _userInfoScreenState.update {
-            it.copy(
-                phone = phone,
-                phoneValid = phoneValid
-            )
+        validatePhone(
+            phone,
+            _userInfoScreenState.value.country
+        ) { valid ->
+            _userInfoScreenState.update {
+                it.copy(
+                    phone = phone,
+                    phoneValid = valid
+                )
+            }
         }
     }
 
     private fun validateUserName(name: String) {
-        val nameValid = if (name.length in NAME_LENGTH &&
-            name.all { it.isLetter() || it.isDigit() || it == ' ' || it == '-' })
-            ValidField.VALID
-        else
-            ValidField.INVALID
-
-        preferencesDatastoreManager.name = name
-        _userInfoScreenState.update {
-            it.copy(
-                name =  name,
-                nameValid = nameValid
-            )
+        validateName(name) { valid ->
+            _userInfoScreenState.update {
+                it.copy(
+                    name =  name,
+                    nameValid = valid
+                )
+            }
         }
     }
 
     private fun uploadUserAvatar(image: Bitmap) {
-        networkExecutor<String> {
-            execute {
-                filesRepository.saveAvatar(image)
-            }
-            onSuccess {
-                communicator.avatarServerPath = it
-            }
-            onError { error ->
-                _uiState.value = UserInfoUiState.OnError(error)
-            }
-            onLoading { isLoading ->
-                _userInfoScreenState.update {
-                    it.copy(
-                        isLoading = isLoading
-                    )
-                }
-            }
+        uploadUserAvatar(image) {
+            communicator.avatarServerPath = it
         }
     }
 
@@ -228,12 +206,5 @@ class UserInfoViewModel(
                 }
             }
         }
-    }
-
-    companion object {
-
-        private val NAME_LENGTH = 2..18
-        private const val IMAGE_SIZE = 1 * 1024 * 1024
-        private const val IMAGE_DIM = 512
     }
 }

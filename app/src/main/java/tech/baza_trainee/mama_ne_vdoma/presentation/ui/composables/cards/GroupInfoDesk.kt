@@ -49,6 +49,7 @@ fun GroupInfoDesk(
     modifier: Modifier = Modifier,
     groupAvatar: Bitmap = BitmapHelper.DEFAULT_BITMAP,
     group: GroupUiModel = GroupUiModel(),
+    isMyGroup: Boolean = false,
     onSelect: (String) -> Unit = {}
 ) {
     Column(
@@ -286,24 +287,26 @@ fun GroupInfoDesk(
 
                         Spacer(modifier = Modifier.weight(1f))
 
-                        IconButton(
-                            onClick = {}
-                        ) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.ic_mail),
-                                contentDescription = "email",
-                                tint = MaterialTheme.colorScheme.primary
-                            )
-                        }
+                        if (isMyGroup) {
+                            IconButton(
+                                onClick = {}
+                            ) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.ic_mail),
+                                    contentDescription = "email",
+                                    tint = MaterialTheme.colorScheme.primary
+                                )
+                            }
 
-                        IconButton(
-                            onClick = {}
-                        ) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.ic_phone),
-                                contentDescription = "phone",
-                                tint = MaterialTheme.colorScheme.primary
-                            )
+                            IconButton(
+                                onClick = {}
+                            ) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.ic_phone),
+                                    contentDescription = "phone",
+                                    tint = MaterialTheme.colorScheme.primary
+                                )
+                            }
                         }
                     }
 

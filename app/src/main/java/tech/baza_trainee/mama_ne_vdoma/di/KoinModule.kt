@@ -194,7 +194,7 @@ val mainModule = module {
     viewModel { EditProfileViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
 }
 
-const val BASE_URL = "http://75.119.137.204:3000/"
+const val BASE_URL = "https://tough-moth-trunks.cyclic.cloud/"
 
 inline fun <reified T> createWebService(
     okHttpClient: OkHttpClient
