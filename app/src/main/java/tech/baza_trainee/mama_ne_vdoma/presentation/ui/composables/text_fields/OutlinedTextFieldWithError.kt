@@ -18,8 +18,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
@@ -38,22 +36,16 @@ fun PasswordTextFieldWithError(
     errorText: String = "Пароль не відповідає вимогам"
 ) {
     Column {
-        val focusRequester = remember { FocusRequester() }
-
         var isPasswordFocused by remember { mutableStateOf(false) }
 
         ShowHidePasswordTextField(
-            modifier = Modifier
-                .focusRequester(focusRequester)
-                .onFocusChanged {
-                    isPasswordFocused = it.isFocused
-                }
-                .fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             label = label,
             placeHolder = "Пароль",
             password = password,
             onValueChange = { onValueChange(it) },
-            isError = isError && isPasswordFocused
+            isError = isError && isPasswordFocused,
+            onFocusChanged = { isPasswordFocused = it }
         )
         if (isError && isPasswordFocused) {
             Text(
@@ -84,13 +76,10 @@ fun OutlinedTextFieldWithError(
     Column(
         verticalArrangement = Arrangement.Top
     ) {
-        val focusRequester = remember { FocusRequester() }
-
         var isFieldFocused by remember { mutableStateOf(false) }
 
         OutlinedTextField(
             modifier = Modifier
-                .focusRequester(focusRequester)
                 .onFocusChanged {
                     isFieldFocused = it.isFocused
                 }

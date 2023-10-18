@@ -192,7 +192,7 @@ val mainModule = module {
     viewModel { SearchUserViewModel(get(), get(), get()) }
     viewModel { SearchResultsViewModel(get(), get(), get()) }
     viewModel { ProfileSettingsViewModel(get(), get(), get(), get()) }
-    viewModel { EditProfileViewModel(get(), get(), get(), get(), get()) }
+    viewModel { EditProfileViewModel(get(), get(), get(), get(), get(), get()) }
 }
 
 const val BASE_URL = "http://75.119.137.204:3000/"

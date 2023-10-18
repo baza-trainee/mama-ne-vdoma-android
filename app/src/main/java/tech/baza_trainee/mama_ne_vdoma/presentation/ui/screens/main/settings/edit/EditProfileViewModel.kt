@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.model.LatLng
+import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -24,6 +25,8 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.UserProfil
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.networkExecutor
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.validateEmail
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.validatePassword
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onError
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onLoading
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onSuccess
@@ -33,6 +36,7 @@ class EditProfileViewModel(
     private val userProfileRepository: UserProfileRepository,
     private val filesRepository: FilesRepository,
     private val locationRepository: LocationRepository,
+    private val phoneNumberUtil: PhoneNumberUtil,
     private val preferencesDatastoreManager: UserPreferencesDatastoreManager
 ): ViewModel() {
 
@@ -57,20 +61,20 @@ class EditProfileViewModel(
             EditProfileEvent.EditUser -> navigator.navigate(UserProfileRoutes.UserInfo)
             EditProfileEvent.OnBack -> navigator.navigate(Graphs.Login)
             EditProfileEvent.SaveInfo -> Unit
-            EditProfileEvent.GetLocationFromAddress -> TODO()
-            EditProfileEvent.OnDeletePhoto -> TODO()
-            EditProfileEvent.OnEditPhoto -> TODO()
-            is EditProfileEvent.OnMapClick -> TODO()
-            EditProfileEvent.RequestUserLocation -> TODO()
-            is EditProfileEvent.SetCode -> TODO()
-            is EditProfileEvent.SetImageToCrop -> TODO()
-            is EditProfileEvent.UpdatePolicyCheck -> TODO()
-            is EditProfileEvent.UpdateUserAddress -> TODO()
-            is EditProfileEvent.ValidateEmail -> TODO()
-            is EditProfileEvent.ValidatePassword -> TODO()
-            is EditProfileEvent.ValidatePhone -> TODO()
-            is EditProfileEvent.ValidateUserName -> TODO()
-            EditProfileEvent.VerifyEmail -> TODO()
+            EditProfileEvent.GetLocationFromAddress -> getLocationFromAddress()
+            EditProfileEvent.OnDeletePhoto -> deleteUserAvatar()
+            EditProfileEvent.OnEditPhoto -> Unit//navigator.navigate()
+            is EditProfileEvent.OnMapClick -> setLocation(event.location)
+            EditProfileEvent.RequestUserLocation -> requestCurrentLocation()
+            is EditProfileEvent.SetCode -> setCode(event.code, event.country)
+            is EditProfileEvent.SetImageToCrop -> Unit //setUriForCrop(event.uri)
+            is EditProfileEvent.UpdatePolicyCheck -> updatePolicyCheck(event.isChecked)
+            is EditProfileEvent.UpdateUserAddress -> updateUserAddress(event.address)
+            is EditProfileEvent.ValidateEmail -> validateEmail(event.email)
+            is EditProfileEvent.ValidatePassword -> validatePassword(event.password)
+            is EditProfileEvent.ValidatePhone -> validatePhone(event.phone)
+            is EditProfileEvent.ValidateUserName -> validateUserName(event.name)
+            EditProfileEvent.VerifyEmail -> Unit // navigator.navigate(CreateUserRoute.VerifyEmail.getDestination(_viewState.value.email))
         }
     }
 
@@ -262,5 +266,191 @@ class EditProfileViewModel(
     private fun setCurrentChild(childId: String = "") {
 //        communicator.currentChildId = childId
         navigator.navigate(UserProfileRoutes.ChildSchedule)
+    }
+
+    private fun getLocationFromAddress() {
+        networkExecutor<LatLng?> {
+            execute {
+                locationRepository.getLocationFromAddress(_viewState.value.address)
+            }
+            onSuccess { location ->
+                location?.let {
+                    if (_viewState.value.currentLocation != location)
+                        _viewState.update {
+                            it.copy(
+                                currentLocation = location
+                            )
+                        }
+                }
+            }
+            onError { error ->
+                _uiState.value = EditProfileUiState.OnError(error)
+            }
+            onLoading { isLoading ->
+                _viewState.update {
+                    it.copy(
+                        isLoading = isLoading
+                    )
+                }
+            }
+        }
+    }
+
+    private fun deleteUserAvatar() {
+        networkExecutor {
+            execute {
+                userProfileRepository.deleteUserAvatar()
+            }
+            onSuccess {
+                preferencesDatastoreManager.avatar = Uri.EMPTY.toString()
+                _viewState.update {
+                    it.copy(
+                        userAvatar = Uri.EMPTY
+                    )
+                }
+            }
+            onError { error ->
+                _uiState.value = EditProfileUiState.OnError(error)
+            }
+            onLoading { isLoading ->
+                _viewState.update {
+                    it.copy(
+                        isLoading = isLoading
+                    )
+                }
+            }
+        }
+    }
+
+    private fun setCode(code: String, country: String) {
+        preferencesDatastoreManager.code = code
+        _viewState.update {
+            it.copy(
+                code = code,
+                country = country
+            )
+        }
+    }
+
+    private fun validatePhone(phone: String) {
+        val phoneValid = try {
+            val fullNumber = _viewState.value.code + phone
+            val phoneNumber = phoneNumberUtil.parse(fullNumber, _viewState.value.country)
+            if (phoneNumberUtil.isPossibleNumber(phoneNumber)) ValidField.VALID
+            else ValidField.INVALID
+        } catch (e: Exception) {
+            ValidField.INVALID
+        }
+        preferencesDatastoreManager.phone = phone
+        _viewState.update {
+            it.copy(
+                phone = phone,
+                phoneValid = phoneValid
+            )
+        }
+    }
+
+    private fun validateUserName(name: String) {
+        val nameValid = if (name.length in NAME_LENGTH &&
+            name.all { it.isLetter() || it.isDigit() || it == ' ' || it == '-' })
+            ValidField.VALID
+        else
+            ValidField.INVALID
+
+        preferencesDatastoreManager.name = name
+        _viewState.update {
+            it.copy(
+                name =  name,
+                nameValid = nameValid
+            )
+        }
+    }
+
+    private fun requestCurrentLocation() {
+        networkExecutor<LatLng?> {
+            execute {
+                locationRepository.getCurrentLocation()
+            }
+            onSuccess { location ->
+                location?.let {
+                    _viewState.update {
+                        it.copy(
+                            currentLocation = location
+                        )
+                    }
+                    getAddressFromLocation(location)
+
+                    preferencesDatastoreManager.apply {
+                        latitude = location.latitude
+                        longitude = location.latitude
+                    }
+                }
+            }
+            onError { error ->
+                _uiState.value = EditProfileUiState.OnError(error)
+            }
+            onLoading { isLoading ->
+                _viewState.update {
+                    it.copy(
+                        isLoading = isLoading
+                    )
+                }
+            }
+        }
+    }
+
+    private fun setLocation(location: LatLng) {
+        _viewState.update {
+            it.copy(
+                currentLocation = location
+            )
+        }
+        getAddressFromLocation(location)
+    }
+
+    private fun updateUserAddress(address: String) {
+        preferencesDatastoreManager.address = address
+        _viewState.update {
+            it.copy(
+                address = address
+            )
+        }
+    }
+
+    private fun updatePolicyCheck(isChecked: Boolean) {
+        _viewState.update {
+            it.copy(
+                isPolicyChecked = isChecked
+            )
+        }
+    }
+
+    private fun validateEmail(email: String) {
+        val emailValid = if (email.validateEmail()) ValidField.VALID
+        else ValidField.INVALID
+        _viewState.update {
+            it.copy(
+                email = email,
+                emailValid = emailValid
+            )
+        }
+    }
+
+    private fun validatePassword(password: String) {
+        val passwordValid = if (password.validatePassword()) ValidField.VALID
+        else ValidField.INVALID
+        _viewState.update {
+            it.copy(
+                password = password,
+                passwordValid = passwordValid
+            )
+        }
+    }
+
+    companion object {
+
+        private val NAME_LENGTH = 2..18
+        private const val IMAGE_SIZE = 1 * 1024 * 1024
+        private const val IMAGE_DIM = 512
     }
 }

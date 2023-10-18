@@ -76,7 +76,7 @@ class CreateGroupViewModel(
             is CreateGroupEvent.UpdateMaxAge -> validateMaxAge(event.value)
             is CreateGroupEvent.UpdateMinAge -> validateMinAge(event.value)
             is CreateGroupEvent.UpdateDescription -> updateDescription(event.value)
-            CreateGroupEvent.OnDeletePhoto -> TODO()
+            CreateGroupEvent.OnDeletePhoto -> Unit
             CreateGroupEvent.OnEditPhoto -> navigator.navigate(GroupsScreenRoutes.ImageCrop)
             is CreateGroupEvent.SetImageToCrop -> communicator.uriForCrop = event.uri
         }

@@ -17,6 +17,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -30,13 +31,18 @@ fun ShowHidePasswordTextField(
     placeHolder: String,
     password: String,
     onValueChange: (String) -> Unit,
-    isError: Boolean = false
+    isError: Boolean = false,
+    onFocusChanged: (Boolean) -> Unit
 ) {
 
     var showPassword by remember { mutableStateOf(value = false) }
 
     OutlinedTextField(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .onFocusChanged {
+                onFocusChanged(it.isFocused)
+            }
+            .fillMaxWidth(),
         value = password,
         onValueChange = { onValueChange(it) },
         isError = isError,
