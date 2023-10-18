@@ -44,7 +44,7 @@ fun NavGraphBuilder.settingsNavGraph() {
                 parametersOf(navigator)
             }
             ProfileImageCropScreen(
-                imageForCrop = imageCropViewModel.getUserAvatarBitmap(),
+                screenState = imageCropViewModel.viewState.collectAsStateWithLifecycle(),
                 handleEvent = { imageCropViewModel.saveCroppedImage(it) }
             )
         }

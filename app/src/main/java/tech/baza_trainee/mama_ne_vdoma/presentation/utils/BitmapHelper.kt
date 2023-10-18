@@ -8,8 +8,9 @@ import android.net.Uri
 import android.util.Base64
 import androidx.core.graphics.applyCanvas
 import androidx.core.net.toUri
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import okhttp3.ResponseBody
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.decodeBitmap
 import java.io.ByteArrayOutputStream
 import java.io.File
 
@@ -29,8 +30,18 @@ class BitmapHelper(private val context: Context) {
         return byteArrayOutputStream.toByteArray().size
     }
 
-    fun bitmapFromUri(uri: Uri): Bitmap {
-        return uri.decodeBitmap(context.contentResolver)
+    suspend fun bitmapFromUri(uri: Uri): Bitmap {
+        return withContext(Dispatchers.IO) {
+            try {
+                val inputStream = context.contentResolver.openInputStream(uri)
+                if (inputStream != null) {
+                    return@withContext BitmapFactory.decodeStream(inputStream)
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+            return@withContext DEFAULT_BITMAP
+        }
     }
 
     fun bitmapToFile(bitmap: Bitmap): File {

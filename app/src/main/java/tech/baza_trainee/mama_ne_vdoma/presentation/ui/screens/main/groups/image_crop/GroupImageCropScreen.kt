@@ -2,9 +2,9 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.imag
 
 import android.graphics.Bitmap
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -14,21 +14,18 @@ import com.smarttoolfactory.cropper.model.aspectRatios
 import com.smarttoolfactory.cropper.settings.CropDefaults
 import com.smarttoolfactory.cropper.settings.CropOutlineProperty
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.image_crop.ImageCropScreen
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.image_crop.ImageCropViewState
 
 @Composable
 fun GroupImageCropScreen(
     modifier: Modifier = Modifier,
-    imageForCrop: ImageBitmap = ImageBitmap(512, 512),
+    screenState: State<ImageCropViewState> = mutableStateOf(ImageCropViewState()),
     handleEvent: (Bitmap) -> Unit = {}
 ) {
     val handleSize: Float = LocalDensity.current.run { 20.dp.toPx() }
 
     ImageCropScreen(
-        modifier = Modifier
-        .onGloballyPositioned { layoutCoordinates ->
-            val size = layoutCoordinates.size
-        },
-        imageForCrop = imageForCrop,
+        imageForCrop = screenState.value.image,
         cropProperties = CropDefaults.properties(
             cropOutlineProperty = CropOutlineProperty(
                 OutlineType.Rect,

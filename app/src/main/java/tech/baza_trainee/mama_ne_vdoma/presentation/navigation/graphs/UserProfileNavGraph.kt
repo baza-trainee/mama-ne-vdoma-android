@@ -46,7 +46,7 @@ fun NavGraphBuilder.userProfileGraph() {
         composable(UserProfileRoutes.ImageCrop.route) {
             val userImageCropViewModel: UserImageCropViewModel = koinNavViewModel()
             UserImageCropScreen(
-                imageForCrop = userImageCropViewModel.getUserAvatarBitmap(),
+                screenState = userImageCropViewModel.viewState.collectAsStateWithLifecycle(),
                 handleEvent = { userImageCropViewModel.saveCroppedImage(it) }
             )
         }

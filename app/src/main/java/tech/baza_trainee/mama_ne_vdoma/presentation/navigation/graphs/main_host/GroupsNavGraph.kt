@@ -60,7 +60,7 @@ fun NavGraphBuilder.groupNavGraph() {
                 parametersOf(navigator)
             }
             GroupImageCropScreen(
-                imageForCrop = imageCropViewModel.getUserAvatarBitmap(),
+                screenState = imageCropViewModel.viewState.collectAsStateWithLifecycle(),
                 handleEvent = { imageCropViewModel.saveCroppedImage(it) }
             )
         }
