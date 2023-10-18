@@ -23,6 +23,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -69,7 +70,8 @@ fun CreateUserScreen(
             modifier = Modifier
                 .verticalScroll(scrollState)
                 .imePadding()
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
             verticalArrangement = Arrangement.SpaceBetween,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -91,9 +93,7 @@ fun CreateUserScreen(
                 Spacer(modifier = Modifier.height(24.dp))
 
                 OutlinedTextFieldWithError(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 24.dp),
+                    modifier = Modifier.fillMaxWidth(),
                     text = screenState.value.email,
                     label = "Введіть свій email",
                     onValueChange = { handleEvent(UserCreateEvent.ValidateEmail(it)) },
@@ -110,9 +110,7 @@ fun CreateUserScreen(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 PasswordTextFieldWithError(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 24.dp),
+                    modifier = Modifier.fillMaxWidth(),
                     password = screenState.value.password,
                     onValueChange = { handleEvent(UserCreateEvent.ValidatePassword(it)) },
                     isError = screenState.value.passwordValid == ValidField.INVALID
@@ -121,21 +119,18 @@ fun CreateUserScreen(
                 Spacer(modifier = Modifier.height(2.dp))
 
                 Text(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 24.dp),
+                    modifier = Modifier.fillMaxWidth(),
                     text =
                     "Ваш пароль повинен складатись з 6-24 символів і обов’язково містити великі та малі латинські букви, цифри, спеціальні знаки",
                     fontSize = 14.sp,
-                    fontFamily = redHatDisplayFontFamily
+                    fontFamily = redHatDisplayFontFamily,
+                    style = TextStyle(lineHeight = 18.sp)
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
 
                 PasswordTextFieldWithError(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 24.dp),
+                    modifier = Modifier.fillMaxWidth(),
                     label = "Повторіть ваш пароль",
                     password = screenState.value.confirmPassword,
                     onValueChange = { handleEvent(UserCreateEvent.ValidateConfirmPassword(it)) },
@@ -146,9 +141,7 @@ fun CreateUserScreen(
                 Spacer(modifier = Modifier.height(8.dp))
 
                 PrivacyPolicyBlock(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 24.dp),
+                    modifier = Modifier.fillMaxWidth(),
                     isChecked = screenState.value.isPolicyChecked,
                     onCheckedChanged = { handleEvent(UserCreateEvent.UpdatePolicyCheck(it)) }
                 )
@@ -157,11 +150,9 @@ fun CreateUserScreen(
 
                 Button(
                     modifier = Modifier
-                        .padding(horizontal = 24.dp)
                         .fillMaxWidth()
                         .height(48.dp),
                     onClick = {
-//                        onCreateUser() //for test
                         handleEvent(UserCreateEvent.RegisterUser)
                     },
                     enabled = screenState.value.isAllConform
@@ -219,9 +210,7 @@ fun CreateUserScreen(
             }
 
             SocialLoginBlock(
-                modifier = Modifier,
-                horizontalPadding = 24.dp,
-                getTextWithUnderline("Вже є акаунт? ", "Увійти")
+                textForBottomButton = getTextWithUnderline("Вже є акаунт? ", "Увійти")
             ) { handleEvent(UserCreateEvent.OnLogin) }
         }
 

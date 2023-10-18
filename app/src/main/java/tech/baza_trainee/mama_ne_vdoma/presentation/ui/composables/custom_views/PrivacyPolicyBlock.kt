@@ -12,10 +12,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.functions.getTextWithUnderline
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 
 @Composable
@@ -39,40 +39,47 @@ fun PrivacyPolicyBlock(
             Text(
                 text = "Даю згоду на обробку моїх персональних даних, а також ознайомлена та погоджуюсь із:",
                 fontSize = 14.sp,
+                fontFamily = redHatDisplayFontFamily,
+                style = TextStyle(lineHeight = 18.sp)
+            )
+
+            Spacer(modifier = Modifier.height(4.dp))
+
+            Text(
+                modifier = Modifier.clickable { },
+                text = getTextWithUnderline(
+                    simpleText = "-   ",
+                    underlinedText = "Політикою конфіденційності;",
+                    isBold = true
+                ),
+                fontSize = 14.sp,
                 fontFamily = redHatDisplayFontFamily
             )
 
             Spacer(modifier = Modifier.height(4.dp))
 
             Text(
-                modifier = Modifier.clickable {  },
-                text = "-   Політикою конфіденційності;",
+                modifier = Modifier.clickable { },
+                text = getTextWithUnderline(
+                    simpleText = "-   ",
+                    underlinedText = "Умовами використання мобільного застосунку “Мама-не-вдома”;",
+                    isBold = true
+                ),
                 fontSize = 14.sp,
-                fontFamily = redHatDisplayFontFamily,
-                textDecoration = TextDecoration.Underline,
-                fontWeight = FontWeight.Bold
+                fontFamily = redHatDisplayFontFamily
             )
 
             Spacer(modifier = Modifier.height(4.dp))
 
             Text(
-                modifier = Modifier.clickable {  },
-                text = "-   Умовами використання мобільного застосунку “Мама-не-вдома”;",
+                modifier = Modifier.clickable { },
+                text = getTextWithUnderline(
+                    simpleText = "-   ",
+                    underlinedText = "Відмовою від відповідальності",
+                    isBold = true
+                ),
                 fontSize = 14.sp,
-                fontFamily = redHatDisplayFontFamily,
-                textDecoration = TextDecoration.Underline,
-                fontWeight = FontWeight.Bold
-            )
-
-            Spacer(modifier = Modifier.height(4.dp))
-
-            Text(
-                modifier = Modifier.clickable {  },
-                text = "-   Відмовою від відповідальності",
-                fontSize = 14.sp,
-                fontFamily = redHatDisplayFontFamily,
-                textDecoration = TextDecoration.Underline,
-                fontWeight = FontWeight.Bold
+                fontFamily = redHatDisplayFontFamily
             )
         }
     }

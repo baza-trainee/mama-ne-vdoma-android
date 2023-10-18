@@ -18,6 +18,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -58,7 +59,8 @@ fun NewPasswordScreen(
             modifier = Modifier
                 .imePadding()
                 .fillMaxWidth()
-                .padding(top = 16.dp),
+                .padding(top = 16.dp)
+                .padding(horizontal = 16.dp),
             verticalArrangement = Arrangement.SpaceBetween,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -67,9 +69,7 @@ fun NewPasswordScreen(
                 verticalArrangement = Arrangement.Top
             ) {
                 Text(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 24.dp),
+                    modifier = Modifier.fillMaxWidth(),
                     text = "Відновлення паролю",
                     fontSize = 20.sp,
                     textAlign = TextAlign.Center,
@@ -80,9 +80,7 @@ fun NewPasswordScreen(
                 Spacer(modifier = Modifier.height(4.dp))
 
                 Text(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 24.dp),
+                    modifier = Modifier.fillMaxWidth(),
                     text = "Будь ласка, створіть новий пароль нижче",
                     fontSize = 14.sp,
                     textAlign = TextAlign.Center,
@@ -93,9 +91,7 @@ fun NewPasswordScreen(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 PasswordTextFieldWithError(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 24.dp),
+                    modifier = Modifier.fillMaxWidth(),
                     password = screenState.value.password,
                     onValueChange = { handleEvent(NewPasswordEvent.ValidatePassword(it)) },
                     isError = screenState.value.passwordValid == ValidField.INVALID
@@ -104,20 +100,17 @@ fun NewPasswordScreen(
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 24.dp),
+                    modifier = Modifier.fillMaxWidth(),
                     text = "Ваш пароль повинен складатись з 6-24 символів і обов’язково містити великі та малі латинські букви, цифри, спеціальні знаки",
                     fontSize = 14.sp,
-                    fontFamily = redHatDisplayFontFamily
+                    fontFamily = redHatDisplayFontFamily,
+                    style = TextStyle(lineHeight = 18.sp)
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
 
                 PasswordTextFieldWithError(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 24.dp),
+                    modifier = Modifier.fillMaxWidth(),
                     label = "Повторіть ваш пароль",
                     password = screenState.value.confirmPassword,
                     onValueChange = { handleEvent(NewPasswordEvent.ValidateConfirmPassword(it)) },
@@ -128,7 +121,7 @@ fun NewPasswordScreen(
 
             Button(
                 modifier = Modifier
-                    .padding(horizontal = 24.dp, vertical = 16.dp)
+                    .padding(vertical = 16.dp)
                     .fillMaxWidth()
                     .height(48.dp),
                 onClick = { handleEvent(NewPasswordEvent.ResetPassword) },

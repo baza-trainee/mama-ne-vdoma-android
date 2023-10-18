@@ -66,7 +66,7 @@ fun RestoreSuccessScreen(
 
             Button(
                 modifier = Modifier
-                    .padding(horizontal = 24.dp, vertical = 16.dp)
+                    .padding(horizontal = 16.dp, vertical = 16.dp)
                     .fillMaxWidth()
                     .constrainAs(btnMain) {
                         bottom.linkTo(parent.bottom)

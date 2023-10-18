@@ -63,7 +63,8 @@ fun LoginUserScreen(
         Column(
             modifier = Modifier
                 .imePadding()
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
             verticalArrangement = Arrangement.SpaceBetween,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -85,9 +86,7 @@ fun LoginUserScreen(
                 Spacer(modifier = Modifier.height(24.dp))
 
                 OutlinedTextFieldWithError(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 24.dp),
+                    modifier = Modifier.fillMaxWidth(),
                     text = screenState.value.email,
                     label = "Введіть свій email",
                     onValueChange = { handleEvent(LoginEvent.ValidateEmail(it)) },
@@ -104,9 +103,7 @@ fun LoginUserScreen(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 PasswordTextFieldWithError(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 24.dp),
+                    modifier = Modifier.fillMaxWidth(),
                     password = screenState.value.password,
                     onValueChange = { handleEvent(LoginEvent.ValidatePassword(it)) },
                     isError = screenState.value.passwordValid == ValidField.INVALID
@@ -118,7 +115,6 @@ fun LoginUserScreen(
                     modifier = Modifier
                         .wrapContentWidth()
                         .align(alignment = Alignment.End)
-                        .padding(horizontal = 24.dp)
                         .clickable(
                             indication = null,
                             interactionSource = remember { MutableInteractionSource() }
@@ -133,7 +129,7 @@ fun LoginUserScreen(
 
                 Button(
                     modifier = Modifier
-                        .padding(horizontal = 24.dp, vertical = 16.dp)
+                        .padding(vertical = 16.dp)
                         .fillMaxWidth()
                         .height(48.dp),
                     onClick = { handleEvent(LoginEvent.LoginUser) },
@@ -196,9 +192,7 @@ fun LoginUserScreen(
             }
 
             SocialLoginBlock(
-                modifier = Modifier,
-                horizontalPadding = 24.dp,
-                getTextWithUnderline("Ще немає профілю? ", "Зареєструватись")
+                textForBottomButton = getTextWithUnderline("Ще немає профілю? ", "Зареєструватись")
             ) { handleEvent(LoginEvent.OnCreate) }
         }
 

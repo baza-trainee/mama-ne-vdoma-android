@@ -261,7 +261,8 @@ fun EditProfileScreen(
             text = "Ваш пароль повинен складатись з 6-24 символів і обов’язково містити великі та малі латинські букви, цифри, спеціальні знаки",
             fontSize = 11.sp,
             fontFamily = redHatDisplayFontFamily,
-            color = GrayText
+            color = GrayText,
+            style = TextStyle(lineHeight = 18.sp)
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -292,7 +293,8 @@ fun EditProfileScreen(
             text = "Ваше ім’я повинне складатись із 2-18 символів і може містити букви та цифри, а також пробіли та дефіси",
             fontSize = 11.sp,
             fontFamily = redHatDisplayFontFamily,
-            color = GrayText
+            color = GrayText,
+            style = TextStyle(lineHeight = 18.sp)
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -422,7 +424,8 @@ fun EditProfileScreen(
             text = "Оберіть Ваше місцерозташування на карті або введіть назву у поле для пошуку",
             fontSize = 11.sp,
             fontFamily = redHatDisplayFontFamily,
-            color = GrayText
+            color = GrayText,
+            style = TextStyle(lineHeight = 18.sp)
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -520,7 +523,7 @@ fun EditProfileScreen(
         Button(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 16.dp)
+                .padding(bottom = 16.dp)
                 .height(48.dp),
             onClick = {  },
             colors = ButtonDefaults.buttonColors(
@@ -575,7 +578,8 @@ fun EditProfileScreen(
                             .fillMaxWidth(),
                         text = "Для перевірки емейлу натисніть кнопку “Перевірити емейл”. На пошту прийде лист із повідомленням про підтвердження нової електронної пошти",
                         fontSize = 14.sp,
-                        fontFamily = redHatDisplayFontFamily
+                        fontFamily = redHatDisplayFontFamily,
+                        style = TextStyle(lineHeight = 18.sp)
                     )
 
                     Text(

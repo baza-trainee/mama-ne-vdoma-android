@@ -39,6 +39,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -204,9 +205,10 @@ fun ProfileSettingsScreen(
                     .padding(end = 4.dp)
                     .weight(1f),
                 text = "Сервісні повідомлення з питань відновлення пароля чи підтвердження електронної пошти, відправляються автоматично і не можуть бути відхилені Користувачем",
-                fontSize = 11.sp,
+                fontSize = 12.sp,
                 fontFamily = redHatDisplayFontFamily,
-                color = Color.Red
+                color = Color.Red,
+                style = TextStyle(lineHeight = 18.sp)
             )
             Icon(
                 imageVector = Icons.Filled.Error,
@@ -235,7 +237,7 @@ fun ProfileSettingsScreen(
         Button(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 16.dp)
+                .padding(bottom = 16.dp)
                 .height(48.dp),
             onClick = { handleEvent(ProfileSettingsEvent.LogOut) },
             colors = ButtonDefaults.buttonColors(

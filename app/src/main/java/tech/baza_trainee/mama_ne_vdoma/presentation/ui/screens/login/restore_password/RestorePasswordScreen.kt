@@ -62,7 +62,8 @@ fun RestorePasswordScreen(
             modifier = Modifier
                 .imePadding()
                 .fillMaxWidth()
-                .padding(bottom = 16.dp),
+                .padding(bottom = 16.dp)
+                .padding(horizontal = 16.dp),
             verticalArrangement = Arrangement.SpaceBetween,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -80,7 +81,6 @@ fun RestorePasswordScreen(
                 ) {
                     IconButton(
                         modifier = Modifier
-                            .padding(start = 16.dp)
                             .height(24.dp)
                             .width(24.dp),
                         onClick = { handleEvent(RestorePasswordEvent.OnBack) }
@@ -94,8 +94,7 @@ fun RestorePasswordScreen(
                     Text(
                         modifier = Modifier
                             .weight(1f)
-                            .fillMaxWidth()
-                            .padding(bottom = 8.dp, end = 24.dp),
+                            .fillMaxWidth(),
                         text = "Забули пароль?",
                         fontSize = 20.sp,
                         textAlign = TextAlign.Center,
@@ -104,12 +103,10 @@ fun RestorePasswordScreen(
                     )
                 }
 
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
                 Text(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(24.dp),
+                    modifier = Modifier.fillMaxWidth(),
                     text = "Не турбуйтеся! Будь ласка, введіть " +
                             "свій email за яким ви реєструвались, " +
                             "щоб отримати лист з інструкціями",
@@ -119,12 +116,10 @@ fun RestorePasswordScreen(
                     fontFamily = redHatDisplayFontFamily
                 )
 
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(48.dp))
 
                 OutlinedTextFieldWithError(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 24.dp),
+                    modifier = Modifier.fillMaxWidth(),
                     text = screenState.value.email,
                     label = "Введіть свій email",
                     onValueChange = { handleEvent(RestorePasswordEvent.ValidateEmail(it)) },
@@ -141,7 +136,7 @@ fun RestorePasswordScreen(
 
             Button(
                 modifier = Modifier
-                    .padding(horizontal = 24.dp, vertical = 16.dp)
+                    .padding(vertical = 16.dp)
                     .fillMaxWidth()
                     .height(48.dp),
                 onClick = { handleEvent(RestorePasswordEvent.SendEmail) },
