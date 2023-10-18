@@ -6,7 +6,6 @@ import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -46,14 +45,14 @@ fun HeaderWithOptArrow(
         modifier = Modifier
             .background(MaterialTheme.colorScheme.primary)
             .windowInsetsPadding(WindowInsets.statusBars)
+            .height(if (info.isNotEmpty()) 160.dp else 128.dp)
             .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = if (onBack != null) Arrangement.Top else Arrangement.SpaceBetween
     ) {
         if (onBack != null) {
             Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Start,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -74,9 +73,8 @@ fun HeaderWithOptArrow(
         }
         Text(
             modifier = Modifier
-                .padding(top = 16.dp)
-                .padding(horizontal = 24.dp)
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 16.dp),
             text = title,
             fontSize = 24.sp,
             textAlign = if (onBack != null) TextAlign.Start else TextAlign.Center,
@@ -90,8 +88,7 @@ fun HeaderWithOptArrow(
             if (isOverflowed)
                 Text(
                     modifier = Modifier
-                        .padding(horizontal = 24.dp)
-                        .padding(bottom = 8.dp)
+                        .padding(horizontal = 16.dp, vertical = 16.dp)
                         .fillMaxWidth()
                         .basicMarquee(),
                     text = info,
@@ -102,8 +99,7 @@ fun HeaderWithOptArrow(
             else
                 Text(
                     modifier = Modifier
-                        .padding(horizontal = 24.dp)
-                        .padding(bottom = 8.dp)
+                        .padding(horizontal = 16.dp, vertical = 16.dp)
                         .fillMaxWidth(),
                     text = info,
                     textAlign = TextAlign.Center,
@@ -115,7 +111,6 @@ fun HeaderWithOptArrow(
                         isOverflowed = it.hasVisualOverflow
                     }
                 )
-        } else
-            Spacer(modifier = Modifier.height(64.dp))
+        }
     }
 }

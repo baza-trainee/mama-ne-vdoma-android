@@ -2,8 +2,10 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.standalone.
 
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -17,14 +19,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.constraintlayout.compose.Dimension
 import tech.baza_trainee.mama_ne_vdoma.domain.model.ChildEntity
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.cards.ChildCard
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.LoadingIndicator
@@ -62,42 +64,38 @@ fun ChooseChildStandaloneScreen(
 
         var selectedChild: ChildEntity? by remember { mutableStateOf(null) }
 
-        ConstraintLayout(
-            modifier = Modifier.fillMaxWidth()
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
-            val (topBar, content, btnNext) = createRefs()
-
-            val topGuideline = createGuidelineFromTop(0.2f)
 
             HeaderWithToolbar(
-                modifier = Modifier
-                    .constrainAs(topBar) {
-                        top.linkTo(parent.top)
-                        bottom.linkTo(topGuideline)
-                        height = Dimension.fillToConstraints
-                    },
+                modifier = Modifier.fillMaxWidth(),
                 title = "Пошук групи",
                 avatar = screenState.value.avatar,
                 showNotification = false,
                 onBack = { handleEvent(ChooseChildEvent.OnBack) }
             )
 
+            Spacer(modifier = Modifier.height(4.dp))
+
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .verticalScroll(rememberScrollState())
                     .padding(horizontal = 16.dp)
-                    .constrainAs(content) {
-                        top.linkTo(topGuideline, 16.dp)
-                        bottom.linkTo(btnNext.top, 16.dp)
-                        height = Dimension.fillToConstraints
-                    }
+                    .weight(1f),
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
+                    modifier = Modifier.fillMaxWidth(),
                     text = "Для кого шукаємо групу?",
                     fontFamily = redHatDisplayFontFamily,
                     fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Start
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -116,13 +114,12 @@ fun ChooseChildStandaloneScreen(
                 Spacer(modifier = Modifier.height(8.dp))
             }
 
+            Spacer(modifier = Modifier.weight(1f))
+
             Button(
                 modifier = Modifier
-                    .padding(horizontal = 24.dp, vertical = 16.dp)
+                    .padding(horizontal = 16.dp, vertical = 16.dp)
                     .fillMaxWidth()
-                    .constrainAs(btnNext) {
-                        bottom.linkTo(parent.bottom)
-                    }
                     .height(48.dp),
                 onClick = { handleEvent(ChooseChildEvent.OnChooseChild(selectedChild?.childId.orEmpty())) },
                 enabled = selectedChild != null

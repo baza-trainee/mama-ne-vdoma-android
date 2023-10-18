@@ -37,7 +37,7 @@ fun VerifyEmailScreen(
     modifier: Modifier = Modifier,
     screenState: State<VerifyEmailViewState> = mutableStateOf(VerifyEmailViewState()),
     uiState: State<VerifyEmailUiState> = mutableStateOf(VerifyEmailUiState.Idle),
-    title: String = "0",
+    title: String = "Title",
     handleEvent: (VerifyEmailEvent) -> Unit = { _ -> }
 ) {
     BackHandler { handleEvent(VerifyEmailEvent.OnBack) }
@@ -67,6 +67,9 @@ fun VerifyEmailScreen(
                     .imePadding()
                     .padding(horizontal = 24.dp)
                     .fillMaxWidth()
+                    .weight(1f),
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Spacer(modifier = Modifier.height(16.dp))
 

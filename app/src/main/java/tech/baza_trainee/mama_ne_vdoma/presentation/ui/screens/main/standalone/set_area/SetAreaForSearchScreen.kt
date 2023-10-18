@@ -4,17 +4,14 @@ import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
@@ -87,20 +84,12 @@ fun SetAreaForSearchScreen(
 
         val KM = 1000
 
-        ConstraintLayout(
-            modifier = Modifier.fillMaxWidth()
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            val (topBar, content, btnNext) = createRefs()
-
-            val topGuideline = createGuidelineFromTop(0.2f)
-
             HeaderWithToolbar(
-                modifier = Modifier
-                    .constrainAs(topBar) {
-                        top.linkTo(parent.top)
-                        bottom.linkTo(topGuideline)
-                        height = Dimension.fillToConstraints
-                    },
+                modifier = Modifier.fillMaxWidth(),
                 title = "Пошук групи",
                 avatar = screenState.value.avatar,
                 showNotification = false,
@@ -108,21 +97,21 @@ fun SetAreaForSearchScreen(
             )
 
             if (isPermissionGranted) {
-                Column(
+                ConstraintLayout(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .verticalScroll(rememberScrollState())
-                        .constrainAs(content) {
-                            top.linkTo(topGuideline, 16.dp)
-                            bottom.linkTo(btnNext.top, 16.dp)
-                            height = Dimension.fillToConstraints
-                        },
-                    verticalArrangement = Arrangement.Top
+                        .weight(1f)
                 ) {
+                    val (map, input, slider) = createRefs()
+
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .weight(1f)
+                            .constrainAs(map) {
+                                top.linkTo(parent.top)
+                                bottom.linkTo(input.top, 16.dp)
+                                height = Dimension.fillToConstraints
+                            }
                     ) {
                         CustomGoogleMap(
                             modifier = Modifier.fillMaxWidth(),
@@ -145,8 +134,6 @@ fun SetAreaForSearchScreen(
                         }
                     }
 
-                    Spacer(modifier = Modifier.height(8.dp))
-
                     OutlinedTextField(
                         value = screenState.value.address,
                         onValueChange = {
@@ -156,7 +143,10 @@ fun SetAreaForSearchScreen(
                         },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 24.dp),
+                            .padding(horizontal = 16.dp)
+                            .constrainAs(input) {
+                                bottom.linkTo(slider.top, 8.dp)
+                            },
                         label = { Text("Введіть вашу адресу") },
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedContainerColor = MaterialTheme.colorScheme.surface,
@@ -177,12 +167,13 @@ fun SetAreaForSearchScreen(
                         }
                     )
 
-                    Spacer(modifier = Modifier.height(8.dp))
-
                     Slider(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 24.dp),
+                            .padding(horizontal = 16.dp)
+                            .constrainAs(slider) {
+                                bottom.linkTo(parent.bottom, 8.dp)
+                            },
                         value = screenState.value.radius,
                         onValueChange = {
                             handleEvent(SetAreaEvent.SetAreaRadius(it))
@@ -231,11 +222,8 @@ fun SetAreaForSearchScreen(
 
             Button(
                 modifier = Modifier
-                    .padding(horizontal = 24.dp, vertical = 16.dp)
+                    .padding(horizontal = 16.dp, vertical = 16.dp)
                     .fillMaxWidth()
-                    .constrainAs(btnNext) {
-                        bottom.linkTo(parent.bottom)
-                    }
                     .height(48.dp),
                 onClick = { handleEvent(SetAreaEvent.SaveArea) }
             ) {

@@ -45,7 +45,7 @@ class VerifyEmailViewModel(
             VerifyEmailEvent.ResetUiState -> _uiState.value = VerifyEmailUiState.Idle
             VerifyEmailEvent.ResendCode -> resendCode()
             VerifyEmailEvent.OnBack -> if (password.isNotEmpty()) navigator.goBack()
-            else navigator.navigate(LoginRoutes.Login)
+            else navigator.navigate(LoginRoutes.RestorePassword)
         }
     }
 

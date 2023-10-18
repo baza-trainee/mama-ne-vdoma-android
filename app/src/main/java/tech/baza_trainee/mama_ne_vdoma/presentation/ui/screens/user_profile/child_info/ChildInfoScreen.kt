@@ -20,8 +20,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.constraintlayout.compose.Dimension
 import tech.baza_trainee.mama_ne_vdoma.domain.model.Gender
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.LoadingIndicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.RadioGroup
@@ -56,22 +54,13 @@ fun ChildInfoScreen(
             }
         }
 
-        ConstraintLayout(
+        Column(
             modifier = Modifier
                 .imePadding()
                 .fillMaxWidth()
         ) {
-            val (topBar, content, btnNext) = createRefs()
-
-            val topGuideline = createGuidelineFromTop(0.2f)
-
             HeaderWithOptArrow(
-                modifier = Modifier
-                    .constrainAs(topBar) {
-                        top.linkTo(parent.top)
-                        bottom.linkTo(topGuideline)
-                        height = Dimension.fillToConstraints
-                    },
+                modifier = Modifier.fillMaxWidth(),
                 title = "Розкажіть про свою дитину",
                 onBack = { handleEvent(ChildInfoEvent.OnBack) }
             )
@@ -79,20 +68,14 @@ fun ChildInfoScreen(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .constrainAs(content) {
-                        top.linkTo(topGuideline)
-                        bottom.linkTo(btnNext.top, 16.dp)
-                        height = Dimension.fillToConstraints
-                    },
+                    .padding(horizontal = 24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Top
             ) {
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(8.dp))
 
                 OutlinedTextFieldWithError(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 24.dp),
+                    modifier = Modifier.fillMaxWidth(),
                     text = screenState.value.name,
                     label = "Вкажіть ім'я дитини",
                     onValueChange = { handleEvent(ChildInfoEvent.ValidateChildName(it)) },
@@ -103,9 +86,7 @@ fun ChildInfoScreen(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 OutlinedTextFieldWithError(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 24.dp),
+                    modifier = Modifier.fillMaxWidth(),
                     text = screenState.value.age,
                     label = "Вкажіть вік дитини",
                     onValueChange = { handleEvent(ChildInfoEvent.ValidateAge(it)) },
@@ -129,13 +110,12 @@ fun ChildInfoScreen(
                 )
             }
 
+            Spacer(modifier = Modifier.weight(1f))
+
             Button(
                 modifier = Modifier
-                    .padding(horizontal = 24.dp, vertical = 16.dp)
+                    .padding(horizontal = 16.dp, vertical = 16.dp)
                     .fillMaxWidth()
-                    .constrainAs(btnNext) {
-                        bottom.linkTo(parent.bottom)
-                    }
                     .height(48.dp),
                 onClick = {
                     handleEvent(ChildInfoEvent.SaveChild)

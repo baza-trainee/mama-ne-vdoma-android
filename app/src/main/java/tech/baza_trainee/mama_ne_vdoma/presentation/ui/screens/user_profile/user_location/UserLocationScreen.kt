@@ -1,10 +1,9 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.user_location
 
 import android.widget.Toast
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
@@ -24,6 +23,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
@@ -50,7 +50,7 @@ fun UserLocationScreen(
     SurfaceWithNavigationBars {
         val context = LocalContext.current
 
-        when(val state = uiState.value) {
+        when (val state = uiState.value) {
             RequestState.Idle -> Unit
             is RequestState.OnError -> {
                 if (state.error.isNotBlank()) Toast.makeText(
@@ -65,43 +65,35 @@ fun UserLocationScreen(
         var isPermissionGranted by remember { mutableStateOf(false) }
         LocationPermission { isPermissionGranted = it }
 
-        ConstraintLayout(
+        Column(
             modifier = Modifier
                 .imePadding()
-                .fillMaxWidth(),
+                .fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            val (title, content, btnNext) = createRefs()
-
-            val topGuideline = createGuidelineFromTop(0.2f)
-
             HeaderWithOptArrow(
-                modifier = Modifier
-                    .constrainAs(title) {
-                        top.linkTo(parent.top)
-                        bottom.linkTo(topGuideline)
-                        height = Dimension.fillToConstraints
-                    }
-                    .fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth(),
                 title = "Ваше місцезнаходження",
                 info = "Будь ласка, оберіть ваше місцерозташування," +
                         " щоб ви могли підібрати найближчі групи до вас"
             )
 
             if (isPermissionGranted) {
-                Column(
+                ConstraintLayout(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .constrainAs(content) {
-                            top.linkTo(topGuideline)
-                            bottom.linkTo(btnNext.top, 16.dp)
-                            height = Dimension.fillToConstraints
-                        },
-                    verticalArrangement = Arrangement.Top
+                        .weight(1f)
                 ) {
+                    val (map, input) = createRefs()
+
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .weight(1f)
+                            .constrainAs(map) {
+                                top.linkTo(parent.top)
+                                bottom.linkTo(input.top, 16.dp)
+                                height = Dimension.fillToConstraints
+                            }
                     ) {
                         CustomGoogleMap(
                             modifier = Modifier.fillMaxWidth(),
@@ -117,8 +109,6 @@ fun UserLocationScreen(
                         }
                     }
 
-                    Spacer(modifier = Modifier.height(8.dp))
-
                     OutlinedTextField(
                         value = screenState.value.address,
                         onValueChange = {
@@ -128,7 +118,10 @@ fun UserLocationScreen(
                         },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 24.dp),
+                            .padding(horizontal = 16.dp)
+                            .constrainAs(input) {
+                                bottom.linkTo(parent.bottom, 16.dp)
+                            },
                         label = { Text("Введіть вашу адресу") },
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedContainerColor = MaterialTheme.colorScheme.surface,
@@ -154,11 +147,8 @@ fun UserLocationScreen(
 
             Button(
                 modifier = Modifier
-                    .padding(horizontal = 24.dp, vertical = 16.dp)
+                    .padding(horizontal = 16.dp, vertical = 16.dp)
                     .fillMaxWidth()
-                    .constrainAs(btnNext) {
-                        bottom.linkTo(parent.bottom)
-                    }
                     .height(48.dp),
                 onClick = { handleEvent(UserLocationEvent.SaveUserLocation) }
             ) {

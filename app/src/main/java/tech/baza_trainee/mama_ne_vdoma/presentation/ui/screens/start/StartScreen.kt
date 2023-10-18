@@ -1,19 +1,13 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.start
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.systemBars
-import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -28,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import tech.baza_trainee.mama_ne_vdoma.R
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.SurfaceWithSystemBars
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.functions.getTextWithUnderline
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 
@@ -37,16 +32,9 @@ fun Start(
     onStart: () -> Unit = {},
     onLogin: () -> Unit = {}
 ) {
-    Surface(
-        modifier = Modifier
-            .background(MaterialTheme.colorScheme.background)
-            .windowInsetsPadding(WindowInsets.systemBars)
-            .fillMaxSize()
-    ) {
+    SurfaceWithSystemBars {
         ConstraintLayout(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 24.dp)
+            modifier = Modifier.fillMaxSize()
         ) {
             val (image, btnStart, btnLogin) = createRefs()
 
@@ -70,8 +58,8 @@ fun Start(
                     .constrainAs(btnStart) {
                         bottom.linkTo(btnLogin.top)
                     }
-                    .padding(vertical = 16.dp)
                     .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 16.dp)
                     .height(48.dp),
                 onClick = onStart
             ) {
@@ -95,7 +83,7 @@ fun Start(
                         onLogin()
                     }
                     .fillMaxWidth()
-                    .padding(horizontal = 24.dp, vertical = 16.dp),
+                    .padding(horizontal = 16.dp, vertical = 16.dp),
                 textAlign = TextAlign.Center,
                 fontFamily = redHatDisplayFontFamily
             )

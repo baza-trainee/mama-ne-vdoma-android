@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
@@ -41,8 +42,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.constraintlayout.compose.Dimension
 import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.cards.ChildInfoDesk
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.cards.ParentInfoDesk
@@ -61,9 +60,7 @@ fun FullInfoScreen(
     uiState: State<RequestState> = mutableStateOf(RequestState.Idle),
     handleEvent: (FullInfoEvent) -> Unit = {}
 ) {
-    SurfaceWithNavigationBars(
-        modifier = Modifier
-    ) {
+    SurfaceWithNavigationBars {
         BackHandler { handleEvent(FullInfoEvent.OnBack) }
 
         val context = LocalContext.current
@@ -98,22 +95,15 @@ fun FullInfoScreen(
             colorAnimatable.animateTo(color)
         }
 
-        ConstraintLayout(
+        Column(
             modifier = Modifier
                 .imePadding()
-                .fillMaxWidth()
+                .fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
-            val (topBar, content, btnNext) = createRefs()
-
-            val topGuideline = createGuidelineFromTop(0.2f)
-
             HeaderWithOptArrow(
-                modifier = Modifier
-                    .constrainAs(topBar) {
-                        top.linkTo(parent.top)
-                        bottom.linkTo(topGuideline)
-                        height = Dimension.fillToConstraints
-                    },
+                modifier = Modifier.fillMaxWidth(),
                 title = "Дані Вашого профілю",
                 onBack = { handleEvent(FullInfoEvent.OnBack) }
             )
@@ -123,21 +113,15 @@ fun FullInfoScreen(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .verticalScroll(scrollState)
-                    .constrainAs(content) {
-                        top.linkTo(topGuideline)
-                        bottom.linkTo(btnNext.top, 16.dp)
-                        height = Dimension.fillToConstraints
-                    },
-                horizontalAlignment = Alignment.Start,
+                    .weight(1f)
+                    .padding(horizontal = 16.dp)
+                    .verticalScroll(scrollState),
                 verticalArrangement = Arrangement.Top
             ) {
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Text(
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp)
-                        .fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth(),
                     text = "Ви:",
                     fontFamily = redHatDisplayFontFamily,
                     fontSize = 18.sp,
@@ -148,9 +132,7 @@ fun FullInfoScreen(
 
                 if (screenState.value.isUserInfoFilled)
                     ParentInfoDesk(
-                        modifier = Modifier
-                            .padding(horizontal = 16.dp)
-                            .fillMaxWidth(),
+                        modifier = Modifier.fillMaxWidth(),
                         name = screenState.value.name.ifEmpty { "Введіть Ваше ім'я" },
                         address = screenState.value.address.ifEmpty { "Вкажіть Вашу адресу" },
                         avatar = screenState.value.userAvatar,
@@ -178,9 +160,7 @@ fun FullInfoScreen(
                 Spacer(modifier = Modifier.height(32.dp))
 
                 Text(
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp)
-                        .fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth(),
                     text = "Діти:",
                     fontFamily = redHatDisplayFontFamily,
                     fontSize = 18.sp,
@@ -191,9 +171,7 @@ fun FullInfoScreen(
                     Spacer(modifier = Modifier.height(8.dp))
 
                     ChildInfoDesk(
-                        modifier = Modifier
-                            .padding(horizontal = 16.dp)
-                            .fillMaxWidth(),
+                        modifier = Modifier.fillMaxWidth(),
                         child = child,
                         onEdit = {
                             handleEvent(FullInfoEvent.EditChild(it))
@@ -211,7 +189,6 @@ fun FullInfoScreen(
 
                 Row(
                     modifier = Modifier
-                        .padding(horizontal = 24.dp)
                         .height(32.dp)
                         .fillMaxWidth()
                         .background(
@@ -246,11 +223,8 @@ fun FullInfoScreen(
 
             Button(
                 modifier = Modifier
-                    .padding(horizontal = 24.dp, vertical = 16.dp)
+                    .padding(horizontal = 16.dp, vertical = 16.dp)
                     .fillMaxWidth()
-                    .constrainAs(btnNext) {
-                        bottom.linkTo(parent.bottom)
-                    }
                     .height(48.dp),
                 onClick = { handleEvent(FullInfoEvent.OnNext) }
             ) {

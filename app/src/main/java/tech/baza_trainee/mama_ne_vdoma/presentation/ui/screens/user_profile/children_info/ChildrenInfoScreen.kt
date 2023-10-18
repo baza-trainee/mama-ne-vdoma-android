@@ -24,8 +24,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.constraintlayout.compose.Dimension
 import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.cards.ChildInfoDesk
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.LoadingIndicator
@@ -43,25 +41,14 @@ fun  ChildrenInfoScreen(
     onBack: () -> Unit = {},
     onEdit: () -> Unit = {}
 ) {
-    SurfaceWithNavigationBars(
-        modifier = Modifier
-    ) {
-        ConstraintLayout(
+    SurfaceWithNavigationBars {
+        Column(
             modifier = Modifier
                 .imePadding()
                 .fillMaxWidth()
         ) {
-            val (topBar, content, btnNext) = createRefs()
-
-            val topGuideline = createGuidelineFromTop(0.2f)
-
             HeaderWithOptArrow(
-                modifier = Modifier
-                    .constrainAs(topBar) {
-                        top.linkTo(parent.top)
-                        bottom.linkTo(topGuideline)
-                        height = Dimension.fillToConstraints
-                    },
+                modifier = Modifier.fillMaxWidth(),
                 title = "Анкета дитини",
                 onBack = onBack
             )
@@ -72,11 +59,7 @@ fun  ChildrenInfoScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .verticalScroll(scrollState)
-                    .constrainAs(content) {
-                        top.linkTo(topGuideline)
-                        bottom.linkTo(btnNext.top, 16.dp)
-                        height = Dimension.fillToConstraints
-                    },
+                    .padding(horizontal = 16.dp),
                 horizontalAlignment = Alignment.Start,
                 verticalArrangement = Arrangement.Top
             ) {
@@ -84,9 +67,7 @@ fun  ChildrenInfoScreen(
 
                 screenState.value.children.forEach { child ->
                     ChildInfoDesk(
-                        modifier = Modifier
-                            .padding(horizontal = 24.dp)
-                            .fillMaxWidth(),
+                        modifier = Modifier.fillMaxWidth(),
                         child = child,
                         onEdit = {
                             onHandleChildrenInfoEvent(ChildrenInfoEvent.SetChild(it))
@@ -101,7 +82,6 @@ fun  ChildrenInfoScreen(
 
                 Row(
                     modifier = Modifier
-                        .padding(horizontal = 24.dp)
                         .fillMaxWidth()
                         .clickable {
                             onHandleChildrenInfoEvent(ChildrenInfoEvent.ResetChild)
@@ -126,13 +106,12 @@ fun  ChildrenInfoScreen(
                 }
             }
 
+            Spacer(modifier = Modifier.weight(1f))
+
             Button(
                 modifier = Modifier
-                    .padding(horizontal = 24.dp, vertical = 16.dp)
+                    .padding(horizontal = 16.dp, vertical = 16.dp)
                     .fillMaxWidth()
-                    .constrainAs(btnNext) {
-                        bottom.linkTo(parent.bottom)
-                    }
                     .height(48.dp),
                 onClick = onNext
             ) {

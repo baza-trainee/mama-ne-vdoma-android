@@ -5,27 +5,22 @@ import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
@@ -47,6 +42,7 @@ import androidx.constraintlayout.compose.Dimension
 import kotlinx.coroutines.launch
 import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.Indicator
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.SurfaceWithNavigationBars
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -72,12 +68,7 @@ fun InfoScreen(
 
     val pagerState = rememberPagerState(pageCount = { pageTextContent.size })
 
-    Surface(
-        modifier = Modifier
-            .background(MaterialTheme.colorScheme.background)
-            .windowInsetsPadding(WindowInsets.navigationBars)
-            .fillMaxSize(),
-    ) {
+    SurfaceWithNavigationBars {
         ConstraintLayout(
             modifier = Modifier.fillMaxSize()
         ) {
@@ -172,7 +163,7 @@ fun InfoScreen(
                                     top.linkTo(parent.top)
                                     bottom.linkTo(parent.bottom)
                                 }
-                                .padding(horizontal = 24.dp)
+                                .padding(horizontal = 16.dp)
                         ) {
                             repeat(pageTextContent.size) { iteration ->
                                 val isSelected by remember {
@@ -196,7 +187,7 @@ fun InfoScreen(
                                 .constrainAs(btnSkip) {
                                     top.linkTo(parent.top)
                                     bottom.linkTo(parent.bottom)
-                                    end.linkTo(btnNext.start, 24.dp)
+                                    end.linkTo(btnNext.start, 16.dp)
                                 },
                             text = "Пропустити",
                             fontWeight = FontWeight.Bold,
@@ -210,7 +201,7 @@ fun InfoScreen(
                                 .constrainAs(btnNext) {
                                     top.linkTo(parent.top)
                                     bottom.linkTo(parent.bottom)
-                                    end.linkTo(parent.end, 24.dp)
+                                    end.linkTo(parent.end, 16.dp)
                                 },
                             onClick = {
                                 with(pagerState) {
@@ -238,7 +229,7 @@ fun InfoScreen(
                 ) {
                     Button(
                         modifier = Modifier
-                            .padding(horizontal = 24.dp)
+                            .padding(horizontal = 16.dp)
                             .fillMaxWidth()
                             .height(48.dp),
                         onClick = onCreate
