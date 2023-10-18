@@ -66,7 +66,7 @@ fun ParentInfoDesk(
                 color = MaterialTheme.colorScheme.surface,
                 shape = RoundedCornerShape(8.dp)
             )
-            .padding(horizontal = 16.dp)
+            .padding(all = 16.dp)
     ) {
         Row(
             modifier = Modifier

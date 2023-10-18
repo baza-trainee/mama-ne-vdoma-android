@@ -64,7 +64,7 @@ fun GroupInfoDesk(
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
                 .padding(bottom = 2.dp, top = 16.dp)
-                .height(88.dp),
+                .height(96.dp),
             contentAlignment = Alignment.Center
         ) {
             AsyncImage(
@@ -77,7 +77,7 @@ fun GroupInfoDesk(
                     .build(),
                 placeholder = painterResource(id = R.drawable.no_photo),
                 contentDescription = "group_avatar",
-                contentScale = ContentScale.Fit
+                contentScale = ContentScale.FillWidth
             )
 
             Row(

@@ -1,5 +1,6 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.cards
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -57,30 +58,26 @@ fun ChildInfoDesk(
     onEdit: (String) -> Unit = {},
     onDelete: (String) -> Unit = {}
 ) {
-    val localModifier = Modifier
-
     Column(
-        modifier = localModifier
+        modifier = Modifier
             .fillMaxWidth()
             .background(
                 color = MaterialTheme.colorScheme.surface,
                 shape = RoundedCornerShape(8.dp)
             )
-            .padding(horizontal = 16.dp)
+            .padding(all = 16.dp)
     ) {
         Row(
-            modifier = localModifier
-                .fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.End
         ) {
-            Icon(
+            Image(
                 painter = painterResource(id = if (child.gender == Gender.BOY) R.drawable.ic_boy else R.drawable.ic_girl),
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.primary
+                contentDescription = null
             )
             Column(
-                modifier = localModifier
+                modifier = Modifier
                     .padding(horizontal = 8.dp)
                     .fillMaxWidth()
                     .weight(1f)
@@ -113,7 +110,7 @@ fun ChildInfoDesk(
             }
         }
 
-        Spacer(modifier = localModifier.height(8.dp))
+        Spacer(modifier = Modifier.height(8.dp))
 
         val morning = child.schedule.schedule.filter { it.value.morning }.keys
         val noon = child.schedule.schedule.filter { it.value.noon }.keys
