@@ -26,7 +26,7 @@ import tech.baza_trainee.mama_ne_vdoma.domain.repository.LocationRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.PageNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.GroupsScreenRoutes
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.GroupImageCommunicator
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.image_crop.CropImageCommunicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.BitmapHelper
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
@@ -38,7 +38,7 @@ import java.time.DayOfWeek
 
 class CreateGroupViewModel(
     private val childId: String,
-    private val communicator: GroupImageCommunicator,
+    private val communicator: CropImageCommunicator,
     private val navigator: PageNavigator,
     private val userProfileRepository: UserProfileRepository,
     private val filesRepository: FilesRepository,

@@ -5,15 +5,17 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import org.koin.androidx.compose.navigation.koinNavViewModel
+import org.koin.compose.koinInject
 import org.koin.core.parameter.parametersOf
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.Graphs
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.GroupsScreenRoutes
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.image_crop.ImageCropViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.choose_child.ChooseChildScreen
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.choose_child.ChooseChildViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.create_group.CreateGroupScreen
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.create_group.CreateGroupViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.image_crop.GroupImageCropScreen
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.image_crop.GroupImageCropViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.my_groups.MyGroupsScreen
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.my_groups.MyGroupsViewModel
 
@@ -53,7 +55,10 @@ fun NavGraphBuilder.groupNavGraph() {
             )
         }
         composable(GroupsScreenRoutes.ImageCrop.route) {
-            val imageCropViewModel: GroupImageCropViewModel = koinNavViewModel()
+            val navigator = koinInject<ScreenNavigator>()
+            val imageCropViewModel: ImageCropViewModel = koinNavViewModel {
+                parametersOf(navigator)
+            }
             GroupImageCropScreen(
                 imageForCrop = imageCropViewModel.getUserAvatarBitmap(),
                 handleEvent = { imageCropViewModel.saveCroppedImage(it) }

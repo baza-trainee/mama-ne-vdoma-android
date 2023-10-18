@@ -1,16 +1,20 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.edit
 
+import android.graphics.Bitmap
 import android.net.Uri
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.model.LatLng
 import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import tech.baza_trainee.mama_ne_vdoma.domain.model.ChildEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.ScheduleModel
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UserProfileEntity
@@ -19,9 +23,12 @@ import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatasto
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.FilesRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.LocationRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
-import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.PageNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.Graphs
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.SettingsScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.UserProfileRoutes
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.image_crop.CropImageCommunicator
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.BitmapHelper
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.networkExecutor
@@ -32,11 +39,13 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onLoading
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onSuccess
 
 class EditProfileViewModel(
-    private val navigator: ScreenNavigator,
+    private val navigator: PageNavigator,
+    private val communicator: CropImageCommunicator,
     private val userProfileRepository: UserProfileRepository,
     private val filesRepository: FilesRepository,
     private val locationRepository: LocationRepository,
     private val phoneNumberUtil: PhoneNumberUtil,
+    private val bitmapHelper: BitmapHelper,
     private val preferencesDatastoreManager: UserPreferencesDatastoreManager
 ): ViewModel() {
 
@@ -47,8 +56,14 @@ class EditProfileViewModel(
     val uiState: State<EditProfileUiState>
         get() = _uiState
 
+    private var avatarServerPath = ""
+
     init {
         getUserInfo()
+
+        viewModelScope.launch {
+            communicator.croppedImageFlow.collect(::saveUserAvatar)
+        }
     }
 
     fun handleEvent(event: EditProfileEvent) {
@@ -63,11 +78,11 @@ class EditProfileViewModel(
             EditProfileEvent.SaveInfo -> Unit
             EditProfileEvent.GetLocationFromAddress -> getLocationFromAddress()
             EditProfileEvent.OnDeletePhoto -> deleteUserAvatar()
-            EditProfileEvent.OnEditPhoto -> Unit//navigator.navigate()
+            EditProfileEvent.OnEditPhoto -> navigator.navigate(SettingsScreenRoutes.EditProfilePhoto)
             is EditProfileEvent.OnMapClick -> setLocation(event.location)
             EditProfileEvent.RequestUserLocation -> requestCurrentLocation()
             is EditProfileEvent.SetCode -> setCode(event.code, event.country)
-            is EditProfileEvent.SetImageToCrop -> Unit //setUriForCrop(event.uri)
+            is EditProfileEvent.SetImageToCrop -> communicator.uriForCrop = event.uri
             is EditProfileEvent.UpdatePolicyCheck -> updatePolicyCheck(event.isChecked)
             is EditProfileEvent.UpdateUserAddress -> updateUserAddress(event.address)
             is EditProfileEvent.ValidateEmail -> validateEmail(event.email)
@@ -152,16 +167,16 @@ class EditProfileViewModel(
 //                }
 
                 if (entity.location.coordinates.isNotEmpty()) {
-                    getAddressFromLocation(
-                        latLng = LatLng(
-                            entity.location.coordinates[1],
-                            entity.location.coordinates[0]
-                        )
+                    val location = LatLng(
+                        entity.location.coordinates[1],
+                        entity.location.coordinates[0]
                     )
-//                    preferencesDatastoreManager.apply {
-//                        latitude = entity.location.coordinates[1]
-//                        longitude = entity.location.coordinates[0]
-//                    }
+
+                    getAddressFromLocation(location)
+
+                    _viewState.update {
+                        it.copy (currentLocation = location)
+                    }
                 }
 
                 getChildren()
@@ -281,6 +296,10 @@ class EditProfileViewModel(
                                 currentLocation = location
                             )
                         }
+                    preferencesDatastoreManager.apply {
+                        latitude = it.latitude
+                        longitude = it.longitude
+                    }
                 }
             }
             onError { error ->
@@ -444,6 +463,47 @@ class EditProfileViewModel(
                 password = password,
                 passwordValid = passwordValid
             )
+        }
+    }
+
+    private fun saveUserAvatar(image: Bitmap) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val newImage = if (image.height > IMAGE_DIM)
+                Bitmap.createScaledBitmap(image, IMAGE_DIM, IMAGE_DIM, true)
+            else image
+            val newImageSize = bitmapHelper.getSize(newImage)
+            if (newImageSize < IMAGE_SIZE) {
+                val uri = bitmapHelper.bitmapToFile(newImage).toUri()
+                _viewState.update {
+                    it.copy(
+                        userAvatar = uri
+                    )
+                }
+                uploadUserAvatar(newImage)
+            } else {
+                _uiState.value = EditProfileUiState.OnAvatarError
+            }
+        }
+    }
+
+    private fun uploadUserAvatar(image: Bitmap) {
+        networkExecutor<String> {
+            execute {
+                filesRepository.saveAvatar(image)
+            }
+            onSuccess {
+                avatarServerPath = it
+            }
+            onError { error ->
+                _uiState.value = EditProfileUiState.OnError(error)
+            }
+            onLoading { isLoading ->
+                _viewState.update {
+                    it.copy(
+                        isLoading = isLoading
+                    )
+                }
+            }
         }
     }
 

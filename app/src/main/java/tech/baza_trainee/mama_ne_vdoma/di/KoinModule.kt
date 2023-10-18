@@ -37,17 +37,17 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.PageNav
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.PageNavigatorImpl
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigatorImpl
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.image_crop.CropImageCommunicator
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.image_crop.ImageCropViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.verify_email.VerifyEmailViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.UserCreateViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.login.LoginScreenViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.new_password.NewPasswordScreenViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.restore_password.RestorePasswordScreenViewModel
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.GroupImageCommunicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.GroupSearchStandaloneCommunicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.SearchResultsCommunicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.choose_child.ChooseChildViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.create_group.CreateGroupViewModel
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.image_crop.GroupImageCropViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.my_groups.MyGroupsViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.host.HostViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.main.MainViewModel
@@ -143,6 +143,8 @@ val standaloneGroupSearchModule = module {
 }
 
 val mainModule = module {
+    single { CropImageCommunicator() }
+    single { SearchResultsCommunicator() }
     single<PageNavigator> { PageNavigatorImpl() }
     viewModel { (page: Int) ->
         HostViewModel(
@@ -172,8 +174,6 @@ val mainModule = module {
             get()
         )
     }
-
-    single { GroupImageCommunicator() }
     viewModel { (childId: String) ->
         CreateGroupViewModel(
             childId,
@@ -186,13 +186,12 @@ val mainModule = module {
             get()
         )
     }
-    viewModel { GroupImageCropViewModel(get(), get(), get()) }
+    viewModel { (navigator: ScreenNavigator) -> ImageCropViewModel(navigator, get(), get()) }
 
-    single { SearchResultsCommunicator() }
     viewModel { SearchUserViewModel(get(), get(), get()) }
     viewModel { SearchResultsViewModel(get(), get(), get()) }
     viewModel { ProfileSettingsViewModel(get(), get(), get(), get()) }
-    viewModel { EditProfileViewModel(get(), get(), get(), get(), get(), get()) }
+    viewModel { EditProfileViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
 }
 
 const val BASE_URL = "http://75.119.137.204:3000/"

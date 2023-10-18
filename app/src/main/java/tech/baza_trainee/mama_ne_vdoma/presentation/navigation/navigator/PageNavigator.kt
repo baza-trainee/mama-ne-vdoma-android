@@ -18,19 +18,9 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.MAIN_
 import java.util.Deque
 import java.util.LinkedList
 
-interface PageNavigator {
-
-    val navigationChannel: Channel<NavigationIntent>
+interface PageNavigator: ScreenNavigator {
 
     val pagesFlow: StateFlow<PageWithRoute>
-
-    fun goBack()
-
-    fun goBackOnMain(scope: CoroutineScope)
-
-    fun navigate(route: CommonRoute)
-
-    fun navigateOnMain(scope: CoroutineScope, route: CommonRoute)
 
     fun goToPage(page: Int)
 

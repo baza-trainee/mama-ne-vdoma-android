@@ -1,4 +1,4 @@
-package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common
+package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.image_crop
 
 import android.graphics.Bitmap
 import android.net.Uri
@@ -8,7 +8,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.BitmapHelper
 
-class GroupImageCommunicator {
+class CropImageCommunicator {
+
     var uriForCrop: Uri = Uri.EMPTY
 
     private val _croppedImageFlow = MutableStateFlow(BitmapHelper.DEFAULT_BITMAP)
