@@ -55,7 +55,7 @@ fun NewPasswordScreen(
         }
 
         Column(
-            modifier = modifier
+            modifier = Modifier
                 .imePadding()
                 .fillMaxWidth()
                 .padding(top = 16.dp),
@@ -63,11 +63,11 @@ fun NewPasswordScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Column(
-                modifier = modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.Top
             ) {
                 Text(
-                    modifier = modifier
+                    modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 24.dp),
                     text = "Відновлення паролю",
@@ -77,10 +77,10 @@ fun NewPasswordScreen(
                     fontFamily = redHatDisplayFontFamily
                 )
 
-                Spacer(modifier = modifier.height(4.dp))
+                Spacer(modifier = Modifier.height(4.dp))
 
                 Text(
-                    modifier = modifier
+                    modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 24.dp),
                     text = "Будь ласка, створіть новий пароль нижче",
@@ -90,10 +90,10 @@ fun NewPasswordScreen(
                     fontFamily = redHatDisplayFontFamily
                 )
 
-                Spacer(modifier = modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
                 PasswordTextFieldWithError(
-                    modifier = modifier
+                    modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 24.dp),
                     password = screenState.value.password,
@@ -101,10 +101,10 @@ fun NewPasswordScreen(
                     isError = screenState.value.passwordValid == ValidField.INVALID
                 )
 
-                Spacer(modifier = modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
-                    modifier = modifier
+                    modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 24.dp),
                     text = "Ваш пароль повинен складатись з 6-24 символів і обов’язково містити великі та малі латинські букви, цифри, спеціальні знаки",
@@ -112,10 +112,10 @@ fun NewPasswordScreen(
                     fontFamily = redHatDisplayFontFamily
                 )
 
-                Spacer(modifier = modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
                 PasswordTextFieldWithError(
-                    modifier = modifier
+                    modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 24.dp),
                     label = "Повторіть ваш пароль",
@@ -127,7 +127,7 @@ fun NewPasswordScreen(
             }
 
             Button(
-                modifier = modifier
+                modifier = Modifier
                     .padding(horizontal = 24.dp, vertical = 16.dp)
                     .fillMaxWidth()
                     .height(48.dp),

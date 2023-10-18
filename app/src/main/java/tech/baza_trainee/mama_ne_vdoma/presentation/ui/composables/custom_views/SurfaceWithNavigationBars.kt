@@ -15,7 +15,7 @@ fun SurfaceWithNavigationBars(
     content: @Composable () -> Unit
 ) {
     Surface(
-        modifier = modifier
+        modifier = Modifier
             .windowInsetsPadding(WindowInsets.navigationBars)
             .fillMaxSize(),
         color = MaterialTheme.colorScheme.background

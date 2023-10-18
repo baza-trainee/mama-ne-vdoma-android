@@ -36,6 +36,7 @@ import java.util.UUID
 @Composable
 @Preview
 fun ChildInfoDesk(
+    modifier: Modifier = Modifier,
     child: ChildEntity = ChildEntity(
         childId = UUID.randomUUID().toString(),
         name = "Іванко",
@@ -60,7 +61,6 @@ fun ChildInfoDesk(
 
     Column(
         modifier = localModifier
-            .padding(horizontal = 16.dp)
             .fillMaxWidth()
             .background(
                 color = MaterialTheme.colorScheme.surface,

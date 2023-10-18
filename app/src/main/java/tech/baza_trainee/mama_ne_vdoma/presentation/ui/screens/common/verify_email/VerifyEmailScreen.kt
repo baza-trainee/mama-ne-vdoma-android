@@ -58,20 +58,20 @@ fun VerifyEmailScreen(
         }
 
         Column(
-            modifier = modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.SpaceBetween,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Column(
-                modifier = modifier
+                modifier = Modifier
                     .imePadding()
                     .padding(horizontal = 24.dp)
                     .fillMaxWidth()
             ) {
-                Spacer(modifier = modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
                 Text(
-                    modifier = modifier
+                    modifier = Modifier
                         .fillMaxWidth(),
                     text = title,
                     fontSize = 20.sp,
@@ -80,10 +80,10 @@ fun VerifyEmailScreen(
                     fontFamily = redHatDisplayFontFamily
                 )
 
-                Spacer(modifier = modifier.height(48.dp))
+                Spacer(modifier = Modifier.height(48.dp))
 
                 Text(
-                    modifier = modifier
+                    modifier = Modifier
                         .fillMaxWidth(),
                     text = "Ми відправили на вашу пошту електронний лист з кодом із 4 символів." +
                             " Перевірте пошту, і якщо не знайдете листа — теку «спам»",
@@ -93,7 +93,7 @@ fun VerifyEmailScreen(
                     fontFamily = redHatDisplayFontFamily
                 )
 
-                Spacer(modifier = modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(32.dp))
 
                 OtpTextField(
                     otpText = screenState.value.otp,
@@ -105,7 +105,7 @@ fun VerifyEmailScreen(
                     Text(
                         text = "Ви ввели невірний код",
                         color = Color.Red,
-                        modifier = modifier
+                        modifier = Modifier
                             .padding(horizontal = 24.dp),
                         fontFamily = redHatDisplayFontFamily,
                         style = TextStyle(
@@ -116,7 +116,7 @@ fun VerifyEmailScreen(
             }
 
             Button(
-                modifier = modifier
+                modifier = Modifier
                     .padding(horizontal = 24.dp, vertical = 16.dp)
                     .fillMaxWidth()
                     .height(48.dp),

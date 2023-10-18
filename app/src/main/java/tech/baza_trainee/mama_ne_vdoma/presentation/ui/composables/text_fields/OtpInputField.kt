@@ -49,7 +49,7 @@ fun OtpTextField(
     var textFieldLoaded by remember { mutableStateOf(false) }
 
     BasicTextField(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxWidth()
             .focusRequester(focusRequester)
             .onGloballyPositioned {
@@ -68,7 +68,7 @@ fun OtpTextField(
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
         decorationBox = {
             Row(
-                modifier = modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically
             ) {

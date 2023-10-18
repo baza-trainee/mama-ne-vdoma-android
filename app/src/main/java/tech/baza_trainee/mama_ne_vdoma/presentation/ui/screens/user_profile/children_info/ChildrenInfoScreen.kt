@@ -44,10 +44,10 @@ fun  ChildrenInfoScreen(
     onEdit: () -> Unit = {}
 ) {
     SurfaceWithNavigationBars(
-        modifier = modifier
+        modifier = Modifier
     ) {
         ConstraintLayout(
-            modifier = modifier
+            modifier = Modifier
                 .imePadding()
                 .fillMaxWidth()
         ) {
@@ -56,7 +56,7 @@ fun  ChildrenInfoScreen(
             val topGuideline = createGuidelineFromTop(0.2f)
 
             HeaderWithOptArrow(
-                modifier = modifier
+                modifier = Modifier
                     .constrainAs(topBar) {
                         top.linkTo(parent.top)
                         bottom.linkTo(topGuideline)
@@ -69,7 +69,7 @@ fun  ChildrenInfoScreen(
             val scrollState = rememberScrollState()
             
             Column(
-                modifier = modifier
+                modifier = Modifier
                     .fillMaxWidth()
                     .verticalScroll(scrollState)
                     .constrainAs(content) {
@@ -80,11 +80,14 @@ fun  ChildrenInfoScreen(
                 horizontalAlignment = Alignment.Start,
                 verticalArrangement = Arrangement.Top
             ) {
-                Spacer(modifier = modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
                 screenState.value.children.forEach { child ->
                     ChildInfoDesk(
-                        child,
+                        modifier = Modifier
+                            .padding(horizontal = 24.dp)
+                            .fillMaxWidth(),
+                        child = child,
                         onEdit = {
                             onHandleChildrenInfoEvent(ChildrenInfoEvent.SetChild(it))
                             onEdit()
@@ -93,11 +96,11 @@ fun  ChildrenInfoScreen(
                             onHandleChildrenInfoEvent(ChildrenInfoEvent.DeleteChild(it))
                         }
                     )
-                    Spacer(modifier = modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
                 }
 
                 Row(
-                    modifier = modifier
+                    modifier = Modifier
                         .padding(horizontal = 24.dp)
                         .fillMaxWidth()
                         .clickable {
@@ -116,7 +119,7 @@ fun  ChildrenInfoScreen(
                         text = "Додати ще дитину",
                         fontFamily = redHatDisplayFontFamily,
                         fontSize = 20.sp,
-                        modifier = modifier
+                        modifier = Modifier
                             .padding(start = 8.dp)
                             .fillMaxWidth(1f)
                     )
@@ -124,7 +127,7 @@ fun  ChildrenInfoScreen(
             }
 
             Button(
-                modifier = modifier
+                modifier = Modifier
                     .padding(horizontal = 24.dp, vertical = 16.dp)
                     .fillMaxWidth()
                     .constrainAs(btnNext) {

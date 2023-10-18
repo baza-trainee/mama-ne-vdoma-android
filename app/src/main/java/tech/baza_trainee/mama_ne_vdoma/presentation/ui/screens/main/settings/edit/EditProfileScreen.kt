@@ -4,6 +4,7 @@ import android.net.Uri
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -18,14 +19,20 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -39,11 +46,13 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -55,12 +64,22 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.canopas.campose.countrypicker.CountryPickerBottomSheet
+import com.google.maps.android.compose.Marker
+import com.google.maps.android.compose.MarkerState
+import tech.baza_trainee.mama_ne_vdoma.R
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.cards.ChildInfoDesk
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.cards.ParentInfoDesk
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.CustomGoogleMap
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.LoadingIndicator
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.PrivacyPolicyBlock
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.UserAvatarWithCameraAndGallery
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.text_fields.OutlinedTextFieldWithError
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.text_fields.PasswordTextFieldWithError
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.GrayText
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.SlateGray
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.ButtonText
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
@@ -92,6 +111,7 @@ fun EditProfileScreen(
     }
 
     var openBottomSheet by rememberSaveable { mutableStateOf(false) }
+    var showEmailVerificationDialog by rememberSaveable { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -110,6 +130,7 @@ fun EditProfileScreen(
 
         Spacer(modifier = Modifier.height(8.dp))
 
+        //Photo
         Text(
             modifier = Modifier.fillMaxWidth(),
             text = "Фото",
@@ -153,25 +174,38 @@ fun EditProfileScreen(
                     .weight(1f),
                 text = "Формат файлу - jpg, jpeg, gif, tif, tiff, tga, bmp, png",
                 fontSize = 11.sp,
-                fontFamily = redHatDisplayFontFamily
+                fontFamily = redHatDisplayFontFamily,
+                color = GrayText
             )
         }
 
         Spacer(modifier = Modifier.height(16.dp))
 
+        //Login
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                modifier = Modifier.weight(1f),
+                modifier = Modifier.wrapContentWidth(),
                 text = "Логін",
                 fontSize = 14.sp,
                 fontFamily = redHatDisplayFontFamily
             )
+
+            IconButton(onClick = { showEmailVerificationDialog = true }) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_info),
+                    contentDescription = "email_info"
+                )
+            }
+
+            Spacer(modifier = Modifier.weight(1f))
+
             Text(
                 modifier = Modifier
-                    .weight(1f)
+                    .wrapContentWidth()
                     .clickable(
                         indication = null,
                         interactionSource = remember { MutableInteractionSource() }
@@ -181,12 +215,12 @@ fun EditProfileScreen(
                 fontSize = 14.sp,
                 textDecoration = TextDecoration.Underline,
                 textAlign = TextAlign.End,
-                color = MaterialTheme.colorScheme.primary
+                color = GrayText
             )
         }
 
         OutlinedTextFieldWithError(
-            modifier = modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             text = screenState.value.email,
             label = "Введіть свій email",
             onValueChange = { handleEvent(EditProfileEvent.ValidateEmail(it)) },
@@ -200,8 +234,9 @@ fun EditProfileScreen(
             }
         )
 
-        Spacer(modifier = modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
+        //Password
         Text(
             modifier = Modifier.fillMaxWidth(),
             text = "Пароль",
@@ -210,7 +245,8 @@ fun EditProfileScreen(
         )
 
         PasswordTextFieldWithError(
-            modifier = modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
+            label = "Введіть новий пароль",
             password = screenState.value.password,
             onValueChange = { handleEvent(EditProfileEvent.ValidatePassword(it)) },
             isError = screenState.value.passwordValid == ValidField.INVALID
@@ -219,14 +255,18 @@ fun EditProfileScreen(
         Spacer(modifier = Modifier.height(4.dp))
 
         Text(
-            modifier = modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
             text = "Ваш пароль повинен складатись з 6-24 символів і обов’язково містити великі та малі латинські букви, цифри, спеціальні знаки",
             fontSize = 11.sp,
-            fontFamily = redHatDisplayFontFamily
+            fontFamily = redHatDisplayFontFamily,
+            color = GrayText
         )
 
-        Spacer(modifier = modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
+        //Nickname
         Text(
             modifier = Modifier.fillMaxWidth(),
             text = "Нікнейм/Ім’я користувача",
@@ -246,14 +286,18 @@ fun EditProfileScreen(
         Spacer(modifier = Modifier.height(4.dp))
 
         Text(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
             text = "Ваше ім’я повинне складатись із 2-18 символів і може містити букви та цифри, а також пробіли та дефіси",
             fontSize = 11.sp,
-            fontFamily = redHatDisplayFontFamily
+            fontFamily = redHatDisplayFontFamily,
+            color = GrayText
         )
 
-        Spacer(modifier = modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
+        //Phone number
         var isPhoneFocused by remember { mutableStateOf(false) }
 
         Text(
@@ -325,18 +369,167 @@ fun EditProfileScreen(
             )
         }
         if (screenState.value.phoneValid == ValidField.INVALID && isPhoneFocused) {
-            Spacer(modifier = modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(4.dp))
 
             Text(
                 text = "Ви ввели некоректний номер",
                 color = Color.Red,
-                modifier = modifier
+                modifier = Modifier
                     .padding(horizontal = 24.dp),
                 fontFamily = redHatDisplayFontFamily,
                 style = TextStyle(
                     fontFamily = redHatDisplayFontFamily
                 ),
                 fontSize = 14.sp
+            )
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        //Location
+        Text(
+            modifier = Modifier.fillMaxWidth(),
+            text = "Місце розташування",
+            fontSize = 14.sp,
+            fontFamily = redHatDisplayFontFamily
+        )
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(160.dp)
+        ) {
+            CustomGoogleMap(
+                modifier = Modifier.fillMaxWidth(),
+                location = screenState.value.currentLocation,
+                onMyLocationButtonClick = { handleEvent(EditProfileEvent.RequestUserLocation) },
+                onMapClick = { handleEvent(EditProfileEvent.OnMapClick(it)) }
+            ) {
+                Marker(
+                    state = MarkerState(position = screenState.value.currentLocation),
+                    title = "Ви тут",
+                    snippet = "поточне місцезнаходження"
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(4.dp))
+
+        Text(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
+            text = "Оберіть Ваше місцерозташування на карті або введіть назву у поле для пошуку",
+            fontSize = 11.sp,
+            fontFamily = redHatDisplayFontFamily,
+            color = GrayText
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        OutlinedTextField(
+            value = screenState.value.address,
+            onValueChange = {
+                handleEvent(EditProfileEvent.UpdateUserAddress(it))
+            },
+            modifier = Modifier.fillMaxWidth(),
+            label = { Text("Введіть вашу адресу") },
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedContainerColor = MaterialTheme.colorScheme.surface,
+                unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                disabledContainerColor = MaterialTheme.colorScheme.surface,
+                focusedBorderColor = MaterialTheme.colorScheme.primary,
+                unfocusedBorderColor = MaterialTheme.colorScheme.surface,
+            ),
+            trailingIcon = {
+                IconButton(
+                    onClick = { handleEvent(EditProfileEvent.GetLocationFromAddress) }
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Search,
+                        contentDescription = "search_location"
+                    )
+                }
+            },
+            maxLines = 2
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        PrivacyPolicyBlock(
+            modifier = Modifier.fillMaxWidth(),
+            isChecked = screenState.value.isPolicyChecked,
+            onCheckedChanged = { handleEvent(EditProfileEvent.UpdatePolicyCheck(it)) }
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        //Schedule Info
+        Text(
+            modifier = Modifier.fillMaxWidth(),
+            text = "Мій розклад",
+            fontSize = 16.sp,
+            fontFamily = redHatDisplayFontFamily,
+            fontWeight = FontWeight.Bold
+        )
+
+        ParentInfoDesk(
+            modifier = Modifier.fillMaxWidth(),
+            name = screenState.value.name,
+            avatar = screenState.value.userAvatar,
+            address = "",
+            schedule = screenState.value.schedule,
+            onEdit = { handleEvent(EditProfileEvent.EditUser) }
+        )
+
+        if (screenState.value.children.isNotEmpty()) {
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                text = "Діти:",
+                fontSize = 16.sp,
+                fontFamily = redHatDisplayFontFamily,
+                fontWeight = FontWeight.Bold
+            )
+
+            screenState.value.children.forEach { child ->
+                Spacer(modifier = Modifier.height(8.dp))
+
+                ChildInfoDesk(
+                    modifier = Modifier.fillMaxWidth(),
+                    child = child,
+                    onEdit = { handleEvent(EditProfileEvent.EditChild(it)) },
+                    onDelete = { handleEvent(EditProfileEvent.DeleteChild(it)) }
+                )
+            }
+        }
+
+        Button(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 16.dp)
+                .height(48.dp),
+            onClick = {  }
+        ) {
+            ButtonText(
+                text = "Зберегти зміни"
+            )
+        }
+
+        Button(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 16.dp)
+                .height(48.dp),
+            onClick = {  },
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color.Red,
+                contentColor = MaterialTheme.colorScheme.onPrimary
+            )
+        ) {
+            ButtonText(
+                text = "Видалити акаунт"
             )
         }
 
@@ -363,6 +556,63 @@ fun EditProfileScreen(
                 }
             )
         }
+
+        if (showEmailVerificationDialog) {
+            AlertDialog(
+                onDismissRequest = { showEmailVerificationDialog = false }
+            ) {
+                Column(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(MaterialTheme.colorScheme.background)
+                        .padding(16.dp)
+                        .fillMaxWidth()
+                ) {
+                    Text(
+                        modifier = Modifier
+                            .padding(top = 16.dp)
+                            .padding(horizontal = 16.dp)
+                            .fillMaxWidth(),
+                        text = "Для перевірки емейлу натисніть кнопку “Перевірити емейл”. На пошту прийде лист із повідомленням про підтвердження нової електронної пошти",
+                        fontSize = 14.sp,
+                        fontFamily = redHatDisplayFontFamily
+                    )
+
+                    Text(
+                        text = "Закрити",
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center,
+                        color = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier
+                            .wrapContentWidth()
+                            .align(Alignment.End)
+                            .clickable { showEmailVerificationDialog = false }
+                            .padding(16.dp)
+                    )
+                }
+            }
+        }
+
+//        var selectedChild = remember { mutableIntStateOf(0) }
+//
+//        if (screenState.value.children.isNotEmpty()) {
+//            when (screenState.value.children.size) {
+//                1 -> Unit
+//                2 -> {
+//                    Row(
+//                        modifier = Modifier.fillMaxWidth(),
+//                        verticalAlignment = Alignment.CenterVertically
+//                    ) {
+//
+//                    }
+//                }
+//                else -> {
+//
+//                }
+//            }
+//        }
+
+        if (screenState.value.isLoading) LoadingIndicator()
     }
 }
 

@@ -54,14 +54,14 @@ fun EmailConfirmScreen(
         }
 
         ConstraintLayout(
-            modifier = modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth()
         ) {
             val (title, image, btnStart, btnLogin) = createRefs()
 
             val topGuideline = createGuidelineFromTop(0.2f)
 
             HeaderWithOptArrow(
-                modifier = modifier
+                modifier = Modifier
                     .fillMaxWidth()
                     .constrainAs(title) {
                         top.linkTo(parent.top)
@@ -75,7 +75,7 @@ fun EmailConfirmScreen(
             )
 
             Image(
-                modifier = modifier
+                modifier = Modifier
                     .constrainAs(image) {
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
@@ -90,7 +90,7 @@ fun EmailConfirmScreen(
             )
 
             Button(
-                modifier = modifier
+                modifier = Modifier
                     .padding(horizontal = 24.dp, vertical = 16.dp)
                     .fillMaxWidth()
                     .constrainAs(btnStart) {
@@ -106,7 +106,7 @@ fun EmailConfirmScreen(
 
             Text(
                 text = getTextWithUnderline("Не отримали листа? ", "Відправити ще раз"),
-                modifier = modifier
+                modifier = Modifier
                     .constrainAs(btnLogin) {
                         bottom.linkTo(parent.bottom)
                     }

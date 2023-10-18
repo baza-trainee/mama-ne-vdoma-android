@@ -120,7 +120,7 @@ fun CreateGroupScreen(
         )
 
         Text(
-            modifier = modifier
+            modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 8.dp),
             text = "Назва групи повинна складатись від 6 до 18 символів, може містити латинські чи кириличні букви та цифри, пробіли, дефіси. НЕ є унікальною",
@@ -128,7 +128,7 @@ fun CreateGroupScreen(
             fontSize = 12.sp
         )
 
-        Spacer(modifier = modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(8.dp))
 
         Text(
             modifier = Modifier.fillMaxWidth(),
@@ -229,7 +229,7 @@ fun CreateGroupScreen(
             Text(
                 text = errorText,
                 color = Color.Red,
-                modifier = modifier.padding(top = 4.dp),
+                modifier = Modifier.padding(top = 4.dp),
                 style = TextStyle(
                     fontFamily = redHatDisplayFontFamily
                 ),
@@ -237,7 +237,7 @@ fun CreateGroupScreen(
             )
         }
 
-        Spacer(modifier = modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(8.dp))
 
         Text(
             modifier = Modifier.fillMaxWidth(),
@@ -260,7 +260,7 @@ fun CreateGroupScreen(
             }
         )
 
-        Spacer(modifier = modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(8.dp))
 
         Text(
             modifier = Modifier.fillMaxWidth(),
@@ -272,7 +272,7 @@ fun CreateGroupScreen(
         Spacer(modifier = Modifier.width(4.dp))
 
         GroupAvatarWithCameraAndGallery(
-            modifier = modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             avatar = screenState.value.avatar,
             canDelete = false,
             setUriForCrop = {
@@ -302,7 +302,7 @@ fun CreateGroupScreen(
         )
 
         Button(
-            modifier = modifier
+            modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 16.dp)
                 .height(48.dp),

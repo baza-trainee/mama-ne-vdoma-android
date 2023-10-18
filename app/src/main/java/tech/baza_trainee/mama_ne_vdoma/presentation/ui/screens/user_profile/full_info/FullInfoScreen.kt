@@ -62,7 +62,7 @@ fun FullInfoScreen(
     handleEvent: (FullInfoEvent) -> Unit = {}
 ) {
     SurfaceWithNavigationBars(
-        modifier = modifier
+        modifier = Modifier
     ) {
         BackHandler { handleEvent(FullInfoEvent.OnBack) }
 
@@ -99,7 +99,7 @@ fun FullInfoScreen(
         }
 
         ConstraintLayout(
-            modifier = modifier
+            modifier = Modifier
                 .imePadding()
                 .fillMaxWidth()
         ) {
@@ -108,7 +108,7 @@ fun FullInfoScreen(
             val topGuideline = createGuidelineFromTop(0.2f)
 
             HeaderWithOptArrow(
-                modifier = modifier
+                modifier = Modifier
                     .constrainAs(topBar) {
                         top.linkTo(parent.top)
                         bottom.linkTo(topGuideline)
@@ -121,7 +121,7 @@ fun FullInfoScreen(
             val scrollState = rememberScrollState()
 
             Column(
-                modifier = modifier
+                modifier = Modifier
                     .fillMaxWidth()
                     .verticalScroll(scrollState)
                     .constrainAs(content) {
@@ -132,10 +132,10 @@ fun FullInfoScreen(
                 horizontalAlignment = Alignment.Start,
                 verticalArrangement = Arrangement.Top
             ) {
-                Spacer(modifier = modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
                 Text(
-                    modifier = modifier
+                    modifier = Modifier
                         .padding(horizontal = 16.dp)
                         .fillMaxWidth(),
                     text = "Ви:",
@@ -144,10 +144,13 @@ fun FullInfoScreen(
                     fontWeight = FontWeight.Bold
                 )
 
-                Spacer(modifier = modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(8.dp))
 
                 if (screenState.value.isUserInfoFilled)
                     ParentInfoDesk(
+                        modifier = Modifier
+                            .padding(horizontal = 16.dp)
+                            .fillMaxWidth(),
                         name = screenState.value.name.ifEmpty { "Введіть Ваше ім'я" },
                         address = screenState.value.address.ifEmpty { "Вкажіть Вашу адресу" },
                         avatar = screenState.value.userAvatar,
@@ -157,7 +160,7 @@ fun FullInfoScreen(
                     )
                 else
                     Box(
-                        modifier = modifier
+                        modifier = Modifier
                             .fillMaxWidth()
                             .height(64.dp)
                             .background(colorAnimatable.value)
@@ -172,10 +175,10 @@ fun FullInfoScreen(
                         )
                     }
 
-                Spacer(modifier = modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(32.dp))
 
                 Text(
-                    modifier = modifier
+                    modifier = Modifier
                         .padding(horizontal = 16.dp)
                         .fillMaxWidth(),
                     text = "Діти:",
@@ -185,10 +188,13 @@ fun FullInfoScreen(
                 )
 
                 screenState.value.children.forEach { child ->
-                    Spacer(modifier = modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(8.dp))
 
                     ChildInfoDesk(
-                        child,
+                        modifier = Modifier
+                            .padding(horizontal = 16.dp)
+                            .fillMaxWidth(),
+                        child = child,
                         onEdit = {
                             handleEvent(FullInfoEvent.EditChild(it))
                         },
@@ -198,13 +204,13 @@ fun FullInfoScreen(
                     )
                 }
 
-                Spacer(modifier = modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
                 val animateAddChildBackground = !screenState.value.isChildInfoFilled &&
                         screenState.value.isUserInfoFilled
 
                 Row(
-                    modifier = modifier
+                    modifier = Modifier
                         .padding(horizontal = 24.dp)
                         .height(32.dp)
                         .fillMaxWidth()
@@ -229,7 +235,7 @@ fun FullInfoScreen(
                         else "Додати дитину",
                         fontFamily = redHatDisplayFontFamily,
                         fontSize = 20.sp,
-                        modifier = modifier
+                        modifier = Modifier
                             .padding(start = 8.dp)
                             .fillMaxWidth(1f),
                         color = if (screenState.value.isUserInfoFilled) MaterialTheme.colorScheme.onBackground
@@ -239,7 +245,7 @@ fun FullInfoScreen(
             }
 
             Button(
-                modifier = modifier
+                modifier = Modifier
                     .padding(horizontal = 24.dp, vertical = 16.dp)
                     .fillMaxWidth()
                     .constrainAs(btnNext) {

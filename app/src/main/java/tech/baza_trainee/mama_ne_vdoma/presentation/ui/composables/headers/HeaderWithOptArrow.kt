@@ -43,7 +43,7 @@ fun HeaderWithOptArrow(
     onBack: (() -> Unit)? = null,
 ) {
     Column(
-        modifier = modifier
+        modifier = Modifier
             .background(MaterialTheme.colorScheme.primary)
             .windowInsetsPadding(WindowInsets.statusBars)
             .fillMaxWidth(),
@@ -52,13 +52,13 @@ fun HeaderWithOptArrow(
     ) {
         if (onBack != null) {
             Row(
-                modifier = modifier
+                modifier = Modifier
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.Start,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 IconButton(
-                    modifier = modifier
+                    modifier = Modifier
                         .padding(start = 16.dp, top = 16.dp)
                         .height(24.dp)
                         .width(24.dp),
@@ -73,7 +73,7 @@ fun HeaderWithOptArrow(
             }
         }
         Text(
-            modifier = modifier
+            modifier = Modifier
                 .padding(top = 16.dp)
                 .padding(horizontal = 24.dp)
                 .fillMaxWidth(),
@@ -89,7 +89,7 @@ fun HeaderWithOptArrow(
 
             if (isOverflowed)
                 Text(
-                    modifier = modifier
+                    modifier = Modifier
                         .padding(horizontal = 24.dp)
                         .padding(bottom = 8.dp)
                         .fillMaxWidth()
@@ -101,7 +101,7 @@ fun HeaderWithOptArrow(
                 )
             else
                 Text(
-                    modifier = modifier
+                    modifier = Modifier
                         .padding(horizontal = 24.dp)
                         .padding(bottom = 8.dp)
                         .fillMaxWidth(),
@@ -116,6 +116,6 @@ fun HeaderWithOptArrow(
                     }
                 )
         } else
-            Spacer(modifier = modifier.height(64.dp))
+            Spacer(modifier = Modifier.height(64.dp))
     }
 }

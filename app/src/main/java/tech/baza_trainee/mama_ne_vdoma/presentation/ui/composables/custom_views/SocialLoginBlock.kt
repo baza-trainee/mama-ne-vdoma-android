@@ -29,13 +29,13 @@ fun SocialLoginBlock(
     onAction: () -> Unit = {},
 ) {
     Column(
-        modifier = modifier
+        modifier = Modifier
             .padding(horizontal = horizontalPadding)
             .fillMaxWidth()
             .wrapContentHeight()
     ) {
 //        OutlinedButton(
-//            modifier = modifier
+//            modifier = Modifier
 //                .fillMaxWidth()
 //                .height(48.dp),
 //            onClick = onGoogleLogin,
@@ -46,7 +46,7 @@ fun SocialLoginBlock(
 //            border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary)
 //        ) {
 //            Row(
-//                modifier = modifier
+//                modifier = Modifier
 //                    .fillMaxWidth(),
 //                horizontalArrangement = Arrangement.Center,
 //                verticalAlignment = Alignment.CenterVertically
@@ -54,17 +54,17 @@ fun SocialLoginBlock(
 //                Image(
 //                    painter = painterResource(id = R.drawable.ic_google),
 //                    contentDescription = "Google",
-//                    modifier = modifier.size(ButtonDefaults.IconSize)
+//                    modifier = Modifier.size(ButtonDefaults.IconSize)
 //                )
-//                Spacer(modifier = modifier.size(ButtonDefaults.IconSpacing))
+//                Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
 //                Text(text = "Продовжити з Google")
 //            }
 //        }
 //
-//        Spacer(modifier = modifier.height(24.dp))
+//        Spacer(modifier = Modifier.height(24.dp))
 //
 //        OutlinedButton(
-//            modifier = modifier
+//            modifier = Modifier
 //                .fillMaxWidth()
 //                .height(48.dp),
 //            onClick = onGoogleLogin,
@@ -75,25 +75,25 @@ fun SocialLoginBlock(
 //            border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary)
 //        ) {
 //            Row(
-//                modifier = modifier.fillMaxWidth(),
+//                modifier = Modifier.fillMaxWidth(),
 //                horizontalArrangement = Arrangement.Center,
 //                verticalAlignment = Alignment.CenterVertically
 //            ) {
 //                Image(
 //                    painter = painterResource(id = R.drawable.ic_fb),
 //                    contentDescription = "Google",
-//                    modifier = modifier.size(ButtonDefaults.IconSize)
+//                    modifier = Modifier.size(ButtonDefaults.IconSize)
 //                )
-//                Spacer(modifier = modifier.size(ButtonDefaults.IconSpacing))
+//                Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
 //                Text(text = "Продовжити з Facebook")
 //            }
 //        }
 //
-//        Spacer(modifier = modifier.height(24.dp))
+//        Spacer(modifier = Modifier.height(24.dp))
 
         if (textForBottomButton is AnnotatedString)
             Text(
-                modifier = modifier
+                modifier = Modifier
                     .clickable(
                         indication = null,
                         interactionSource = remember { MutableInteractionSource() }
@@ -108,7 +108,7 @@ fun SocialLoginBlock(
             )
         else
             Text(
-                modifier = modifier
+                modifier = Modifier
                     .clickable(
                         indication = null,
                         interactionSource = remember { MutableInteractionSource() }

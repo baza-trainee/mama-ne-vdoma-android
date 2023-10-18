@@ -36,7 +36,7 @@ fun ShowHidePasswordTextField(
     var showPassword by remember { mutableStateOf(value = false) }
 
     OutlinedTextField(
-        modifier = modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth(),
         value = password,
         onValueChange = { onValueChange(it) },
         isError = isError,

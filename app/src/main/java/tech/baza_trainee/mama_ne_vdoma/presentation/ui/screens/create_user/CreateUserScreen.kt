@@ -4,7 +4,6 @@ import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -15,7 +14,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material3.Button
-import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -30,6 +28,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.LoadingIndicator
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.PrivacyPolicyBlock
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.SocialLoginBlock
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.SurfaceWithSystemBars
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.functions.getTextWithUnderline
@@ -67,7 +66,7 @@ fun CreateUserScreen(
         val scrollState = rememberScrollState()
 
         Column(
-            modifier = modifier
+            modifier = Modifier
                 .verticalScroll(scrollState)
                 .imePadding()
                 .fillMaxWidth(),
@@ -75,12 +74,12 @@ fun CreateUserScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Column(
-                modifier = modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth()
             ) {
-                Spacer(modifier = modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
                 Text(
-                    modifier = modifier
+                    modifier = Modifier
                         .fillMaxWidth(),
                     text = "Створити профіль",
                     fontSize = 20.sp,
@@ -89,10 +88,10 @@ fun CreateUserScreen(
                     fontFamily = redHatDisplayFontFamily
                 )
 
-                Spacer(modifier = modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(24.dp))
 
                 OutlinedTextFieldWithError(
-                    modifier = modifier
+                    modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 24.dp),
                     text = screenState.value.email,
@@ -108,10 +107,10 @@ fun CreateUserScreen(
                     }
                 )
 
-                Spacer(modifier = modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
                 PasswordTextFieldWithError(
-                    modifier = modifier
+                    modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 24.dp),
                     password = screenState.value.password,
@@ -119,10 +118,10 @@ fun CreateUserScreen(
                     isError = screenState.value.passwordValid == ValidField.INVALID
                 )
 
-                Spacer(modifier = modifier.height(2.dp))
+                Spacer(modifier = Modifier.height(2.dp))
 
                 Text(
-                    modifier = modifier
+                    modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 24.dp),
                     text =
@@ -131,10 +130,10 @@ fun CreateUserScreen(
                     fontFamily = redHatDisplayFontFamily
                 )
 
-                Spacer(modifier = modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
                 PasswordTextFieldWithError(
-                    modifier = modifier
+                    modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 24.dp),
                     label = "Повторіть ваш пароль",
@@ -144,35 +143,20 @@ fun CreateUserScreen(
                     errorText = "Паролі не співпадають"
                 )
 
-                Spacer(modifier = modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(8.dp))
 
-                Row(
-                    modifier = modifier
+                PrivacyPolicyBlock(
+                    modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 24.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Checkbox(
-                        checked = screenState.value.isPolicyChecked,
-                        onCheckedChange = { handleEvent(UserCreateEvent.UpdatePolicyCheck(it)) }
-                    )
-                    Text(
-                        modifier = modifier
-                            .weight(1f)
-                            .fillMaxWidth(),
-                        text = getTextWithUnderline(
-                            "Даю згоду на використання моїх даних згідно з ",
-                            "Політикою конфіденційності"
-                        ),
-                        fontSize = 14.sp,
-                        fontFamily = redHatDisplayFontFamily
-                    )
-                }
+                    isChecked = screenState.value.isPolicyChecked,
+                    onCheckedChanged = { handleEvent(UserCreateEvent.UpdatePolicyCheck(it)) }
+                )
 
-                Spacer(modifier = modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(24.dp))
 
                 Button(
-                    modifier = modifier
+                    modifier = Modifier
                         .padding(horizontal = 24.dp)
                         .fillMaxWidth()
                         .height(48.dp),
@@ -187,14 +171,14 @@ fun CreateUserScreen(
                     )
                 }
 
-                Spacer(modifier = modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(32.dp))
 
 //                ConstraintLayout(
-//                    modifier = modifier.fillMaxWidth()
+//                    modifier = Modifier.fillMaxWidth()
 //                ) {
 //                    val (box1, text, box2) = createRefs()
 //                    Box(
-//                        modifier = modifier
+//                        modifier = Modifier
 //                            .height(height = 2.dp)
 //                            .background(color = Gray)
 //                            .constrainAs(box1) {
@@ -206,7 +190,7 @@ fun CreateUserScreen(
 //                            }
 //                    )
 //                    Text(
-//                        modifier = modifier
+//                        modifier = Modifier
 //                            .constrainAs(text) {
 //                                start.linkTo(box1.end, 16.dp)
 //                                end.linkTo(box2.start, 16.dp)
@@ -218,7 +202,7 @@ fun CreateUserScreen(
 //                        fontSize = 14.sp,
 //                    )
 //                    Box(
-//                        modifier = modifier
+//                        modifier = Modifier
 //                            .height(height = 2.dp)
 //                            .background(color = Gray)
 //                            .constrainAs(box2) {
@@ -231,11 +215,11 @@ fun CreateUserScreen(
 //                    )
 //                }
 
-                Spacer(modifier = modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(32.dp))
             }
 
             SocialLoginBlock(
-                modifier = modifier,
+                modifier = Modifier,
                 horizontalPadding = 24.dp,
                 getTextWithUnderline("Вже є акаунт? ", "Увійти")
             ) { handleEvent(UserCreateEvent.OnLogin) }

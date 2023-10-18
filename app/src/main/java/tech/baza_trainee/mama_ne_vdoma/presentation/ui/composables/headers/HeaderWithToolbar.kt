@@ -33,7 +33,7 @@ fun HeaderWithToolbar(
     onBack: () -> Unit = {},
 ) {
     Column(
-        modifier = modifier
+        modifier = Modifier
             .background(MaterialTheme.colorScheme.primary)
             .windowInsetsPadding(WindowInsets.statusBars)
             .fillMaxWidth(),
@@ -47,10 +47,10 @@ fun HeaderWithToolbar(
             notificationCount = notificationCount
         ) { onBack() }
 
-        Spacer(modifier = modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            modifier = modifier
+            modifier = Modifier
                 .padding(top = 16.dp)
                 .padding(horizontal = 24.dp)
                 .fillMaxWidth(),
@@ -61,6 +61,6 @@ fun HeaderWithToolbar(
             fontFamily = redHatDisplayFontFamily
         )
 
-        Spacer(modifier = modifier.height(64.dp))
+        Spacer(modifier = Modifier.height(64.dp))
     }
 }

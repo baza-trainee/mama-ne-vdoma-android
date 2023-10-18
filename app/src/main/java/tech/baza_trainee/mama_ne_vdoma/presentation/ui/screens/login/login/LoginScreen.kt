@@ -61,19 +61,19 @@ fun LoginUserScreen(
         }
         
         Column(
-            modifier = modifier
+            modifier = Modifier
                 .imePadding()
                 .fillMaxWidth(),
             verticalArrangement = Arrangement.SpaceBetween,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Column(
-                modifier = modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth()
             ) {
-                Spacer(modifier = modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
                 Text(
-                    modifier = modifier
+                    modifier = Modifier
                         .fillMaxWidth(),
                     text = "Увійти у свій профіль",
                     fontSize = 20.sp,
@@ -82,10 +82,10 @@ fun LoginUserScreen(
                     fontFamily = redHatDisplayFontFamily
                 )
 
-                Spacer(modifier = modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(24.dp))
 
                 OutlinedTextFieldWithError(
-                    modifier = modifier
+                    modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 24.dp),
                     text = screenState.value.email,
@@ -101,10 +101,10 @@ fun LoginUserScreen(
                     }
                 )
 
-                Spacer(modifier = modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
                 PasswordTextFieldWithError(
-                    modifier = modifier
+                    modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 24.dp),
                     password = screenState.value.password,
@@ -112,10 +112,10 @@ fun LoginUserScreen(
                     isError = screenState.value.passwordValid == ValidField.INVALID
                 )
 
-                Spacer(modifier = modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
-                    modifier = modifier
+                    modifier = Modifier
                         .wrapContentWidth()
                         .align(alignment = Alignment.End)
                         .padding(horizontal = 24.dp)
@@ -129,10 +129,10 @@ fun LoginUserScreen(
                     fontFamily = redHatDisplayFontFamily
                 )
 
-                Spacer(modifier = modifier.height(48.dp))
+                Spacer(modifier = Modifier.height(48.dp))
 
                 Button(
-                    modifier = modifier
+                    modifier = Modifier
                         .padding(horizontal = 24.dp, vertical = 16.dp)
                         .fillMaxWidth()
                         .height(48.dp),
@@ -147,14 +147,14 @@ fun LoginUserScreen(
                     )
                 }
 
-                Spacer(modifier = modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(32.dp))
 
 //                ConstraintLayout(
-//                    modifier = modifier.fillMaxWidth()
+//                    modifier = Modifier.fillMaxWidth()
 //                ) {
 //                    val (box1, text, box2) = createRefs()
 //                    Box(
-//                        modifier = modifier
+//                        modifier = Modifier
 //                            .height(height = 2.dp)
 //                            .background(color = Gray)
 //                            .constrainAs(box1) {
@@ -166,7 +166,7 @@ fun LoginUserScreen(
 //                            }
 //                    )
 //                    Text(
-//                        modifier = modifier
+//                        modifier = Modifier
 //                            .constrainAs(text) {
 //                                start.linkTo(box1.end, 16.dp)
 //                                end.linkTo(box2.start, 16.dp)
@@ -179,7 +179,7 @@ fun LoginUserScreen(
 //                        fontFamily = redHatDisplayFontFamily
 //                    )
 //                    Box(
-//                        modifier = modifier
+//                        modifier = Modifier
 //                            .height(height = 2.dp)
 //                            .background(color = Gray)
 //                            .constrainAs(box2) {
@@ -192,11 +192,11 @@ fun LoginUserScreen(
 //                    )
 //                }
 
-                Spacer(modifier = modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(32.dp))
             }
 
             SocialLoginBlock(
-                modifier = modifier,
+                modifier = Modifier,
                 horizontalPadding = 24.dp,
                 getTextWithUnderline("Ще немає профілю? ", "Зареєструватись")
             ) { handleEvent(LoginEvent.OnCreate) }

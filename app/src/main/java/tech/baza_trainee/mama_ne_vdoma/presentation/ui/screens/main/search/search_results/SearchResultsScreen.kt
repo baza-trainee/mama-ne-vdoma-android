@@ -61,7 +61,7 @@ fun SearchResultsScreen(
         }
 
         Button(
-            modifier = modifier
+            modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 16.dp)
                 .height(48.dp),

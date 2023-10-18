@@ -61,7 +61,7 @@ fun UserInfoScreen(
     handleEvent: (UserInfoEvent) -> Unit = { _ -> }
 ) {
     SurfaceWithSystemBars(
-        modifier = modifier
+        modifier = Modifier
     ) {
         BackHandler { handleEvent(UserInfoEvent.OnBack) }
 
@@ -116,7 +116,7 @@ fun UserInfoScreen(
                     fontFamily = redHatDisplayFontFamily
                 )
 
-                Spacer(modifier = modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
                 UserAvatarWithCameraAndGallery(
                     modifier = Modifier
@@ -217,12 +217,12 @@ fun UserInfoScreen(
                     )
                 }
                 if (screenState.value.phoneValid == ValidField.INVALID && isPhoneFocused) {
-                    Spacer(modifier = modifier.height(4.dp))
+                    Spacer(modifier = Modifier.height(4.dp))
 
                     Text(
                         text = "Ви ввели некоректний номер",
                         color = Color.Red,
-                        modifier = modifier
+                        modifier = Modifier
                             .padding(horizontal = 24.dp),
                         fontFamily = redHatDisplayFontFamily,
                         style = TextStyle(

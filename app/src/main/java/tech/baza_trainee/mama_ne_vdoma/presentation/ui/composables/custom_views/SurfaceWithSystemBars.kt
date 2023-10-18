@@ -15,7 +15,7 @@ fun SurfaceWithSystemBars(
     content: @Composable () -> Unit
 ) {
     Surface(
-        modifier = modifier
+        modifier = Modifier
             .windowInsetsPadding(WindowInsets.systemBars)
             .fillMaxSize(),
         color = MaterialTheme.colorScheme.background

@@ -57,7 +57,7 @@ fun ChildInfoScreen(
         }
 
         ConstraintLayout(
-            modifier = modifier
+            modifier = Modifier
                 .imePadding()
                 .fillMaxWidth()
         ) {
@@ -66,7 +66,7 @@ fun ChildInfoScreen(
             val topGuideline = createGuidelineFromTop(0.2f)
 
             HeaderWithOptArrow(
-                modifier = modifier
+                modifier = Modifier
                     .constrainAs(topBar) {
                         top.linkTo(parent.top)
                         bottom.linkTo(topGuideline)
@@ -77,7 +77,7 @@ fun ChildInfoScreen(
             )
 
             Column(
-                modifier = modifier
+                modifier = Modifier
                     .fillMaxWidth()
                     .constrainAs(content) {
                         top.linkTo(topGuideline)
@@ -87,10 +87,10 @@ fun ChildInfoScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Top
             ) {
-                Spacer(modifier = modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
                 OutlinedTextFieldWithError(
-                    modifier = modifier
+                    modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 24.dp),
                     text = screenState.value.name,
@@ -100,10 +100,10 @@ fun ChildInfoScreen(
                     errorText = "Ви ввели некоректнe ім'я"
                 )
 
-                Spacer(modifier = modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
                 OutlinedTextFieldWithError(
-                    modifier = modifier
+                    modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 24.dp),
                     text = screenState.value.age,
@@ -114,12 +114,12 @@ fun ChildInfoScreen(
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                 )
 
-                Spacer(modifier = modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
                 val genderOptions = listOf(Gender.BOY, Gender.GIRL)
 
                 RadioGroup(
-                    modifier = modifier
+                    modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 8.dp),
                     radioGroupOptions = genderOptions,
@@ -130,7 +130,7 @@ fun ChildInfoScreen(
             }
 
             Button(
-                modifier = modifier
+                modifier = Modifier
                     .padding(horizontal = 24.dp, vertical = 16.dp)
                     .fillMaxWidth()
                     .constrainAs(btnNext) {

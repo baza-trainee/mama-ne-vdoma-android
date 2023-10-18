@@ -41,7 +41,7 @@ fun PermissionDialog(
     ) {
         Column(
             modifier = Modifier
-                .clip(RoundedCornerShape(24.dp))
+                .clip(RoundedCornerShape(8.dp))
                 .background(MaterialTheme.colorScheme.background)
                 .padding(16.dp)
                 .fillMaxWidth()

@@ -1,4 +1,4 @@
-package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.main
+package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.main_profile
 
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
@@ -167,7 +167,7 @@ fun ProfileSettingsScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         Row(
-            modifier = modifier
+            modifier = Modifier
                 .fillMaxWidth()
                 .background(
                     color = MaterialTheme.colorScheme.surface,
@@ -177,7 +177,7 @@ fun ProfileSettingsScreen(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                modifier = modifier
+                modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f),
                 text = "Отримувати повідомлення на електронну пошту",
@@ -193,13 +193,13 @@ fun ProfileSettingsScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         Row(
-            modifier = modifier
+            modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                modifier = modifier
+                modifier = Modifier
                     .fillMaxWidth()
                     .padding(end = 4.dp)
                     .weight(1f),
@@ -216,7 +216,7 @@ fun ProfileSettingsScreen(
         }
 
         Button(
-            modifier = modifier
+            modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 16.dp)
                 .height(48.dp),
@@ -233,7 +233,7 @@ fun ProfileSettingsScreen(
         }
 
         Button(
-            modifier = modifier
+            modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 16.dp)
                 .height(48.dp),

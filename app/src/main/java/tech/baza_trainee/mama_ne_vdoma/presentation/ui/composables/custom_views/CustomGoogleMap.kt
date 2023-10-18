@@ -21,8 +21,10 @@ import kotlinx.coroutines.delay
 fun CustomGoogleMap(
     modifier: Modifier = Modifier,
     location: LatLng = LatLng(0.00, 0.00),
-    onMyLocationButtonClick: () -> Unit,
-    onMapClick: (LatLng) -> Unit,
+    showMyLocationButton: Boolean = true,
+    isMapInteractionEnabled: Boolean = true,
+    onMyLocationButtonClick: () -> Unit = {},
+    onMapClick: (LatLng) -> Unit = {},
     content: @Composable @GoogleMapComposable() (() -> Unit)
 ) {
     val cameraPositionState = rememberCameraPositionState {
@@ -43,8 +45,18 @@ fun CustomGoogleMap(
         )
     }
 
-    val uiSettings = remember { MapUiSettings(myLocationButtonEnabled = true) }
-    val properties by remember { mutableStateOf(MapProperties(isMyLocationEnabled = true)) }
+    val uiSettings = remember {
+        MapUiSettings(
+            mapToolbarEnabled = isMapInteractionEnabled,
+            rotationGesturesEnabled = isMapInteractionEnabled,
+            scrollGesturesEnabled = isMapInteractionEnabled,
+            tiltGesturesEnabled = isMapInteractionEnabled,
+            zoomControlsEnabled = isMapInteractionEnabled,
+            zoomGesturesEnabled = isMapInteractionEnabled,
+            myLocationButtonEnabled = showMyLocationButton
+        )
+    }
+    val properties by remember { mutableStateOf(MapProperties(isMyLocationEnabled = showMyLocationButton)) }
 
     GoogleMap(
         modifier = Modifier.fillMaxWidth(),

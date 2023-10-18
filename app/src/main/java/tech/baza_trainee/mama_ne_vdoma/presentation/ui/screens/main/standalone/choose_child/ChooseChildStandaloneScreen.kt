@@ -63,14 +63,14 @@ fun ChooseChildStandaloneScreen(
         var selectedChild: ChildEntity? by remember { mutableStateOf(null) }
 
         ConstraintLayout(
-            modifier = modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth()
         ) {
             val (topBar, content, btnNext) = createRefs()
 
             val topGuideline = createGuidelineFromTop(0.2f)
 
             HeaderWithToolbar(
-                modifier = modifier
+                modifier = Modifier
                     .constrainAs(topBar) {
                         top.linkTo(parent.top)
                         bottom.linkTo(topGuideline)
@@ -83,7 +83,7 @@ fun ChooseChildStandaloneScreen(
             )
 
             Column(
-                modifier = modifier
+                modifier = Modifier
                     .fillMaxWidth()
                     .verticalScroll(rememberScrollState())
                     .padding(horizontal = 16.dp)
@@ -100,24 +100,24 @@ fun ChooseChildStandaloneScreen(
                     fontWeight = FontWeight.Bold
                 )
 
-                Spacer(modifier = modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(8.dp))
 
                 screenState.value.children.forEach { childEntity ->
                     Spacer(modifier = Modifier.height(8.dp))
 
                     ChildCard(
-                        modifier = modifier.fillMaxWidth(),
+                        modifier = Modifier.fillMaxWidth(),
                         child = childEntity,
                         isSelected = selectedChild == childEntity,
                         onSelected = { selectedChild = it }
                     )
                 }
 
-                Spacer(modifier = modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(8.dp))
             }
 
             Button(
-                modifier = modifier
+                modifier = Modifier
                     .padding(horizontal = 24.dp, vertical = 16.dp)
                     .fillMaxWidth()
                     .constrainAs(btnNext) {

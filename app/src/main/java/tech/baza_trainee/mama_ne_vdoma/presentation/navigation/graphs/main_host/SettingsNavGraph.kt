@@ -8,8 +8,9 @@ import org.koin.androidx.compose.navigation.koinNavViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.Graphs
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.SettingsScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.edit.EditProfileScreen
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.main.ProfileSettingsScreen
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.main.ProfileSettingsViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.edit.EditProfileViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.main_profile.ProfileSettingsScreen
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.main_profile.ProfileSettingsViewModel
 
 fun NavGraphBuilder.settingsNavGraph() {
     navigation(
@@ -21,15 +22,15 @@ fun NavGraphBuilder.settingsNavGraph() {
             ProfileSettingsScreen(
                 screenState = viewModel.viewState.collectAsStateWithLifecycle(),
                 uiState = viewModel.uiState,
-                handleEvent = {viewModel.handleEvent(it) }
+                handleEvent = { viewModel.handleEvent(it) }
             )
         }
         composable(SettingsScreenRoutes.EditProfile.route) {
-//            val viewModel: ProfileSettingsViewModel = koinNavViewModel()
+            val viewModel: EditProfileViewModel = koinNavViewModel()
             EditProfileScreen(
-//                screenState = viewModel.viewState.collectAsStateWithLifecycle(),
-//                uiState = viewModel.uiState,
-//                handleEvent = {viewModel.handleEvent(it) }
+                screenState = viewModel.viewState.collectAsStateWithLifecycle(),
+                uiState = viewModel.uiState,
+                handleEvent = { viewModel.handleEvent(it) }
             )
         }
     }

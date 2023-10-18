@@ -58,7 +58,7 @@ fun HostScreen(
         )
 
         Scaffold(
-            modifier = modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxSize(),
             topBar = {
                 ToolbarWithAvatar(
                     title = tabContents[screenState.value.currentPage].title,
@@ -86,7 +86,7 @@ fun HostScreen(
             )
 
             NavHost(
-                modifier = modifier
+                modifier = Modifier
                     .padding(it)
                     .consumeWindowInsets(it)
                     .fillMaxSize()

@@ -38,7 +38,7 @@ fun ImageSourceDialog(
         val dialogModifier = Modifier
         Column(
             modifier = dialogModifier
-                .clip(RoundedCornerShape(24.dp))
+                .clip(RoundedCornerShape(8.dp))
                 .background(MaterialTheme.colorScheme.background)
                 .padding(16.dp)
                 .fillMaxWidth()

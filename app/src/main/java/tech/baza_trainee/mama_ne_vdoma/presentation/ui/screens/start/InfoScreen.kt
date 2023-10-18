@@ -9,6 +9,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,6 +18,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -71,13 +73,13 @@ fun InfoScreen(
     val pagerState = rememberPagerState(pageCount = { pageTextContent.size })
 
     Surface(
-        modifier = modifier
+        modifier = Modifier
             .background(MaterialTheme.colorScheme.background)
             .windowInsetsPadding(WindowInsets.navigationBars)
             .fillMaxSize(),
     ) {
         ConstraintLayout(
-            modifier = modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize()
         ) {
             val (pager, footer) = createRefs()
 
@@ -98,7 +100,7 @@ fun InfoScreen(
                     val (image, title, info) = createRefs()
 
                     Image(
-                        modifier = modifier
+                        modifier = Modifier
                             .constrainAs(image) {
                                 top.linkTo(parent.top)
                             }
@@ -112,7 +114,7 @@ fun InfoScreen(
                     Text(
                         text = "Няня у твоєму телефоні",
                         color = MaterialTheme.colorScheme.primary,
-                        modifier = modifier
+                        modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 24.dp)
                             .constrainAs(title) {
@@ -127,7 +129,7 @@ fun InfoScreen(
                     Text(
                         text = pageTextContent[page],
                         color = MaterialTheme.colorScheme.onBackground,
-                        modifier = modifier
+                        modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 24.dp)
                             .constrainAs(info) {
@@ -142,7 +144,7 @@ fun InfoScreen(
             }
 
             Column(
-                modifier = modifier
+                modifier = Modifier
                     .fillMaxWidth()
                     .constrainAs(footer) {
                         bottom.linkTo(parent.bottom, 16.dp)
@@ -160,12 +162,12 @@ fun InfoScreen(
                     exit = slideOutHorizontally(targetOffsetX = { -it })
                 ) {
                     ConstraintLayout(
-                        modifier = modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth()
                     ) {
                         val (indicator, btnSkip, btnNext) = createRefs()
 
                         Row(
-                            modifier = modifier
+                            modifier = Modifier
                                 .constrainAs(indicator) {
                                     top.linkTo(parent.top)
                                     bottom.linkTo(parent.bottom)
@@ -176,19 +178,20 @@ fun InfoScreen(
                                 val isSelected by remember {
                                     derivedStateOf { pagerState.currentPage == iteration }
                                 }
-
                                 Indicator(
                                     isSelected = isSelected,
                                     selectedColor = MaterialTheme.colorScheme.primary,
                                     backgroundColor = MaterialTheme.colorScheme.background,
                                     defaultRadius = 8.dp,
-                                    selectedLength = 24.dp,
-                                    modifier = modifier.padding(horizontal = 4.dp)
+                                    selectedLength = 24.dp
                                 )
+
+                                if (iteration < pageTextContent.size)
+                                    Spacer(modifier = Modifier.width(4.dp))
                             }
                         }
                         Text(
-                            modifier = modifier
+                            modifier = Modifier
                                 .clickable { onCreate() }
                                 .constrainAs(btnSkip) {
                                     top.linkTo(parent.top)
@@ -202,7 +205,7 @@ fun InfoScreen(
                         )
                         Button(
                             shape = CircleShape,
-                            modifier = modifier
+                            modifier = Modifier
                                 .size(60.dp)
                                 .constrainAs(btnNext) {
                                     top.linkTo(parent.top)
@@ -218,7 +221,7 @@ fun InfoScreen(
                             }
                         ) {
                             Image(
-                                modifier = modifier
+                                modifier = Modifier
                                     .rotate(180f),
                                 painter = painterResource(id = R.drawable.arrow_back),
                                 contentDescription = "start",
@@ -234,7 +237,7 @@ fun InfoScreen(
                     exit = slideOutHorizontally(targetOffsetX = { it })
                 ) {
                     Button(
-                        modifier = modifier
+                        modifier = Modifier
                             .padding(horizontal = 24.dp)
                             .fillMaxWidth()
                             .height(48.dp),

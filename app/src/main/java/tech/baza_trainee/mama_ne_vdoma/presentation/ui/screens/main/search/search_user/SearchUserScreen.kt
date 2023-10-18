@@ -87,7 +87,7 @@ fun SearchUserScreen(
 //            )
 //
 //            Text(
-//                modifier = modifier
+//                modifier = Modifier
 //                    .fillMaxWidth()
 //                    .padding(horizontal = 8.dp),
 //                text = "Нікнейм має бути від 2 до 18 символів, може містити букви кирилицею та латиницею, цифри, пробіл, дефіс",
@@ -95,10 +95,10 @@ fun SearchUserScreen(
 //                fontSize = 12.sp
 //            )
 //
-//            Spacer(modifier = modifier.height(16.dp))
+//            Spacer(modifier = Modifier.height(16.dp))
 
             OutlinedTextFieldWithError(
-                modifier = modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth(),
                 text = screenState.value.email,
                 label = "Email користувача",
                 onValueChange = { handleEvent(SearchUserEvent.ValidateEmail(it)) },
@@ -112,10 +112,10 @@ fun SearchUserScreen(
                 }
             )
 
-//            Spacer(modifier = modifier.height(24.dp))
+//            Spacer(modifier = Modifier.height(24.dp))
 //
 //            Text(
-//                modifier = modifier.fillMaxWidth(),
+//                modifier = Modifier.fillMaxWidth(),
 //                text = "Заповнення одного із двох полів обов'язкове, або можна заповнити обидва",
 //                fontFamily = redHatDisplayFontFamily,
 //                fontSize = 12.sp,
@@ -124,7 +124,7 @@ fun SearchUserScreen(
         }
 
         Button(
-            modifier = modifier
+            modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 16.dp)
                 .height(48.dp),

@@ -43,7 +43,7 @@ fun PasswordTextFieldWithError(
         var isPasswordFocused by remember { mutableStateOf(false) }
 
         ShowHidePasswordTextField(
-            modifier = modifier
+            modifier = Modifier
                 .focusRequester(focusRequester)
                 .onFocusChanged {
                     isPasswordFocused = it.isFocused
@@ -59,7 +59,7 @@ fun PasswordTextFieldWithError(
             Text(
                 text = errorText,
                 color = Color.Red,
-                modifier = modifier.padding(top = 4.dp),
+                modifier = Modifier.padding(top = 4.dp),
                 style = TextStyle(
                     fontFamily = redHatDisplayFontFamily
                 ),
@@ -89,7 +89,7 @@ fun OutlinedTextFieldWithError(
         var isFieldFocused by remember { mutableStateOf(false) }
 
         OutlinedTextField(
-            modifier = modifier
+            modifier = Modifier
                 .focusRequester(focusRequester)
                 .onFocusChanged {
                     isFieldFocused = it.isFocused
@@ -125,7 +125,7 @@ fun OutlinedTextFieldWithError(
             Text(
                 text = errorText,
                 color = Color.Red,
-                modifier = modifier.padding(top = 4.dp),
+                modifier = Modifier.padding(top = 4.dp),
                 style = TextStyle(
                     fontFamily = redHatDisplayFontFamily
                 ),

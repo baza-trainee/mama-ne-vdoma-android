@@ -41,6 +41,7 @@ import java.time.DayOfWeek
 @Composable
 @Preview
 fun ParentInfoDesk(
+    modifier: Modifier = Modifier,
     name: String = "Somebody",
     address: String = "Somewhere",
     avatar: Uri = Uri.EMPTY,
@@ -60,7 +61,6 @@ fun ParentInfoDesk(
 ) {
     Column(
         modifier = Modifier
-            .padding(horizontal = 16.dp)
             .fillMaxWidth()
             .background(
                 color = MaterialTheme.colorScheme.surface,
@@ -113,25 +113,27 @@ fun ParentInfoDesk(
             }
         }
 
-        Spacer(modifier = Modifier.height(8.dp))
+        if (address.isNotEmpty()) {
+            Spacer(modifier = Modifier.height(8.dp))
 
-        Text(
-            modifier = Modifier
-                .padding(horizontal = 8.dp)
-                .fillMaxWidth(),
-            text = "Ваша адреса",
-            fontFamily = redHatDisplayFontFamily,
-            fontSize = 14.sp
-        )
+            Text(
+                modifier = Modifier
+                    .padding(horizontal = 8.dp)
+                    .fillMaxWidth(),
+                text = "Ваша адреса",
+                fontFamily = redHatDisplayFontFamily,
+                fontSize = 14.sp
+            )
 
-        Text(
-            modifier = Modifier
-                .padding(horizontal = 8.dp)
-                .fillMaxWidth(),
-            text = address,
-            fontFamily = redHatDisplayFontFamily,
-            fontSize = 14.sp
-        )
+            Text(
+                modifier = Modifier
+                    .padding(horizontal = 8.dp)
+                    .fillMaxWidth(),
+                text = address,
+                fontFamily = redHatDisplayFontFamily,
+                fontSize = 14.sp
+            )
+        }
 
         Spacer(modifier = Modifier.height(8.dp))
 

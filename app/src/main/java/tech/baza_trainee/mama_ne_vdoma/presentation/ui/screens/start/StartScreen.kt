@@ -38,20 +38,20 @@ fun Start(
     onLogin: () -> Unit = {}
 ) {
     Surface(
-        modifier = modifier
+        modifier = Modifier
             .background(MaterialTheme.colorScheme.background)
             .windowInsetsPadding(WindowInsets.systemBars)
             .fillMaxSize()
     ) {
         ConstraintLayout(
-            modifier = modifier
+            modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 24.dp)
         ) {
             val (image, btnStart, btnLogin) = createRefs()
 
             Image(
-                modifier = modifier
+                modifier = Modifier
                     .constrainAs(image) {
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
@@ -66,7 +66,7 @@ fun Start(
             )
 
             Button(
-                modifier = modifier
+                modifier = Modifier
                     .constrainAs(btnStart) {
                         bottom.linkTo(btnLogin.top)
                     }
@@ -84,7 +84,7 @@ fun Start(
 
             Text(
                 text = getTextWithUnderline("Вже є акаунт? ", "Увійти"),
-                modifier = modifier
+                modifier = Modifier
                     .constrainAs(btnLogin) {
                         bottom.linkTo(parent.bottom)
                     }

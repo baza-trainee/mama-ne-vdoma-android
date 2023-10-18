@@ -32,7 +32,7 @@ fun Indicator(
         label = ""
     )
     Box(
-        modifier = modifier
+        modifier = Modifier
             .clip(CircleShape)
             .height(defaultRadius)
             .width(width)

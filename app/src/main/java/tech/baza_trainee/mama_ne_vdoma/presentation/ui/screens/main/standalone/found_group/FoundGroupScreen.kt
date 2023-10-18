@@ -23,8 +23,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -59,6 +62,8 @@ fun FoundGroupScreen(
 
         val context = LocalContext.current
 
+        var showSuccessDialog by rememberSaveable { mutableStateOf(false) }
+
         when (val state = uiState.value) {
             FoundGroupUiState.Idle -> Unit
             is FoundGroupUiState.OnError -> {
@@ -70,57 +75,18 @@ fun FoundGroupScreen(
                 handleEvent(FoundGroupEvent.ResetUiState)
             }
 
-            FoundGroupUiState.OnRequestSent -> {
-                AlertDialog(onDismissRequest = {}) {
-                    Column(
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(24.dp))
-                            .background(MaterialTheme.colorScheme.background)
-                            .padding(16.dp)
-                            .fillMaxWidth(),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_ok),
-                            contentDescription = null
-                        )
-
-                        Text(
-                            modifier = Modifier
-                                .padding(top = 16.dp)
-                                .padding(horizontal = 16.dp)
-                                .fillMaxWidth(),
-                            text = "Запит до групи успішно відправлений. Ми повідомимо вас, коли адміністратор групи затвердить ваш запит",
-                            fontSize = 14.sp,
-                            textAlign = TextAlign.Center,
-                            fontFamily = redHatDisplayFontFamily
-                        )
-
-                        Text(
-                            text = "Відхилити",
-                            fontWeight = FontWeight.Bold,
-                            textAlign = TextAlign.Center,
-                            color = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier
-                                .wrapContentWidth()
-                                .align(Alignment.End)
-                                .clickable { handleEvent(FoundGroupEvent.GoToMain) }
-                                .padding(16.dp)
-                        )
-                    }
-                }
-            }
+            FoundGroupUiState.OnRequestSent -> showSuccessDialog = true
         }
 
         ConstraintLayout(
-            modifier = modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth()
         ) {
             val (topBar, content, btnNext) = createRefs()
 
             val topGuideline = createGuidelineFromTop(0.2f)
 
             HeaderWithToolbar(
-                modifier = modifier
+                modifier = Modifier
                     .constrainAs(topBar) {
                         top.linkTo(parent.top)
                         bottom.linkTo(topGuideline)
@@ -214,7 +180,7 @@ fun FoundGroupScreen(
             }
 
             Button(
-                modifier = modifier
+                modifier = Modifier
                     .padding(horizontal = 24.dp, vertical = 16.dp)
                     .fillMaxWidth()
                     .constrainAs(btnNext) {
@@ -227,6 +193,50 @@ fun FoundGroupScreen(
                 ButtonText(
                     text = "Приєднатися до групи"
                 )
+            }
+        }
+
+        if (showSuccessDialog) {
+            AlertDialog(onDismissRequest = { showSuccessDialog = false }) {
+                Column(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(MaterialTheme.colorScheme.background)
+                        .padding(16.dp)
+                        .fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_ok),
+                        contentDescription = null
+                    )
+
+                    Text(
+                        modifier = Modifier
+                            .padding(top = 16.dp)
+                            .padding(horizontal = 16.dp)
+                            .fillMaxWidth(),
+                        text = "Запит до групи успішно відправлений. Ми повідомимо вас, коли адміністратор групи затвердить ваш запит",
+                        fontSize = 14.sp,
+                        textAlign = TextAlign.Center,
+                        fontFamily = redHatDisplayFontFamily
+                    )
+
+                    Text(
+                        text = "Відхилити",
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center,
+                        color = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier
+                            .wrapContentWidth()
+                            .align(Alignment.End)
+                            .clickable {
+                                showSuccessDialog = false
+                                handleEvent(FoundGroupEvent.GoToMain)
+                            }
+                            .padding(16.dp)
+                    )
+                }
             }
         }
 

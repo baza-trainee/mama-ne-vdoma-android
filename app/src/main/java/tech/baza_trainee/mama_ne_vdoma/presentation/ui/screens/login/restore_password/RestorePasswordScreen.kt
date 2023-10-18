@@ -59,7 +59,7 @@ fun RestorePasswordScreen(
         }
 
         Column(
-            modifier = modifier
+            modifier = Modifier
                 .imePadding()
                 .fillMaxWidth()
                 .padding(bottom = 16.dp),
@@ -67,19 +67,19 @@ fun RestorePasswordScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Column(
-                modifier = modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Top
             ) {
-                Spacer(modifier = modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
                 Row(
-                    modifier = modifier
+                    modifier = Modifier
                         .align(Alignment.Start)
                         .fillMaxWidth()
                 ) {
                     IconButton(
-                        modifier = modifier
+                        modifier = Modifier
                             .padding(start = 16.dp)
                             .height(24.dp)
                             .width(24.dp),
@@ -92,7 +92,7 @@ fun RestorePasswordScreen(
                         )
                     }
                     Text(
-                        modifier = modifier
+                        modifier = Modifier
                             .weight(1f)
                             .fillMaxWidth()
                             .padding(bottom = 8.dp, end = 24.dp),
@@ -104,10 +104,10 @@ fun RestorePasswordScreen(
                     )
                 }
 
-                Spacer(modifier = modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
-                    modifier = modifier
+                    modifier = Modifier
                         .fillMaxWidth()
                         .padding(24.dp),
                     text = "Не турбуйтеся! Будь ласка, введіть " +
@@ -119,10 +119,10 @@ fun RestorePasswordScreen(
                     fontFamily = redHatDisplayFontFamily
                 )
 
-                Spacer(modifier = modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(24.dp))
 
                 OutlinedTextFieldWithError(
-                    modifier = modifier
+                    modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 24.dp),
                     text = screenState.value.email,
@@ -140,7 +140,7 @@ fun RestorePasswordScreen(
             }
 
             Button(
-                modifier = modifier
+                modifier = Modifier
                     .padding(horizontal = 24.dp, vertical = 16.dp)
                     .fillMaxWidth()
                     .height(48.dp),

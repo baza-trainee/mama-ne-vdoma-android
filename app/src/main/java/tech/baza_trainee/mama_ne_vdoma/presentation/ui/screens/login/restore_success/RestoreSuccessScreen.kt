@@ -25,18 +25,18 @@ fun RestoreSuccessScreen(
     goToMain: () -> Unit
 ) {
     SurfaceWithNavigationBars(
-        modifier = modifier
+        modifier = Modifier
     ) {
         BackHandler { goToMain() }
         ConstraintLayout(
-            modifier = modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth()
         ) {
             val (title, image, btnMain) = createRefs()
 
             val topGuideline = createGuidelineFromTop(0.2f)
 
             HeaderWithOptArrow(
-                modifier = modifier
+                modifier = Modifier
                     .fillMaxWidth()
                     .constrainAs(title) {
                         top.linkTo(parent.top)
@@ -50,7 +50,7 @@ fun RestoreSuccessScreen(
             )
 
             Image(
-                modifier = modifier
+                modifier = Modifier
                     .constrainAs(image) {
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
@@ -65,7 +65,7 @@ fun RestoreSuccessScreen(
             )
 
             Button(
-                modifier = modifier
+                modifier = Modifier
                     .padding(horizontal = 24.dp, vertical = 16.dp)
                     .fillMaxWidth()
                     .constrainAs(btnMain) {
