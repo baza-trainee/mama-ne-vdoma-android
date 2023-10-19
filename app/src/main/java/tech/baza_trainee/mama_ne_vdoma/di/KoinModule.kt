@@ -33,6 +33,8 @@ import tech.baza_trainee.mama_ne_vdoma.domain.repository.FilesRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.GroupsRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.LocationRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
+import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.UserInfoInteractor
+import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.UserInfoInteractorImpl
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.PageNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.PageNavigatorImpl
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
@@ -97,6 +99,8 @@ val repoModule = module {
     factory<LocationRepository> { LocationRepositoryImpl(get()) }
     factory<GroupsRepository> { GroupsRepositoryImpl(get()) }
 
+    factory<UserInfoInteractor> { UserInfoInteractorImpl(get(), get(), get(), get(), get()) }
+
     single<ScreenNavigator> { ScreenNavigatorImpl() }
     single { BitmapHelper(androidApplication()) }
     single { UserPreferencesDatastoreManager(androidContext()) }
@@ -105,7 +109,7 @@ val repoModule = module {
 val userCreateModule = module {
     single { PhoneNumberUtil.createInstance(androidContext()) }
     single { UserProfileCommunicator() }
-    viewModel { UserInfoViewModel(get(), get(), get(), get(), get(), get(), get()) }
+    viewModel { UserInfoViewModel(get(), get(), get(), get()) }
     viewModel { UserImageCropViewModel(get(), get(), get()) }
     viewModel { UserLocationViewModel(get(), get(), get(), get()) }
     viewModel { ChildInfoViewModel(get(), get(), get()) }

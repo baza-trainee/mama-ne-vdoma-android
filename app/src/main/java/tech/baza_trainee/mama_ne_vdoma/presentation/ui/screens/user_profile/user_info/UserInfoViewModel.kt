@@ -4,43 +4,26 @@ import android.graphics.Bitmap
 import android.net.Uri
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
-import tech.baza_trainee.mama_ne_vdoma.domain.model.UserInfoEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatastoreManager
-import tech.baza_trainee.mama_ne_vdoma.domain.repository.FilesRepository
-import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.NetworkEventsListener
 import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.UserInfoInteractor
-import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.UserInfoInteractorImpl
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.UserProfileRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.model.UserProfileCommunicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.BitmapHelper
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.networkExecutor
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onError
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onLoading
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onSuccess
 
 class UserInfoViewModel(
     private val communicator: UserProfileCommunicator,
     private val navigator: ScreenNavigator,
-    private val userProfileRepository: UserProfileRepository,
-    private val filesRepository: FilesRepository,
-    private val phoneNumberUtil: PhoneNumberUtil,
-    private val bitmapHelper: BitmapHelper,
     private val preferencesDatastoreManager: UserPreferencesDatastoreManager,
-    userInfoInteractor: UserInfoInteractor = UserInfoInteractorImpl(userProfileRepository, filesRepository, phoneNumberUtil, bitmapHelper, preferencesDatastoreManager)
+    userInfoInteractor: UserInfoInteractor
 ): ViewModel(), UserInfoInteractor by userInfoInteractor, NetworkEventsListener {
 
     private val _userInfoScreenState = MutableStateFlow(UserInfoViewState())
@@ -175,36 +158,14 @@ class UserInfoViewModel(
     }
 
     private fun saveUserInfo() {
-        networkExecutor {
-            execute {
-                userProfileRepository.saveUserInfo(
-                    UserInfoEntity(
-                        name = _userInfoScreenState.value.name,
-                        phone = _userInfoScreenState.value.phone,
-                        countryCode = _userInfoScreenState.value.code,
-                        avatar = communicator.avatarServerPath,
-                        schedule = communicator.schedule
-                    )
-                )
-            }
-            onSuccess {
-                preferencesDatastoreManager.apply {
-                    name = _userInfoScreenState.value.name
-                    code = _userInfoScreenState.value.code
-                    phone = _userInfoScreenState.value.phone
-                }
-                navigator.navigateOnMain(viewModelScope, UserProfileRoutes.UserLocation)
-            }
-            onError { error ->
-                _uiState.value = UserInfoUiState.OnError(error)
-            }
-            onLoading { isLoading ->
-                _userInfoScreenState.update {
-                    it.copy(
-                        isLoading = isLoading
-                    )
-                }
-            }
+        saveUserInfo(
+            userName = _userInfoScreenState.value.name,
+            phoneNumber = _userInfoScreenState.value.phone,
+            countryCode = _userInfoScreenState.value.code,
+            avatarId = communicator.avatarServerPath,
+            schedule = communicator.schedule
+        ) {
+            navigator.navigateOnMain(viewModelScope, UserProfileRoutes.UserLocation)
         }
     }
 }

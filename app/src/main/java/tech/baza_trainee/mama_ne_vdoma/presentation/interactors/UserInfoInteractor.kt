@@ -3,19 +3,15 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.interactors
 import android.graphics.Bitmap
 import android.net.Uri
 import androidx.core.net.toUri
-import androidx.lifecycle.viewModelScope
 import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import tech.baza_trainee.mama_ne_vdoma.domain.model.ScheduleModel
+import tech.baza_trainee.mama_ne_vdoma.domain.model.UserInfoEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatastoreManager
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.FilesRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
-import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.Graphs
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.edit.EditProfileUiState
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.user_info.UserInfoUiState
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.user_info.UserInfoViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.BitmapHelper
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
@@ -43,6 +39,15 @@ interface UserInfoInteractor {
     fun getUsetAvatar(avatarId: String, onSuccess: (Uri) -> Unit)
 
     fun deleteUser(onSuccess: () -> Unit)
+
+    fun saveUserInfo(
+        userName: String,
+        phoneNumber: String,
+        countryCode: String,
+        avatarId: String?,
+        schedule: ScheduleModel,
+        onSuccess: () -> Unit
+    )
 }
 
 class UserInfoInteractorImpl(
@@ -151,6 +156,39 @@ class UserInfoInteractorImpl(
             }
             onSuccess {
                 onSuccess(it)
+            }
+            onError(networkListener::onError)
+            onLoading(networkListener::onLoading)
+        }
+    }
+
+    override fun saveUserInfo(
+        userName: String,
+        phoneNumber: String,
+        countryCode: String,
+        avatarId: String?,
+        schedule: ScheduleModel,
+        onSuccess: () -> Unit
+    ) {
+        coroutineScope.networkExecutor {
+            execute {
+                userProfileRepository.saveUserInfo(
+                    UserInfoEntity(
+                        name = userName,
+                        phone = phoneNumber,
+                        countryCode = countryCode,
+                        avatar = avatarId,
+                        schedule = schedule
+                    )
+                )
+            }
+            onSuccess {
+                preferencesDatastoreManager.apply {
+                    name = userName
+                    code = countryCode
+                    phone = phoneNumber
+                }
+                onSuccess()
             }
             onError(networkListener::onError)
             onLoading(networkListener::onLoading)
