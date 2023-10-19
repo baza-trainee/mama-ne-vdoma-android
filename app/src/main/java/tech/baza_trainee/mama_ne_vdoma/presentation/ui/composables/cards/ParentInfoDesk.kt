@@ -45,6 +45,7 @@ fun ParentInfoDesk(
     name: String = "Somebody",
     address: String = "Somewhere",
     avatar: Uri = Uri.EMPTY,
+    showDeleteButton: Boolean = true,
     schedule: ScheduleModel = ScheduleModel(
         mutableStateMapOf(
             DayOfWeek.MONDAY to DayPeriod(morning = true),
@@ -104,13 +105,15 @@ fun ParentInfoDesk(
                     tint = MaterialTheme.colorScheme.primary
                 )
             }
-            IconButton(onClick = { onDelete() }) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_delete),
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary
-                )
-            }
+
+            if (showDeleteButton)
+                IconButton(onClick = { onDelete() }) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_delete),
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                }
         }
 
         if (address.isNotEmpty()) {

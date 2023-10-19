@@ -20,6 +20,7 @@ data class EditProfileViewState(
     val userAvatar: Uri = Uri.EMPTY,
     val address: String = "",
     val currentLocation: LatLng = LatLng(0.0,0.0),
+    val note: String = "",
     val isPolicyChecked: Boolean = false,
     val schedule: ScheduleModel = ScheduleModel(),
     val children: List<ChildEntity> = emptyList(),

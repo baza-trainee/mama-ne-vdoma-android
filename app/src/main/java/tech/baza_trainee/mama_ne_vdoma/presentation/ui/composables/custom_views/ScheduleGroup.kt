@@ -31,6 +31,7 @@ import java.util.Locale
 fun ScheduleGroup(
     modifier: Modifier = Modifier,
     scheduleModel: ScheduleModel = ScheduleModel(),
+
     onValueChange: (DayOfWeek, Period) -> Unit = { _, _ -> }
 ) {
     Column(

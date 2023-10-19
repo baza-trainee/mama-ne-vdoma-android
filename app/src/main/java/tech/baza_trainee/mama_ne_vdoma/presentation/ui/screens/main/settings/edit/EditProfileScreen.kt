@@ -4,7 +4,6 @@ import android.net.Uri
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -27,7 +26,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -40,13 +38,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
@@ -75,6 +73,9 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.UserAvatarWithCameraAndGallery
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.text_fields.OutlinedTextFieldWithError
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.text_fields.PasswordTextFieldWithError
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.edit.dialogs.ChildScheduleEditDialog
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.edit.dialogs.EmailVerificationInfoDialog
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.edit.dialogs.ParentScheduleEditDialog
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.GrayText
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.SlateGray
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
@@ -100,6 +101,7 @@ fun EditProfileScreen(
                 .show()
             handleEvent(EditProfileEvent.ResetUiState)
         }
+
         EditProfileUiState.OnAvatarError -> {
             Toast.makeText(
                 context,
@@ -110,8 +112,12 @@ fun EditProfileScreen(
         }
     }
 
+    val focusRequester = remember { FocusRequester() }
     var openBottomSheet by rememberSaveable { mutableStateOf(false) }
     var showEmailVerificationDialog by rememberSaveable { mutableStateOf(false) }
+    var editUserSchedule by remember { mutableStateOf(false) }
+    var editChildSchedule by remember { mutableStateOf(false) }
+    var selectedChild by remember { mutableIntStateOf(0) }
 
     Column(
         modifier = Modifier
@@ -335,8 +341,6 @@ fun EditProfileScreen(
                 shape = RoundedCornerShape(topStart = 4.dp, bottomStart = 4.dp)
             )
 
-            val focusRequester = remember { FocusRequester() }
-
             OutlinedTextField(
                 modifier = Modifier
                     .focusRequester(focusRequester)
@@ -350,7 +354,7 @@ fun EditProfileScreen(
                         modifier = Modifier.basicMarquee(),
                         text = "Введіть свій номер телефону"
                     )
-                        },
+                },
                 onValueChange = { handleEvent(EditProfileEvent.ValidatePhone(it)) },
                 isError = screenState.value.phoneValid == ValidField.INVALID && isPhoneFocused,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
@@ -481,8 +485,9 @@ fun EditProfileScreen(
             name = screenState.value.name,
             avatar = screenState.value.userAvatar,
             address = "",
+            showDeleteButton = false,
             schedule = screenState.value.schedule,
-            onEdit = { handleEvent(EditProfileEvent.EditUser) }
+            onEdit = { editUserSchedule = true }
         )
 
         if (screenState.value.children.isNotEmpty()) {
@@ -496,13 +501,16 @@ fun EditProfileScreen(
                 fontWeight = FontWeight.Bold
             )
 
-            screenState.value.children.forEach { child ->
+            screenState.value.children.forEachIndexed { index, child ->
                 Spacer(modifier = Modifier.height(8.dp))
 
                 ChildInfoDesk(
                     modifier = Modifier.fillMaxWidth(),
                     child = child,
-                    onEdit = { handleEvent(EditProfileEvent.EditChild(it)) },
+                    onEdit = {
+                        selectedChild = index
+                        editChildSchedule = true
+                    },
                     onDelete = { handleEvent(EditProfileEvent.DeleteChild(it)) }
                 )
             }
@@ -513,7 +521,7 @@ fun EditProfileScreen(
                 .fillMaxWidth()
                 .padding(vertical = 16.dp)
                 .height(48.dp),
-            onClick = {  }
+            onClick = { }
         ) {
             ButtonText(
                 text = "Зберегти зміни"
@@ -525,7 +533,7 @@ fun EditProfileScreen(
                 .fillMaxWidth()
                 .padding(bottom = 16.dp)
                 .height(48.dp),
-            onClick = {  },
+            onClick = { },
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color.Red,
                 contentColor = MaterialTheme.colorScheme.onPrimary
@@ -561,60 +569,30 @@ fun EditProfileScreen(
         }
 
         if (showEmailVerificationDialog) {
-            AlertDialog(
+            EmailVerificationInfoDialog(
                 onDismissRequest = { showEmailVerificationDialog = false }
-            ) {
-                Column(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(8.dp))
-                        .background(MaterialTheme.colorScheme.background)
-                        .padding(16.dp)
-                        .fillMaxWidth()
-                ) {
-                    Text(
-                        modifier = Modifier
-                            .padding(top = 16.dp)
-                            .padding(horizontal = 16.dp)
-                            .fillMaxWidth(),
-                        text = "Для перевірки емейлу натисніть кнопку “Перевірити емейл”. На пошту прийде лист із повідомленням про підтвердження нової електронної пошти",
-                        fontSize = 14.sp,
-                        fontFamily = redHatDisplayFontFamily,
-                        style = TextStyle(lineHeight = 18.sp)
-                    )
-
-                    Text(
-                        text = "Закрити",
-                        fontWeight = FontWeight.Bold,
-                        textAlign = TextAlign.Center,
-                        color = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier
-                            .wrapContentWidth()
-                            .align(Alignment.End)
-                            .clickable { showEmailVerificationDialog = false }
-                            .padding(16.dp)
-                    )
-                }
-            }
+            )
         }
 
-//        var selectedChild = remember { mutableIntStateOf(0) }
-//
-//        if (screenState.value.children.isNotEmpty()) {
-//            when (screenState.value.children.size) {
-//                1 -> Unit
-//                2 -> {
-//                    Row(
-//                        modifier = Modifier.fillMaxWidth(),
-//                        verticalAlignment = Alignment.CenterVertically
-//                    ) {
-//
-//                    }
-//                }
-//                else -> {
-//
-//                }
-//            }
-//        }
+        if (editUserSchedule) {
+            ParentScheduleEditDialog(
+                scheduleModel = screenState.value.schedule,
+                note = screenState.value.note,
+                onEditSchedule = {},
+                onEditNote = {},
+                onDismissRequest = { editUserSchedule = false }
+            )
+        }
+
+        if (editChildSchedule) {
+            ChildScheduleEditDialog(
+                selectedChild = selectedChild,
+                children = screenState.value.children,
+                onEditSchedule = {},
+                onEditNote = {},
+                onDismissRequest = { editChildSchedule = false }
+            )
+        }
 
         if (screenState.value.isLoading) LoadingIndicator()
     }
