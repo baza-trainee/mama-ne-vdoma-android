@@ -206,7 +206,8 @@ class EditProfileViewModel(
                 countryCode = preferencesDatastoreManager.code,
                 avatar = avatarServerPath,
                 schedule = _viewState.value.schedule,
-                note = _viewState.value.note
+                note = _viewState.value.note,
+                sendingEmails = preferencesDatastoreManager.sendEmail
             )
         ) {}
     }
@@ -349,7 +350,7 @@ class EditProfileViewModel(
                 )
             }
         } else
-            getUsetAvatar(avatarId) { uri ->
+            getUserAvatar(avatarId) { uri ->
                 _viewState.update {
                     it.copy(userAvatar = uri)
                 }

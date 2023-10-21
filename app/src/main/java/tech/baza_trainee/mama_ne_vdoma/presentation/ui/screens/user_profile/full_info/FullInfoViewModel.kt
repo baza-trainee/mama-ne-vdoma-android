@@ -155,7 +155,7 @@ class FullInfoViewModel(
                 )
             }
         } else
-            getUsetAvatar(avatarId) { uri ->
+            getUserAvatar(avatarId) { uri ->
                 _viewState.update {
                     it.copy(userAvatar = uri)
                 }

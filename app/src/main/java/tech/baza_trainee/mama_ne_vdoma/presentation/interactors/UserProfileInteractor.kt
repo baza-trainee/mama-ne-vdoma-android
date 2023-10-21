@@ -42,18 +42,9 @@ interface UserProfileInteractor {
 
     fun deleteUserAvatar(onSuccess: () -> Unit)
 
-    fun getUsetAvatar(avatarId: String, onSuccess: (Uri) -> Unit)
+    fun getUserAvatar(avatarId: String, onSuccess: (Uri) -> Unit)
 
     fun deleteUser(onSuccess: () -> Unit)
-
-    fun saveUserInfo(
-        userName: String,
-        phoneNumber: String,
-        countryCode: String,
-        avatarId: String?,
-        schedule: ScheduleModel,
-        onSuccess: () -> Unit
-    )
 
     fun getChildById(childId: String, onSuccess: (ChildEntity?) -> Unit)
 
@@ -108,7 +99,7 @@ class UserProfileInteractorImpl(
         }
     }
 
-    override fun getUsetAvatar(avatarId: String, onSuccess: (Uri) -> Unit) {
+    override fun getUserAvatar(avatarId: String, onSuccess: (Uri) -> Unit) {
         coroutineScope.networkExecutor {
             execute { filesRepository.getAvatar(avatarId) }
             onSuccess { uri ->
@@ -180,39 +171,6 @@ class UserProfileInteractorImpl(
             }
             onSuccess {
                 onSuccess(it)
-            }
-            onError(networkListener::onError)
-            onLoading(networkListener::onLoading)
-        }
-    }
-
-    override fun saveUserInfo(
-        userName: String,
-        phoneNumber: String,
-        countryCode: String,
-        avatarId: String?,
-        schedule: ScheduleModel,
-        onSuccess: () -> Unit
-    ) {
-        coroutineScope.networkExecutor {
-            execute {
-                userProfileRepository.saveUserInfo(
-                    UserInfoEntity(
-                        name = userName,
-                        phone = phoneNumber,
-                        countryCode = countryCode,
-                        avatar = avatarId,
-                        schedule = schedule
-                    )
-                )
-            }
-            onSuccess {
-                preferencesDatastoreManager.apply {
-                    name = userName
-                    code = countryCode
-                    phone = phoneNumber
-                }
-                onSuccess()
             }
             onError(networkListener::onError)
             onLoading(networkListener::onLoading)

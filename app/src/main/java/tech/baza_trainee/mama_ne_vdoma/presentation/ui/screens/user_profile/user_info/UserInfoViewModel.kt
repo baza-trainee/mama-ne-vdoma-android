@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import tech.baza_trainee.mama_ne_vdoma.domain.model.UserInfoEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatastoreManager
 import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.NetworkEventsListener
 import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.UserProfileInteractor
@@ -158,12 +159,14 @@ class UserInfoViewModel(
     }
 
     private fun saveUserInfo() {
-        saveUserInfo(
-            userName = _userInfoScreenState.value.name,
-            phoneNumber = _userInfoScreenState.value.phone,
+        updateParent(
+            UserInfoEntity(
+            name = _userInfoScreenState.value.name,
+            phone = _userInfoScreenState.value.phone,
             countryCode = _userInfoScreenState.value.code,
-            avatarId = communicator.avatarServerPath,
+            avatar = communicator.avatarServerPath,
             schedule = communicator.schedule
+            )
         ) {
             navigator.navigateOnMain(viewModelScope, UserProfileRoutes.UserLocation)
         }

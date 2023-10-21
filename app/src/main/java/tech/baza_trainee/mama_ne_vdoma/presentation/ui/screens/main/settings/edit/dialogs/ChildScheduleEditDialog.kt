@@ -94,7 +94,8 @@ fun ChildScheduleEditDialog(
                         .padding(horizontal = 16.dp)
                         .weight(0.8f),
                     text = "Внесіть зміни в розклад, коли потрібно доглядати дитину",
-                    fontSize = 16.sp
+                    fontSize = 16.sp,
+                    fontFamily = redHatDisplayFontFamily
                 )
 
                 IconButton(
@@ -186,7 +187,8 @@ fun ChildScheduleEditDialog(
                                 ) {
                                     Text(
                                         text = children[1].name,
-                                        textAlign = TextAlign.Center
+                                        textAlign = TextAlign.Center,
+                                        fontFamily = redHatDisplayFontFamily
                                     )
                                 }
                             }

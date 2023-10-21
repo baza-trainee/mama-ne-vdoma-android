@@ -64,8 +64,7 @@ fun MyGroupsScreen(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                modifier = Modifier
-                    .weight(1f),
+                modifier = Modifier.weight(1f),
                 text = "Мої групи",
                 fontFamily = redHatDisplayFontFamily,
                 fontSize = 16.sp

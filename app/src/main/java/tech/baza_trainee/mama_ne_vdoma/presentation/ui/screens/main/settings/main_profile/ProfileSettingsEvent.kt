@@ -6,5 +6,6 @@ sealed interface ProfileSettingsEvent {
     data object ToggleEmail : ProfileSettingsEvent
     data object LogOut : ProfileSettingsEvent
     data object EditProfile : ProfileSettingsEvent
+    data object DeleteUser: ProfileSettingsEvent
     data class UpdatePolicyCheck(val isChecked: Boolean) : ProfileSettingsEvent
 }

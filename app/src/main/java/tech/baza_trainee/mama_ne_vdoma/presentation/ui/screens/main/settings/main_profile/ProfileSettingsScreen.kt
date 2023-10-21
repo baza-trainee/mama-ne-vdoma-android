@@ -31,7 +31,10 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -50,6 +53,7 @@ import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.cards.ChildCard
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.LoadingIndicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.PrivacyPolicyBlock
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.common.dialogs.DeleteAccountAlertDialog
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.LogoutButtonColor
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.LogoutButtonTextColor
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
@@ -220,10 +224,15 @@ fun ProfileSettingsScreen(
 
         Spacer(modifier = Modifier.height(24.dp))
 
+        var showDeleteAccountAlertDialog by remember { mutableStateOf(!screenState.value.isPolicyChecked) }
+
         PrivacyPolicyBlock(
             modifier = Modifier.fillMaxWidth(),
             isChecked = screenState.value.isPolicyChecked,
-            onCheckedChanged = { handleEvent(ProfileSettingsEvent.UpdatePolicyCheck(it)) }
+            onCheckedChanged = {
+                showDeleteAccountAlertDialog = !it
+                handleEvent(ProfileSettingsEvent.UpdatePolicyCheck(it))
+            }
         )
 
         Spacer(modifier = Modifier.height(24.dp))
@@ -267,6 +276,18 @@ fun ProfileSettingsScreen(
         }
 
         Spacer(modifier = Modifier.height(16.dp))
+
+        if (showDeleteAccountAlertDialog) {
+            DeleteAccountAlertDialog(
+                text = "Після видалення акаунту немає можливості його відновити. Щоб користуватись після цього мобільним додатком, необхідно буде зареєструватись заново. Підтвердити видалення мого акаунту?",
+                button = "Так, видалити акаунт",
+                onDelete = { handleEvent(ProfileSettingsEvent.DeleteUser) },
+                onDismissRequest = {
+                    handleEvent(ProfileSettingsEvent.UpdatePolicyCheck(true))
+                    showDeleteAccountAlertDialog = false
+                }
+            )
+        }
     }
 
     if (screenState.value.isLoading) LoadingIndicator()

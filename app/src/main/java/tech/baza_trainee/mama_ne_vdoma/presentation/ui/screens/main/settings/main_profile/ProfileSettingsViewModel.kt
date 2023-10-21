@@ -4,33 +4,29 @@ import android.net.Uri
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import tech.baza_trainee.mama_ne_vdoma.data.interceptors.AuthInterceptor
-import tech.baza_trainee.mama_ne_vdoma.domain.model.ChildEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UserInfoEntity
-import tech.baza_trainee.mama_ne_vdoma.domain.model.UserProfileEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatastoreManager
-import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
+import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.NetworkEventsListener
+import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.UserProfileInteractor
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.PageNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.Graphs
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.LoginRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.SettingsScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.networkExecutor
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onError
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onLoading
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onSuccess
 
 class ProfileSettingsViewModel(
     private val mainNavigator: ScreenNavigator,
     private val navigator: PageNavigator,
-    private val userProfileRepository: UserProfileRepository,
+    private val userProfileInteractor: UserProfileInteractor,
     private val preferencesDatastoreManager: UserPreferencesDatastoreManager
-): ViewModel() {
+): ViewModel(), UserProfileInteractor by userProfileInteractor, NetworkEventsListener {
 
     private val _viewState = MutableStateFlow(ProfileSettingsViewState())
     val viewState: StateFlow<ProfileSettingsViewState> = _viewState.asStateFlow()
@@ -40,6 +36,11 @@ class ProfileSettingsViewModel(
         get() = _uiState
 
     init {
+        userProfileInteractor.apply {
+            setUserProfileCoroutineScope(viewModelScope)
+            setUserProfileNetworkListener(this@ProfileSettingsViewModel)
+        }
+
         _viewState.update {
             it.copy(
                 name = preferencesDatastoreManager.name,
@@ -54,6 +55,18 @@ class ProfileSettingsViewModel(
         getChildren()
     }
 
+    override fun onLoading(state: Boolean) {
+        _viewState.update {
+            it.copy(
+                isLoading = state
+            )
+        }
+    }
+
+    override fun onError(error: String) {
+        _uiState.value = RequestState.OnError(error)
+    }
+
     fun handleEvent(event: ProfileSettingsEvent) {
         when (event) {
             ProfileSettingsEvent.OnBack -> navigator.goToPrevious()
@@ -66,85 +79,47 @@ class ProfileSettingsViewModel(
             }
 
             ProfileSettingsEvent.ToggleEmail -> getUserInfo()
+            ProfileSettingsEvent.DeleteUser -> deleteUser()
+        }
+    }
+
+    private fun deleteUser() {
+        deleteUser {
+            mainNavigator.navigateOnMain(viewModelScope, Graphs.CreateUser)
         }
     }
 
     private fun getChildren() {
-        networkExecutor<List<ChildEntity>> {
-            execute {
-                userProfileRepository.getChildren()
-            }
-            onSuccess { entity ->
-                _viewState.update {
-                    it.copy(
-                        children = entity
-                    )
-                }
-            }
-            onError { error ->
-                _uiState.value = RequestState.OnError(error)
-            }
-            onLoading { isLoading ->
-                _viewState.update {
-                    it.copy(
-                        isLoading = isLoading
-                    )
-                }
+        getChildren { entity ->
+            _viewState.update {
+                it.copy(
+                    children = entity
+                )
             }
         }
     }
 
     private fun getUserInfo() {
-        networkExecutor<UserProfileEntity> {
-            execute {
-                userProfileRepository.getUserInfo()
-            }
-            onSuccess {
-                val entity = UserInfoEntity(
-                    name = it.name,
-                    avatar = it.avatar,
-                    countryCode = it.countryCode,
-                    phone = it.phone,
-                    schedule = it.schedule,
-                    sendingEmails = !_viewState.value.sendEmails
-                )
-                saveUserInfo(entity)
-            }
-            onError { error ->
-                _uiState.value = RequestState.OnError(error)
-            }
-            onLoading { isLoading ->
-                _viewState.update {
-                    it.copy(
-                        isLoading = isLoading
-                    )
-                }
-            }
+        getUserInfo {
+            val entity = UserInfoEntity(
+                name = it.name,
+                avatar = it.avatar,
+                countryCode = it.countryCode,
+                phone = it.phone,
+                schedule = it.schedule,
+                sendingEmails = !_viewState.value.sendEmails
+            )
+            saveUserInfo(entity)
         }
     }
 
-    private fun saveUserInfo(userInfoEntity: UserInfoEntity) {
-        networkExecutor {
-            execute {
-                userProfileRepository.saveUserInfo(userInfoEntity)
-            }
-            onSuccess {
-                preferencesDatastoreManager.sendEmail = !_viewState.value.sendEmails
-                _viewState.update {
-                    it.copy(
-                        sendEmails = !it.sendEmails
-                    )
-                }
-            }
-            onError { error ->
-                _uiState.value = RequestState.OnError(error)
-            }
-            onLoading { isLoading ->
-                _viewState.update {
-                    it.copy(
-                        isLoading = isLoading
-                    )
-                }
+    private fun saveUserInfo(user: UserInfoEntity) {
+        updateParent(user) {
+            preferencesDatastoreManager.sendEmail = !_viewState.value.sendEmails
+            _viewState.update {
+                it.copy(
+                    sendEmails = !it.sendEmails
+                )
             }
         }
     }

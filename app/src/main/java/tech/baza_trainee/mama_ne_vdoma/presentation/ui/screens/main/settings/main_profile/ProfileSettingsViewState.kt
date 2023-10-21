@@ -12,6 +12,6 @@ data class ProfileSettingsViewState(
     val avatar: Uri = Uri.EMPTY,
     val children: List<ChildEntity> = emptyList(),
     val sendEmails: Boolean = true,
-    val isPolicyChecked: Boolean = false,
+    val isPolicyChecked: Boolean = true,
     val isLoading: Boolean = false
 )

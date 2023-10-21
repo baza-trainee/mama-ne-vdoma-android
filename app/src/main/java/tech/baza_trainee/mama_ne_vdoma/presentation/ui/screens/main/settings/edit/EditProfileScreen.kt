@@ -73,6 +73,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.functions.LocationPermission
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.text_fields.OutlinedTextFieldWithError
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.text_fields.PasswordTextFieldWithError
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.common.dialogs.DeleteAccountAlertDialog
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.edit.dialogs.ChildScheduleEditDialog
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.edit.dialogs.EmailVerificationInfoDialog
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.edit.dialogs.ParentScheduleEditDialog
@@ -117,6 +118,7 @@ fun EditProfileScreen(
     var showEmailVerificationDialog by rememberSaveable { mutableStateOf(false) }
     var editUserSchedule by remember { mutableStateOf(false) }
     var editChildSchedule by remember { mutableStateOf(false) }
+    var deleteChildDialog by remember { mutableStateOf(false) }
     var selectedChild by remember { mutableIntStateOf(0) }
 
     Column(
@@ -498,13 +500,33 @@ fun EditProfileScreen(
         if (screenState.value.children.isNotEmpty()) {
             Spacer(modifier = Modifier.height(16.dp))
 
-            Text(
+            Row(
                 modifier = Modifier.fillMaxWidth(),
-                text = "Діти:",
-                fontSize = 16.sp,
-                fontFamily = redHatDisplayFontFamily,
-                fontWeight = FontWeight.Bold
-            )
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    modifier = Modifier.weight(1f),
+                    text = "Інформація о дітях",
+                    fontSize = 16.sp,
+                    fontFamily = redHatDisplayFontFamily,
+                    fontWeight = FontWeight.Bold
+                )
+
+                Text(
+                    modifier = Modifier
+                        .weight(1f)
+                        .clickable(
+                            indication = null,
+                            interactionSource = remember { MutableInteractionSource() }
+                        ) { handleEvent(EditProfileEvent.AddChild) },
+                    text = "+ Додати дитину",
+                    fontFamily = redHatDisplayFontFamily,
+                    fontSize = 14.sp,
+                    textDecoration = TextDecoration.Underline,
+                    textAlign = TextAlign.End,
+                    color = MaterialTheme.colorScheme.primary
+                )
+            }
 
             screenState.value.children.forEachIndexed { index, child ->
                 Spacer(modifier = Modifier.height(8.dp))
@@ -516,7 +538,10 @@ fun EditProfileScreen(
                         selectedChild = index
                         editChildSchedule = true
                     },
-                    onDelete = { handleEvent(EditProfileEvent.DeleteChild(it)) }
+                    onDelete = {
+                        selectedChild = index
+                        deleteChildDialog = true
+                    }
                 )
             }
         }
@@ -533,12 +558,14 @@ fun EditProfileScreen(
             )
         }
 
+        var showDeleteAccountAlertDialog by remember { mutableStateOf(false) }
+
         Button(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 16.dp)
                 .height(48.dp),
-            onClick = { handleEvent(EditProfileEvent.DeleteUser) },
+            onClick = { showDeleteAccountAlertDialog = true },
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color.Red,
                 contentColor = MaterialTheme.colorScheme.onPrimary
@@ -621,6 +648,27 @@ fun EditProfileScreen(
                 onSave = { handleEvent(EditProfileEvent.SaveChildren) },
                 onRestore = { handleEvent(EditProfileEvent.RestoreChild(it)) }
             ) { editChildSchedule = false }
+        }
+
+        if (showDeleteAccountAlertDialog) {
+            DeleteAccountAlertDialog(
+                text = "Після видалення акаунту немає можливості його відновити. Щоб користуватись після цього мобільним додатком, необхідно буде зареєструватись заново. Підтвердити видалення мого акаунту?",
+                button = "Так, видалити акаунт",
+                onDelete = { handleEvent(EditProfileEvent.DeleteUser) },
+                onDismissRequest = { showDeleteAccountAlertDialog = false }
+            )
+        }
+
+        if (deleteChildDialog) {
+            DeleteAccountAlertDialog(
+                text = "Картка дитини та розклад по догляду за дитиною будуть видалені. Підтвердити видалення картки дитини?",
+                button = "Так, видалити картку",
+                onDismissRequest = {
+                    selectedChild = 0
+                    deleteChildDialog = false
+                },
+                onDelete = { handleEvent(EditProfileEvent.DeleteChild(screenState.value.children[selectedChild].childId)) }
+            )
         }
     }
 
