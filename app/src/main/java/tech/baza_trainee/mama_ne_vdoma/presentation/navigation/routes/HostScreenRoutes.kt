@@ -5,7 +5,7 @@ import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 
-sealed class HostScreenRoutes(val route: String): CommonRoute(route) {
+sealed class HostScreenRoutes(override val route: String): CommonRoute(route) {
     class Host: HostScreenRoutes(ROUTE) {
 
         data class HostArgs (

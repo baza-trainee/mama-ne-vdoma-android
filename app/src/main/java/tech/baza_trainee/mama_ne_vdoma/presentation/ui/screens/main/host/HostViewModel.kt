@@ -18,16 +18,14 @@ import tech.baza_trainee.mama_ne_vdoma.domain.repository.GroupsRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.LocationRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.PageNavigator
-import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.PageWithRoute
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
-import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.CommonRoute
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.CommonHostRoute
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.GroupsScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.MainScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.SearchScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.SettingsScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.UserProfileRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.GROUPS_PAGE
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.MAIN_PAGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.SEARCH_PAGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.SETTINGS_PAGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
@@ -59,13 +57,11 @@ class HostViewModel(
 
     init {
         viewModelScope.launch {
-            navigator.pagesFlow.collect { page ->
-                navigateToTab(page)
-            }
+            navigator.pagesFlow.collect(::navigateToTab)
         }
 
         if (page != -1)
-            navigateToTab(PageWithRoute(page, CommonRoute("")))
+            navigateToTab(CommonHostRoute("", page, ""))
 
         getUserInfo()
     }
@@ -73,13 +69,14 @@ class HostViewModel(
     fun handleEvent(event: HostEvent) {
         when (event) {
             HostEvent.OnBack -> mainNavigator.goBack()
-            is HostEvent.SwitchTab -> navigator.goToPage(event.index)
+            is HostEvent.SwitchTab -> navigateToTab(CommonHostRoute("", event.index, ""))
             HostEvent.ResetUiState -> _uiState.value = RequestState.Idle
             HostEvent.OnBackLocal -> {
                 when (navigator.getCurrentRoute()) {
                     MainScreenRoutes.Main.route -> mainNavigator.goBack()
                     GroupsScreenRoutes.Groups.route,
-                    SearchScreenRoutes.SearchUser.route -> navigator.goToPrevious()
+                    SearchScreenRoutes.SearchUser.route,
+                    SettingsScreenRoutes.Settings.route -> navigator.goToPrevious()
 
                     else -> navigator.goBack()
                 }
@@ -87,18 +84,22 @@ class HostViewModel(
         }
     }
 
-    private fun navigateToTab(page: PageWithRoute) {
-        _viewState.update {
-            it.copy(currentPage = page.page)
-        }
-        if (page.route.destination.isEmpty()) {
-            when (page.page) {
-                MAIN_PAGE -> navigator.navigate(MainScreenRoutes.Main)
-                GROUPS_PAGE -> navigator.navigate(GroupsScreenRoutes.Groups)
-                SEARCH_PAGE -> navigator.navigate(SearchScreenRoutes.SearchUser)
-                SETTINGS_PAGE -> navigator.navigate(SettingsScreenRoutes.Settings)
+    private fun navigateToTab(route: CommonHostRoute) {
+        val newRoute = if (route.route.isEmpty()) {
+            when (route.page) {
+                GROUPS_PAGE -> GroupsScreenRoutes.Groups
+                SEARCH_PAGE -> SearchScreenRoutes.SearchUser
+                SETTINGS_PAGE -> SettingsScreenRoutes.Settings
+                else -> MainScreenRoutes.Main
             }
-        } else navigator.navigate(page.route)
+        } else route
+        _viewState.update {
+            it.copy(
+                currentPage = newRoute.page,
+                currentPageTitle = newRoute.title.ifEmpty { "Головна" }
+            )
+        }
+        navigator.navigate(newRoute)
     }
 
     private fun getUserInfo() {

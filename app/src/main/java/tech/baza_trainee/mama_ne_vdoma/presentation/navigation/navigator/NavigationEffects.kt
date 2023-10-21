@@ -24,7 +24,7 @@ fun NavigationEffects(
                 is NavigationIntent.NavigateBack -> navHostController.popBackStack()
 
                 is NavigationIntent.NavigateTo -> {
-                    navHostController.navigate(intent.route.destination)
+                    navHostController.navigate(intent.route.route)
                 }
             }
         }

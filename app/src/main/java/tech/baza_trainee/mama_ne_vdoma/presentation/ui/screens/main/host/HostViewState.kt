@@ -4,6 +4,7 @@ import android.net.Uri
 
 data class HostViewState(
     val currentPage: Int = 0,
+    val currentPageTitle: String = "",
     val notifications: Int = 0,
     val avatar: Uri = Uri.EMPTY,
     val isLoading: Boolean = false

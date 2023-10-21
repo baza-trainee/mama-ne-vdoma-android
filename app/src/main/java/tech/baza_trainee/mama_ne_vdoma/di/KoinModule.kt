@@ -201,7 +201,7 @@ val mainModule = module {
     viewModel { SearchUserViewModel(get(), get(), get()) }
     viewModel { SearchResultsViewModel(get(), get(), get()) }
     viewModel { ProfileSettingsViewModel(get(), get(), get(), get()) }
-    viewModel { EditProfileViewModel(get(), get(), get(), get(), get(), get(), get()) }
+    viewModel { EditProfileViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
     viewModel { VerifyNewEmailViewModel(get(), get(), get()) }
 }
 

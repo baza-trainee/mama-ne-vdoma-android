@@ -40,7 +40,7 @@ class ChooseChildViewModel(
         when (event) {
             ChooseChildEvent.ResetUiState -> _uiState.value = RequestState.Idle
             ChooseChildEvent.OnBack -> navigator.goBack()
-            is ChooseChildEvent.OnChooseChild -> navigator.navigate(
+            is ChooseChildEvent.OnChooseChild -> navigator.goToRoute(
                 GroupsScreenRoutes.CreateGroup.getDestination(
                     event.childId
                 )

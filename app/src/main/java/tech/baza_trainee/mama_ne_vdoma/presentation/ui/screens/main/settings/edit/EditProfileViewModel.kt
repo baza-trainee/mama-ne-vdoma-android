@@ -24,9 +24,9 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.LocationInteract
 import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.NetworkEventsListener
 import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.UserProfileInteractor
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.PageNavigator
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.Graphs
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.SettingsScreenRoutes
-import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.UserProfileRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.image_crop.CropImageCommunicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.common.VerifyEmailCommunicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
@@ -40,6 +40,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onSuccess
 import java.time.DayOfWeek
 
 class EditProfileViewModel(
+    private val mainNavigator: ScreenNavigator,
     private val navigator: PageNavigator,
     private val communicator: CropImageCommunicator,
     private val emailCommunicator: VerifyEmailCommunicator,
@@ -106,15 +107,12 @@ class EditProfileViewModel(
         when(event) {
             EditProfileEvent.DeleteUser -> deleteUser()
             is EditProfileEvent.DeleteChild -> deleteChild(event.id)
-            EditProfileEvent.AddChild -> resetCurrentChild()
-            is EditProfileEvent.EditChild -> setCurrentChild(event.id)
             EditProfileEvent.ResetUiState -> _uiState.value = EditProfileUiState.Idle
-            EditProfileEvent.EditUser -> navigator.navigate(UserProfileRoutes.UserInfo)
-            EditProfileEvent.OnBack -> navigator.navigate(Graphs.Login)
+            EditProfileEvent.OnBack -> navigator.goBack()
             EditProfileEvent.SaveInfo -> saveChanges()
             EditProfileEvent.GetLocationFromAddress -> getLocationFromAddress()
             EditProfileEvent.OnDeletePhoto -> deleteUserAvatar()
-            EditProfileEvent.OnEditPhoto -> navigator.navigate(SettingsScreenRoutes.EditProfilePhoto)
+            EditProfileEvent.OnEditPhoto -> navigator.goToRoute(SettingsScreenRoutes.EditProfilePhoto)
             is EditProfileEvent.OnMapClick -> setLocation(event.location)
             EditProfileEvent.RequestUserLocation -> requestCurrentLocation()
             is EditProfileEvent.SetCode -> setCode(event.code, event.country)
@@ -140,6 +138,8 @@ class EditProfileViewModel(
                 backupParentNote = null
                 backupParentSchedule = null
             }
+
+            EditProfileEvent.AddChild -> Unit
         }
     }
 
@@ -150,7 +150,7 @@ class EditProfileViewModel(
             }
             onSuccess {
                 emailCommunicator.setEmail(_viewState.value.email)
-                navigator.navigateOnMain(viewModelScope, SettingsScreenRoutes.VerifyNewEmail)
+                navigator.goToRoute(SettingsScreenRoutes.VerifyNewEmail)
             }
             onError(::onError)
             onLoading(::onLoading)
@@ -291,7 +291,7 @@ class EditProfileViewModel(
 
     private fun deleteUser() {
         deleteUser {
-            navigator.navigateOnMain(viewModelScope, Graphs.CreateUser)
+            mainNavigator.navigateOnMain(viewModelScope, Graphs.CreateUser)
         }
     }
 
@@ -368,18 +368,8 @@ class EditProfileViewModel(
         }
     }
 
-    private fun resetCurrentChild() {
-//        communicator.currentChildId = ""
-        navigator.navigate(UserProfileRoutes.ChildInfo)
-    }
-
     private fun deleteChild(childId: String) {
         deleteChild(childId) { getChildren() }
-    }
-
-    private fun setCurrentChild(childId: String = "") {
-//        communicator.currentChildId = childId
-        navigator.navigate(UserProfileRoutes.ChildSchedule)
     }
 
     private fun getLocationFromAddress() {

@@ -5,7 +5,7 @@ import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 
-sealed class LoginRoutes(val route: String): CommonRoute(route) {
+sealed class LoginRoutes(override val route: String): CommonRoute(route) {
     data object Login: LoginRoutes("login_screen")
     data object RestorePassword: LoginRoutes("restore_password_screen")
     data object RestoreSuccess: LoginRoutes("restore_success_screen")

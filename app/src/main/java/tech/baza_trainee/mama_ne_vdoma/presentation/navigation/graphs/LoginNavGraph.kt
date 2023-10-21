@@ -85,7 +85,7 @@ fun NavGraphBuilder.loginNavGraph(
             )
         }
         composable(LoginRoutes.RestoreSuccess.route) {
-            RestoreSuccessScreen { navHostController.navigate(LoginRoutes.Login.destination) }
+            RestoreSuccessScreen { navHostController.navigate(LoginRoutes.Login.route) }
         }
     }
 }

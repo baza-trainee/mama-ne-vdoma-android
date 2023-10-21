@@ -4,9 +4,10 @@ import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.GROUPS_PAGE
 
-sealed class GroupsScreenRoutes(val route: String): CommonRoute(route) {
-    data object Groups: GroupsScreenRoutes("groups_screen")
+sealed class GroupsScreenRoutes(override val route: String): CommonHostRoute(route, GROUPS_PAGE, "Групи") {
+    data object Groups: GroupsScreenRoutes(route = "groups_screen")
     data object ChooseChild: GroupsScreenRoutes("choose_child_screen")
     data object ImageCrop: GroupsScreenRoutes("user_crop_screen")
 
@@ -33,11 +34,13 @@ sealed class GroupsScreenRoutes(val route: String): CommonRoute(route) {
                 )
             }
 
-            fun getDestination(child: String): CommonRoute {
-                return CommonRoute(
-                    "$BASE_ROUTE_CREATE_GROUP?" +
+            fun getDestination(child: String): CommonHostRoute {
+                return CommonHostRoute(
+                    route = "$BASE_ROUTE_CREATE_GROUP?" +
                             "$CHILD=$child" +
-                            ""
+                            "",
+                    GROUPS_PAGE,
+                    "Групи"
                 )
             }
         }

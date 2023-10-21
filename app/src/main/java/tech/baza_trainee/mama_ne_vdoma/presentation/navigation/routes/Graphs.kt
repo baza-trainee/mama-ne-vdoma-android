@@ -1,6 +1,6 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes
 
-sealed class Graphs(val route: String): CommonRoute(route) {
+sealed class Graphs(override val route: String): CommonRoute(route) {
     data object Start : Graphs("start_graph")
     data object CreateUser : Graphs("create_user_graph")
     data object Login : Graphs("login_graph")

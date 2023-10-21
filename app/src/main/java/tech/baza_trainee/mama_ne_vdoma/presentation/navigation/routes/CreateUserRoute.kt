@@ -5,7 +5,7 @@ import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 
-sealed class CreateUserRoute(val route: String) {
+sealed class CreateUserRoute(override val route: String): CommonRoute(route) {
     data object CreateUser: CreateUserRoute("create_user_screen")
 
 

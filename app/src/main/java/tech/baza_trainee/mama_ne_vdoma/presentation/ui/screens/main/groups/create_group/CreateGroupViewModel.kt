@@ -76,7 +76,7 @@ class CreateGroupViewModel(
             is CreateGroupEvent.UpdateMinAge -> validateMinAge(event.value)
             is CreateGroupEvent.UpdateDescription -> updateDescription(event.value)
             CreateGroupEvent.OnDeletePhoto -> Unit
-            CreateGroupEvent.OnEditPhoto -> navigator.navigate(GroupsScreenRoutes.ImageCrop)
+            CreateGroupEvent.OnEditPhoto -> navigator.goToRoute(GroupsScreenRoutes.ImageCrop)
             is CreateGroupEvent.SetImageToCrop -> communicator.uriForCrop = event.uri
         }
     }
@@ -168,7 +168,7 @@ class CreateGroupViewModel(
                     )
                 )
             }
-            onSuccess { navigator.navigate(GroupsScreenRoutes.Groups) }
+            onSuccess { navigator.goToRoute(GroupsScreenRoutes.Groups) }
             onError { error ->
                 _uiState.value = CreateGroupUiState.OnError(error)
             }

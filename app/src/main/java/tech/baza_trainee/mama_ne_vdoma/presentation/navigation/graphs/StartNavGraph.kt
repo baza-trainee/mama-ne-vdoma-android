@@ -18,12 +18,12 @@ fun NavGraphBuilder.startNavGraph(
     ) {
         composable(StartRoutes.Start.route) {
             Start(
-                onStart = { navHostController.navigate(StartRoutes.Info.destination) },
-                onLogin = { navHostController.navigate(Graphs.Login.destination) }
+                onStart = { navHostController.navigate(StartRoutes.Info.route) },
+                onLogin = { navHostController.navigate(Graphs.Login.route) }
             )
         }
         composable(StartRoutes.Info.route) {
-            InfoScreen { navHostController.navigate(Graphs.CreateUser.destination) }
+            InfoScreen { navHostController.navigate(Graphs.CreateUser.route) }
         }
     }
 }

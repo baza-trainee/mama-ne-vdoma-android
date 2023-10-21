@@ -23,11 +23,9 @@ sealed interface EditProfileEvent {
     data object GetLocationFromAddress : EditProfileEvent
     data class UpdateUserAddress(val address: String) : EditProfileEvent
     data class UpdatePolicyCheck(val isChecked: Boolean) : EditProfileEvent
-    data object EditUser: EditProfileEvent
     data object DeleteUser: EditProfileEvent
     data object AddChild: EditProfileEvent
     data class EditParentSchedule(val dayOfWeek: DayOfWeek, val period: Period): EditProfileEvent
-    data class EditChild(val id: String): EditProfileEvent
     data class DeleteChild(val id: String): EditProfileEvent
     data class EditParentNote(val note: String): EditProfileEvent
     data class EditChildSchedule(val child: Int, val dayOfWeek: DayOfWeek, val period: Period): EditProfileEvent

@@ -24,6 +24,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.Graphs
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.MainNavigationBar
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.MainNavigationItem
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.SurfaceWithNavigationBars
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.headers.HeaderWithToolbar
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.headers.ToolbarWithAvatar
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 
@@ -60,14 +61,23 @@ fun HostScreen(
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             topBar = {
-                ToolbarWithAvatar(
-                    title = tabContents[screenState.value.currentPage].title,
-                    avatar = screenState.value.avatar,
-                    showArrow = screenState.value.currentPage != 0,
-                    showNotification = screenState.value.notifications != 0,
-                    notificationCount = screenState.value.notifications,
-                    onBack = { handleEvent(HostEvent.OnBackLocal) }
-                )
+                if (screenState.value.currentPage == 0) {
+                    ToolbarWithAvatar(
+                        title = screenState.value.currentPageTitle,
+                        avatar = screenState.value.avatar,
+                        showArrow = false,
+                        showNotification = screenState.value.notifications != 0,
+                        notificationCount = screenState.value.notifications
+                    )
+                } else {
+                    HeaderWithToolbar(
+                        title = screenState.value.currentPageTitle,
+                        avatar = screenState.value.avatar,
+                        showNotification = screenState.value.notifications != 0,
+                        notificationCount = screenState.value.notifications,
+                        onBack = { handleEvent(HostEvent.OnBackLocal) }
+                    )
+                }
             },
             bottomBar = {
                 MainNavigationBar(
