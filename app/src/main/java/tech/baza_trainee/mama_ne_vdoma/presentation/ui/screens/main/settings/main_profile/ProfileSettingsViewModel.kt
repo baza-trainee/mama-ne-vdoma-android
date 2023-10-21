@@ -58,6 +58,7 @@ class ProfileSettingsViewModel(
         when (event) {
             ProfileSettingsEvent.OnBack -> navigator.goToPrevious()
             ProfileSettingsEvent.ResetUiState -> _uiState.value = RequestState.Idle
+            is ProfileSettingsEvent.UpdatePolicyCheck -> updatePolicyCheck(event.isChecked)
             ProfileSettingsEvent.EditProfile -> navigator.navigate(SettingsScreenRoutes.EditProfile)
             ProfileSettingsEvent.LogOut -> {
                 AuthInterceptor.AUTH_TOKEN = AuthInterceptor.EMPTY_TOKEN
@@ -145,6 +146,14 @@ class ProfileSettingsViewModel(
                     )
                 }
             }
+        }
+    }
+
+    private fun updatePolicyCheck(isChecked: Boolean) {
+        _viewState.update {
+            it.copy(
+                isPolicyChecked = isChecked
+            )
         }
     }
 }

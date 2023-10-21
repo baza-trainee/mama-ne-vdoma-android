@@ -25,7 +25,6 @@ data class EditProfileViewState(
     val currentLocation: LatLng = LatLng(0.0,0.0),
     val note: String = "",
     val noteValid: ValidField = ValidField.EMPTY,
-    val isPolicyChecked: Boolean = false,
     val schedule: ScheduleModel = ScheduleModel(),
     val children: List<ChildEntity> = emptyList(),
     val childrenNotesValid: SnapshotStateMap<Int, ValidField> = mutableStateMapOf(),

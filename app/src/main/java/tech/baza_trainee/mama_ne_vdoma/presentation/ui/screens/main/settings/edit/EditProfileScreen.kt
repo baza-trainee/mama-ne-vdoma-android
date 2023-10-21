@@ -69,7 +69,6 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.cards.ChildIn
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.cards.ParentInfoDesk
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.CustomGoogleMap
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.LoadingIndicator
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.PrivacyPolicyBlock
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.UserAvatarWithCameraAndGallery
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.text_fields.OutlinedTextFieldWithError
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.text_fields.PasswordTextFieldWithError
@@ -466,14 +465,6 @@ fun EditProfileScreen(
                 }
             },
             maxLines = 2
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        PrivacyPolicyBlock(
-            modifier = Modifier.fillMaxWidth(),
-            isChecked = screenState.value.isPolicyChecked,
-            onCheckedChanged = { handleEvent(EditProfileEvent.UpdatePolicyCheck(it)) }
         )
 
         Spacer(modifier = Modifier.height(16.dp))

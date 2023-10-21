@@ -49,6 +49,7 @@ import coil.request.ImageRequest
 import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.cards.ChildCard
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.LoadingIndicator
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.PrivacyPolicyBlock
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.LogoutButtonColor
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.LogoutButtonTextColor
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
@@ -191,12 +192,12 @@ fun ProfileSettingsScreen(
             )
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(8.dp))
 
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(8.dp),
+                .padding(horizontal = 8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
@@ -217,10 +218,19 @@ fun ProfileSettingsScreen(
             )
         }
 
+        Spacer(modifier = Modifier.height(24.dp))
+
+        PrivacyPolicyBlock(
+            modifier = Modifier.fillMaxWidth(),
+            isChecked = screenState.value.isPolicyChecked,
+            onCheckedChanged = { handleEvent(ProfileSettingsEvent.UpdatePolicyCheck(it)) }
+        )
+
+        Spacer(modifier = Modifier.height(24.dp))
+
         Button(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 16.dp)
                 .height(48.dp),
             onClick = { handleEvent(ProfileSettingsEvent.EditProfile) }
         ) {
@@ -234,10 +244,11 @@ fun ProfileSettingsScreen(
             )
         }
 
+        Spacer(modifier = Modifier.height(16.dp))
+
         Button(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 16.dp)
                 .height(48.dp),
             onClick = { handleEvent(ProfileSettingsEvent.LogOut) },
             colors = ButtonDefaults.buttonColors(
@@ -254,6 +265,8 @@ fun ProfileSettingsScreen(
                 text = "Вийти з акаунту"
             )
         }
+
+        Spacer(modifier = Modifier.height(16.dp))
     }
 
     if (screenState.value.isLoading) LoadingIndicator()

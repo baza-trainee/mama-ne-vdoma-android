@@ -117,7 +117,6 @@ class EditProfileViewModel(
             EditProfileEvent.RequestUserLocation -> requestCurrentLocation()
             is EditProfileEvent.SetCode -> setCode(event.code, event.country)
             is EditProfileEvent.SetImageToCrop -> communicator.uriForCrop = event.uri
-            is EditProfileEvent.UpdatePolicyCheck -> updatePolicyCheck(event.isChecked)
             is EditProfileEvent.UpdateUserAddress -> updateUserAddress(event.address)
             is EditProfileEvent.ValidateEmail -> validateEmail(event.email)
             is EditProfileEvent.ValidatePassword -> validatePassword(event.password)
@@ -460,14 +459,6 @@ class EditProfileViewModel(
         _viewState.update {
             it.copy(
                 address = address
-            )
-        }
-    }
-
-    private fun updatePolicyCheck(isChecked: Boolean) {
-        _viewState.update {
-            it.copy(
-                isPolicyChecked = isChecked
             )
         }
     }
