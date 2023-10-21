@@ -70,6 +70,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.cards.ParentI
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.CustomGoogleMap
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.LoadingIndicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.UserAvatarWithCameraAndGallery
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.functions.LocationPermission
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.text_fields.OutlinedTextFieldWithError
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.text_fields.PasswordTextFieldWithError
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.edit.dialogs.ChildScheduleEditDialog
@@ -406,26 +407,32 @@ fun EditProfileScreen(
             fontFamily = redHatDisplayFontFamily
         )
 
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(160.dp)
-        ) {
-            CustomGoogleMap(
-                modifier = Modifier.fillMaxWidth(),
-                location = screenState.value.currentLocation,
-                onMyLocationButtonClick = { handleEvent(EditProfileEvent.RequestUserLocation) },
-                onMapClick = { handleEvent(EditProfileEvent.OnMapClick(it)) }
-            ) {
-                Marker(
-                    state = MarkerState(position = screenState.value.currentLocation),
-                    title = "Ви тут",
-                    snippet = "поточне місцезнаходження"
-                )
-            }
-        }
+        var isPermissionGranted by remember { mutableStateOf(false) }
+        LocationPermission { isPermissionGranted = it }
 
-        Spacer(modifier = Modifier.height(4.dp))
+        if (isPermissionGranted) {
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(160.dp)
+            ) {
+                CustomGoogleMap(
+                    modifier = Modifier.fillMaxWidth(),
+                    location = screenState.value.currentLocation,
+                    onMyLocationButtonClick = { handleEvent(EditProfileEvent.RequestUserLocation) },
+                    onMapClick = { handleEvent(EditProfileEvent.OnMapClick(it)) }
+                ) {
+                    Marker(
+                        state = MarkerState(position = screenState.value.currentLocation),
+                        title = "Ви тут",
+                        snippet = "поточне місцезнаходження"
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(4.dp))
+        }
 
         Text(
             modifier = Modifier
