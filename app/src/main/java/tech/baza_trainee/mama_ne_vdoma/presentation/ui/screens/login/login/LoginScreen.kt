@@ -108,7 +108,8 @@ fun LoginUserScreen(
                     modifier = Modifier.fillMaxWidth(),
                     password = screenState.value.password,
                     onValueChange = { handleEvent(LoginEvent.ValidatePassword(it)) },
-                    isError = screenState.value.passwordValid == ValidField.INVALID
+                    isError = screenState.value.passwordValid == ValidField.INVALID,
+                    errorText = "Ви ввели некоректний пароль"
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
