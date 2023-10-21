@@ -2,6 +2,8 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.ed
 
 import android.net.Uri
 import com.google.android.gms.maps.model.LatLng
+import tech.baza_trainee.mama_ne_vdoma.domain.model.Period
+import java.time.DayOfWeek
 
 sealed interface EditProfileEvent {
     data object OnBack: EditProfileEvent
@@ -24,6 +26,14 @@ sealed interface EditProfileEvent {
     data object EditUser: EditProfileEvent
     data object DeleteUser: EditProfileEvent
     data object AddChild: EditProfileEvent
-    data class EditChild(val id: String) : EditProfileEvent
-    data class DeleteChild(val id: String) : EditProfileEvent
+    data class EditParentSchedule(val dayOfWeek: DayOfWeek, val period: Period): EditProfileEvent
+    data class EditChild(val id: String): EditProfileEvent
+    data class DeleteChild(val id: String): EditProfileEvent
+    data class EditParentNote(val note: String): EditProfileEvent
+    data class EditChildSchedule(val child: Int, val dayOfWeek: DayOfWeek, val period: Period): EditProfileEvent
+    data class EditChildNote(val child: Int, val note: String) : EditProfileEvent
+    data class RestoreChild(val child: Int) : EditProfileEvent
+    data object SaveChildren: EditProfileEvent
+    data object RestoreParentInfo: EditProfileEvent
+    data object SaveParentInfo: EditProfileEvent
 }

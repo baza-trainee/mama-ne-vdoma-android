@@ -6,5 +6,6 @@ data class UserInfoDto(
     val phone: String,
     val sendingEmails: Boolean,
     val avatar: String?,
-    val week: Map<String, DayScheduleDto>
+    val week: Map<String, DayScheduleDto>,
+    val note: String? = null
 )

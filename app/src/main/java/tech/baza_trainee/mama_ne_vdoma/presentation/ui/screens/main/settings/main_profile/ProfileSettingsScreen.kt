@@ -254,9 +254,9 @@ fun ProfileSettingsScreen(
                 text = "Вийти з акаунту"
             )
         }
-
-        if (screenState.value.isLoading) LoadingIndicator()
     }
+
+    if (screenState.value.isLoading) LoadingIndicator()
 }
 
 @Composable

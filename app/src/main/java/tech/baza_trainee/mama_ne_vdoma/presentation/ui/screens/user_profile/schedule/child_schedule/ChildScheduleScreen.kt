@@ -16,7 +16,6 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 fun ChildScheduleScreen(
     screenState: State<ScheduleViewState> = mutableStateOf(ScheduleViewState()),
     uiState: State<RequestState> = mutableStateOf(RequestState.Idle),
-    comment: State<String> = mutableStateOf(""),
     handleEvent: (ScheduleEvent) -> Unit = {}
 ) {
     val context = LocalContext.current
@@ -32,7 +31,6 @@ fun ChildScheduleScreen(
     ScheduleScreen(
         title = "Вкажіть, коли потрібно доглядати дитину",
         screenState = screenState,
-        comment = comment,
         onUpdateSchedule = { day, period -> handleEvent(ScheduleEvent.UpdateChildSchedule(day, period)) },
         onUpdateComment = { handleEvent(ScheduleEvent.UpdateChildComment(it)) },
         onNext = { handleEvent(ScheduleEvent.PatchChildSchedule) },

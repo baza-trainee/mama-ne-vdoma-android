@@ -32,7 +32,7 @@ fun ParentScheduleScreen(
         title = "Визначіть свій графік, коли можете доглядати дітей",
         screenState = screenState,
         onUpdateSchedule = { day, period -> handleEvent(ScheduleEvent.UpdateParentSchedule(day, period)) },
-        onUpdateComment = {},
+        onUpdateComment = { handleEvent(ScheduleEvent.UpdateParentComment(it)) },
         onNext = { handleEvent(ScheduleEvent.PatchParentSchedule) },
         onBack = { handleEvent(ScheduleEvent.OnBack) }
     )

@@ -521,7 +521,7 @@ fun EditProfileScreen(
                 .fillMaxWidth()
                 .padding(vertical = 16.dp)
                 .height(48.dp),
-            onClick = { }
+            onClick = { handleEvent(EditProfileEvent.SaveInfo) }
         ) {
             ButtonText(
                 text = "Зберегти зміни"
@@ -533,7 +533,7 @@ fun EditProfileScreen(
                 .fillMaxWidth()
                 .padding(bottom = 16.dp)
                 .height(48.dp),
-            onClick = { },
+            onClick = { handleEvent(EditProfileEvent.DeleteUser) },
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color.Red,
                 contentColor = MaterialTheme.colorScheme.onPrimary
@@ -578,24 +578,48 @@ fun EditProfileScreen(
             ParentScheduleEditDialog(
                 scheduleModel = screenState.value.schedule,
                 note = screenState.value.note,
-                onEditSchedule = {},
-                onEditNote = {},
-                onDismissRequest = { editUserSchedule = false }
-            )
+                onEditSchedule = { day, period ->
+                    handleEvent(
+                        EditProfileEvent.EditParentSchedule(
+                            day,
+                            period
+                        )
+                    )
+                },
+                onEditNote = { handleEvent(EditProfileEvent.EditParentNote(it)) },
+                onSave = { handleEvent(EditProfileEvent.SaveParentInfo) },
+                onRestore = { handleEvent(EditProfileEvent.RestoreParentInfo) }
+            ) { editUserSchedule = false }
         }
 
         if (editChildSchedule) {
             ChildScheduleEditDialog(
                 selectedChild = selectedChild,
                 children = screenState.value.children,
-                onEditSchedule = {},
-                onEditNote = {},
-                onDismissRequest = { editChildSchedule = false }
-            )
+                onEditSchedule = { child, day, period ->
+                    handleEvent(
+                        EditProfileEvent.EditChildSchedule(
+                            child,
+                            day,
+                            period
+                        )
+                    )
+                },
+                onEditNote = { child: Int, note: String ->
+                    handleEvent(
+                        EditProfileEvent.EditChildNote(
+                            child,
+                            note
+                        )
+                    )
+                },
+                onSave = { handleEvent(EditProfileEvent.SaveChildren) },
+                onRestore = { handleEvent(EditProfileEvent.RestoreChild(it)) }
+            ) { editChildSchedule = false }
         }
-
-        if (screenState.value.isLoading) LoadingIndicator()
     }
+
+    if (screenState.value.isLoading) LoadingIndicator()
 }
 
 @Composable

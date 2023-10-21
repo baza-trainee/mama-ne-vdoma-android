@@ -55,7 +55,8 @@ fun UserInfoEntity.toDataModel() = UserInfoDto(
         schedule.schedule.forEach {
             map[it.key.name.lowercase()] = it.value.toDataModel()
         }
-    }
+    },
+    note = note.ifEmpty { null }
 )
 
 fun LocationPatchEntity.toDataModel() = LocationPatchDto(lat, lon)

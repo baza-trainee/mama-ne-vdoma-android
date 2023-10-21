@@ -138,9 +138,9 @@ fun SearchUserScreen(
                 text = "Розпочати пошук"
             )
         }
-
-        if (screenState.value.isLoading) LoadingIndicator()
     }
+
+    if (screenState.value.isLoading) LoadingIndicator()
 }
 
 @Composable

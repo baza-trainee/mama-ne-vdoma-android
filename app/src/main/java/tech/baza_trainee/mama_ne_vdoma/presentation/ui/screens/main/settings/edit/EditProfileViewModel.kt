@@ -3,56 +3,42 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.ed
 import android.graphics.Bitmap
 import android.net.Uri
 import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.model.LatLng
-import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import tech.baza_trainee.mama_ne_vdoma.domain.model.ChildEntity
+import tech.baza_trainee.mama_ne_vdoma.domain.model.DayPeriod
+import tech.baza_trainee.mama_ne_vdoma.domain.model.Period
 import tech.baza_trainee.mama_ne_vdoma.domain.model.ScheduleModel
-import tech.baza_trainee.mama_ne_vdoma.domain.model.UserProfileEntity
+import tech.baza_trainee.mama_ne_vdoma.domain.model.UserInfoEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.ifNullOrEmpty
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatastoreManager
-import tech.baza_trainee.mama_ne_vdoma.domain.repository.FilesRepository
-import tech.baza_trainee.mama_ne_vdoma.domain.repository.LocationRepository
-import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
+import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.LocationInteractor
 import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.NetworkEventsListener
-import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.UserInfoInteractor
-import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.UserInfoInteractorImpl
+import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.UserProfileInteractor
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.PageNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.Graphs
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.SettingsScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.UserProfileRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.image_crop.CropImageCommunicator
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.user_info.UserInfoUiState
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.BitmapHelper
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.networkExecutor
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.validateEmail
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.validatePassword
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onError
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onLoading
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onSuccess
+import java.time.DayOfWeek
 
 class EditProfileViewModel(
     private val navigator: PageNavigator,
     private val communicator: CropImageCommunicator,
-    private val userProfileRepository: UserProfileRepository,
-    private val filesRepository: FilesRepository,
-    private val locationRepository: LocationRepository,
-    private val phoneNumberUtil: PhoneNumberUtil,
-    private val bitmapHelper: BitmapHelper,
-    private val preferencesDatastoreManager: UserPreferencesDatastoreManager,
-    userInfoInteractor: UserInfoInteractor = UserInfoInteractorImpl(userProfileRepository, filesRepository, phoneNumberUtil, bitmapHelper, preferencesDatastoreManager)
-): ViewModel(), UserInfoInteractor by userInfoInteractor, NetworkEventsListener {
+    private val userProfileInteractor: UserProfileInteractor,
+    private val locationInteractor: LocationInteractor,
+    private val preferencesDatastoreManager: UserPreferencesDatastoreManager
+): ViewModel(), UserProfileInteractor by userProfileInteractor, LocationInteractor by locationInteractor, NetworkEventsListener {
 
     private val _viewState = MutableStateFlow(EditProfileViewState())
     val viewState: StateFlow<EditProfileViewState> = _viewState.asStateFlow()
@@ -63,10 +49,19 @@ class EditProfileViewModel(
 
     private var avatarServerPath = ""
 
+    private var backupParentSchedule: Map<DayOfWeek, DayPeriod>? = null
+    private var backupParentNote: String? = null
+    private var backupChildren: Map<String, Map<DayOfWeek, DayPeriod>>? = null
+    private var backupChildrenNotes: Map<String, String>? = null
+
     init {
-        userInfoInteractor.apply {
-            setCoroutineScope(viewModelScope)
-            setNetworkListener(this@EditProfileViewModel)
+        userProfileInteractor.apply {
+            setUserProfileCoroutineScope(viewModelScope)
+            setUserProfileNetworkListener(this@EditProfileViewModel)
+        }
+        locationInteractor.apply {
+            setLocationCoroutineScope(viewModelScope)
+            setLocationNetworkListener(this@EditProfileViewModel)
         }
 
         getUserInfo()
@@ -97,7 +92,7 @@ class EditProfileViewModel(
             EditProfileEvent.ResetUiState -> _uiState.value = EditProfileUiState.Idle
             EditProfileEvent.EditUser -> navigator.navigate(UserProfileRoutes.UserInfo)
             EditProfileEvent.OnBack -> navigator.navigate(Graphs.Login)
-            EditProfileEvent.SaveInfo -> Unit
+            EditProfileEvent.SaveInfo -> saveChanges()
             EditProfileEvent.GetLocationFromAddress -> getLocationFromAddress()
             EditProfileEvent.OnDeletePhoto -> deleteUserAvatar()
             EditProfileEvent.OnEditPhoto -> navigator.navigate(SettingsScreenRoutes.EditProfilePhoto)
@@ -112,6 +107,152 @@ class EditProfileViewModel(
             is EditProfileEvent.ValidatePhone -> validatePhone(event.phone)
             is EditProfileEvent.ValidateUserName -> validateUserName(event.name)
             EditProfileEvent.VerifyEmail -> Unit // navigator.navigate(CreateUserRoute.VerifyEmail.getDestination(_viewState.value.email))
+            is EditProfileEvent.EditChildNote -> updateChildNote(event.child, event.note)
+            is EditProfileEvent.EditChildSchedule -> updateChildSchedule(event.child, event.dayOfWeek, event.period)
+            is EditProfileEvent.EditParentNote -> updateParentNote(event.note)
+            is EditProfileEvent.EditParentSchedule -> updateParentSchedule(event.dayOfWeek, event.period)
+            is EditProfileEvent.RestoreChild -> restoreChildren()
+            EditProfileEvent.RestoreParentInfo -> restoreParent()
+            is EditProfileEvent.SaveChildren -> {
+                backupChildren = null
+                backupChildrenNotes = null
+            }
+            EditProfileEvent.SaveParentInfo -> {
+                backupParentNote = null
+                backupParentSchedule = null
+            }
+        }
+    }
+
+    private fun restoreParent() {
+        val schedule = mutableStateMapOf<DayOfWeek, DayPeriod>().also { map ->
+            DayOfWeek.values().forEach {
+                map[it] = (backupParentSchedule?.get(it) ?: DayPeriod()).copy()
+            }
+        }
+        _viewState.update {
+            it.copy(
+                schedule = ScheduleModel(schedule),
+                note = backupParentNote.orEmpty()
+            )
+        }
+        backupParentSchedule = null
+        backupParentNote = null
+    }
+
+    private fun restoreChildren() {
+        val children = _viewState.value.children.map { child ->
+            val childSchedule = backupChildren?.get(child.childId)
+            val schedule = mutableStateMapOf<DayOfWeek, DayPeriod>().also { map ->
+                DayOfWeek.values().forEach {
+                    map[it] = (childSchedule?.get(it) ?: DayPeriod()).copy()
+                }
+            }
+            val note = backupChildrenNotes?.get(child.childId).orEmpty()
+            child.copy(
+                schedule = ScheduleModel(schedule),
+                note = note
+            )
+        }.toList()
+        _viewState.update {
+            it.copy(children = children)
+        }
+        backupChildren = null
+        backupChildrenNotes = null
+    }
+
+    private fun saveChanges() {
+        saveParent()
+        saveChildren()
+    }
+
+    private fun saveParent() {
+        updateParent(
+            UserInfoEntity(
+                name = preferencesDatastoreManager.name,
+                phone = preferencesDatastoreManager.phone,
+                countryCode = preferencesDatastoreManager.code,
+                avatar = avatarServerPath,
+                schedule = _viewState.value.schedule,
+                note = _viewState.value.note
+            )
+        ) {}
+    }
+
+    private fun saveChildren() {
+        _viewState.value.children.forEach {
+            patchChild(it.childId, it.note, it.schedule) {}
+        }
+    }
+
+    private fun updateParentSchedule(dayOfWeek: DayOfWeek, dayPeriod: Period) {
+        if (backupParentSchedule == null)
+            backupParentSchedule = mutableStateMapOf<DayOfWeek, DayPeriod>().also { map ->
+                DayOfWeek.values().forEach {
+                    map[it] = (_viewState.value.schedule.schedule[it] ?: DayPeriod()).copy()
+                }
+            }
+        _viewState.update {
+            it.copy(
+                schedule = updateSchedule(it.schedule, dayOfWeek, dayPeriod)
+            )
+        }
+    }
+
+    private fun updateParentNote(value: String) {
+        if (backupParentNote == null)
+            backupParentNote = value
+        val fieldValid = if (value.length < 1000) ValidField.VALID else ValidField.INVALID
+        _viewState.update {
+            it.copy(
+                note = value,
+                noteValid = fieldValid
+            )
+        }
+    }
+
+    private fun updateChildNote(childId: Int, value: String) {
+        if (backupChildrenNotes == null) {
+            backupChildrenNotes = mutableMapOf<String, String>().apply {
+                put(
+                    _viewState.value.children[childId].childId,
+                    _viewState.value.children[childId].note
+                )
+            }
+        }
+        val fieldValid = if (value.length < 1000) ValidField.VALID else ValidField.INVALID
+        val children = _viewState.value.children.toMutableList().mapIndexed { index, child ->
+            if (index == childId) child.copy(note = value) else child
+        }
+        val fieldMap = _viewState.value.childrenNotesValid.apply {
+            this[childId] = fieldValid
+        }
+        _viewState.update {
+            it.copy(
+                children = children,
+                childrenNotesValid = fieldMap
+            )
+        }
+    }
+
+    private fun updateChildSchedule(childId: Int, dayOfWeek: DayOfWeek, dayPeriod: Period) {
+        if (backupChildren == null) {
+            val childSchedule = _viewState.value.children[childId].schedule.schedule
+            backupChildren = mutableMapOf<String, Map<DayOfWeek, DayPeriod>>().apply {
+                put(
+                    _viewState.value.children[childId].childId,
+                    mutableStateMapOf<DayOfWeek, DayPeriod>().also { map ->
+                        DayOfWeek.values().forEach {
+                            map[it] = (childSchedule[it] ?: DayPeriod()).copy()
+                        }
+                    }
+                )
+            }
+        }
+        _viewState.update {
+            it.copy(
+                schedule = updateSchedule(it.children[childId].schedule, dayOfWeek, dayPeriod)
+            )
         }
     }
 
@@ -122,82 +263,46 @@ class EditProfileViewModel(
     }
 
     private fun getChildren() {
-        networkExecutor<List<ChildEntity>> {
-            execute {
-                userProfileRepository.getChildren()
-            }
-            onSuccess { entity ->
-                _viewState.update {
-                    it.copy(
-                        children = entity
-                    )
-                }
-            }
-            onError { error ->
-                _uiState.value = EditProfileUiState.OnError(error)
-            }
-            onLoading { isLoading ->
-                _viewState.update {
-                    it.copy(
-                        isLoading = isLoading
-                    )
-                }
+        getChildren { entity ->
+            _viewState.update {
+                it.copy(
+                    children = entity
+                )
             }
         }
     }
 
     private fun getUserInfo() {
-        networkExecutor<UserProfileEntity> {
-            execute {
-                userProfileRepository.getUserInfo()
+        getUserInfo { entity ->
+            getUserAvatar(entity.avatar)
+
+            _viewState.update {
+                it.copy(
+                    name = entity.name,
+                    nameValid = ValidField.VALID,
+                    email = entity.email,
+                    emailValid = ValidField.VALID,
+                    code = entity.countryCode,
+                    phone = entity.phone,
+                    phoneValid = ValidField.VALID,
+                    schedule = entity.schedule.ifNullOrEmpty { ScheduleModel() }
+                )
             }
-            onSuccess { entity ->
-                getUserAvatar(entity.avatar)
+
+            if (entity.location.coordinates.isNotEmpty()) {
+                val location = LatLng(
+                    entity.location.coordinates[1],
+                    entity.location.coordinates[0]
+                )
+
+                getAddressFromLocation(location)
 
                 _viewState.update {
-                    it.copy(
-                        name = entity.name,
-                        nameValid = ValidField.VALID,
-                        email = entity.email,
-                        emailValid = ValidField.VALID,
-                        code = entity.countryCode,
-                        phone = entity.phone,
-                        phoneValid = ValidField.VALID,
-                        schedule = entity.schedule.ifNullOrEmpty { ScheduleModel() }
-                    )
-                }
-
-//                preferencesDatastoreManager.apply {
-//                    name = entity.name
-//                    code = entity.countryCode
-//                    phone = entity.phone
-//                }
-
-                if (entity.location.coordinates.isNotEmpty()) {
-                    val location = LatLng(
-                        entity.location.coordinates[1],
-                        entity.location.coordinates[0]
-                    )
-
-                    getAddressFromLocation(location)
-
-                    _viewState.update {
-                        it.copy (currentLocation = location)
-                    }
-                }
-
-                getChildren()
-            }
-            onError { error ->
-                _uiState.value = EditProfileUiState.OnError(error)
-            }
-            onLoading { isLoading ->
-                _viewState.update {
-                    it.copy(
-                        isLoading = isLoading
-                    )
+                    it.copy (currentLocation = location)
                 }
             }
+
+            getChildren()
         }
     }
 
@@ -219,28 +324,12 @@ class EditProfileViewModel(
     }
 
     private fun getAddressFromLocation(latLng: LatLng) {
-        networkExecutor<String?> {
-            execute {
-                locationRepository.getAddressFromLocation(latLng)
-            }
-            onSuccess { address ->
-                preferencesDatastoreManager.address = address.orEmpty()
-
-                _viewState.update {
-                    it.copy(
-                        address = address.orEmpty()
-                    )
-                }
-            }
-            onError { error ->
-                _uiState.value = EditProfileUiState.OnError(error)
-            }
-            onLoading { isLoading ->
-                _viewState.update {
-                    it.copy(
-                        isLoading = isLoading
-                    )
-                }
+        getAddressFromLocation(latLng) { address ->
+            preferencesDatastoreManager.address = address
+            _viewState.update {
+                it.copy(
+                    address = address
+                )
             }
         }
     }
@@ -251,24 +340,7 @@ class EditProfileViewModel(
     }
 
     private fun deleteChild(childId: String) {
-        networkExecutor {
-            execute {
-                userProfileRepository.deleteChildById(childId)
-            }
-            onSuccess {
-                getChildren()
-            }
-            onError { error ->
-                _uiState.value = EditProfileUiState.OnError(error)
-            }
-            onLoading { isLoading ->
-                _viewState.update {
-                    it.copy(
-                        isLoading = isLoading
-                    )
-                }
-            }
-        }
+        deleteChild(childId) { getChildren() }
     }
 
     private fun setCurrentChild(childId: String = "") {
@@ -277,33 +349,16 @@ class EditProfileViewModel(
     }
 
     private fun getLocationFromAddress() {
-        networkExecutor<LatLng?> {
-            execute {
-                locationRepository.getLocationFromAddress(_viewState.value.address)
-            }
-            onSuccess { location ->
-                location?.let {
-                    if (_viewState.value.currentLocation != location)
-                        _viewState.update {
-                            it.copy(
-                                currentLocation = location
-                            )
-                        }
-                    preferencesDatastoreManager.apply {
-                        latitude = it.latitude
-                        longitude = it.longitude
-                    }
-                }
-            }
-            onError { error ->
-                _uiState.value = EditProfileUiState.OnError(error)
-            }
-            onLoading { isLoading ->
+        getLocationFromAddress(_viewState.value.address) { location ->
+            if (_viewState.value.currentLocation != location)
                 _viewState.update {
                     it.copy(
-                        isLoading = isLoading
+                        currentLocation = location
                     )
                 }
+            preferencesDatastoreManager.apply {
+                latitude = location.latitude
+                longitude = location.longitude
             }
         }
     }
@@ -352,34 +407,17 @@ class EditProfileViewModel(
     }
 
     private fun requestCurrentLocation() {
-        networkExecutor<LatLng?> {
-            execute {
-                locationRepository.getCurrentLocation()
+        requestCurrentLocation { location ->
+            _viewState.update {
+                it.copy(
+                    currentLocation = location
+                )
             }
-            onSuccess { location ->
-                location?.let {
-                    _viewState.update {
-                        it.copy(
-                            currentLocation = location
-                        )
-                    }
-                    getAddressFromLocation(location)
+            getAddressFromLocation(location)
 
-                    preferencesDatastoreManager.apply {
-                        latitude = location.latitude
-                        longitude = location.latitude
-                    }
-                }
-            }
-            onError { error ->
-                _uiState.value = EditProfileUiState.OnError(error)
-            }
-            onLoading { isLoading ->
-                _viewState.update {
-                    it.copy(
-                        isLoading = isLoading
-                    )
-                }
+            preferencesDatastoreManager.apply {
+                latitude = location.latitude
+                longitude = location.latitude
             }
         }
     }

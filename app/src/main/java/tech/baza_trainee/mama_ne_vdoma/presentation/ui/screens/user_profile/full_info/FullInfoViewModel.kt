@@ -10,50 +10,64 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import tech.baza_trainee.mama_ne_vdoma.domain.model.ChildEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.ScheduleModel
-import tech.baza_trainee.mama_ne_vdoma.domain.model.UserProfileEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.ifNullOrEmpty
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatastoreManager
-import tech.baza_trainee.mama_ne_vdoma.domain.repository.FilesRepository
-import tech.baza_trainee.mama_ne_vdoma.domain.repository.LocationRepository
-import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
+import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.LocationInteractor
+import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.NetworkEventsListener
+import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.UserProfileInteractor
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.Graphs
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.InitialGroupSearchRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.UserProfileRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.model.UserProfileCommunicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.networkExecutor
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onError
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onLoading
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onSuccess
 
 class FullInfoViewModel(
     private val communicator: UserProfileCommunicator,
     private val navigator: ScreenNavigator,
-    private val userProfileRepository: UserProfileRepository,
-    private val filesRepository: FilesRepository,
-    private val locationRepository: LocationRepository,
+    private val userProfileInteractor: UserProfileInteractor,
+    private val locationInteractor: LocationInteractor,
     private val preferencesDatastoreManager: UserPreferencesDatastoreManager
-): ViewModel() {
+): ViewModel(), UserProfileInteractor by userProfileInteractor, LocationInteractor by locationInteractor,
+    NetworkEventsListener {
 
-    private val _fullInfoViewState = MutableStateFlow(FullInfoViewState())
-    val fullInfoViewState: StateFlow<FullInfoViewState> = _fullInfoViewState.asStateFlow()
+    private val _viewState = MutableStateFlow(FullInfoViewState())
+    val viewState: StateFlow<FullInfoViewState> = _viewState.asStateFlow()
 
     private val _uiState = mutableStateOf<RequestState>(RequestState.Idle)
     val uiState: State<RequestState>
         get() = _uiState
 
     init {
+        userProfileInteractor.apply {
+            setUserProfileCoroutineScope(viewModelScope)
+            setUserProfileNetworkListener(this@FullInfoViewModel)
+        }
+        locationInteractor.apply {
+            setLocationCoroutineScope(viewModelScope)
+            setLocationNetworkListener(this@FullInfoViewModel)
+        }
+
         getUserInfo()
-        _fullInfoViewState.update {
+        _viewState.update {
             it.copy(
                 isChildInfoFilled = communicator.isChildInfoFilled,
                 isUserInfoFilled = communicator.isUserInfoFilled
             )
         }
+    }
+
+    override fun onLoading(state: Boolean) {
+        _viewState.update {
+            it.copy(
+                isLoading = state
+            )
+        }
+    }
+
+    override fun onError(error: String) {
+        _uiState.value = RequestState.OnError(error)
     }
 
     fun handleFullProfileEvent(event: FullInfoEvent) {
@@ -70,108 +84,61 @@ class FullInfoViewModel(
     }
 
     private fun deleteUser() {
-        networkExecutor {
-            execute {
-                userProfileRepository.deleteUser()
-            }
-            onSuccess {
-                navigator.navigateOnMain(viewModelScope, Graphs.CreateUser)
-            }
-            onError { error ->
-                _uiState.value = RequestState.OnError(error)
-            }
-            onLoading { isLoading ->
-                _fullInfoViewState.update {
-                    it.copy(
-                        isLoading = isLoading
-                    )
-                }
-            }
-        }
+        deleteUser { navigator.navigateOnMain(viewModelScope, Graphs.CreateUser) }
     }
 
     private fun getChildren() {
-        networkExecutor<List<ChildEntity>> {
-            execute {
-                userProfileRepository.getChildren()
+        getChildren { entity ->
+            _viewState.update {
+                it.copy(
+                    children = entity,
+                    isChildInfoFilled = entity.isNotEmpty()
+                )
             }
-            onSuccess { entity ->
-                _fullInfoViewState.update {
-                    it.copy(
-                        children = entity,
-                        isChildInfoFilled = entity.isNotEmpty()
-                    )
-                }
-                communicator.isUserInfoFilled = entity.isNotEmpty()
-            }
-            onError { error ->
-                _uiState.value = RequestState.OnError(error)
-            }
-            onLoading { isLoading ->
-                _fullInfoViewState.update {
-                    it.copy(
-                        isLoading = isLoading
-                    )
-                }
-            }
+            communicator.isUserInfoFilled = entity.isNotEmpty()
         }
     }
 
     private fun getUserInfo() {
-        networkExecutor<UserProfileEntity> {
-            execute {
-                userProfileRepository.getUserInfo()
-            }
-            onSuccess { entity ->
-                val _isUserInfoFilled = entity.name.isNotEmpty() &&
-                        entity.phone.isNotEmpty() &&
-                        !entity.schedule.schedule.isEmpty()
+        getUserInfo { entity ->
+            val _isUserInfoFilled = entity.name.isNotEmpty() &&
+                    entity.phone.isNotEmpty() &&
+                    !entity.schedule.schedule.isEmpty()
 
-                getUserAvatar(entity.avatar)
+            getUserAvatar(entity.avatar)
 
-                _fullInfoViewState.update {
-                    it.copy(
-                        name = entity.name,
-                        schedule = entity.schedule.ifNullOrEmpty { ScheduleModel() },
-                        isUserInfoFilled = _isUserInfoFilled
-                    )
-                }
-
-                communicator.apply {
+            _viewState.update {
+                it.copy(
+                    name = entity.name,
+                    schedule = entity.schedule.ifNullOrEmpty { ScheduleModel() },
                     isUserInfoFilled = _isUserInfoFilled
-                    schedule = entity.schedule.ifNullOrEmpty { ScheduleModel() }
-                }
+                )
+            }
+
+            communicator.apply {
+                isUserInfoFilled = _isUserInfoFilled
+                schedule = entity.schedule.ifNullOrEmpty { ScheduleModel() }
+            }
+            preferencesDatastoreManager.apply {
+                name = entity.name
+                code = entity.countryCode
+                phone = entity.phone
+            }
+
+            if (entity.location.coordinates.isNotEmpty()) {
+                getAddressFromLocation(
+                    latLng = LatLng(
+                        entity.location.coordinates[1],
+                        entity.location.coordinates[0]
+                    )
+                )
                 preferencesDatastoreManager.apply {
-                    name = entity.name
-                    code = entity.countryCode
-                    phone = entity.phone
+                    latitude = entity.location.coordinates[1]
+                    longitude = entity.location.coordinates[0]
                 }
+            }
 
-                if (entity.location.coordinates.isNotEmpty()) {
-                    getAddressFromLocation(
-                        latLng = LatLng(
-                            entity.location.coordinates[1],
-                            entity.location.coordinates[0]
-                        )
-                    )
-                    preferencesDatastoreManager.apply {
-                        latitude = entity.location.coordinates[1]
-                        longitude = entity.location.coordinates[0]
-                    }
-                }
-
-                getChildren()
-            }
-            onError { error ->
-                _uiState.value = RequestState.OnError(error)
-            }
-            onLoading { isLoading ->
-                _fullInfoViewState.update {
-                    it.copy(
-                        isLoading = isLoading
-                    )
-                }
-            }
+            getChildren()
         }
     }
 
@@ -182,56 +149,26 @@ class FullInfoViewModel(
             }
             preferencesDatastoreManager.avatar = Uri.EMPTY.toString()
 
-            _fullInfoViewState.update {
+            _viewState.update {
                 it.copy(
                     userAvatar = Uri.EMPTY
                 )
             }
         } else
-            networkExecutor {
-                execute { filesRepository.getAvatar(avatarId) }
-                onSuccess { uri ->
-                    preferencesDatastoreManager.avatar = uri.toString()
-                    _fullInfoViewState.update {
-                        it.copy(userAvatar = uri)
-                    }
-                }
-                onError { error ->
-                    _uiState.value = RequestState.OnError(error)
-                }
-                onLoading { isLoading ->
-                    _fullInfoViewState.update {
-                        it.copy(
-                            isLoading = isLoading
-                        )
-                    }
+            getUsetAvatar(avatarId) { uri ->
+                _viewState.update {
+                    it.copy(userAvatar = uri)
                 }
             }
     }
 
     private fun getAddressFromLocation(latLng: LatLng) {
-        networkExecutor<String?> {
-            execute {
-                locationRepository.getAddressFromLocation(latLng)
-            }
-            onSuccess { address ->
-                preferencesDatastoreManager.address = address.orEmpty()
-
-                _fullInfoViewState.update {
-                    it.copy(
-                        address = address.orEmpty()
-                    )
-                }
-            }
-            onError { error ->
-                _uiState.value = RequestState.OnError(error)
-            }
-            onLoading { isLoading ->
-                _fullInfoViewState.update {
-                    it.copy(
-                        isLoading = isLoading
-                    )
-                }
+        getAddressFromLocation(latLng) { address ->
+            preferencesDatastoreManager.address = address
+            _viewState.update {
+                it.copy(
+                    address = address
+                )
             }
         }
     }
@@ -242,24 +179,7 @@ class FullInfoViewModel(
     }
 
     private fun deleteChild(childId: String) {
-        networkExecutor {
-            execute {
-                userProfileRepository.deleteChildById(childId)
-            }
-            onSuccess {
-                getChildren()
-            }
-            onError { error ->
-                _uiState.value = RequestState.OnError(error)
-            }
-            onLoading { isLoading ->
-                _fullInfoViewState.update {
-                    it.copy(
-                        isLoading = isLoading
-                    )
-                }
-            }
-        }
+        deleteChild(childId) { getChildren() }
     }
 
     private fun setCurrentChild(childId: String = "") {

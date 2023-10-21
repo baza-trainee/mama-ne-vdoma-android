@@ -4,27 +4,24 @@ import android.net.Uri
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatastoreManager
-import tech.baza_trainee.mama_ne_vdoma.domain.repository.LocationRepository
+import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.LocationInteractor
+import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.NetworkEventsListener
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.InitialGroupSearchRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.networkExecutor
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onError
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onLoading
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onSuccess
 
 class SetAreaViewModel(
     private val navigator: ScreenNavigator,
-    private val locationRepository: LocationRepository,
+    private val locationInteractor: LocationInteractor,
     private val preferencesDatastoreManager: UserPreferencesDatastoreManager
-): ViewModel() {
+): ViewModel(), LocationInteractor by locationInteractor, NetworkEventsListener {
 
     private val _viewState = MutableStateFlow(SetAreaViewState())
     val viewState: StateFlow<SetAreaViewState> = _viewState.asStateFlow()
@@ -34,6 +31,10 @@ class SetAreaViewModel(
         get() = _uiState
 
     init {
+        locationInteractor.apply {
+            setLocationCoroutineScope(viewModelScope)
+            setLocationNetworkListener(this@SetAreaViewModel)
+        }
         val location = LatLng(
             preferencesDatastoreManager.latitude,
             preferencesDatastoreManager.longitude
@@ -45,6 +46,18 @@ class SetAreaViewModel(
                 currentLocation = location
             )
         }
+    }
+
+    override fun onLoading(state: Boolean) {
+        _viewState.update {
+            it.copy(
+                isLoading = state
+            )
+        }
+    }
+
+    override fun onError(error: String) {
+        _uiState.value = RequestState.OnError(error)
     }
 
     fun handleEvent(event: SetAreaEvent) {
@@ -86,30 +99,13 @@ class SetAreaViewModel(
     }
 
     private fun requestCurrentLocation() {
-        networkExecutor<LatLng?> {
-            execute {
-                locationRepository.getCurrentLocation()
+        requestCurrentLocation { location ->
+            _viewState.update {
+                it.copy(
+                    currentLocation = location
+                )
             }
-            onSuccess { location ->
-                location?.let {
-                    _viewState.update {
-                        it.copy(
-                            currentLocation = location
-                        )
-                    }
-                    getAddressFromLocation(location)
-                }
-            }
-            onError { error ->
-                _uiState.value = RequestState.OnError(error)
-            }
-            onLoading { isLoading ->
-                _viewState.update {
-                    it.copy(
-                        isLoading = isLoading
-                    )
-                }
-            }
+            getAddressFromLocation(location)
         }
     }
 
@@ -122,51 +118,19 @@ class SetAreaViewModel(
     }
 
     private fun getLocationFromAddress() {
-        networkExecutor<LatLng?> {
-            execute {
-                locationRepository.getLocationFromAddress(_viewState.value.address)
-            }
-            onSuccess { location ->
-                location?.let {
-                    if (_viewState.value.currentLocation != location)
-                        _viewState.update {
-                            it.copy(
-                                currentLocation = location
-                            )
-                        }
-                }
-            }
-            onError { error ->
-                _uiState.value = RequestState.OnError(error)
-            }
-            onLoading { isLoading ->
+        getLocationFromAddress(_viewState.value.address) { location ->
+            if (_viewState.value.currentLocation != location)
                 _viewState.update {
                     it.copy(
-                        isLoading = isLoading
+                        currentLocation = location
                     )
                 }
-            }
         }
     }
 
     private fun getAddressFromLocation(latLng: LatLng) {
-        networkExecutor<String?> {
-            execute {
-                locationRepository.getAddressFromLocation(latLng)
-            }
-            onSuccess {
-                updateUserAddress(it.orEmpty())
-            }
-            onError { error ->
-                _uiState.value = RequestState.OnError(error)
-            }
-            onLoading { isLoading ->
-                _viewState.update {
-                    it.copy(
-                        isLoading = isLoading
-                    )
-                }
-            }
+        getAddressFromLocation(latLng) {
+            updateUserAddress(it)
         }
     }
 }

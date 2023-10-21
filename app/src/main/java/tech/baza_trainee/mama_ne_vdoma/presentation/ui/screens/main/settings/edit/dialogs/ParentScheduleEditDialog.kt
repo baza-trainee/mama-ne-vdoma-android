@@ -34,11 +34,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import tech.baza_trainee.mama_ne_vdoma.R
+import tech.baza_trainee.mama_ne_vdoma.domain.model.Period
 import tech.baza_trainee.mama_ne_vdoma.domain.model.ScheduleModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ScheduleGroup
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.GrayText
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.ButtonText
+import java.time.DayOfWeek
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -47,8 +49,10 @@ fun ParentScheduleEditDialog(
     modifier: Modifier = Modifier,
     scheduleModel: ScheduleModel = ScheduleModel(),
     note: String = "Note",
-    onEditSchedule: () -> Unit = {},
+    onEditSchedule: (DayOfWeek, Period) -> Unit = { _, _ -> },
     onEditNote: (String) -> Unit = {},
+    onSave: () -> Unit = {},
+    onRestore: () -> Unit = {},
     onDismissRequest: () -> Unit = {}
 ) {
     AlertDialog(
@@ -93,7 +97,8 @@ fun ParentScheduleEditDialog(
             ) {
                 ScheduleGroup(
                     modifier = Modifier.fillMaxWidth(),
-                    scheduleModel = scheduleModel
+                    scheduleModel = scheduleModel,
+                    onValueChange = onEditSchedule
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -141,7 +146,7 @@ fun ParentScheduleEditDialog(
                         .padding(horizontal = 8.dp)
                         .weight(0.6f),
                     onClick = {
-                        onEditSchedule()
+                        onSave()
                         onDismissRequest()
                     }
                 ) {
@@ -152,7 +157,10 @@ fun ParentScheduleEditDialog(
                         .height(48.dp)
                         .padding(horizontal = 8.dp)
                         .weight(0.4f),
-                    onClick = onDismissRequest,
+                    onClick = {
+                        onRestore()
+                        onDismissRequest()
+                    },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.background,
                         contentColor = MaterialTheme.colorScheme.primary

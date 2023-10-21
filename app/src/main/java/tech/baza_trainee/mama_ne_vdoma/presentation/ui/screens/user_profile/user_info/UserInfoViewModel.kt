@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatastoreManager
 import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.NetworkEventsListener
-import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.UserInfoInteractor
+import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.UserProfileInteractor
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.UserProfileRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.model.UserProfileCommunicator
@@ -23,8 +23,8 @@ class UserInfoViewModel(
     private val communicator: UserProfileCommunicator,
     private val navigator: ScreenNavigator,
     private val preferencesDatastoreManager: UserPreferencesDatastoreManager,
-    userInfoInteractor: UserInfoInteractor
-): ViewModel(), UserInfoInteractor by userInfoInteractor, NetworkEventsListener {
+    userProfileInteractor: UserProfileInteractor
+): ViewModel(), UserProfileInteractor by userProfileInteractor, NetworkEventsListener {
 
     private val _userInfoScreenState = MutableStateFlow(UserInfoViewState())
     val userInfoScreenState: StateFlow<UserInfoViewState> = _userInfoScreenState.asStateFlow()
@@ -34,9 +34,9 @@ class UserInfoViewModel(
         get() = _uiState
 
     init {
-        userInfoInteractor.apply {
-            setCoroutineScope(viewModelScope)
-            setNetworkListener(this@UserInfoViewModel)
+        userProfileInteractor.apply {
+            setUserProfileCoroutineScope(viewModelScope)
+            setUserProfileNetworkListener(this@UserInfoViewModel)
         }
         _userInfoScreenState.update {
             it.copy(

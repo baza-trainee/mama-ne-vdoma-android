@@ -49,11 +49,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.domain.model.ChildEntity
+import tech.baza_trainee.mama_ne_vdoma.domain.model.Period
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ScheduleGroup
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.GrayText
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.Purple80
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.ButtonText
+import java.time.DayOfWeek
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -62,8 +64,10 @@ fun ChildScheduleEditDialog(
     modifier: Modifier = Modifier,
     selectedChild: Int = 0,
     children: List<ChildEntity> = emptyList(),
-    onEditSchedule: () -> Unit = {},
-    onEditNote: (String) -> Unit = {},
+    onEditSchedule: (Int, DayOfWeek, Period) -> Unit = { _, _, _ -> },
+    onEditNote: (Int, String) -> Unit = {_,_ -> },
+    onSave: () -> Unit = {},
+    onRestore: (Int) -> Unit = {},
     onDismissRequest: () -> Unit = {}
 ) {
     var currentChild by remember { mutableIntStateOf(selectedChild) }
@@ -257,7 +261,8 @@ fun ChildScheduleEditDialog(
 
                 ScheduleGroup(
                     modifier = Modifier.fillMaxWidth(),
-                    scheduleModel = children[currentChild].schedule
+                    scheduleModel = children[currentChild].schedule,
+                    onValueChange = { day, period -> onEditSchedule(currentChild, day, period) }
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -266,7 +271,7 @@ fun ChildScheduleEditDialog(
                     modifier = Modifier.fillMaxWidth(),
                     value = children[currentChild].note,
                     label = { Text("Нотатка") },
-                    onValueChange = { },
+                    onValueChange = { onEditNote(currentChild, it) },
                     minLines = 2,
                     maxLines = 2,
                     colors = OutlinedTextFieldDefaults.colors(
@@ -307,7 +312,7 @@ fun ChildScheduleEditDialog(
                         .padding(horizontal = 8.dp)
                         .weight(0.6f),
                     onClick = {
-                        onEditSchedule()
+                        onSave()
                         onDismissRequest()
                     }
                 ) {
@@ -318,7 +323,10 @@ fun ChildScheduleEditDialog(
                         .height(48.dp)
                         .padding(horizontal = 8.dp)
                         .weight(0.4f),
-                    onClick = onDismissRequest,
+                    onClick = {
+                        onRestore(currentChild)
+                        onDismissRequest()
+                    },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.background,
                         contentColor = MaterialTheme.colorScheme.primary

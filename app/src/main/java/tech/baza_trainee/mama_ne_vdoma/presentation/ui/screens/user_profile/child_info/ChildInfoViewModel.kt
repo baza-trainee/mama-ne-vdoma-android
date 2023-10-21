@@ -29,8 +29,8 @@ class ChildInfoViewModel(
     private val userProfileRepository: UserProfileRepository
 ): ViewModel() {
 
-    private val _childInfoScreenState = MutableStateFlow(ChildInfoViewState())
-    val childInfoScreenState: StateFlow<ChildInfoViewState> = _childInfoScreenState.asStateFlow()
+    private val _viewState = MutableStateFlow(ChildInfoViewState())
+    val viewState: StateFlow<ChildInfoViewState> = _viewState.asStateFlow()
 
     private val _uiState = mutableStateOf<RequestState>(RequestState.Idle)
     val uiState: State<RequestState>
@@ -50,7 +50,7 @@ class ChildInfoViewModel(
     private fun validateChildName(name: String) {
         val nameValid = if (name.none { !it.isLetter() }) ValidField.VALID
         else ValidField.INVALID
-        _childInfoScreenState.update {
+        _viewState.update {
             it.copy(
                 name = name,
                 nameValid = nameValid
@@ -62,7 +62,7 @@ class ChildInfoViewModel(
         val intAge = age.toIntOrNull()
         val ageValid = if (intAge != null && intAge in 0..MAX_AGE) ValidField.VALID
         else ValidField.INVALID
-        _childInfoScreenState.update {
+        _viewState.update {
             it.copy(
                 age = age,
                 ageValid = ageValid
@@ -71,7 +71,7 @@ class ChildInfoViewModel(
     }
 
     private fun setGender(gender: Gender) {
-        _childInfoScreenState.update {
+        _viewState.update {
             it.copy( gender = gender)
         }
     }
@@ -81,9 +81,9 @@ class ChildInfoViewModel(
             execute {
                 userProfileRepository.saveChild(
                     InitChildEntity(
-                        name = _childInfoScreenState.value.name,
-                        age = _childInfoScreenState.value.age.toIntOrNull() ?: 0,
-                        isMale = _childInfoScreenState.value.gender == Gender.BOY
+                        name = _viewState.value.name,
+                        age = _viewState.value.age.toIntOrNull() ?: 0,
+                        isMale = _viewState.value.gender == Gender.BOY
                     )
                 )
             }
@@ -95,7 +95,7 @@ class ChildInfoViewModel(
                 _uiState.value = RequestState.OnError(error)
             }
             onLoading { isLoading ->
-                _childInfoScreenState.update {
+                _viewState.update {
                     it.copy(
                         isLoading = isLoading
                     )

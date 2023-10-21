@@ -6,5 +6,6 @@ data class UserInfoEntity(
     val phone: String = "",
     val sendingEmails: Boolean = true,
     val avatar: String? = null,
-    val schedule: ScheduleModel = ScheduleModel()
+    val schedule: ScheduleModel = ScheduleModel(),
+    val note: String = ""
 )
