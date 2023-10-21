@@ -226,7 +226,8 @@ fun FullInfoScreen(
                     .padding(horizontal = 16.dp, vertical = 16.dp)
                     .fillMaxWidth()
                     .height(48.dp),
-                onClick = { handleEvent(FullInfoEvent.OnNext) }
+                onClick = { handleEvent(FullInfoEvent.OnNext) },
+                enabled = screenState.value.isUserInfoFilled && screenState.value.isChildInfoFilled
             ) {
                 ButtonText(
                     text = "Підтвердити"
