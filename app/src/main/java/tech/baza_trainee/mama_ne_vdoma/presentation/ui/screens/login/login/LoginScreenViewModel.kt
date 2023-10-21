@@ -8,12 +8,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import tech.baza_trainee.mama_ne_vdoma.domain.model.AuthUserEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.AuthRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.Graphs
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.HostScreenRoutes
-import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.InitialGroupSearchRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.LoginRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.MAIN_PAGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
@@ -85,12 +83,7 @@ class LoginScreenViewModel(
     private fun loginUser() {
         networkExecutor {
             execute {
-                authRepository.loginUser(
-                    AuthUserEntity(
-                        email = _viewState.value.email,
-                        password = _viewState.value.password
-                    )
-                )
+                authRepository.loginUser(_viewState.value.email, _viewState.value.password)
             }
             onSuccess {
                 clearInputs()

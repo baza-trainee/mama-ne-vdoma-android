@@ -8,7 +8,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import tech.baza_trainee.mama_ne_vdoma.domain.model.RequestWithEmailEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.AuthRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.LoginRoutes
@@ -59,11 +58,7 @@ class RestorePasswordScreenViewModel(
     private fun forgetPassword() {
         networkExecutor {
             execute {
-                authRepository.forgetPassword(
-                    RequestWithEmailEntity(
-                        email = _viewState.value.email
-                    )
-                )
+                authRepository.forgetPassword(_viewState.value.email)
             }
             onSuccess {
                 navigator.navigateOnMain(viewModelScope, LoginRoutes.EmailConfirm.getDestination(_viewState.value.email))

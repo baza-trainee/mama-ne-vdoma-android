@@ -19,6 +19,7 @@ import tech.baza_trainee.mama_ne_vdoma.domain.model.ScheduleModel
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UserInfoEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.ifNullOrEmpty
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatastoreManager
+import tech.baza_trainee.mama_ne_vdoma.domain.repository.AuthRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.LocationInteractor
 import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.NetworkEventsListener
 import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.UserProfileInteractor
@@ -27,14 +28,22 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.Graphs
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.SettingsScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.UserProfileRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.image_crop.CropImageCommunicator
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.common.VerifyEmailCommunicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.networkExecutor
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.validateEmail
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.validatePassword
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onError
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onLoading
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onSuccess
 import java.time.DayOfWeek
 
 class EditProfileViewModel(
     private val navigator: PageNavigator,
     private val communicator: CropImageCommunicator,
+    private val emailCommunicator: VerifyEmailCommunicator,
+    private val authRepository: AuthRepository,
     private val userProfileInteractor: UserProfileInteractor,
     private val locationInteractor: LocationInteractor,
     private val preferencesDatastoreManager: UserPreferencesDatastoreManager
@@ -62,6 +71,16 @@ class EditProfileViewModel(
         locationInteractor.apply {
             setLocationCoroutineScope(viewModelScope)
             setLocationNetworkListener(this@EditProfileViewModel)
+        }
+
+        viewModelScope.launch {
+            emailCommunicator.emailChanged.collect { success ->
+                _viewState.update {
+                    it.copy(
+                        isEmailChanged = success
+                    )
+                }
+            }
         }
 
         getUserInfo()
@@ -106,7 +125,7 @@ class EditProfileViewModel(
             is EditProfileEvent.ValidatePassword -> validatePassword(event.password)
             is EditProfileEvent.ValidatePhone -> validatePhone(event.phone)
             is EditProfileEvent.ValidateUserName -> validateUserName(event.name)
-            EditProfileEvent.VerifyEmail -> Unit // navigator.navigate(CreateUserRoute.VerifyEmail.getDestination(_viewState.value.email))
+            EditProfileEvent.VerifyEmail -> verifyEmail()
             is EditProfileEvent.EditChildNote -> updateChildNote(event.child, event.note)
             is EditProfileEvent.EditChildSchedule -> updateChildSchedule(event.child, event.dayOfWeek, event.period)
             is EditProfileEvent.EditParentNote -> updateParentNote(event.note)
@@ -121,6 +140,20 @@ class EditProfileViewModel(
                 backupParentNote = null
                 backupParentSchedule = null
             }
+        }
+    }
+
+    private fun verifyEmail() {
+        networkExecutor {
+            execute {
+                authRepository.changeEmailInit(_viewState.value.email)
+            }
+            onSuccess {
+                emailCommunicator.setEmail(_viewState.value.email)
+                navigator.navigateOnMain(viewModelScope, SettingsScreenRoutes.VerifyNewEmail)
+            }
+            onError(::onError)
+            onLoading(::onLoading)
         }
     }
 
@@ -274,6 +307,7 @@ class EditProfileViewModel(
 
     private fun getUserInfo() {
         getUserInfo { entity ->
+            avatarServerPath =entity.avatar
             getUserAvatar(entity.avatar)
 
             _viewState.update {

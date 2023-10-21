@@ -237,6 +237,13 @@ fun EditProfileScreen(
                     imageVector = Icons.Default.Email,
                     contentDescription = null
                 )
+            },
+            trailingIcon = {
+                if (screenState.value.isEmailChanged)
+                    Icon(
+                        painterResource(id = R.drawable.ic_done),
+                        contentDescription = null
+                    )
             }
         )
 

@@ -7,7 +7,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import tech.baza_trainee.mama_ne_vdoma.domain.model.AuthUserEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.AuthRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.CreateUserRoute
@@ -114,12 +113,7 @@ class UserCreateViewModel(
     private fun registerUser() {
         networkExecutor {
             execute {
-                authRepository.registerUser(
-                    AuthUserEntity(
-                        email = _viewState.value.email,
-                        password = _viewState.value.password
-                    )
-                )
+                authRepository.registerUser(_viewState.value.email, _viewState.value.password)
             }
             onSuccess {
                 navigator.navigate(CreateUserRoute.VerifyEmail.getDestination(_viewState.value.email, _viewState.value.password))

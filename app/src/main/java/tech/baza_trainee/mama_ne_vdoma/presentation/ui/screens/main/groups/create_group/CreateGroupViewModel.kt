@@ -13,7 +13,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import tech.baza_trainee.mama_ne_vdoma.domain.model.ChildEntity
-import tech.baza_trainee.mama_ne_vdoma.domain.model.CreateGroupEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.DayPeriod
 import tech.baza_trainee.mama_ne_vdoma.domain.model.GroupEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.Period
@@ -135,10 +134,8 @@ class CreateGroupViewModel(
             execute {
                 groupsRepository.createGroup(
                     childId,
-                    CreateGroupEntity(
-                        _viewState.value.name,
-                        _viewState.value.description
-                    )
+                    _viewState.value.name,
+                    _viewState.value.description
                 )
             }
             onSuccess { updateGroup(it.id) }

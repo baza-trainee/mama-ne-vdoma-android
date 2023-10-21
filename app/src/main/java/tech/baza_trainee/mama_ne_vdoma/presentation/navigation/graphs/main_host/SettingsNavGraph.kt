@@ -16,6 +16,8 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.edi
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.image_crop.ProfileImageCropScreen
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.main_profile.ProfileSettingsScreen
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.main_profile.ProfileSettingsViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.verify_email.VerifyNewEmailScreen
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.verify_email.VerifyNewEmailViewModel
 
 fun NavGraphBuilder.settingsNavGraph() {
     navigation(
@@ -46,6 +48,13 @@ fun NavGraphBuilder.settingsNavGraph() {
             ProfileImageCropScreen(
                 screenState = imageCropViewModel.viewState.collectAsStateWithLifecycle(),
                 handleEvent = { imageCropViewModel.saveCroppedImage(it) }
+            )
+        }
+        composable(SettingsScreenRoutes.VerifyNewEmail.route) {
+            val viewModel: VerifyNewEmailViewModel = koinNavViewModel()
+            VerifyNewEmailScreen(
+                screenState = viewModel.viewState.collectAsStateWithLifecycle(),
+                handleEvent = { viewModel.handleEvent(it) }
             )
         }
     }

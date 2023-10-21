@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import tech.baza_trainee.mama_ne_vdoma.domain.model.ChildEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.Gender
-import tech.baza_trainee.mama_ne_vdoma.domain.model.InitChildEntity
+
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.UserProfileRoutes
@@ -80,11 +80,9 @@ class ChildInfoViewModel(
         networkExecutor<ChildEntity?> {
             execute {
                 userProfileRepository.saveChild(
-                    InitChildEntity(
-                        name = _viewState.value.name,
-                        age = _viewState.value.age.toIntOrNull() ?: 0,
-                        isMale = _viewState.value.gender == Gender.BOY
-                    )
+                    name = _viewState.value.name,
+                    age = _viewState.value.age.toIntOrNull() ?: 0,
+                    isMale = _viewState.value.gender == Gender.BOY
                 )
             }
             onSuccess { entity ->

@@ -3,11 +3,11 @@ package tech.baza_trainee.mama_ne_vdoma.data.repository
 import tech.baza_trainee.mama_ne_vdoma.data.api.GroupsApi
 import tech.baza_trainee.mama_ne_vdoma.data.mapper.toDataModel
 import tech.baza_trainee.mama_ne_vdoma.data.mapper.toDomainModel
+import tech.baza_trainee.mama_ne_vdoma.data.model.CreateGroupDto
+import tech.baza_trainee.mama_ne_vdoma.data.model.LocationPatchDto
 import tech.baza_trainee.mama_ne_vdoma.data.utils.asCustomResponse
 import tech.baza_trainee.mama_ne_vdoma.data.utils.getMessage
-import tech.baza_trainee.mama_ne_vdoma.domain.model.CreateGroupEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.GroupEntity
-import tech.baza_trainee.mama_ne_vdoma.domain.model.LocationPatchEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UpdateGroupEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.GroupsRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestResult
@@ -17,9 +17,10 @@ class GroupsRepositoryImpl(
 ): GroupsRepository {
     override suspend fun createGroup(
         childId: String,
-        initialGroupInfo: CreateGroupEntity
+        name: String,
+        description: String
     ): RequestResult<GroupEntity> {
-        val result = groupsApi.createGroup(childId, initialGroupInfo.toDataModel())
+        val result = groupsApi.createGroup(childId, CreateGroupDto(name, description))
         return if (result.isSuccessful)
             RequestResult.Success(result.body()?.toDomainModel() ?: GroupEntity())
         else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage())
@@ -37,9 +38,10 @@ class GroupsRepositoryImpl(
 
     override suspend fun updateGroupLocation(
         groupId: String,
-        location: LocationPatchEntity
+        latitude: Double,
+        longitude: Double
     ): RequestResult<Unit> {
-        val result = groupsApi.updateGroupLocation(groupId, location.toDataModel())
+        val result = groupsApi.updateGroupLocation(groupId, LocationPatchDto(latitude, longitude))
         return if (result.isSuccessful)
             RequestResult.Success(Unit)
         else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage())

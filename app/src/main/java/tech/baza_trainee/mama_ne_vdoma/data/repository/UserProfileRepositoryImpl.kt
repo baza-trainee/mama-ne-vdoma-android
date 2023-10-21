@@ -3,12 +3,12 @@ package tech.baza_trainee.mama_ne_vdoma.data.repository
 import tech.baza_trainee.mama_ne_vdoma.data.api.UserProfileApi
 import tech.baza_trainee.mama_ne_vdoma.data.mapper.toDataModel
 import tech.baza_trainee.mama_ne_vdoma.data.mapper.toDomainModel
+import tech.baza_trainee.mama_ne_vdoma.data.model.InitChildDto
+import tech.baza_trainee.mama_ne_vdoma.data.model.LocationPatchDto
 import tech.baza_trainee.mama_ne_vdoma.data.model.UserSearchRequest
 import tech.baza_trainee.mama_ne_vdoma.data.utils.asCustomResponse
 import tech.baza_trainee.mama_ne_vdoma.data.utils.getMessage
 import tech.baza_trainee.mama_ne_vdoma.domain.model.ChildEntity
-import tech.baza_trainee.mama_ne_vdoma.domain.model.InitChildEntity
-import tech.baza_trainee.mama_ne_vdoma.domain.model.LocationPatchEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.PatchChildEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UserInfoEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UserProfileEntity
@@ -33,8 +33,8 @@ class UserProfileRepositoryImpl(
         else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage())
     }
 
-    override suspend fun saveUserLocation(location: LocationPatchEntity): RequestResult<Unit> {
-        val result = userProfileApi.saveUserLocation(location.toDataModel())
+    override suspend fun saveUserLocation(latitude: Double, longitude: Double): RequestResult<Unit> {
+        val result = userProfileApi.saveUserLocation(LocationPatchDto(latitude, longitude))
         return if (result.isSuccessful)
             RequestResult.Success(Unit)
         else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage())
@@ -61,8 +61,8 @@ class UserProfileRepositoryImpl(
         else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage())
     }
 
-    override suspend fun saveChild(request: InitChildEntity): RequestResult<ChildEntity?> {
-        val result = userProfileApi.saveChild(request.toDataModel())
+    override suspend fun saveChild(name: String, age: Int, isMale: Boolean): RequestResult<ChildEntity?> {
+        val result = userProfileApi.saveChild(InitChildDto(name, age, isMale))
         return if (result.isSuccessful)
             RequestResult.Success(result.body()?.toDomainModel())
         else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage())

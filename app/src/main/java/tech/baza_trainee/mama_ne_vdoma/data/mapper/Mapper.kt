@@ -1,49 +1,27 @@
 package tech.baza_trainee.mama_ne_vdoma.data.mapper
 
 import androidx.compose.runtime.mutableStateMapOf
-import tech.baza_trainee.mama_ne_vdoma.data.model.AuthUserDto
 import tech.baza_trainee.mama_ne_vdoma.data.model.ChildDto
-import tech.baza_trainee.mama_ne_vdoma.data.model.ConfirmEmailDto
-import tech.baza_trainee.mama_ne_vdoma.data.model.CreateGroupDto
 import tech.baza_trainee.mama_ne_vdoma.data.model.DayScheduleDto
 import tech.baza_trainee.mama_ne_vdoma.data.model.GroupDto
-import tech.baza_trainee.mama_ne_vdoma.data.model.InitChildDto
 import tech.baza_trainee.mama_ne_vdoma.data.model.LocationDto
-import tech.baza_trainee.mama_ne_vdoma.data.model.LocationPatchDto
 import tech.baza_trainee.mama_ne_vdoma.data.model.MemberDto
-import tech.baza_trainee.mama_ne_vdoma.data.model.RequestWithEmailDto
-import tech.baza_trainee.mama_ne_vdoma.data.model.RestorePasswordDto
 import tech.baza_trainee.mama_ne_vdoma.data.model.UpdateGroupDto
 import tech.baza_trainee.mama_ne_vdoma.data.model.UserInfoDto
 import tech.baza_trainee.mama_ne_vdoma.data.model.UserProfileDto
 import tech.baza_trainee.mama_ne_vdoma.data.model.WeekScheduleDto
-import tech.baza_trainee.mama_ne_vdoma.domain.model.AuthUserEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.ChildEntity
-import tech.baza_trainee.mama_ne_vdoma.domain.model.ConfirmEmailEntity
-import tech.baza_trainee.mama_ne_vdoma.domain.model.CreateGroupEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.DayPeriod
 import tech.baza_trainee.mama_ne_vdoma.domain.model.Gender
 import tech.baza_trainee.mama_ne_vdoma.domain.model.GroupEntity
-import tech.baza_trainee.mama_ne_vdoma.domain.model.InitChildEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.LocationEntity
-import tech.baza_trainee.mama_ne_vdoma.domain.model.LocationPatchEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.MemberEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.PatchChildEntity
-import tech.baza_trainee.mama_ne_vdoma.domain.model.RequestWithEmailEntity
-import tech.baza_trainee.mama_ne_vdoma.domain.model.RestorePasswordEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.ScheduleModel
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UpdateGroupEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UserInfoEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UserProfileEntity
 import java.time.DayOfWeek
-
-fun AuthUserEntity.toDataModel() = AuthUserDto(email, password)
-
-fun RestorePasswordEntity.toDataModel() = RestorePasswordDto(email, code, password)
-
-fun ConfirmEmailEntity.toDataModel() = ConfirmEmailDto(email, code)
-
-fun RequestWithEmailEntity.toDataModel() = RequestWithEmailDto(email)
 
 fun UserInfoEntity.toDataModel() = UserInfoDto(
     name,
@@ -58,8 +36,6 @@ fun UserInfoEntity.toDataModel() = UserInfoDto(
     },
     note = note.ifEmpty { null }
 )
-
-fun LocationPatchEntity.toDataModel() = LocationPatchDto(lat, lon)
 
 fun UserProfileDto.toDomainModel() = UserProfileEntity(
     id,
@@ -89,8 +65,6 @@ fun LocationDto?.toDomainModel() = if (this != null)
         LocationEntity(type, coordinates)
     else
         LocationEntity()
-
-fun InitChildEntity.toDataModel() = InitChildDto(name, age, isMale)
 
 fun ChildDto.toDomainModel() = ChildEntity(
     name,
@@ -135,8 +109,6 @@ fun PatchChildEntity.toDataModel() = WeekScheduleDto(
         }
     }
 )
-
-fun CreateGroupEntity.toDataModel() = CreateGroupDto(name, desc)
 
 fun UpdateGroupEntity.toDataModel() = UpdateGroupDto(
     name = name,

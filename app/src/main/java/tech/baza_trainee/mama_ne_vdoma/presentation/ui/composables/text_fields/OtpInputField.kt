@@ -77,7 +77,8 @@ fun OtpTextField(
                         index = index,
                         text = otpText
                     )
-                    Spacer(modifier = Modifier.width(8.dp))
+                    if (index < otpCount - 1)
+                        Spacer(modifier = Modifier.width(8.dp))
                 }
             }
         }

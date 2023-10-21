@@ -2,7 +2,6 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.interactors
 
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.CoroutineScope
-import tech.baza_trainee.mama_ne_vdoma.domain.model.LocationPatchEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatastoreManager
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.LocationRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
@@ -51,12 +50,7 @@ class LocationInteractorImpl(
         coroutineScope.networkExecutor {
             onStart(onStart)
             execute {
-                userProfileRepository.saveUserLocation(
-                    LocationPatchEntity(
-                        lat = currentLocation.latitude,
-                        lon = currentLocation.longitude
-                    )
-                )
+                userProfileRepository.saveUserLocation(currentLocation.latitude, currentLocation.longitude)
             }
             onSuccess {
                 onSuccess()
