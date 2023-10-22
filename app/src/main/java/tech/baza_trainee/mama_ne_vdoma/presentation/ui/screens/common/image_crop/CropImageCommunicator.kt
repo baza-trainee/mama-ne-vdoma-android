@@ -12,6 +12,8 @@ class CropImageCommunicator {
 
     var uriForCrop: Uri = Uri.EMPTY
 
+    var justCropped = false
+
     private val _croppedImageFlow = MutableStateFlow(BitmapHelper.DEFAULT_BITMAP)
     val croppedImageFlow: StateFlow<Bitmap> = _croppedImageFlow.asStateFlow()
 

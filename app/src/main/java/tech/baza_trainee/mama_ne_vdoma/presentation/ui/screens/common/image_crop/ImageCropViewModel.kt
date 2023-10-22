@@ -32,7 +32,10 @@ class ImageCropViewModel(
     }
 
     fun saveCroppedImage(image: Bitmap) {
-        communicator.setCroppedImage(image)
+        communicator.apply {
+            setCroppedImage(image)
+            justCropped = true
+        }
         navigator.goBack()
     }
 }

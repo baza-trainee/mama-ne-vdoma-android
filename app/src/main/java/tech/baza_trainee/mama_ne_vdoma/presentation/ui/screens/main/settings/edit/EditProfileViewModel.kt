@@ -487,25 +487,27 @@ class EditProfileViewModel(
     }
 
     private fun saveUserAvatar(image: Bitmap) {
-        saveUserAvatar(
-            avatar = image,
-            onSuccess = { newImage, uri ->
-                _viewState.update {
-                    it.copy(
-                        userAvatar = uri
-                    )
+        if (communicator.justCropped)
+            saveUserAvatar(
+                avatar = image,
+                onSuccess = { newImage, uri ->
+                    _viewState.update {
+                        it.copy(
+                            userAvatar = uri
+                        )
+                    }
+                    uploadUserAvatar(newImage)
+                },
+                onError = {
+                    _uiState.value = EditProfileUiState.OnAvatarError
                 }
-                uploadUserAvatar(newImage)
-            },
-            onError = {
-                _uiState.value = EditProfileUiState.OnAvatarError
-            }
-        )
+            )
     }
 
     private fun uploadUserAvatar(image: Bitmap) {
         uploadUserAvatar(image) {
             avatarServerPath = it
         }
+        communicator.justCropped = false
     }
 }

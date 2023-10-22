@@ -9,7 +9,4 @@ class UserProfileCommunicator {
     var schedule = ScheduleModel()
     var uriForCrop: Uri = Uri.EMPTY
     var croppedImage = BitmapHelper.DEFAULT_BITMAP
-    var currentChildId = ""
-    var isUserInfoFilled = false
-    var isChildInfoFilled = false
 }
