@@ -2,6 +2,8 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.crea
 
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,11 +15,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Error
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -28,20 +33,25 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.GroupAvatarWithCameraAndGallery
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.LoadingIndicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ScheduleGroup
@@ -51,6 +61,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFa
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.ButtonText
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateGroupScreen(
     modifier: Modifier = Modifier,
@@ -62,6 +73,8 @@ fun CreateGroupScreen(
 
     val context = LocalContext.current
 
+    var showSuccessDialog by rememberSaveable { mutableStateOf(false) }
+
     when (val state = uiState.value) {
         CreateGroupUiState.Idle -> Unit
         is CreateGroupUiState.OnError -> {
@@ -69,6 +82,7 @@ fun CreateGroupScreen(
                 .show()
             handleEvent(CreateGroupEvent.ResetUiState)
         }
+
         CreateGroupUiState.OnAvatarError -> {
             Toast.makeText(
                 context,
@@ -77,6 +91,8 @@ fun CreateGroupScreen(
             ).show()
             handleEvent(CreateGroupEvent.ResetUiState)
         }
+
+        CreateGroupUiState.OnGroupCreated -> showSuccessDialog = true
     }
 
     Column(
@@ -330,6 +346,50 @@ fun CreateGroupScreen(
             ButtonText(
                 text = "Створити нову групу"
             )
+        }
+        if (showSuccessDialog) {
+            AlertDialog(onDismissRequest = { showSuccessDialog = false }) {
+                Column(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(MaterialTheme.colorScheme.background)
+                        .padding(16.dp)
+                        .fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_ok),
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+
+                    Text(
+                        modifier = Modifier
+                            .padding(top = 16.dp)
+                            .padding(horizontal = 16.dp)
+                            .fillMaxWidth(),
+                        text = "Запит до групи успішно відправлений. Ми повідомимо вас, коли адміністратор групи затвердить ваш запит",
+                        fontSize = 14.sp,
+                        textAlign = TextAlign.Center,
+                        fontFamily = redHatDisplayFontFamily
+                    )
+
+                    Text(
+                        text = "На головну",
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center,
+                        color = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier
+                            .wrapContentWidth()
+                            .align(Alignment.End)
+                            .clickable {
+                                showSuccessDialog = false
+                                handleEvent(CreateGroupEvent.GoToMain)
+                            }
+                            .padding(16.dp)
+                    )
+                }
+            }
         }
 
         if (screenState.value.isLoading) LoadingIndicator()

@@ -198,7 +198,8 @@ fun FoundGroupScreen(
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_ok),
-                        contentDescription = null
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary
                     )
 
                     Text(
@@ -213,7 +214,7 @@ fun FoundGroupScreen(
                     )
 
                     Text(
-                        text = "Відхилити",
+                        text = "На головну",
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Center,
                         color = MaterialTheme.colorScheme.primary,

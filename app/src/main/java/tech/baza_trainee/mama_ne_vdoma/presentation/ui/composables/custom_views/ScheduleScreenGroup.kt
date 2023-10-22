@@ -85,7 +85,7 @@ fun ScheduleScreenGroup(
             onClick = onNext
         ) {
             ButtonText(
-                text = "Встановити розклад"
+                text = "Далі"
             )
         }
     }

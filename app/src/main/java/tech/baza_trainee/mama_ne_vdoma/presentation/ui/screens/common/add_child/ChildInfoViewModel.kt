@@ -11,7 +11,6 @@ import tech.baza_trainee.mama_ne_vdoma.domain.model.ChildEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.Gender
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatastoreManager
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
-import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
@@ -24,7 +23,6 @@ class ChildInfoViewModel(
     private val nextRoute: () -> Unit,
     private val backRoute: () -> Unit,
     private val preferencesDatastoreManager: UserPreferencesDatastoreManager,
-    private val navigator: ScreenNavigator,
     private val userProfileRepository: UserProfileRepository
 ): ViewModel() {
 
@@ -47,8 +45,11 @@ class ChildInfoViewModel(
     }
 
     private fun validateChildName(name: String) {
-        val nameValid = if (name.none { !it.isLetter() }) ValidField.VALID
-        else ValidField.INVALID
+        val nameValid = if (name.length in NAME_LENGTH &&
+            name.all { it.isLetter() || it.isDigit() || it == ' ' || it == '-' })
+            ValidField.VALID
+        else
+            ValidField.INVALID
         _viewState.update {
             it.copy(
                 name = name,
@@ -103,6 +104,7 @@ class ChildInfoViewModel(
 
     companion object {
 
+        private val NAME_LENGTH = 2..18
         private const val MAX_AGE = 18
     }
 }

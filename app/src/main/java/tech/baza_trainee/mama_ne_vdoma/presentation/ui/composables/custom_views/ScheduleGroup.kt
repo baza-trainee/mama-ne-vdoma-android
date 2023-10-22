@@ -17,6 +17,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -53,25 +54,29 @@ fun ScheduleGroup(
                     .padding(horizontal = 8.dp)
                     .width(128.dp),
                 text = Period.WHOLE_DAY.period,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.Bold
             )
             Text(
                 modifier = Modifier
                     .padding(horizontal = 8.dp),
                 text = Period.MORNING.period,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.Bold
             )
             Text(
                 modifier = Modifier
                     .padding(horizontal = 8.dp),
                 text = Period.NOON.period,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.Bold
             )
             Text(
                 modifier = Modifier
                     .padding(horizontal = 8.dp),
                 text = Period.AFTERNOON.period,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.Bold
             )
         }
         DayOfWeek.values().sortedBy { it.value }.forEach { day ->

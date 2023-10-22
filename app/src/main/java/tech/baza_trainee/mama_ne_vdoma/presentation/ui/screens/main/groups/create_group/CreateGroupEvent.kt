@@ -16,4 +16,5 @@ sealed interface CreateGroupEvent {
     data object ResetUiState : CreateGroupEvent
     data object OnEditPhoto: CreateGroupEvent
     data object OnDeletePhoto: CreateGroupEvent
+    data object GoToMain: CreateGroupEvent
 }

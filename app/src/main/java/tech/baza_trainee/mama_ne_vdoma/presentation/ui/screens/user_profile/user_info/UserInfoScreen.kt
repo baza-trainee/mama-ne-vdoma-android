@@ -137,7 +137,7 @@ fun UserInfoScreen(
                         .fillMaxWidth()
                         .padding(horizontal = 24.dp),
                     text = screenState.value.name,
-                    label = "Вкажіть своє ім'я",
+                    label = "Введіть своє ім'я (нікнейм)",
                     onValueChange = { handleEvent(UserInfoEvent.ValidateUserName(it)) },
                     isError = screenState.value.nameValid == ValidField.INVALID,
                     errorText = "Ви ввели некоректнe ім'я"

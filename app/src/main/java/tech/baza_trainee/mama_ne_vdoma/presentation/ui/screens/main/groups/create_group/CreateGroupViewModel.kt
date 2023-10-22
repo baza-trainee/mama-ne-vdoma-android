@@ -25,7 +25,9 @@ import tech.baza_trainee.mama_ne_vdoma.domain.repository.LocationRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.PageNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.GroupsScreenRoutes
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.HostScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.image_crop.CropImageCommunicator
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.GROUPS_PAGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.BitmapHelper
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
@@ -78,6 +80,9 @@ class CreateGroupViewModel(
             CreateGroupEvent.OnDeletePhoto -> Unit
             CreateGroupEvent.OnEditPhoto -> navigator.navigate(GroupsScreenRoutes.ImageCrop)
             is CreateGroupEvent.SetImageToCrop -> communicator.uriForCrop = event.uri
+            CreateGroupEvent.GoToMain -> navigator.navigate(
+                HostScreenRoutes.Host.getDestination(GROUPS_PAGE)
+            )
         }
     }
 
@@ -168,7 +173,9 @@ class CreateGroupViewModel(
                     )
                 )
             }
-            onSuccess { navigator.navigate(GroupsScreenRoutes.Groups) }
+            onSuccess {
+                _uiState.value = CreateGroupUiState.OnGroupCreated
+            }
             onError { error ->
                 _uiState.value = CreateGroupUiState.OnError(error)
             }
