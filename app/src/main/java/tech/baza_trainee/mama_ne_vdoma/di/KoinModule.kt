@@ -59,7 +59,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.host.HostVie
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.main.MainViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.search.search_results.SearchResultsViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.search.search_user.SearchUserViewModel
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.common.VerifyEmailCommunicator
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.common.EditProfileCommunicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.edit.EditProfileViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.main_profile.ProfileSettingsViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.verify_email.VerifyNewEmailViewModel
@@ -157,7 +157,7 @@ val standaloneGroupSearchModule = module {
 val mainModule = module {
     single { CropImageCommunicator() }
     single { SearchResultsCommunicator() }
-    single { VerifyEmailCommunicator() }
+    single { EditProfileCommunicator() }
     single<PageNavigator> { PageNavigatorImpl() }
 
     viewModel { (page: Int) ->
@@ -203,7 +203,7 @@ val mainModule = module {
     viewModel { (navigator: ScreenNavigator) -> ImageCropViewModel(navigator, get(), get()) }
     viewModel { SearchUserViewModel(get(), get(), get()) }
     viewModel { SearchResultsViewModel(get(), get(), get()) }
-    viewModel { ProfileSettingsViewModel(get(), get(), get(), get()) }
+    viewModel { ProfileSettingsViewModel(get(), get(), get(), get(), get()) }
     viewModel { EditProfileViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
     viewModel { VerifyNewEmailViewModel(get(), get(), get()) }
 }

@@ -28,7 +28,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenN
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.Graphs
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.SettingsScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.image_crop.CropImageCommunicator
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.common.VerifyEmailCommunicator
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.common.EditProfileCommunicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.networkExecutor
@@ -43,7 +43,7 @@ class EditProfileViewModel(
     private val mainNavigator: ScreenNavigator,
     private val navigator: PageNavigator,
     private val communicator: CropImageCommunicator,
-    private val emailCommunicator: VerifyEmailCommunicator,
+    private val profileCommunicator: EditProfileCommunicator,
     private val authRepository: AuthRepository,
     private val userProfileInteractor: UserProfileInteractor,
     private val locationInteractor: LocationInteractor,
@@ -61,8 +61,10 @@ class EditProfileViewModel(
 
     private var backupParentSchedule: Map<DayOfWeek, DayPeriod>? = null
     private var backupParentNote: String? = null
-    private var backupChildren: Map<String, Map<DayOfWeek, DayPeriod>>? = null
+    private var backupChildrenSchedule: Map<String, Map<DayOfWeek, DayPeriod>>? = null
     private var backupChildrenNotes: Map<String, String>? = null
+
+    private val childrenToRemove = mutableSetOf<String>()
 
     init {
         userProfileInteractor.apply {
@@ -75,7 +77,7 @@ class EditProfileViewModel(
         }
 
         viewModelScope.launch {
-            emailCommunicator.emailChanged.collect { success ->
+            profileCommunicator.emailChanged.collect { success ->
                 _viewState.update {
                     it.copy(
                         isEmailChanged = success
@@ -130,7 +132,7 @@ class EditProfileViewModel(
             is EditProfileEvent.RestoreChild -> restoreChildren()
             EditProfileEvent.RestoreParentInfo -> restoreParent()
             is EditProfileEvent.SaveChildren -> {
-                backupChildren = null
+                backupChildrenSchedule = null
                 backupChildrenNotes = null
             }
             EditProfileEvent.SaveParentInfo -> {
@@ -148,7 +150,7 @@ class EditProfileViewModel(
                 authRepository.changeEmailInit(_viewState.value.email)
             }
             onSuccess {
-                emailCommunicator.setEmail(_viewState.value.email)
+                profileCommunicator.setEmail(_viewState.value.email)
                 navigator.goToRoute(SettingsScreenRoutes.VerifyNewEmail)
             }
             onError(::onError)
@@ -174,7 +176,7 @@ class EditProfileViewModel(
 
     private fun restoreChildren() {
         val children = _viewState.value.children.map { child ->
-            val childSchedule = backupChildren?.get(child.childId)
+            val childSchedule = backupChildrenSchedule?.get(child.childId)
             val schedule = mutableStateMapOf<DayOfWeek, DayPeriod>().also { map ->
                 DayOfWeek.values().forEach {
                     map[it] = (childSchedule?.get(it) ?: DayPeriod()).copy()
@@ -189,13 +191,17 @@ class EditProfileViewModel(
         _viewState.update {
             it.copy(children = children)
         }
-        backupChildren = null
+        backupChildrenSchedule = null
         backupChildrenNotes = null
     }
 
     private fun saveChanges() {
         saveParent()
         saveChildren()
+        if (childrenToRemove.isNotEmpty())
+            childrenToRemove.forEach {
+                deleteChild(it) {}
+            }
     }
 
     private fun saveParent() {
@@ -209,12 +215,16 @@ class EditProfileViewModel(
                 note = _viewState.value.note,
                 sendingEmails = preferencesDatastoreManager.sendEmail
             )
-        ) {}
+        ) {
+            profileCommunicator.setProfileChanged(true)
+        }
     }
 
     private fun saveChildren() {
         _viewState.value.children.forEach {
-            patchChild(it.childId, it.note, it.schedule) {}
+            patchChild(it.childId, it.note, it.schedule) {
+                profileCommunicator.setProfileChanged(true)
+            }
         }
     }
 
@@ -269,9 +279,9 @@ class EditProfileViewModel(
     }
 
     private fun updateChildSchedule(childId: Int, dayOfWeek: DayOfWeek, dayPeriod: Period) {
-        if (backupChildren == null) {
+        if (backupChildrenSchedule == null) {
             val childSchedule = _viewState.value.children[childId].schedule.schedule
-            backupChildren = mutableMapOf<String, Map<DayOfWeek, DayPeriod>>().apply {
+            backupChildrenSchedule = mutableMapOf<String, Map<DayOfWeek, DayPeriod>>().apply {
                 put(
                     _viewState.value.children[childId].childId,
                     mutableStateMapOf<DayOfWeek, DayPeriod>().also { map ->
@@ -369,7 +379,13 @@ class EditProfileViewModel(
     }
 
     private fun deleteChild(childId: String) {
-        deleteChild(childId) { getChildren() }
+        childrenToRemove.add(childId)
+        val children = _viewState.value.children.toMutableList()
+        val childToRemove = children.first { it.childId == childId }
+        children.remove(childToRemove)
+        _viewState.update {
+            it.copy(children = children)
+        }
     }
 
     private fun getLocationFromAddress() {

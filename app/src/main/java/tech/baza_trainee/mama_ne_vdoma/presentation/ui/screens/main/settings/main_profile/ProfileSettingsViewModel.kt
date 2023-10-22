@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import tech.baza_trainee.mama_ne_vdoma.data.interceptors.AuthInterceptor
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UserInfoEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatastoreManager
@@ -19,11 +20,13 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenN
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.Graphs
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.LoginRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.SettingsScreenRoutes
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.common.EditProfileCommunicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 
 class ProfileSettingsViewModel(
     private val mainNavigator: ScreenNavigator,
     private val navigator: PageNavigator,
+    private val communicator: EditProfileCommunicator,
     private val userProfileInteractor: UserProfileInteractor,
     private val preferencesDatastoreManager: UserPreferencesDatastoreManager
 ): ViewModel(), UserProfileInteractor by userProfileInteractor, NetworkEventsListener {
@@ -41,18 +44,28 @@ class ProfileSettingsViewModel(
             setUserProfileNetworkListener(this@ProfileSettingsViewModel)
         }
 
-        _viewState.update {
-            it.copy(
-                name = preferencesDatastoreManager.name,
-                address = preferencesDatastoreManager.address,
-                email = preferencesDatastoreManager.email,
-                phone = preferencesDatastoreManager.phone,
-                code = preferencesDatastoreManager.code,
-                avatar = Uri.parse(preferencesDatastoreManager.avatar),
-                sendEmails = preferencesDatastoreManager.sendEmail
-            )
+        viewModelScope.launch {
+            communicator.profileChanged.collect { success ->
+                if (success) {
+                    getUserInfo()
+                    getChildren()
+                    communicator.setProfileChanged(false)
+                } else {
+                    _viewState.update {
+                        it.copy(
+                            name = preferencesDatastoreManager.name,
+                            address = preferencesDatastoreManager.address,
+                            email = preferencesDatastoreManager.email,
+                            phone = preferencesDatastoreManager.phone,
+                            code = preferencesDatastoreManager.code,
+                            avatar = Uri.parse(preferencesDatastoreManager.avatar),
+                            sendEmails = preferencesDatastoreManager.sendEmail
+                        )
+                    }
+                    getChildren()
+                }
+            }
         }
-        getChildren()
     }
 
     override fun onLoading(state: Boolean) {
