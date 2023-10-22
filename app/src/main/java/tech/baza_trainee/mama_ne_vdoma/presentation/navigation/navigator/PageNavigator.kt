@@ -1,6 +1,6 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator
 
-
+import android.util.Log
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.BufferOverflow
@@ -20,9 +20,7 @@ import java.util.LinkedList
 
 interface PageNavigator: ScreenNavigator {
 
-    val pagesFlow: StateFlow<CommonHostRoute>
-
-    fun goToRoute(route: CommonHostRoute)
+    val routesFlow: StateFlow<CommonHostRoute>
 
     fun goToPrevious()
 
@@ -31,9 +29,9 @@ interface PageNavigator: ScreenNavigator {
 
 class PageNavigatorImpl: PageNavigator {
 
-    override val pagesFlow: StateFlow<CommonHostRoute>
-        get() = _pagesFlow.asStateFlow()
-    private val _pagesFlow = MutableStateFlow<CommonHostRoute>(CommonHostRoute("", -1, ""))
+    override val routesFlow: StateFlow<CommonHostRoute>
+        get() = _routesFlow.asStateFlow()
+    private val _routesFlow = MutableStateFlow(CommonHostRoute("", -1, ""))
 
     private val routesQueue: Deque<CommonHostRoute> = LinkedList()
 
@@ -59,45 +57,51 @@ class PageNavigatorImpl: PageNavigator {
     }
 
     override fun navigate(route: CommonRoute) {
-        if (!goBack) {
-            routesQueue.offerLast(route as CommonHostRoute)
+        (route as CommonHostRoute).let {
+            if (!goBack) {
+                routesQueue.offerLast(route)
+            }
+            goBack = false
+            if (route.page == MAIN_PAGE) {
+                routesQueue.clear()
+                routesQueue.offerLast(MainScreenRoutes.Main)
+            }
+            _routesFlow.update {
+                route
+            }
+            Log.d("ROUTES", "navigate $routesQueue")
+            navigationChannel.trySend(NavigationIntent.NavigateTo(route))
         }
-        goBack = false
-        navigationChannel.trySend(NavigationIntent.NavigateTo(route))
     }
 
     override fun navigateOnMain(scope: CoroutineScope, route: CommonRoute) {
-        if (!goBack)
-            routesQueue.offerLast(route as CommonHostRoute)
-        goBack = false
-        scope.launch {
-            withContext(Dispatchers.Main) {
-                navigationChannel.send(NavigationIntent.NavigateTo(route))
+        (route as CommonHostRoute).let {
+            if (!goBack) {
+                routesQueue.offerLast(route)
             }
-        }
-    }
-
-    override fun goToRoute(route: CommonHostRoute) {
-        if (route.page == MAIN_PAGE) {
-            routesQueue.clear()
-        }
-        _pagesFlow.update {
-            route
+            goBack = false
+            if (route.page == MAIN_PAGE) {
+                routesQueue.clear()
+                routesQueue.offerLast(MainScreenRoutes.Main)
+            }
+            _routesFlow.update {
+                route
+            }
+            scope.launch {
+                withContext(Dispatchers.Main) {
+                    navigationChannel.send(NavigationIntent.NavigateTo(route))
+                }
+            }
         }
     }
 
     override fun goToPrevious() {
         goBack = true
         routesQueue.pollLast()
-        val page = routesQueue.peekLast() ?: MAIN_PAGE
         val route =
             routesQueue.peekLast() ?: MainScreenRoutes.Main
-        if (page == MAIN_PAGE) {
-            routesQueue.clear()
-        }
-        _pagesFlow.update {
-            route
-        }
+        Log.d("ROUTES", "goToPrevious $routesQueue")
+        navigate(route)
     }
 
     override fun getCurrentRoute() = routesQueue.peekLast()?.route ?: MainScreenRoutes.Main.route

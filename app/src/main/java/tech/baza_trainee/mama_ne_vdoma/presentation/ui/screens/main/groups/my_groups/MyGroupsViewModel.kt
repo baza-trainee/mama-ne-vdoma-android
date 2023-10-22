@@ -48,7 +48,7 @@ class MyGroupsViewModel(
         when (event) {
             MyGroupsEvent.ResetUiState -> _uiState.value = RequestState.Idle
             MyGroupsEvent.OnBack -> navigator.goToPrevious()
-            MyGroupsEvent.CreateNewGroup -> navigator.goToRoute(GroupsScreenRoutes.ChooseChild)
+            MyGroupsEvent.CreateNewGroup -> navigator.navigate(GroupsScreenRoutes.ChooseChild)
         }
     }
 

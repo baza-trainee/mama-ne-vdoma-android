@@ -31,7 +31,7 @@ class SearchResultsViewModel(
         get() = _uiState
 
     init {
-        getUserAvatar(communicator.avatarId, communicator.user.id)
+        getUserAvatar(communicator.avatarId)
         _viewState.update {
             it.copy(
                 parent = communicator.user
@@ -41,13 +41,13 @@ class SearchResultsViewModel(
 
     fun handleEvent(event: SearchResultsEvent) {
         when(event) {
-            SearchResultsEvent.OnBack -> navigator.goBack()
+            SearchResultsEvent.OnBack -> navigator.goToPrevious()
             SearchResultsEvent.ResetUiState -> _uiState.value = RequestState.Idle
-            SearchResultsEvent.OnNewSearch -> navigator.goBack()
+            SearchResultsEvent.OnNewSearch -> navigator.goToPrevious()
         }
     }
 
-    private fun getUserAvatar(avatarId: String, userId: String) {
+    private fun getUserAvatar(avatarId: String) {
         networkExecutor {
             execute { filesRepository.getAvatar(avatarId) }
             onSuccess { uri ->

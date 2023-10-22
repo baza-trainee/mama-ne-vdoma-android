@@ -112,7 +112,7 @@ val repoModule = module {
 }
 
 val commonScreensModule = module {
-    viewModel { (nextRoute: () -> Unit, backRoute: () -> Unit) -> ChildInfoViewModel(nextRoute, backRoute, get(), get(), get()) }
+    viewModel { (nextRoute: () -> Unit, backRoute: () -> Unit) -> ChildInfoViewModel(nextRoute, backRoute, get(), get()) }
     viewModel { (nextRoute: () -> Unit, backRoute: () -> Unit) -> ChildScheduleViewModel(nextRoute, backRoute, get(), get()) }
 }
 

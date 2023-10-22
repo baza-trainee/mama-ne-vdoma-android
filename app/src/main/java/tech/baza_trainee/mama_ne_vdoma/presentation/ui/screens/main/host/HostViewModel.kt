@@ -55,13 +55,21 @@ class HostViewModel(
     val uiState: State<RequestState>
         get() = _uiState
 
+    private var goToPage = page
+
     init {
         viewModelScope.launch {
-            navigator.pagesFlow.collect(::navigateToTab)
+            navigator.routesFlow.collect {
+                if (it.page != -1) switchTab(it)
+            }
         }
 
-        if (page != -1)
-            navigateToTab(CommonHostRoute("", page, ""))
+        if (goToPage != -1) {
+            val route = getRouteFromPage(goToPage)
+            switchTab(route)
+            navigator.navigate(route)
+            goToPage = -1
+        }
 
         getUserInfo()
     }
@@ -69,37 +77,28 @@ class HostViewModel(
     fun handleEvent(event: HostEvent) {
         when (event) {
             HostEvent.OnBack -> mainNavigator.goBack()
-            is HostEvent.SwitchTab -> navigateToTab(CommonHostRoute("", event.index, ""))
+            is HostEvent.SwitchTab -> {
+                val route = getRouteFromPage(event.index)
+                switchTab(route)
+                navigator.navigate(route)
+            }
             HostEvent.ResetUiState -> _uiState.value = RequestState.Idle
             HostEvent.OnBackLocal -> {
                 when (navigator.getCurrentRoute()) {
                     MainScreenRoutes.Main.route -> mainNavigator.goBack()
-                    GroupsScreenRoutes.Groups.route,
-                    SearchScreenRoutes.SearchUser.route,
-                    SettingsScreenRoutes.Settings.route -> navigator.goToPrevious()
-
-                    else -> navigator.goBack()
+                    else -> navigator.goToPrevious()
                 }
             }
         }
     }
 
-    private fun navigateToTab(route: CommonHostRoute) {
-        val newRoute = if (route.route.isEmpty()) {
-            when (route.page) {
-                GROUPS_PAGE -> GroupsScreenRoutes.Groups
-                SEARCH_PAGE -> SearchScreenRoutes.SearchUser
-                SETTINGS_PAGE -> SettingsScreenRoutes.Settings
-                else -> MainScreenRoutes.Main
-            }
-        } else route
+    private fun switchTab(route: CommonHostRoute) {
         _viewState.update {
             it.copy(
-                currentPage = newRoute.page,
-                currentPageTitle = newRoute.title.ifEmpty { "Головна" }
+                currentPage = route.page,
+                currentPageTitle = route.title
             )
         }
-        navigator.navigate(newRoute)
     }
 
     private fun getUserInfo() {
@@ -218,6 +217,15 @@ class HostViewModel(
                     )
                 }
             }
+        }
+    }
+
+    private fun getRouteFromPage(page: Int): CommonHostRoute {
+        return when (page) {
+            GROUPS_PAGE -> GroupsScreenRoutes.Groups
+            SEARCH_PAGE -> SearchScreenRoutes.SearchUser
+            SETTINGS_PAGE -> SettingsScreenRoutes.Settings
+            else -> MainScreenRoutes.Main
         }
     }
 }

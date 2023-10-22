@@ -110,11 +110,11 @@ class EditProfileViewModel(
             EditProfileEvent.DeleteUser -> deleteUser()
             is EditProfileEvent.DeleteChild -> deleteChild(event.id)
             EditProfileEvent.ResetUiState -> _uiState.value = EditProfileUiState.Idle
-            EditProfileEvent.OnBack -> navigator.goBack()
+            EditProfileEvent.OnBack -> navigator.goToPrevious()
             EditProfileEvent.SaveInfo -> saveChanges()
             EditProfileEvent.GetLocationFromAddress -> getLocationFromAddress()
             EditProfileEvent.OnDeletePhoto -> deleteUserAvatar()
-            EditProfileEvent.OnEditPhoto -> navigator.goToRoute(SettingsScreenRoutes.EditProfilePhoto)
+            EditProfileEvent.OnEditPhoto -> navigator.navigate(SettingsScreenRoutes.EditProfilePhoto)
             is EditProfileEvent.OnMapClick -> setLocation(event.location)
             EditProfileEvent.RequestUserLocation -> requestCurrentLocation()
             is EditProfileEvent.SetCode -> setCode(event.code, event.country)
@@ -140,7 +140,7 @@ class EditProfileViewModel(
                 backupParentSchedule = null
             }
 
-            EditProfileEvent.AddChild -> navigator.goToRoute(SettingsScreenRoutes.ChildInfo)
+            EditProfileEvent.AddChild -> navigator.navigate(SettingsScreenRoutes.ChildInfo)
         }
     }
 
@@ -151,7 +151,7 @@ class EditProfileViewModel(
             }
             onSuccess {
                 profileCommunicator.setEmail(_viewState.value.email)
-                navigator.goToRoute(SettingsScreenRoutes.VerifyNewEmail)
+                navigator.navigate(SettingsScreenRoutes.VerifyNewEmail)
             }
             onError(::onError)
             onLoading(::onLoading)

@@ -18,7 +18,7 @@ class MainViewModel(
 
     fun handleEvent(event: MainEvent) {
         when(event) {
-            MainEvent.CreateNewGroup ->  navigator.goToRoute(GroupsScreenRoutes.ChooseChild)
+            MainEvent.CreateNewGroup ->  navigator.navigate(GroupsScreenRoutes.ChooseChild)
             MainEvent.ResetUiState -> Unit //TODO()
             MainEvent.Search -> Unit //TODO()
             is MainEvent.SetSearchOption -> Unit //TODO()

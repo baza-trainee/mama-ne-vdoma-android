@@ -85,7 +85,7 @@ class SearchUserViewModel(
                     user = parent
                     avatarId = it.avatar
                 }
-                navigator.goToRoute(SearchScreenRoutes.SearchResults)
+                navigator.navigate(SearchScreenRoutes.SearchResults)
             }
             onError { error ->
                 _uiState.value = SearchUserUiState.OnError(error)

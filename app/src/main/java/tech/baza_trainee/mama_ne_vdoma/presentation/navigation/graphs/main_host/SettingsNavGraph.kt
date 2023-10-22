@@ -65,7 +65,7 @@ fun NavGraphBuilder.settingsNavGraph() {
             val navigator: PageNavigator = koinInject()
             val childInfoViewModel: ChildInfoViewModel = koinNavViewModel {
                 parametersOf(
-                    { navigator.goToRoute(SettingsScreenRoutes.ChildSchedule) },
+                    { navigator.navigate(SettingsScreenRoutes.ChildSchedule) },
                     { navigator.goToPrevious() }
                 )
             }
@@ -79,7 +79,7 @@ fun NavGraphBuilder.settingsNavGraph() {
             val navigator: PageNavigator = koinInject()
             val childScheduleViewModel: ChildScheduleViewModel = koinNavViewModel {
                 parametersOf(
-                    { navigator.goToRoute(SettingsScreenRoutes.EditProfile) },
+                    { navigator.navigate(SettingsScreenRoutes.EditProfile) },
                     { navigator.goToPrevious() }
                 )
             }
