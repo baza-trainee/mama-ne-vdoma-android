@@ -12,6 +12,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -24,6 +25,7 @@ fun PrivacyPolicyBlock(
     isChecked: Boolean = false,
     onCheckedChanged: (Boolean) -> Unit = {}
 ) {
+    val uriHandler = LocalUriHandler.current
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.Top
@@ -46,7 +48,10 @@ fun PrivacyPolicyBlock(
             Spacer(modifier = Modifier.height(4.dp))
 
             Text(
-                modifier = Modifier.clickable { },
+                modifier = Modifier.clickable {
+                    val uri = "https://mommy-not-home.online/privacy"
+                    uriHandler.openUri(uri)
+                },
                 text = getTextWithUnderline(
                     simpleText = "-   ",
                     underlinedText = "Політикою конфіденційності;",
@@ -59,7 +64,10 @@ fun PrivacyPolicyBlock(
             Spacer(modifier = Modifier.height(4.dp))
 
             Text(
-                modifier = Modifier.clickable { },
+                modifier = Modifier.clickable {
+                    val uri = "https://mommy-not-home.online/terms"
+                    uriHandler.openUri(uri)
+                },
                 text = getTextWithUnderline(
                     simpleText = "-   ",
                     underlinedText = "Умовами використання мобільного застосунку “Мама-не-вдома”;",
@@ -72,7 +80,10 @@ fun PrivacyPolicyBlock(
             Spacer(modifier = Modifier.height(4.dp))
 
             Text(
-                modifier = Modifier.clickable { },
+                modifier = Modifier.clickable {
+                    val uri = "https://mommy-not-home.online/refusal"
+                    uriHandler.openUri(uri)
+                },
                 text = getTextWithUnderline(
                     simpleText = "-   ",
                     underlinedText = "Відмовою від відповідальності",
