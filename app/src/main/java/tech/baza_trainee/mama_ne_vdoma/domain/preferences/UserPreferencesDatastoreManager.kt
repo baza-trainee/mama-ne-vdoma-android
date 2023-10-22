@@ -15,7 +15,9 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesKeys.KEY_ADDRESS
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesKeys.KEY_AVATAR
+import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesKeys.KEY_CHILDREN_PROVIDED
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesKeys.KEY_COUNTRY_CODE
+import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesKeys.KEY_CURRENT_CHILD
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesKeys.KEY_EMAIL
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesKeys.KEY_ID
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesKeys.KEY_LOCATION_LAT
@@ -23,6 +25,7 @@ import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesKeys.KE
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesKeys.KEY_NAME
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesKeys.KEY_NOTIFICATION
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesKeys.KEY_PHONE_NUMBER
+import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesKeys.KEY_PROFILE_FILLED
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesKeys.KEY_RADIUS
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesKeys.KEY_SEND_EMAIL
 import java.io.IOException
@@ -55,7 +58,15 @@ class UserPreferencesDatastoreManager(private val context: Context) {
             val longitude = preferences[KEY_LOCATION_LNG] ?: 0.00
             val notificationCount = preferences[KEY_NOTIFICATION] ?: 0
             val sendEmail = preferences[KEY_SEND_EMAIL] ?: true
-            UserPreferences(id, avatar, name, code, phone, email, address, radius, latitude, longitude, notificationCount, sendEmail)
+            val profileFilled = preferences[KEY_PROFILE_FILLED] ?: true
+            val childrenProvided = preferences[KEY_CHILDREN_PROVIDED] ?: true
+            val currentChild = preferences[KEY_CURRENT_CHILD].orEmpty()
+            UserPreferences(
+                id, avatar, name, code,
+                phone, email, address, radius,
+                latitude, longitude, notificationCount, sendEmail,
+                profileFilled, childrenProvided, currentChild
+            )
         }
 
     var id: String
@@ -222,6 +233,48 @@ class UserPreferencesDatastoreManager(private val context: Context) {
             withContext(Dispatchers.Default ) {
                 userDataStore.edit {
                     it[KEY_SEND_EMAIL] = value
+                }
+            }
+        }
+
+    var isChildrenDataProvided: Boolean
+        get() = runBlocking {
+            withContext(Dispatchers.Default) {
+                userPreferencesFlow.first().isChildrenDataProvided
+            }
+        }
+        set(value) = runBlocking {
+            withContext(Dispatchers.Default ) {
+                userDataStore.edit {
+                    it[KEY_CHILDREN_PROVIDED] = value
+                }
+            }
+        }
+
+    var isUserProfileFilled: Boolean
+        get() = runBlocking {
+            withContext(Dispatchers.Default) {
+                userPreferencesFlow.first().isUserProfileFilled
+            }
+        }
+        set(value) = runBlocking {
+            withContext(Dispatchers.Default ) {
+                userDataStore.edit {
+                    it[KEY_PROFILE_FILLED] = value
+                }
+            }
+        }
+
+    var currentChild: String
+        get() = runBlocking {
+            withContext(Dispatchers.Default) {
+                userPreferencesFlow.first().currentChild
+            }
+        }
+        set(value) = runBlocking {
+            withContext(Dispatchers.Default ) {
+                userDataStore.edit {
+                    it[KEY_CURRENT_CHILD] = value
                 }
             }
         }

@@ -5,8 +5,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatastoreManager
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.model.UserProfileCommunicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.networkExecutor
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onError
@@ -14,7 +14,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onLoading
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onSuccess
 
 class ChildrenInfoViewModel(
-    private val communicator: UserProfileCommunicator,
+    private val preferencesDatastoreManager: UserPreferencesDatastoreManager,
     private val userProfileRepository: UserProfileRepository
 ): ViewModel() {
 
@@ -58,7 +58,7 @@ class ChildrenInfoViewModel(
     }
 
     private fun resetCurrentChild() {
-        communicator.currentChildId = ""
+        preferencesDatastoreManager.currentChild = ""
     }
 
     private fun deleteChild(childId: String) {
@@ -82,6 +82,6 @@ class ChildrenInfoViewModel(
     }
 
     private fun setCurrentChild(childId: String = "") {
-        communicator.currentChildId = childId
+        preferencesDatastoreManager.currentChild = childId
     }
 }

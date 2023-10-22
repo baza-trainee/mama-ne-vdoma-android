@@ -7,4 +7,6 @@ sealed class SettingsScreenRoutes(override val route: String, override val title
     data object EditProfile: SettingsScreenRoutes("edit_profile_screen", "Редагування акаунту")
     data object EditProfilePhoto: SettingsScreenRoutes("edit_profile_photo_screen", "Редагування акаунту")
     data object VerifyNewEmail: SettingsScreenRoutes("verify_new_email_screen", "Перевірити емейл")
+    data object ChildInfo: SettingsScreenRoutes("add_child_screen", "Розкажіть про свою дитину")
+    data object ChildSchedule: SettingsScreenRoutes("add_child_schedule_screen", "Вкажіть, коли потрібно доглядати дитину")
 }

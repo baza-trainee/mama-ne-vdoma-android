@@ -1,4 +1,4 @@
-package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.schedule.parent_schedule
+package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.child_schedule
 
 import android.widget.Toast
 import androidx.compose.runtime.Composable
@@ -13,7 +13,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.schedule.S
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 
 @Composable
-fun ParentScheduleScreen(
+fun ChildScheduleScreen(
     screenState: State<ScheduleViewState> = mutableStateOf(ScheduleViewState()),
     uiState: State<RequestState> = mutableStateOf(RequestState.Idle),
     handleEvent: (ScheduleEvent) -> Unit = {}
@@ -29,11 +29,11 @@ fun ParentScheduleScreen(
     }
 
     ScheduleScreen(
-        title = "Визначіть свій графік, коли можете доглядати дітей",
+        title = "Вкажіть, коли потрібно доглядати дитину",
         screenState = screenState,
-        onUpdateSchedule = { day, period -> handleEvent(ScheduleEvent.UpdateParentSchedule(day, period)) },
-        onUpdateComment = { handleEvent(ScheduleEvent.UpdateParentComment(it)) },
-        onNext = { handleEvent(ScheduleEvent.PatchParentSchedule) },
+        onUpdateSchedule = { day, period -> handleEvent(ScheduleEvent.UpdateChildSchedule(day, period)) },
+        onUpdateComment = { handleEvent(ScheduleEvent.UpdateChildComment(it)) },
+        onNext = { handleEvent(ScheduleEvent.PatchChildSchedule) },
         onBack = { handleEvent(ScheduleEvent.OnBack) }
     )
 
@@ -42,6 +42,6 @@ fun ParentScheduleScreen(
 
 @Composable
 @Preview
-fun ParentScheduleScreenPreview() {
-    ParentScheduleScreen()
+fun ChildScheduleScreenPreview() {
+    ChildScheduleScreen()
 }

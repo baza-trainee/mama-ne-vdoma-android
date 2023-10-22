@@ -18,4 +18,7 @@ object UserPreferencesKeys {
     val KEY_LOCATION_LNG = doublePreferencesKey(LOCATION_LNG)
     val KEY_NOTIFICATION = intPreferencesKey(NOTIFICATION)
     val KEY_SEND_EMAIL = booleanPreferencesKey(SEND_EMAIL)
+    val KEY_PROFILE_FILLED = booleanPreferencesKey(PROFILE_FILLED)
+    val KEY_CHILDREN_PROVIDED = booleanPreferencesKey(CHILDREN_PROVIDED)
+    val KEY_CURRENT_CHILD = stringPreferencesKey(CURRENT_CHILD)
 }

@@ -1,20 +1,24 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.navigation.graphs
 
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import org.koin.androidx.compose.navigation.koinNavViewModel
+import org.koin.compose.koinInject
+import org.koin.core.parameter.parametersOf
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.Graphs
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.UserProfileRoutes
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.add_child.ChildInfoViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.child_schedule.ChildScheduleViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.child_info.ChildInfoScreen
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.child_info.ChildInfoViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.full_info.FullInfoScreen
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.full_info.FullInfoViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.image_crop.UserImageCropScreen
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.image_crop.UserImageCropViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.schedule.child_schedule.ChildScheduleScreen
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.schedule.child_schedule.ChildScheduleViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.schedule.parent_schedule.ParentScheduleScreen
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.schedule.parent_schedule.ParentScheduleViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.user_info.UserInfoScreen
@@ -67,7 +71,14 @@ fun NavGraphBuilder.userProfileGraph() {
             )
         }
         composable(UserProfileRoutes.ChildInfo.route) {
-            val childInfoViewModel: ChildInfoViewModel = koinNavViewModel()
+            val scope = rememberCoroutineScope()
+            val navigator: ScreenNavigator = koinInject()
+            val childInfoViewModel: ChildInfoViewModel = koinNavViewModel {
+                parametersOf(
+                    { navigator.navigateOnMain(scope, UserProfileRoutes.ChildSchedule) },
+                    { navigator.navigate(UserProfileRoutes.FullProfile) }
+                )
+            }
             ChildInfoScreen(
                 screenState = childInfoViewModel.viewState.collectAsStateWithLifecycle(),
                 uiState = childInfoViewModel.uiState,
@@ -75,7 +86,14 @@ fun NavGraphBuilder.userProfileGraph() {
             )
         }
         composable(UserProfileRoutes.ChildSchedule.route) {
-            val childScheduleViewModel: ChildScheduleViewModel = koinNavViewModel()
+            val scope = rememberCoroutineScope()
+            val navigator: ScreenNavigator = koinInject()
+            val childScheduleViewModel: ChildScheduleViewModel = koinNavViewModel {
+                parametersOf(
+                    { navigator.navigateOnMain(scope, UserProfileRoutes.FullProfile) },
+                    { navigator.navigate(UserProfileRoutes.FullProfile) }
+                )
+            }
             ChildScheduleScreen(
                 screenState = childScheduleViewModel.viewState.collectAsStateWithLifecycle(),
                 uiState = childScheduleViewModel.uiState,

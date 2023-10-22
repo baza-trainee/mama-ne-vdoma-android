@@ -667,7 +667,10 @@ fun EditProfileScreen(
                     selectedChild = 0
                     deleteChildDialog = false
                 },
-                onDelete = { handleEvent(EditProfileEvent.DeleteChild(screenState.value.children[selectedChild].childId)) }
+                onDelete = {
+                    deleteChildDialog = false
+                    handleEvent(EditProfileEvent.DeleteChild(screenState.value.children[selectedChild].childId))
+                }
             )
         }
     }

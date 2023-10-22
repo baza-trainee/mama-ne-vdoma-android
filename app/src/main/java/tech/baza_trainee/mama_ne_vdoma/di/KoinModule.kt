@@ -41,6 +41,8 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.PageNav
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.PageNavigatorImpl
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigatorImpl
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.add_child.ChildInfoViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.child_schedule.ChildScheduleViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.image_crop.CropImageCommunicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.image_crop.ImageCropViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.verify_email.VerifyEmailViewModel
@@ -64,12 +66,10 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.ver
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.standalone.choose_child.ChooseChildStandaloneViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.standalone.found_group.FoundGroupsStandaloneViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.standalone.set_area.SetAreaViewModel
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.child_info.ChildInfoViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.children_info.ChildrenInfoViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.full_info.FullInfoViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.image_crop.UserImageCropViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.model.UserProfileCommunicator
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.schedule.child_schedule.ChildScheduleViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.schedule.parent_schedule.ParentScheduleViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.user_info.UserInfoViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.user_location.UserLocationViewModel
@@ -111,14 +111,17 @@ val repoModule = module {
     single { UserPreferencesDatastoreManager(androidContext()) }
 }
 
+val commonScreensModule = module {
+    viewModel { (nextRoute: () -> Unit, backRoute: () -> Unit) -> ChildInfoViewModel(nextRoute, backRoute, get(), get(), get()) }
+    viewModel { (nextRoute: () -> Unit, backRoute: () -> Unit) -> ChildScheduleViewModel(nextRoute, backRoute, get(), get()) }
+}
+
 val userCreateModule = module {
     single { PhoneNumberUtil.createInstance(androidContext()) }
     single { UserProfileCommunicator() }
     viewModel { UserInfoViewModel(get(), get(), get(), get()) }
     viewModel { UserImageCropViewModel(get(), get(), get()) }
     viewModel { UserLocationViewModel(get(), get(), get()) }
-    viewModel { ChildInfoViewModel(get(), get(), get()) }
-    viewModel { ChildScheduleViewModel(get(), get(), get()) }
     viewModel { ChildrenInfoViewModel(get(), get()) }
     viewModel { ParentScheduleViewModel(get(), get(), get(), get()) }
     viewModel { FullInfoViewModel(get(), get(), get(), get(), get()) }

@@ -1,4 +1,4 @@
-package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.schedule.child_schedule
+package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.child_schedule
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -10,20 +10,19 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import tech.baza_trainee.mama_ne_vdoma.domain.model.Period
 import tech.baza_trainee.mama_ne_vdoma.domain.model.ScheduleModel
+import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatastoreManager
 import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.NetworkEventsListener
 import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.UserProfileInteractor
-import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
-import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.UserProfileRoutes
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.model.UserProfileCommunicator
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.schedule.ScheduleEvent
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.schedule.ScheduleViewState
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.schedule.ScheduleEvent
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.schedule.ScheduleViewState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 import java.time.DayOfWeek
 
 class ChildScheduleViewModel(
-    private val communicator: UserProfileCommunicator,
-    private val navigator: ScreenNavigator,
+    private val nextRoute: () -> Unit,
+    private val backRoute: () -> Unit,
+    private val preferencesDatastoreManager: UserPreferencesDatastoreManager,
     private val userProfileInteractor: UserProfileInteractor
 ): ViewModel(), UserProfileInteractor by userProfileInteractor, NetworkEventsListener {
 
@@ -40,8 +39,8 @@ class ChildScheduleViewModel(
             setUserProfileNetworkListener(this@ChildScheduleViewModel)
         }
 
-        if (communicator.currentChildId.isNotEmpty())
-            getChildById()
+        if (preferencesDatastoreManager.currentChild.isNotEmpty())
+            getChildById(preferencesDatastoreManager.currentChild)
     }
 
     override fun onLoading(state: Boolean) {
@@ -58,7 +57,7 @@ class ChildScheduleViewModel(
 
     fun handleScheduleEvent(event: ScheduleEvent) {
         when(event) {
-            ScheduleEvent.OnBack -> navigator.navigate(UserProfileRoutes.FullProfile)
+            ScheduleEvent.OnBack -> backRoute()
             ScheduleEvent.PatchChildSchedule -> patchChild()
             ScheduleEvent.ResetUiState -> _uiState.value = RequestState.Idle
             is ScheduleEvent.UpdateChildComment -> updateChildComment(event.comment)
@@ -85,8 +84,8 @@ class ChildScheduleViewModel(
         }
     }
 
-    private fun getChildById() {
-        getChildById(communicator.currentChildId) { entity ->
+    private fun getChildById(childId: String) {
+        getChildById(childId) { entity ->
             _viewState.update {
                 it.copy(
                     schedule = entity?.schedule ?: ScheduleModel()
@@ -96,9 +95,9 @@ class ChildScheduleViewModel(
     }
 
     private fun patchChild() {
-        patchChild(communicator.currentChildId, _viewState.value.comment, _viewState.value.schedule) {
-            communicator.isChildInfoFilled = true
-            navigator.navigateOnMain(viewModelScope, UserProfileRoutes.FullProfile)
+        patchChild(preferencesDatastoreManager.currentChild, _viewState.value.comment, _viewState.value.schedule) {
+            preferencesDatastoreManager.isChildrenDataProvided = true
+            nextRoute()
         }
     }
 }

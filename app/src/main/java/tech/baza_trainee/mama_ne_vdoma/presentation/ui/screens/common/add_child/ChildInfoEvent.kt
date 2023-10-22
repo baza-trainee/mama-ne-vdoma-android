@@ -1,4 +1,4 @@
-package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.child_info
+package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.add_child
 
 import tech.baza_trainee.mama_ne_vdoma.domain.model.Gender
 

@@ -52,8 +52,8 @@ class FullInfoViewModel(
         getUserInfo()
         _viewState.update {
             it.copy(
-                isChildInfoFilled = communicator.isChildInfoFilled,
-                isUserInfoFilled = communicator.isUserInfoFilled
+                isChildInfoFilled = preferencesDatastoreManager.isChildrenDataProvided,
+                isUserInfoFilled = preferencesDatastoreManager.isUserProfileFilled
             )
         }
     }
@@ -95,7 +95,7 @@ class FullInfoViewModel(
                     isChildInfoFilled = entity.isNotEmpty()
                 )
             }
-            communicator.isUserInfoFilled = entity.isNotEmpty()
+            preferencesDatastoreManager.isChildrenDataProvided = entity.isNotEmpty()
         }
     }
 
@@ -115,14 +115,13 @@ class FullInfoViewModel(
                 )
             }
 
-            communicator.apply {
-                isUserInfoFilled = _isUserInfoFilled
-                schedule = entity.schedule.ifNullOrEmpty { ScheduleModel() }
-            }
+            communicator.schedule = entity.schedule.ifNullOrEmpty { ScheduleModel() }
+
             preferencesDatastoreManager.apply {
                 name = entity.name
                 code = entity.countryCode
                 phone = entity.phone
+                isUserProfileFilled = _isUserInfoFilled
             }
 
             if (entity.location.coordinates.isNotEmpty()) {
@@ -174,7 +173,7 @@ class FullInfoViewModel(
     }
 
     private fun resetCurrentChild() {
-        communicator.currentChildId = ""
+        preferencesDatastoreManager.currentChild = ""
         navigator.navigate(UserProfileRoutes.ChildInfo)
     }
 
@@ -183,7 +182,7 @@ class FullInfoViewModel(
     }
 
     private fun setCurrentChild(childId: String = "") {
-        communicator.currentChildId = childId
+        preferencesDatastoreManager.currentChild = childId
         navigator.navigate(UserProfileRoutes.ChildSchedule)
     }
 }

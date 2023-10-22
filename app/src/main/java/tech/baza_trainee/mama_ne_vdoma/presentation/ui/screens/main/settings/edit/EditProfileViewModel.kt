@@ -138,7 +138,7 @@ class EditProfileViewModel(
                 backupParentSchedule = null
             }
 
-            EditProfileEvent.AddChild -> Unit
+            EditProfileEvent.AddChild -> navigator.goToRoute(SettingsScreenRoutes.ChildInfo)
         }
     }
 

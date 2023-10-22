@@ -26,6 +26,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -88,10 +89,11 @@ fun HeaderWithOptArrow(
             if (isOverflowed)
                 Text(
                     modifier = Modifier
-                        .padding(horizontal = 16.dp, vertical = 16.dp)
+                        .padding(horizontal = 16.dp, vertical = 8.dp)
                         .fillMaxWidth()
                         .basicMarquee(),
                     text = info,
+                    fontSize = 14.sp,
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.onPrimary,
                     fontFamily = redHatDisplayFontFamily
@@ -99,9 +101,10 @@ fun HeaderWithOptArrow(
             else
                 Text(
                     modifier = Modifier
-                        .padding(horizontal = 16.dp, vertical = 16.dp)
+                        .padding(horizontal = 16.dp, vertical = 8.dp)
                         .fillMaxWidth(),
                     text = info,
+                    fontSize = 14.sp,
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.onPrimary,
                     fontFamily = redHatDisplayFontFamily,
@@ -109,7 +112,8 @@ fun HeaderWithOptArrow(
                     minLines = 3,
                     onTextLayout = {
                         isOverflowed = it.hasVisualOverflow
-                    }
+                    },
+                    style = TextStyle(lineHeight = 18.sp)
                 )
         }
     }

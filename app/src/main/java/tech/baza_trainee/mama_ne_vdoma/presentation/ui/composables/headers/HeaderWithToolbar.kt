@@ -1,6 +1,7 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.headers
 
 import android.net.Uri
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -15,11 +16,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 @Preview
 fun HeaderWithToolbar(
@@ -48,12 +51,13 @@ fun HeaderWithToolbar(
 
         Text(
             modifier = Modifier
-                .padding(horizontal = 24.dp, vertical = 16.dp)
+                .padding(horizontal = 16.dp, vertical = 2.dp)
                 .fillMaxWidth(),
             text = title,
             fontSize = 24.sp,
             color = MaterialTheme.colorScheme.onPrimary,
-            fontFamily = redHatDisplayFontFamily
+            fontFamily = redHatDisplayFontFamily,
+            style = TextStyle(lineHeight = 28.sp)
         )
     }
 }

@@ -19,7 +19,8 @@ fun initKoin(context: Context) {
                 userCreateModule,
                 loginKoinModule,
                 standaloneGroupSearchModule,
-                mainModule
+                mainModule,
+                commonScreensModule
             )
         )
     }

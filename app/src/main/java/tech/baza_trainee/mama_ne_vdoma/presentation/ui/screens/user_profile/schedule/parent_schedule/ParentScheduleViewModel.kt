@@ -15,9 +15,9 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.NetworkEventsLis
 import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.UserProfileInteractor
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.UserProfileRoutes
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.schedule.ScheduleEvent
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.schedule.ScheduleViewState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.model.UserProfileCommunicator
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.schedule.ScheduleEvent
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.schedule.ScheduleViewState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 import java.time.DayOfWeek
@@ -83,7 +83,7 @@ class ParentScheduleViewModel(
                 note = _viewState.value.comment
             )
         ) {
-            communicator.isUserInfoFilled = true
+            preferencesDatastoreManager.isUserProfileFilled = true
             navigator.navigateOnMain(viewModelScope, UserProfileRoutes.FullProfile)
         }
     }

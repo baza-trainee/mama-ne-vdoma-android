@@ -68,7 +68,7 @@ class UserInfoViewModel(
     }
 
     fun handleUserInfoEvent(event: UserInfoEvent) {
-        when(event) {
+        when (event) {
             is UserInfoEvent.SetImageToCrop -> setUriForCrop(event.uri)
             is UserInfoEvent.ValidateUserName -> validateUserName(event.name)
             is UserInfoEvent.ValidatePhone -> validatePhone(event.phone)
@@ -145,7 +145,7 @@ class UserInfoViewModel(
         validateName(name) { valid ->
             _userInfoScreenState.update {
                 it.copy(
-                    name =  name,
+                    name = name,
                     nameValid = valid
                 )
             }
@@ -161,11 +161,11 @@ class UserInfoViewModel(
     private fun saveUserInfo() {
         updateParent(
             UserInfoEntity(
-            name = _userInfoScreenState.value.name,
-            phone = _userInfoScreenState.value.phone,
-            countryCode = _userInfoScreenState.value.code,
-            avatar = communicator.avatarServerPath,
-            schedule = communicator.schedule
+                name = _userInfoScreenState.value.name,
+                phone = _userInfoScreenState.value.phone,
+                countryCode = _userInfoScreenState.value.code,
+                avatar = communicator.avatarServerPath,
+                schedule = communicator.schedule
             )
         ) {
             navigator.navigateOnMain(viewModelScope, UserProfileRoutes.UserLocation)

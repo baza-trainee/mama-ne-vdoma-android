@@ -1,4 +1,4 @@
-package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.schedule
+package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.schedule
 
 import tech.baza_trainee.mama_ne_vdoma.domain.model.ScheduleModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField

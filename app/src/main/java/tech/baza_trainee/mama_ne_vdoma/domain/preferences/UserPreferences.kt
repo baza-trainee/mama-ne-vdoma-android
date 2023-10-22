@@ -12,7 +12,10 @@ data class UserPreferences(
     val latitude: Double,
     val longitude: Double,
     val notificationCount: Int,
-    val sendEmail: Boolean
+    val sendEmail: Boolean,
+    val isUserProfileFilled: Boolean,
+    val isChildrenDataProvided: Boolean,
+    val currentChild: String
 )
 
 
