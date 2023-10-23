@@ -7,6 +7,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.PageNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.GroupsScreenRoutes
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.SearchScreenRoutes
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.SettingsScreenRoutes
 
 class MainViewModel(
     private val mainNavigator: ScreenNavigator,
@@ -18,12 +20,12 @@ class MainViewModel(
 
     fun handleEvent(event: MainEvent) {
         when(event) {
-            MainEvent.CreateNewGroup ->  navigator.navigate(GroupsScreenRoutes.ChooseChild)
-            MainEvent.ResetUiState -> Unit //TODO()
-            MainEvent.Search -> Unit //TODO()
-            is MainEvent.SetSearchOption -> Unit //TODO()
-            is MainEvent.SetSearchRequest -> Unit //TODO()
+            MainEvent.Search -> navigator.navigate(SearchScreenRoutes.SearchUser)
             MainEvent.OnBack -> mainNavigator.goBack()
+            MainEvent.Account -> navigator.navigate(SettingsScreenRoutes.Settings)
+            MainEvent.Groups -> navigator.navigate(GroupsScreenRoutes.Groups)
+            MainEvent.Notifications -> Unit //TODO()
+            MainEvent.Settings -> navigator.navigate(SettingsScreenRoutes.EditProfile)
         }
     }
 }

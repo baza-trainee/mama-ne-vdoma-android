@@ -100,7 +100,7 @@ fun HostScreen(
                     .padding(it)
                     .consumeWindowInsets(it)
                     .fillMaxSize()
-                    .padding(horizontal = 24.dp),
+                    .padding(horizontal = 16.dp),
                 navController = navController,
                 startDestination = Graphs.HostNested.Main.route
             ) {
