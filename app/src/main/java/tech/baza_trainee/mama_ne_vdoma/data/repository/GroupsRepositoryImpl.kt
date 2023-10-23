@@ -65,8 +65,29 @@ class GroupsRepositoryImpl(
         else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage())
     }
 
-    override suspend fun joinToGroup(groupId: String, childId: String): RequestResult<Unit> {
+    override suspend fun sendJoinRequest(groupId: String, childId: String): RequestResult<Unit> {
         val result = groupsApi.joinRequest(groupId, childId)
+        return if (result.isSuccessful)
+            RequestResult.Success(Unit)
+        else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage())
+    }
+
+    override suspend fun acceptRequest(groupId: String, childId: String): RequestResult<Unit> {
+        val result = groupsApi.acceptRequest(groupId, childId)
+        return if (result.isSuccessful)
+            RequestResult.Success(Unit)
+        else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage())
+    }
+
+    override suspend fun declineRequest(groupId: String, childId: String): RequestResult<Unit> {
+        val result = groupsApi.declineRequest(groupId, childId)
+        return if (result.isSuccessful)
+            RequestResult.Success(Unit)
+        else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage())
+    }
+
+    override suspend fun kickUser(groupId: String, childId: String): RequestResult<Unit> {
+        val result = groupsApi.kickUser(groupId, childId)
         return if (result.isSuccessful)
             RequestResult.Success(Unit)
         else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage())

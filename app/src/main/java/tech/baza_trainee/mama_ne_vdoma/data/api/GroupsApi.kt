@@ -44,4 +44,13 @@ interface GroupsApi {
 
     @POST("api/group/join/{groupId}/{childId}")
     suspend fun joinRequest(@Path("groupId") groupId: String, @Path("childId") childId: String): Response<Unit>
+
+    @POST("api/group/accept/{groupId}/{childId}")
+    suspend fun acceptRequest(@Path("groupId") groupId: String, @Path("childId") childId: String): Response<Unit>
+
+    @POST("api/group/decline/{groupId}/{childId}")
+    suspend fun declineRequest(@Path("groupId") groupId: String, @Path("childId") childId: String): Response<Unit>
+
+    @POST("api/group/kick/{groupId}/{childId}")
+    suspend fun kickUser(@Path("groupId") groupId: String, @Path("childId") childId: String): Response<Unit>
 }

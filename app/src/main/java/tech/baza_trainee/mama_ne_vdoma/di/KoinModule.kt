@@ -56,7 +56,8 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.choos
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.create_group.CreateGroupViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.my_groups.MyGroupsViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.host.HostViewModel
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.main.MainViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.main.main.MainViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.main.notifications.NotificationsViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.search.search_results.SearchResultsViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.search.search_user.SearchUserViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.common.EditProfileCommunicator
@@ -137,12 +138,7 @@ val loginKoinModule = module {
         LoginScreenViewModel(get(), get())
     }
     viewModel { (email: String, otp: String) ->
-        NewPasswordScreenViewModel(
-            email,
-            otp,
-            get(),
-            get()
-        )
+        NewPasswordScreenViewModel(email, otp, get(), get())
     }
     viewModel { RestorePasswordScreenViewModel(get(), get()) }
 }
@@ -172,33 +168,14 @@ val mainModule = module {
             get()
         )
     }
-    viewModel {
-        MainViewModel(
-            get(),
-            get()
-        )
-    }
+    viewModel { MainViewModel(get(), get()) }
+    viewModel { NotificationsViewModel(get(), get(), get(), get(), get()) }
     viewModel { ChooseChildViewModel(get(), get()) }
     viewModel {
-        MyGroupsViewModel(
-            get(),
-            get(),
-            get(),
-            get(),
-            get()
-        )
+        MyGroupsViewModel(get(), get(), get(), get(), get())
     }
     viewModel { (childId: String) ->
-        CreateGroupViewModel(
-            childId,
-            get(),
-            get(),
-            get(),
-            get(),
-            get(),
-            get(),
-            get()
-        )
+        CreateGroupViewModel(childId, get(), get(), get(), get(), get(), get(), get())
     }
     viewModel { (navigator: ScreenNavigator) -> ImageCropViewModel(navigator, get(), get()) }
     viewModel { SearchUserViewModel(get(), get(), get()) }

@@ -1,4 +1,4 @@
-package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.main
+package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.main.main
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image

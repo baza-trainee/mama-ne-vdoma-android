@@ -1,4 +1,4 @@
-package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.main
+package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.main.main
 
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.PageNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.GroupsScreenRoutes
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.MainScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.SearchScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.SettingsScreenRoutes
 
@@ -24,7 +25,7 @@ class MainViewModel(
             MainEvent.OnBack -> mainNavigator.goBack()
             MainEvent.Account -> navigator.navigate(SettingsScreenRoutes.Settings)
             MainEvent.Groups -> navigator.navigate(GroupsScreenRoutes.Groups)
-            MainEvent.Notifications -> Unit //TODO()
+            MainEvent.Notifications -> navigator.navigate(MainScreenRoutes.Notifications)
             MainEvent.Settings -> navigator.navigate(SettingsScreenRoutes.EditProfile)
         }
     }

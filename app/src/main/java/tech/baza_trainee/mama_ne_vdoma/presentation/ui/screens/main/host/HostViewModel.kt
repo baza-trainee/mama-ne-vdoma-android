@@ -97,14 +97,15 @@ class HostViewModel(
                     else -> navigator.goToPrevious()
                 }
             }
+
+            HostEvent.GoToNotifications -> navigator.navigate(MainScreenRoutes.Notifications)
         }
     }
 
     private fun switchTab(route: CommonHostRoute) {
         _viewState.update {
             it.copy(
-                currentPage = route.page,
-                currentPageTitle = route.title
+                currentRoute = route
             )
         }
     }

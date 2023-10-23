@@ -14,7 +14,6 @@ import kotlinx.coroutines.withContext
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.CommonHostRoute
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.CommonRoute
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.MainScreenRoutes
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.MAIN_PAGE
 import java.util.Deque
 import java.util.LinkedList
 
@@ -62,7 +61,7 @@ class PageNavigatorImpl: PageNavigator {
                 routesQueue.offerLast(route)
             }
             goBack = false
-            if (route.page == MAIN_PAGE) {
+            if (route == MainScreenRoutes.Main) {
                 routesQueue.clear()
                 routesQueue.offerLast(MainScreenRoutes.Main)
             }
@@ -80,7 +79,7 @@ class PageNavigatorImpl: PageNavigator {
                 routesQueue.offerLast(route)
             }
             goBack = false
-            if (route.page == MAIN_PAGE) {
+            if (route == MainScreenRoutes.Main) {
                 routesQueue.clear()
                 routesQueue.offerLast(MainScreenRoutes.Main)
             }

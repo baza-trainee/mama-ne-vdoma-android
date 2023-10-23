@@ -21,6 +21,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.graphs.main_host.
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.NavigationEffects
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.PageNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.Graphs
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.MainScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.MainNavigationBar
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.MainNavigationItem
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.SurfaceWithNavigationBars
@@ -62,19 +63,19 @@ fun HostScreen(
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             topBar = {
-                if (screenState.value.currentPage == 0) {
+                if (screenState.value.currentRoute == MainScreenRoutes.Main) {
                     ToolbarWithAvatar(
-                        title = screenState.value.currentPageTitle,
+                        title = screenState.value.currentRoute.title,
                         avatar = screenState.value.avatar,
                         showArrow = false,
                         showNotification = screenState.value.notifications != 0,
                         notificationCount = screenState.value.notifications,
-                        onNotificationsClicked = {},
+                        onNotificationsClicked = { handleEvent(HostEvent.GoToNotifications) },
                         onAvatarClicked = { handleEvent(HostEvent.SwitchTab(SETTINGS_PAGE)) }
                     )
                 } else {
                     HeaderWithToolbar(
-                        title = screenState.value.currentPageTitle,
+                        title = screenState.value.currentRoute.title,
                         avatar = screenState.value.avatar,
                         showNotification = screenState.value.notifications != 0,
                         notificationCount = screenState.value.notifications,
@@ -85,7 +86,7 @@ fun HostScreen(
             bottomBar = {
                 MainNavigationBar(
                     items = tabContents,
-                    currentPage = screenState.value.currentPage
+                    currentPage = screenState.value.currentRoute.page
                 ) {
                     handleEvent(HostEvent.SwitchTab(it))
                 }

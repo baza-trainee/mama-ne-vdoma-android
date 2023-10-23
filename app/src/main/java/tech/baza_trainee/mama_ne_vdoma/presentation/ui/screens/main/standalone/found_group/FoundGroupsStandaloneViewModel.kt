@@ -73,7 +73,7 @@ class FoundGroupsStandaloneViewModel(
         networkExecutor {
             execute {
                 val groupId = _viewState.value.groups.first { it.isChecked }.id
-                groupsRepository.joinToGroup(groupId, communicator.childId)
+                groupsRepository.sendJoinRequest(groupId, communicator.childId)
             }
             onSuccess {
                 _uiState.value = FoundGroupUiState.OnRequestSent

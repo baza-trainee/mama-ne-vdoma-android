@@ -55,7 +55,9 @@ fun ChildInfoDesk(
             )
         )
     ),
+    canEdit: Boolean = true,
     onEdit: (String) -> Unit = {},
+    canDelete: Boolean = true,
     onDelete: (String) -> Unit = {}
 ) {
     Column(
@@ -94,20 +96,22 @@ fun ChildInfoDesk(
                     fontSize = 14.sp
                 )
             }
-            IconButton(onClick = { onEdit(child.childId) }) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_edit),
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary
-                )
-            }
-            IconButton(onClick = { onDelete(child.childId) }) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_delete),
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary
-                )
-            }
+            if (canEdit)
+                IconButton(onClick = { onEdit(child.childId) }) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_edit),
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                }
+            if (canDelete)
+                IconButton(onClick = { onDelete(child.childId) }) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_delete),
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                }
         }
 
         Spacer(modifier = Modifier.height(8.dp))

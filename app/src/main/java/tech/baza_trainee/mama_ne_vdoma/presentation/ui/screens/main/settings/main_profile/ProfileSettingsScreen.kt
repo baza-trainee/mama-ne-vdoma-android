@@ -152,8 +152,7 @@ fun ProfileSettingsScreen(
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .basicMarquee()
-                    .weight(1f),
+                    .basicMarquee(),
                 text = screenState.value.address,
                 fontSize = 16.sp,
                 textAlign = TextAlign.Center,
