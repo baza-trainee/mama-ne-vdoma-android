@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.update
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UserProfileEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.PageNavigator
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.MainScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.SearchScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.SearchResultsCommunicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.ParentInSearchUiModel
@@ -17,9 +18,10 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.networkExecutor
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.validateEmail
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onError
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onErrorWithCode
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onLoading
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onSuccess
+import java.net.HttpURLConnection
 
 class SearchUserViewModel(
     private val navigator: PageNavigator,
@@ -41,6 +43,7 @@ class SearchUserViewModel(
             SearchUserEvent.OnSearch -> searchUser()
             is SearchUserEvent.ValidateEmail -> validateEmail(event.value)
             is SearchUserEvent.ValidateName -> validateName(event.value)
+            SearchUserEvent.OnMain -> navigator.navigate(MainScreenRoutes.Main)
         }
     }
 
@@ -87,8 +90,11 @@ class SearchUserViewModel(
                 }
                 navigator.navigate(SearchScreenRoutes.SearchResults)
             }
-            onError { error ->
-                _uiState.value = SearchUserUiState.OnError(error)
+            onErrorWithCode { error, code ->
+                if (code == HttpURLConnection.HTTP_NOT_FOUND)
+                    _uiState.value = SearchUserUiState.OnNothingFound
+                else
+                    _uiState.value = SearchUserUiState.OnError(error)
             }
             onLoading { isLoading ->
                 _viewState.update {

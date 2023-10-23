@@ -8,10 +8,10 @@ data class ParentInSearchUiModel(
     val email: String = "",
     val phone: String = "",
     val avatar: Uri = Uri.EMPTY,
-    val children: List<ChildInSearchUiModel> = emptyList()
+    val groups: List<GroupsInSearchUiModel> = emptyList()
 )
 
-data class ChildInSearchUiModel(
+data class GroupsInSearchUiModel(
     val name: String = "",
-    val age: String = ""
+    val id: String = ""
 )

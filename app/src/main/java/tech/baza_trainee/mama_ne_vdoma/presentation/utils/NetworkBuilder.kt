@@ -20,6 +20,10 @@ fun <T> NetworkRequestBuilder<T>.onError(onError: (String) -> Unit) {
     builderError = onError
 }
 
+fun <T> NetworkRequestBuilder<T>.onErrorWithCode(onErrorWithCode: (String, Int) -> Unit) {
+    builderErrorWithCode = onErrorWithCode
+}
+
 fun <T> NetworkRequestBuilder<T>.onFinish(onFinish: () -> Unit) {
     builderFinish = onFinish
 }

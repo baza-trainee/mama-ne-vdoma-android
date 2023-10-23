@@ -53,7 +53,7 @@ import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.cards.ChildCard
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.LoadingIndicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.PrivacyPolicyBlock
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.common.dialogs.DeleteAccountAlertDialog
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.dialogs.DangerousActionAlertDialog
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.LogoutButtonColor
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.LogoutButtonTextColor
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
@@ -278,7 +278,7 @@ fun ProfileSettingsScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         if (showDeleteAccountAlertDialog) {
-            DeleteAccountAlertDialog(
+            DangerousActionAlertDialog(
                 text = "Після видалення акаунту немає можливості його відновити. Щоб користуватись після цього мобільним додатком, необхідно буде зареєструватись заново. Підтвердити видалення мого акаунту?",
                 button = "Так, видалити акаунт",
                 onDelete = { handleEvent(ProfileSettingsEvent.DeleteUser) },

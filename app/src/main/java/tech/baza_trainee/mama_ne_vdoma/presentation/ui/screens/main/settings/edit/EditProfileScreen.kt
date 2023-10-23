@@ -70,10 +70,10 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.cards.ParentI
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.CustomGoogleMap
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.LoadingIndicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.UserAvatarWithCameraAndGallery
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.dialogs.DangerousActionAlertDialog
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.functions.LocationPermission
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.text_fields.OutlinedTextFieldWithError
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.text_fields.PasswordTextFieldWithError
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.common.dialogs.DeleteAccountAlertDialog
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.edit.dialogs.ChildScheduleEditDialog
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.edit.dialogs.EmailVerificationInfoDialog
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.edit.dialogs.ParentScheduleEditDialog
@@ -651,7 +651,7 @@ fun EditProfileScreen(
         }
 
         if (showDeleteAccountAlertDialog) {
-            DeleteAccountAlertDialog(
+            DangerousActionAlertDialog(
                 text = "Після видалення акаунту немає можливості його відновити. Щоб користуватись після цього мобільним додатком, необхідно буде зареєструватись заново. Підтвердити видалення мого акаунту?",
                 button = "Так, видалити акаунт",
                 onDelete = { handleEvent(EditProfileEvent.DeleteUser) },
@@ -660,7 +660,7 @@ fun EditProfileScreen(
         }
 
         if (deleteChildDialog) {
-            DeleteAccountAlertDialog(
+            DangerousActionAlertDialog(
                 text = "Картка дитини та розклад по догляду за дитиною будуть видалені. Підтвердити видалення картки дитини?",
                 button = "Так, видалити картку",
                 onDismissRequest = {

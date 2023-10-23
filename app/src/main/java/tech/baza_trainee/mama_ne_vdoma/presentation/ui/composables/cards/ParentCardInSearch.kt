@@ -42,7 +42,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFa
 @Preview
 fun ParentCardInSearch(
     modifier: Modifier = Modifier,
-    parent: ParentInSearchUiModel = ParentInSearchUiModel()
+    parent: ParentInSearchUiModel = ParentInSearchUiModel(),
 ) {
     Column(
         modifier = Modifier
@@ -134,50 +134,29 @@ fun ParentCardInSearch(
                     .padding(start = 56.dp, end = 8.dp)
                     .fillMaxWidth()
             ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text(
-                        modifier = Modifier.weight(0.8f),
-                        text = "Кількість дітей",
-                        fontSize = 14.sp,
-                        fontFamily = redHatDisplayFontFamily
-                    )
-
-                    Text(
-                        modifier = Modifier.weight(0.2f),
-                        text = parent.children.size.toString(),
-                        fontSize = 14.sp,
-                        fontFamily = redHatDisplayFontFamily,
-                        textAlign = TextAlign.End
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(8.dp))
-
                 Text(
                     modifier = Modifier.fillMaxWidth(),
-                    text = "Вік дітей",
+                    text = "Входить у склад таких груп:",
                     fontSize = 14.sp,
                     fontFamily = redHatDisplayFontFamily
                 )
 
                 Spacer(modifier = Modifier.height(4.dp))
 
-                parent.children.forEach {
+                parent.groups.forEach {
                     Row(
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Text(
-                            modifier = Modifier.weight(0.8f),
+                            modifier = Modifier.weight(0.5f),
                             text = it.name,
                             fontSize = 14.sp,
                             fontFamily = redHatDisplayFontFamily
                         )
 
                         Text(
-                            modifier = Modifier.weight(0.2f),
-                            text = it.age,
+                            modifier = Modifier.weight(0.5f),
+                            text = "ID групи:\n${it.id}",
                             fontSize = 14.sp,
                             fontFamily = redHatDisplayFontFamily,
                             textAlign = TextAlign.End

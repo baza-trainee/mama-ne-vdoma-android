@@ -58,7 +58,7 @@ class UserProfileRepositoryImpl(
         val result = userProfileApi.getUserById(UserSearchRequest(email))
         return if (result.isSuccessful)
             RequestResult.Success(result.body()?.user?.toDomainModel() ?: UserProfileEntity())
-        else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage())
+        else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage(), result.code())
     }
 
     override suspend fun saveChild(name: String, age: Int, isMale: Boolean): RequestResult<ChildEntity?> {

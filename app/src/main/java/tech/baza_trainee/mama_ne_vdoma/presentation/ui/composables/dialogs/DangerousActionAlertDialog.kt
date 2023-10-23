@@ -1,4 +1,4 @@
-package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.common.dialogs
+package tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.dialogs
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -36,7 +36,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.ButtonText
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 @Preview
-fun DeleteAccountAlertDialog(
+fun DangerousActionAlertDialog(
     modifier: Modifier = Modifier,
     text: String = "Attention",
     button: String = "Delete",
