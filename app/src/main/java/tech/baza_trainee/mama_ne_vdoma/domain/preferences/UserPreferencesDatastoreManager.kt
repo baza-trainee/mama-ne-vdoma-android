@@ -1,6 +1,7 @@
 package tech.baza_trainee.mama_ne_vdoma.domain.preferences
 
 import android.content.Context
+import android.net.Uri
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
@@ -15,6 +16,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesKeys.KEY_ADDRESS
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesKeys.KEY_AVATAR
+import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesKeys.KEY_AVATAR_URI
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesKeys.KEY_CHILDREN_PROVIDED
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesKeys.KEY_COUNTRY_CODE
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesKeys.KEY_CURRENT_CHILD
@@ -38,7 +40,7 @@ class UserPreferencesDatastoreManager(private val context: Context) {
 
     private val userDataStore: DataStore<Preferences> get() = context.dataStore
 
-    private val userPreferencesFlow: Flow<UserPreferences> = userDataStore.data
+    val userPreferencesFlow: Flow<UserPreferences> = userDataStore.data
         .catch { exception ->
             if (exception is IOException) {
                 emit(emptyPreferences())
@@ -48,6 +50,7 @@ class UserPreferencesDatastoreManager(private val context: Context) {
         }.map { preferences ->
             val id = preferences[KEY_ID].orEmpty()
             val avatar = preferences[KEY_AVATAR].orEmpty()
+            val avatarUri = Uri.parse(preferences[KEY_AVATAR_URI].orEmpty())
             val name = preferences[KEY_NAME].orEmpty()
             val code = preferences[KEY_COUNTRY_CODE].orEmpty()
             val phone = preferences[KEY_PHONE_NUMBER].orEmpty()
@@ -62,7 +65,7 @@ class UserPreferencesDatastoreManager(private val context: Context) {
             val childrenProvided = preferences[KEY_CHILDREN_PROVIDED] ?: true
             val currentChild = preferences[KEY_CURRENT_CHILD].orEmpty()
             UserPreferences(
-                id, avatar, name, code,
+                id, avatar, avatarUri, name, code,
                 phone, email, address, radius,
                 latitude, longitude, notificationCount, sendEmail,
                 profileFilled, childrenProvided, currentChild
@@ -93,6 +96,20 @@ class UserPreferencesDatastoreManager(private val context: Context) {
             withContext(Dispatchers.Default ) {
                 userDataStore.edit {
                     it[KEY_AVATAR] = value
+                }
+            }
+        }
+
+    var avatarUri: Uri
+        get() = runBlocking {
+            withContext(Dispatchers.Default) {
+                userPreferencesFlow.first().avatarUri
+            }
+        }
+        set(value) = runBlocking {
+            withContext(Dispatchers.Default ) {
+                userDataStore.edit {
+                    it[KEY_AVATAR_URI] = value.toString()
                 }
             }
         }

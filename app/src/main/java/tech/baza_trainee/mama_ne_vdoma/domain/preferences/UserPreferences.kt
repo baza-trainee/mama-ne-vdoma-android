@@ -1,8 +1,11 @@
 package tech.baza_trainee.mama_ne_vdoma.domain.preferences
 
+import android.net.Uri
+
 data class UserPreferences(
     val id: String,
     val avatar: String,
+    val avatarUri: Uri,
     val name: String,
     val code: String,
     val phone: String,

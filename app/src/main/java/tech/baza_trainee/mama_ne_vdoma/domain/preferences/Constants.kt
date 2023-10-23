@@ -5,6 +5,7 @@ const val USER_PREFERENCES = "user_preferences"
 //KEYS
 const val ID = "user_id"
 const val AVATAR = "user_avatar"
+const val AVATAR_URI = "user_avatar_uri"
 const val NAME = "user_name"
 const val COUNTRY_CODE = "code"
 const val PHONE_NUMBER = "phone"

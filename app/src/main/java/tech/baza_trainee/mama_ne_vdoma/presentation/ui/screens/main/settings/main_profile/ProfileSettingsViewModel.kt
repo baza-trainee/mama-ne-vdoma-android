@@ -58,11 +58,18 @@ class ProfileSettingsViewModel(
                             email = preferencesDatastoreManager.email,
                             phone = preferencesDatastoreManager.phone,
                             code = preferencesDatastoreManager.code,
-                            avatar = Uri.parse(preferencesDatastoreManager.avatar),
                             sendEmails = preferencesDatastoreManager.sendEmail
                         )
                     }
                     getChildren()
+                }
+            }
+        }
+
+        viewModelScope.launch {
+            preferencesDatastoreManager.userPreferencesFlow.collect { prefs ->
+                _viewState.update {
+                    it.copy(avatar = prefs.avatarUri)
                 }
             }
         }

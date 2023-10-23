@@ -29,6 +29,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.Graphs
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.SettingsScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.image_crop.CropImageCommunicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.common.EditProfileCommunicator
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.BitmapHelper
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.networkExecutor
@@ -57,14 +58,14 @@ class EditProfileViewModel(
     val uiState: State<EditProfileUiState>
         get() = _uiState
 
-    private var avatarServerPath = ""
-
     private var backupParentSchedule: Map<DayOfWeek, DayPeriod>? = null
     private var backupParentNote: String? = null
     private var backupChildrenSchedule: Map<String, Map<DayOfWeek, DayPeriod>>? = null
     private var backupChildrenNotes: Map<String, String>? = null
 
     private val childrenToRemove = mutableSetOf<String>()
+
+    private var newAvatar = BitmapHelper.DEFAULT_BITMAP
 
     init {
         userProfileInteractor.apply {
@@ -86,6 +87,13 @@ class EditProfileViewModel(
             }
         }
 
+        viewModelScope.launch {
+            preferencesDatastoreManager.userPreferencesFlow.collect { pref ->
+                _viewState.update {
+                    it.copy(userAvatar = pref.avatarUri)
+                }
+            }
+        }
         getUserInfo()
 
         viewModelScope.launch {
@@ -196,7 +204,9 @@ class EditProfileViewModel(
     }
 
     private fun saveChanges() {
-        saveParent()
+        uploadUserAvatar(newAvatar) {
+            saveParent()
+        }
         saveChildren()
         if (childrenToRemove.isNotEmpty())
             childrenToRemove.forEach {
@@ -210,7 +220,7 @@ class EditProfileViewModel(
                 name = preferencesDatastoreManager.name,
                 phone = preferencesDatastoreManager.phone,
                 countryCode = preferencesDatastoreManager.code,
-                avatar = avatarServerPath,
+                avatar = preferencesDatastoreManager.avatar,
                 schedule = _viewState.value.schedule,
                 note = _viewState.value.note,
                 sendingEmails = preferencesDatastoreManager.sendEmail
@@ -317,9 +327,6 @@ class EditProfileViewModel(
 
     private fun getUserInfo() {
         getUserInfo { entity ->
-            avatarServerPath =entity.avatar
-            getUserAvatar(entity.avatar)
-
             _viewState.update {
                 it.copy(
                     name = entity.name,
@@ -348,23 +355,6 @@ class EditProfileViewModel(
 
             getChildren()
         }
-    }
-
-    private fun getUserAvatar(avatarId: String) {
-        if (avatarId.isEmpty()) {
-            preferencesDatastoreManager.avatar = Uri.EMPTY.toString()
-
-            _viewState.update {
-                it.copy(
-                    userAvatar = Uri.EMPTY
-                )
-            }
-        } else
-            getUserAvatar(avatarId) { uri ->
-                _viewState.update {
-                    it.copy(userAvatar = uri)
-                }
-            }
     }
 
     private fun getAddressFromLocation(latLng: LatLng) {
@@ -512,7 +502,8 @@ class EditProfileViewModel(
                             userAvatar = uri
                         )
                     }
-                    uploadUserAvatar(newImage)
+                    newAvatar = newImage
+                    communicator.justCropped = false
                 },
                 onError = {
                     _uiState.value = EditProfileUiState.OnAvatarError
@@ -521,9 +512,6 @@ class EditProfileViewModel(
     }
 
     private fun uploadUserAvatar(image: Bitmap) {
-        uploadUserAvatar(image) {
-            avatarServerPath = it
-        }
-        communicator.justCropped = false
+        uploadUserAvatar(image) {}
     }
 }

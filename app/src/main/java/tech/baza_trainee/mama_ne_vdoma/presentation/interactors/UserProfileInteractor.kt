@@ -103,7 +103,6 @@ class UserProfileInteractorImpl(
         coroutineScope.networkExecutor {
             execute { filesRepository.getAvatar(avatarId) }
             onSuccess { uri ->
-                preferencesDatastoreManager.avatar = uri.toString()
                 onSuccess(uri)
             }
             onError(networkListener::onError)
@@ -117,7 +116,7 @@ class UserProfileInteractorImpl(
                 userProfileRepository.deleteUserAvatar()
             }
             onSuccess {
-                preferencesDatastoreManager.avatar = Uri.EMPTY.toString()
+                preferencesDatastoreManager.avatar = ""
                 onSuccess()
             }
             onError(networkListener::onError)
@@ -170,6 +169,7 @@ class UserProfileInteractorImpl(
                 filesRepository.saveAvatar(avatar)
             }
             onSuccess {
+                preferencesDatastoreManager.avatar = it
                 onSuccess(it)
             }
             onError(networkListener::onError)
@@ -304,6 +304,9 @@ class UserProfileInteractorImpl(
                     code = user.countryCode
                     phone = user.phone
                     avatar = user.avatar.orEmpty()
+                }
+                getUserAvatar(preferencesDatastoreManager.avatar) {
+                    preferencesDatastoreManager.avatarUri = it
                 }
                 onSuccess()
             }

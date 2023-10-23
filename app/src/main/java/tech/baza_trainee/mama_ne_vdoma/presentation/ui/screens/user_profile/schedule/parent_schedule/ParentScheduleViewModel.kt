@@ -78,7 +78,7 @@ class ParentScheduleViewModel(
                 name = preferencesDatastoreManager.name,
                 phone = preferencesDatastoreManager.phone,
                 countryCode = preferencesDatastoreManager.code,
-                avatar = communicator.avatarServerPath,
+                avatar = preferencesDatastoreManager.avatar,
                 schedule = _viewState.value.schedule,
                 note = _viewState.value.comment
             )

@@ -27,8 +27,8 @@ class UserInfoViewModel(
     userProfileInteractor: UserProfileInteractor
 ): ViewModel(), UserProfileInteractor by userProfileInteractor, NetworkEventsListener {
 
-    private val _userInfoScreenState = MutableStateFlow(UserInfoViewState())
-    val userInfoScreenState: StateFlow<UserInfoViewState> = _userInfoScreenState.asStateFlow()
+    private val _viewState = MutableStateFlow(UserInfoViewState())
+    val viewState: StateFlow<UserInfoViewState> = _viewState.asStateFlow()
 
     private val _uiState = mutableStateOf<UserInfoUiState>(UserInfoUiState.Idle)
     val uiState: State<UserInfoUiState>
@@ -39,14 +39,14 @@ class UserInfoViewModel(
             setUserProfileCoroutineScope(viewModelScope)
             setUserProfileNetworkListener(this@UserInfoViewModel)
         }
-        _userInfoScreenState.update {
+        _viewState.update {
             it.copy(
                 name = preferencesDatastoreManager.name,
                 nameValid = if (preferencesDatastoreManager.name.isEmpty()) ValidField.EMPTY else ValidField.VALID,
                 code = preferencesDatastoreManager.code,
                 phone = preferencesDatastoreManager.phone,
                 phoneValid = if (preferencesDatastoreManager.phone.isEmpty()) ValidField.EMPTY else ValidField.VALID,
-                userAvatar = Uri.parse(preferencesDatastoreManager.avatar)
+                userAvatar = preferencesDatastoreManager.avatarUri
             )
         }
         if (communicator.croppedImage != BitmapHelper.DEFAULT_BITMAP) {
@@ -56,7 +56,7 @@ class UserInfoViewModel(
     }
 
     override fun onLoading(state: Boolean) {
-        _userInfoScreenState.update {
+        _viewState.update {
             it.copy(
                 isLoading = state
             )
@@ -89,10 +89,9 @@ class UserInfoViewModel(
         deleteUserAvatar {
             communicator.apply {
                 uriForCrop = Uri.EMPTY
-                avatarServerPath = null
             }
 
-            _userInfoScreenState.update {
+            _viewState.update {
                 it.copy(
                     userAvatar = Uri.EMPTY
                 )
@@ -104,7 +103,7 @@ class UserInfoViewModel(
         saveUserAvatar(
             avatar = image,
             onSuccess = { bitmap, uri ->
-                _userInfoScreenState.update {
+                _viewState.update {
                     it.copy(
                         userAvatar = uri
                     )
@@ -119,7 +118,7 @@ class UserInfoViewModel(
 
     private fun setCode(code: String, country: String) {
         preferencesDatastoreManager.code = code
-        _userInfoScreenState.update {
+        _viewState.update {
             it.copy(
                 code = code,
                 country = country
@@ -130,9 +129,9 @@ class UserInfoViewModel(
     private fun validatePhone(phone: String) {
         validatePhone(
             phone,
-            _userInfoScreenState.value.country
+            _viewState.value.country
         ) { valid ->
-            _userInfoScreenState.update {
+            _viewState.update {
                 it.copy(
                     phone = phone,
                     phoneValid = valid
@@ -143,7 +142,7 @@ class UserInfoViewModel(
 
     private fun validateUserName(name: String) {
         validateName(name) { valid ->
-            _userInfoScreenState.update {
+            _viewState.update {
                 it.copy(
                     name = name,
                     nameValid = valid
@@ -153,18 +152,16 @@ class UserInfoViewModel(
     }
 
     private fun uploadUserAvatar(image: Bitmap) {
-        uploadUserAvatar(image) {
-            communicator.avatarServerPath = it
-        }
+        uploadUserAvatar(image) {}
     }
 
     private fun saveUserInfo() {
         updateParent(
             UserInfoEntity(
-                name = _userInfoScreenState.value.name,
-                phone = _userInfoScreenState.value.phone,
-                countryCode = _userInfoScreenState.value.code,
-                avatar = communicator.avatarServerPath,
+                name = _viewState.value.name,
+                phone = _viewState.value.phone,
+                countryCode = _viewState.value.code,
+                avatar = preferencesDatastoreManager.avatar,
                 schedule = communicator.schedule
             )
         ) {

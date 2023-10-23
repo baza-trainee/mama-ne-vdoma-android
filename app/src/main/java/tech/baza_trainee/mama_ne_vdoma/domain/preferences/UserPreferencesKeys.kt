@@ -8,6 +8,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 object UserPreferencesKeys {
     val KEY_ID = stringPreferencesKey(ID)
     val KEY_AVATAR = stringPreferencesKey(AVATAR)
+    val KEY_AVATAR_URI = stringPreferencesKey(AVATAR_URI)
     val KEY_NAME = stringPreferencesKey(NAME)
     val KEY_COUNTRY_CODE = stringPreferencesKey(COUNTRY_CODE)
     val KEY_PHONE_NUMBER = stringPreferencesKey(PHONE_NUMBER)

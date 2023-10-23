@@ -59,6 +59,14 @@ class HostViewModel(
 
     init {
         viewModelScope.launch {
+            preferencesDatastoreManager.userPreferencesFlow.collect { pref ->
+                _viewState.update {
+                    it.copy(avatar = pref.avatarUri)
+                }
+            }
+        }
+
+        viewModelScope.launch {
             navigator.routesFlow.collect {
                 if (it.page != -1) switchTab(it)
             }
@@ -119,8 +127,6 @@ class HostViewModel(
                         sendEmail = entity.sendingEmails
                     }
 
-                    getUserAvatar(entity.avatar)
-
                     getGroups(entity.id)
 
                     if (entity.location.coordinates.isNotEmpty()) {
@@ -135,28 +141,6 @@ class HostViewModel(
                             longitude = entity.location.coordinates[0]
                         }
                     }
-                }
-            }
-            onError { error ->
-                _uiState.value = RequestState.OnError(error)
-            }
-            onLoading { isLoading ->
-                _viewState.update {
-                    it.copy(
-                        isLoading = isLoading
-                    )
-                }
-            }
-        }
-    }
-
-    private fun getUserAvatar(avatarId: String) {
-        networkExecutor {
-            execute { filesRepository.getAvatar(avatarId) }
-            onSuccess { uri ->
-                preferencesDatastoreManager.avatar = uri.toString()
-                _viewState.update {
-                    it.copy(avatar = uri)
                 }
             }
             onError { error ->

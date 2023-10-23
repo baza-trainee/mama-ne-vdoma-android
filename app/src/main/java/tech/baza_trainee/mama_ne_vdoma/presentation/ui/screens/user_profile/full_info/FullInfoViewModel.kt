@@ -143,10 +143,7 @@ class FullInfoViewModel(
 
     private fun getUserAvatar(avatarId: String) {
         if (avatarId.isEmpty()) {
-            communicator.apply {
-                avatarServerPath = null
-            }
-            preferencesDatastoreManager.avatar = Uri.EMPTY.toString()
+            preferencesDatastoreManager.avatar = ""
 
             _viewState.update {
                 it.copy(

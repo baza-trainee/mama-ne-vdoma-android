@@ -42,7 +42,7 @@ fun NavGraphBuilder.userProfileGraph() {
         composable(UserProfileRoutes.UserInfo.route) {
             val userInfoViewModel: UserInfoViewModel = koinNavViewModel()
             UserInfoScreen(
-                screenState = userInfoViewModel.userInfoScreenState.collectAsStateWithLifecycle(),
+                screenState = userInfoViewModel.viewState.collectAsStateWithLifecycle(),
                 uiState = userInfoViewModel.uiState,
                 handleEvent = { userInfoViewModel.handleUserInfoEvent(it)}
             )
