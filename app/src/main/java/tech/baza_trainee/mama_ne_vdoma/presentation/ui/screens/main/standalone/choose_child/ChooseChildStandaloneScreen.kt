@@ -75,6 +75,8 @@ fun ChooseChildStandaloneScreen(
                 title = "Пошук групи",
                 avatar = screenState.value.avatar,
                 showNotification = false,
+                onNotificationsClicked = {},
+                onAvatarClicked = { handleEvent(ChooseChildEvent.OnAvatarClicked) },
                 onBack = { handleEvent(ChooseChildEvent.OnBack) }
             )
 

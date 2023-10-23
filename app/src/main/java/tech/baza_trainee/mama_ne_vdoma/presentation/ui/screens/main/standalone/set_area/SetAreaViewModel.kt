@@ -14,7 +14,9 @@ import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatasto
 import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.LocationInteractor
 import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.NetworkEventsListener
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.HostScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.InitialGroupSearchRoutes
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.SETTINGS_PAGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 
 class SetAreaViewModel(
@@ -78,6 +80,8 @@ class SetAreaViewModel(
             }
 
             SetAreaEvent.OnBack -> navigator.goBack()
+            SetAreaEvent.OnAvatarClicked ->
+                navigator.navigate(HostScreenRoutes.Host.getDestination(SETTINGS_PAGE))
         }
     }
 

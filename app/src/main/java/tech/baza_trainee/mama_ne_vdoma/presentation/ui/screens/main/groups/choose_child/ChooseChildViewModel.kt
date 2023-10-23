@@ -41,10 +41,10 @@ class ChooseChildViewModel(
             ChooseChildEvent.ResetUiState -> _uiState.value = RequestState.Idle
             ChooseChildEvent.OnBack -> navigator.goBack()
             is ChooseChildEvent.OnChooseChild -> navigator.navigate(
-                GroupsScreenRoutes.CreateGroup.getDestination(
-                    event.childId
-                )
+                GroupsScreenRoutes.CreateGroup.getDestination(event.childId)
             )
+
+            ChooseChildEvent.OnAvatarClicked -> Unit
         }
     }
 

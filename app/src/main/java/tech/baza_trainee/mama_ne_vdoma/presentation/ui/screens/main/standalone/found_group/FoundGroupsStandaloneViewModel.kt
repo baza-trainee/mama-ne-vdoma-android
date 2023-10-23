@@ -20,6 +20,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenN
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.HostScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.GROUPS_PAGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.GroupSearchStandaloneCommunicator
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.SETTINGS_PAGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.GroupUiModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.MemberUiModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
@@ -62,6 +63,9 @@ class FoundGroupsStandaloneViewModel(
             is FoundGroupEvent.OnSelect -> setSelectedGroup(event.group)
             FoundGroupEvent.GoToMain ->
                 navigator.navigate(HostScreenRoutes.Host.getDestination(GROUPS_PAGE))
+
+            FoundGroupEvent.OnAvatarClicked ->
+                navigator.navigate(HostScreenRoutes.Host.getDestination(SETTINGS_PAGE))
         }
     }
 

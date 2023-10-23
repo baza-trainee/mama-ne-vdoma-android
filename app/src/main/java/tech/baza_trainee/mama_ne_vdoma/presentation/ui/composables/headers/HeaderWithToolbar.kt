@@ -31,6 +31,8 @@ fun HeaderWithToolbar(
     avatar: Uri = Uri.EMPTY,
     showNotification: Boolean = true,
     notificationCount: Int = 2,
+    onNotificationsClicked: () -> Unit = {},
+    onAvatarClicked: () -> Unit = {},
     onBack: () -> Unit = {},
 ) {
     Column(
@@ -46,8 +48,11 @@ fun HeaderWithToolbar(
             avatar = avatar,
             showTitle = false,
             showNotification = showNotification,
-            notificationCount = notificationCount
-        ) { onBack() }
+            notificationCount = notificationCount,
+            onNotificationsClicked = onNotificationsClicked,
+            onAvatarClicked = onAvatarClicked,
+            onBack = onBack
+        )
 
         Text(
             modifier = Modifier

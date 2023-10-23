@@ -6,6 +6,7 @@ sealed interface SetAreaEvent {
     data object OnBack: SetAreaEvent
     data object ResetUiState: SetAreaEvent
     data object SaveArea: SetAreaEvent
+    data object OnAvatarClicked: SetAreaEvent
     data object RequestUserLocation : SetAreaEvent
     data class OnMapClick(val location: LatLng) : SetAreaEvent
     data object GetLocationFromAddress : SetAreaEvent

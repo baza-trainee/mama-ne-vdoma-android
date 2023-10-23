@@ -5,6 +5,7 @@ sealed interface FoundGroupEvent {
     data object OnBack: FoundGroupEvent
     data object OnJoin: FoundGroupEvent
     data object GoToMain: FoundGroupEvent
+    data object OnAvatarClicked: FoundGroupEvent
 
     data class OnSelect(val group: String): FoundGroupEvent
 }

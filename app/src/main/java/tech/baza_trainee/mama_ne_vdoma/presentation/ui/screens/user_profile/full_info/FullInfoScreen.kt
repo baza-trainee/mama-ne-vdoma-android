@@ -150,7 +150,7 @@ fun FullInfoScreen(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = "Натисніть тут, щоб щаповнити Ваш профіль",
+                            text = "Натисніть тут, щоб заповнити Ваш профіль",
                             fontFamily = redHatDisplayFontFamily,
                             fontSize = 20.sp,
                             textAlign = TextAlign.Center

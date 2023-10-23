@@ -88,6 +88,8 @@ fun FoundGroupScreen(
                 title = "Пошук групи",
                 avatar = screenState.value.avatar,
                 showNotification = false,
+                onNotificationsClicked = {},
+                onAvatarClicked = { handleEvent(FoundGroupEvent.OnAvatarClicked) },
                 onBack = { handleEvent(FoundGroupEvent.OnBack) }
             )
 

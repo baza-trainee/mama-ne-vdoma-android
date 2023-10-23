@@ -26,6 +26,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.SurfaceWithNavigationBars
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.headers.HeaderWithToolbar
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.headers.ToolbarWithAvatar
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.SETTINGS_PAGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 
 @Composable
@@ -67,7 +68,9 @@ fun HostScreen(
                         avatar = screenState.value.avatar,
                         showArrow = false,
                         showNotification = screenState.value.notifications != 0,
-                        notificationCount = screenState.value.notifications
+                        notificationCount = screenState.value.notifications,
+                        onNotificationsClicked = {},
+                        onAvatarClicked = { handleEvent(HostEvent.SwitchTab(SETTINGS_PAGE)) }
                     )
                 } else {
                     HeaderWithToolbar(

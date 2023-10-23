@@ -3,6 +3,7 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.headers
 import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -51,6 +52,8 @@ fun ToolbarWithAvatar(
     title: String = "Title",
     showNotification: Boolean = true,
     notificationCount: Int = 18,
+    onNotificationsClicked: () -> Unit = {},
+    onAvatarClicked: () -> Unit = {},
     onBack: () -> Unit = {}
 ) {
     Row(
@@ -89,15 +92,23 @@ fun ToolbarWithAvatar(
                 fontSize = 22.sp,
                 color = MaterialTheme.colorScheme.onPrimary
             )
-        } else Spacer(modifier = Modifier
-            .fillMaxWidth()
-            .weight(1f))
+        } else Spacer(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
+        )
 
         if (showNotification) {
             Box(
                 modifier = Modifier
                     .fillMaxHeight()
-                    .padding(16.dp),
+                    .padding(16.dp)
+                    .height(32.dp)
+                    .width(32.dp)
+                    .clip(CircleShape)
+                    .clickable {
+                        onNotificationsClicked()
+                    },
                 contentAlignment = Alignment.Center
             ) {
                 Image(
@@ -126,7 +137,10 @@ fun ToolbarWithAvatar(
                 .padding(end = 8.dp)
                 .height(32.dp)
                 .width(32.dp)
-                .clip(CircleShape),
+                .clip(CircleShape)
+                .clickable {
+                    onAvatarClicked()
+                },
             model = ImageRequest.Builder(LocalContext.current)
                 .data(avatar)
                 .crossfade(true)

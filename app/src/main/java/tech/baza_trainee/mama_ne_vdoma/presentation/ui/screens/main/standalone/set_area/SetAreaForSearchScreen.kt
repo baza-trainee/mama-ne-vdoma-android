@@ -93,6 +93,8 @@ fun SetAreaForSearchScreen(
                 title = "Пошук групи",
                 avatar = screenState.value.avatar,
                 showNotification = false,
+                onNotificationsClicked = {},
+                onAvatarClicked = { handleEvent(SetAreaEvent.OnAvatarClicked) },
                 onBack = { handleEvent(SetAreaEvent.OnBack) }
             )
 

@@ -14,10 +14,12 @@ import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatasto
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.FilesRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.HostScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.InitialGroupSearchRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.ChooseChildEvent
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.ChooseChildViewState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.GroupSearchStandaloneCommunicator
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.SETTINGS_PAGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.networkExecutor
@@ -55,6 +57,9 @@ class ChooseChildStandaloneViewModel(
                     InitialGroupSearchRoutes.SetArea
                 )
             }
+
+            ChooseChildEvent.OnAvatarClicked ->
+                navigator.navigate(HostScreenRoutes.Host.getDestination(SETTINGS_PAGE))
         }
     }
 
