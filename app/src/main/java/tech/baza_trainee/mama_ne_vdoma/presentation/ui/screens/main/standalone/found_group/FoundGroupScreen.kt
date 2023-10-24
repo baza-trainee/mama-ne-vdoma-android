@@ -81,7 +81,7 @@ fun FoundGroupScreen(
         Column(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceBetween
+            verticalArrangement = Arrangement.Top
         ) {
             HeaderWithToolbar(
                 modifier = Modifier.fillMaxWidth(),
@@ -96,10 +96,8 @@ fun FoundGroupScreen(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .verticalScroll(rememberScrollState())
-                    .padding(horizontal = 16.dp)
-                    .weight(1f),
-                verticalArrangement = Arrangement.Top,
+                    .padding(horizontal = 16.dp),
+                verticalArrangement = Arrangement.SpaceBetween,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Spacer(modifier = Modifier.height(8.dp))
@@ -134,14 +132,20 @@ fun FoundGroupScreen(
 
                     Spacer(modifier = Modifier.height(8.dp))
 
-                    screenState.value.groups.forEach { model ->
-                        GroupInfoDesk(
-                            modifier = Modifier.fillMaxWidth(),
-                            group = model,
-                            onSelect = { handleEvent(FoundGroupEvent.OnSelect(it) )}
-                        )
+                    Column(
+                        modifier = Modifier
+                            .weight(1f)
+                            .verticalScroll(rememberScrollState())
+                    ) {
+                        screenState.value.groups.forEach { model ->
+                            GroupInfoDesk(
+                                modifier = Modifier.fillMaxWidth(),
+                                group = model,
+                                onSelect = { handleEvent(FoundGroupEvent.OnSelect(it)) }
+                            )
 
-                        Spacer(modifier = Modifier.height(8.dp))
+                            Spacer(modifier = Modifier.height(8.dp))
+                        }
                     }
                 } else if (!screenState.value.isLoading) {
                     Text(
@@ -170,21 +174,19 @@ fun FoundGroupScreen(
                         fontSize = 14.sp
                     )
                 }
-            }
 
-            Spacer(modifier = Modifier.weight(1f))
-
-            Button(
-                modifier = Modifier
-                    .padding(horizontal = 16.dp, vertical = 16.dp)
-                    .fillMaxWidth()
-                    .height(48.dp),
-                onClick = { handleEvent(FoundGroupEvent.OnJoin) },
-                enabled = screenState.value.groups.map { it.isChecked }.contains(true)
-            ) {
-                ButtonText(
-                    text = "Приєднатися до групи"
-                )
+                Button(
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp, vertical = 16.dp)
+                        .fillMaxWidth()
+                        .height(48.dp),
+                    onClick = { handleEvent(FoundGroupEvent.OnJoin) },
+                    enabled = screenState.value.groups.map { it.isChecked }.contains(true)
+                ) {
+                    ButtonText(
+                        text = "Приєднатися до групи"
+                    )
+                }
             }
         }
 

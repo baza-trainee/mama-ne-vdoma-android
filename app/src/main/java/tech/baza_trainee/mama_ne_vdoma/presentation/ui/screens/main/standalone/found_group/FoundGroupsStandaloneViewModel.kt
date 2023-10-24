@@ -4,25 +4,23 @@ import android.net.Uri
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import tech.baza_trainee.mama_ne_vdoma.domain.model.GroupEntity
-import tech.baza_trainee.mama_ne_vdoma.domain.model.UserProfileEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatastoreManager
-import tech.baza_trainee.mama_ne_vdoma.domain.repository.FilesRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.GroupsRepository
-import tech.baza_trainee.mama_ne_vdoma.domain.repository.LocationRepository
-import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
+import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.GroupsInteractor
+import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.NetworkEventsListener
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.HostScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.GROUPS_PAGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.GroupSearchStandaloneCommunicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.SETTINGS_PAGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.GroupUiModel
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.MemberUiModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.networkExecutor
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onError
@@ -31,13 +29,11 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onSuccess
 
 class FoundGroupsStandaloneViewModel(
     private val communicator: GroupSearchStandaloneCommunicator,
-    private val userProfileRepository: UserProfileRepository,
-    private val filesRepository: FilesRepository,
     private val groupsRepository: GroupsRepository,
-    private val locationRepository: LocationRepository,
     private val navigator: ScreenNavigator,
-    private val preferencesDatastoreManager: UserPreferencesDatastoreManager
-): ViewModel() {
+    private val preferencesDatastoreManager: UserPreferencesDatastoreManager,
+    groupsInteractor: GroupsInteractor
+): ViewModel(), GroupsInteractor by groupsInteractor, NetworkEventsListener {
 
     private val _viewState = MutableStateFlow(FoundGroupViewState())
     val viewState: StateFlow<FoundGroupViewState> = _viewState.asStateFlow()
@@ -47,12 +43,30 @@ class FoundGroupsStandaloneViewModel(
         get() = _uiState
 
     init {
+        groupsInteractor.apply {
+            setGroupsCoroutineScope(viewModelScope)
+            setGroupsNetworkListener(this@FoundGroupsStandaloneViewModel)
+        }
+
         findGroupsByLocation()
+
         _viewState.update {
             it.copy(
                 avatar = Uri.parse(preferencesDatastoreManager.avatar)
             )
         }
+    }
+
+    override fun onLoading(state: Boolean) {
+        _viewState.update {
+            it.copy(
+                isLoading = state
+            )
+        }
+    }
+
+    override fun onError(error: String) {
+        _uiState.value = FoundGroupUiState.OnError(error)
     }
 
     fun handleEvent(event: FoundGroupEvent) {
@@ -159,142 +173,60 @@ class FoundGroupsStandaloneViewModel(
     }
 
     private fun getUser(userId: String, groupId: String) {
-        networkExecutor<UserProfileEntity> {
-            execute {
-                userProfileRepository.getUserById(userId)
-            }
-            onSuccess { user ->
-                getUserAvatar(user.avatar, groupId, userId)
-
-                val currentGroups = _viewState.value.groups.toMutableList()
-                var currentGroup = currentGroups.find { it.id == groupId }
-                val index = currentGroups.indexOf(currentGroup)
-                val currentMembers = currentGroup?.members?.toMutableList()
-                val member = MemberUiModel(
-                    id = user.id,
-                    name = user.name
+        getUser(
+            _viewState.value.groups,
+            userId,
+            groupId
+        ) { user, groups ->
+            _viewState.update {
+                it.copy(
+                    groups = groups
                 )
-                currentMembers?.add(member)
-                currentGroup = currentGroup?.copy(members = currentMembers.orEmpty())
-                currentGroups[index] = currentGroup ?: GroupUiModel()
+            }
 
-                _viewState.update {
-                    it.copy(
-                        groups = currentGroups
-                    )
-                }
-            }
-            onError { error ->
-                _uiState.value = FoundGroupUiState.OnError(error)
-            }
-            onLoading { isLoading ->
-                _viewState.update {
-                    it.copy(
-                        isLoading = isLoading
-                    )
-                }
-            }
+            getUserAvatar(user.avatar, groupId, userId)
         }
     }
 
     private fun getGroupAvatar(avatarId: String, groupId: String) {
-        networkExecutor {
-            execute { filesRepository.getAvatar(avatarId) }
-            onSuccess { uri ->
-                val currentGroups = _viewState.value.groups.toMutableList()
-                var currentGroup = currentGroups.find { it.id == groupId } ?: GroupUiModel()
-                val indexOfGroup = currentGroups.indexOf(currentGroup)
-                currentGroup = currentGroup.copy(
-                    avatar = uri
+        getGroupAvatar(
+            _viewState.value.groups,
+            avatarId,
+            groupId
+        ) { groups ->
+            _viewState.update {
+                it.copy(
+                    groups = groups
                 )
-                currentGroups[indexOfGroup] = currentGroup
-
-                _viewState.update {
-                    it.copy(
-                        groups = currentGroups
-                    )
-                }
-            }
-            onError { error ->
-                _uiState.value = FoundGroupUiState.OnError(error)
-            }
-            onLoading { isLoading ->
-                _viewState.update {
-                    it.copy(
-                        isLoading = isLoading
-                    )
-                }
             }
         }
     }
 
     private fun getUserAvatar(avatarId: String, groupId: String, userId: String) {
-        networkExecutor {
-            execute { filesRepository.getAvatar(avatarId) }
-            onSuccess { uri ->
-                val currentGroups = _viewState.value.groups.toMutableList()
-                var currentGroup = currentGroups.find { it.id == groupId }
-                val indexOfGroup = currentGroups.indexOf(currentGroup)
-                val currentMembers = currentGroup?.members?.toMutableList()
-                var currentUser = currentGroup?.members?.find { it.id == userId } ?: MemberUiModel()
-                val indexOfUser = currentGroup?.members?.indexOf(currentUser) ?: 0
-                currentUser = currentUser.copy(
-                    avatar = uri
+        getUserAvatar(
+            _viewState.value.groups,
+            avatarId,
+            groupId,
+            userId
+        ) { groups ->
+            _viewState.update {
+                it.copy(
+                    groups = groups
                 )
-                currentMembers?.apply{
-                    removeAt(indexOfUser)
-                    add(indexOfUser, currentUser)
-                }
-                currentGroup = currentGroup?.copy(members = currentMembers.orEmpty())
-                currentGroups[indexOfGroup] = currentGroup ?: GroupUiModel()
-
-                _viewState.update {
-                    it.copy(
-                        groups = currentGroups
-                    )
-                }
-            }
-            onError { error ->
-                _uiState.value = FoundGroupUiState.OnError(error)
-            }
-            onLoading { isLoading ->
-                _viewState.update {
-                    it.copy(
-                        isLoading = isLoading
-                    )
-                }
             }
         }
     }
 
     private fun getAddressFromLocation(latLng: LatLng, groupId: String) {
-        networkExecutor<String?> {
-            execute {
-                locationRepository.getAddressFromLocation(latLng)
-            }
-            onSuccess { address ->
-                val currentGroups = _viewState.value.groups.toMutableList()
-                var currentGroup = currentGroups.find { it.id == groupId }
-                val indexOfGroup = currentGroups.indexOf(currentGroup)
-                currentGroup = currentGroup?.copy(
-                    location = address.orEmpty()
+        getAddressFromLocation(
+            _viewState.value.groups,
+            latLng,
+            groupId
+        ) { groups ->
+            _viewState.update {
+                it.copy(
+                    groups = groups
                 )
-                currentGroups[indexOfGroup] = currentGroup ?: GroupUiModel()
-                _viewState.update {
-                    it.copy(
-                        groups = currentGroups
-                    )
-                }
-            }
-            onError { error ->
-                _uiState.value = FoundGroupUiState.OnError(error)
-            }
-            onLoading { isLoading ->
-                _viewState.update {
-                    it.copy(
-                        isLoading = isLoading
-                    )
-                }
             }
         }
     }

@@ -1,4 +1,4 @@
-package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.search.search_user
+package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.search.search_request
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -10,6 +10,8 @@ import kotlinx.coroutines.flow.update
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UserProfileEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.PageNavigator
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.InitialGroupSearchRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.MainScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.SearchScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.SearchResultsCommunicator
@@ -23,42 +25,28 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onLoading
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onSuccess
 import java.net.HttpURLConnection
 
-class SearchUserViewModel(
+class SearchRequestViewModel(
+    private val mainNavigator: ScreenNavigator,
     private val navigator: PageNavigator,
     private val communicator: SearchResultsCommunicator,
     private val userProfileRepository: UserProfileRepository
 ): ViewModel() {
 
-    private val _viewState = MutableStateFlow(SearchUserViewState())
-    val viewState: StateFlow<SearchUserViewState> = _viewState.asStateFlow()
+    private val _viewState = MutableStateFlow(SearchRequestViewState())
+    val viewState: StateFlow<SearchRequestViewState> = _viewState.asStateFlow()
 
-    private val _uiState = mutableStateOf<SearchUserUiState>(SearchUserUiState.Idle)
-    val uiState: State<SearchUserUiState>
+    private val _uiState = mutableStateOf<SearchRequestUiState>(SearchRequestUiState.Idle)
+    val uiState: State<SearchRequestUiState>
         get() = _uiState
 
-    fun handleEvent(event: SearchUserEvent) {
+    fun handleEvent(event: SearchRequestEvent) {
         when(event) {
-            SearchUserEvent.OnBack -> navigator.goToPrevious()
-            SearchUserEvent.ResetUiState -> _uiState.value = SearchUserUiState.Idle
-            SearchUserEvent.OnSearch -> searchUser()
-            is SearchUserEvent.ValidateEmail -> validateEmail(event.value)
-            is SearchUserEvent.ValidateName -> validateName(event.value)
-            SearchUserEvent.OnMain -> navigator.navigate(MainScreenRoutes.Main)
-        }
-    }
-
-    private fun validateName(name: String) {
-        val nameValid = if (name.length in NAME_LENGTH &&
-            name.all { it.isLetter() || it.isDigit() || it == ' ' || it == '-' })
-            ValidField.VALID
-        else
-            ValidField.INVALID
-
-        _viewState.update {
-            it.copy(
-                name =  name,
-                nameValid = nameValid
-            )
+            SearchRequestEvent.OnBack -> navigator.goToPrevious()
+            SearchRequestEvent.ResetUiState -> _uiState.value = SearchRequestUiState.Idle
+            SearchRequestEvent.SearchUser -> searchUser()
+            is SearchRequestEvent.ValidateEmail -> validateEmail(event.value)
+            SearchRequestEvent.OnMain -> navigator.navigate(MainScreenRoutes.Main)
+            SearchRequestEvent.SearchGroup -> mainNavigator.navigate(InitialGroupSearchRoutes.ChooseChild)
         }
     }
 
@@ -92,9 +80,9 @@ class SearchUserViewModel(
             }
             onErrorWithCode { error, code ->
                 if (code == HttpURLConnection.HTTP_NOT_FOUND)
-                    _uiState.value = SearchUserUiState.OnNothingFound
+                    _uiState.value = SearchRequestUiState.OnNothingFound
                 else
-                    _uiState.value = SearchUserUiState.OnError(error)
+                    _uiState.value = SearchRequestUiState.OnError(error)
             }
             onLoading { isLoading ->
                 _viewState.update {
@@ -104,10 +92,5 @@ class SearchUserViewModel(
                 }
             }
         }
-    }
-
-    companion object {
-
-        private val NAME_LENGTH = 2..18
     }
 }

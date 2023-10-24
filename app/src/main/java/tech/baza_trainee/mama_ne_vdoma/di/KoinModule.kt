@@ -33,6 +33,8 @@ import tech.baza_trainee.mama_ne_vdoma.domain.repository.FilesRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.GroupsRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.LocationRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
+import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.GroupsInteractor
+import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.GroupsInteractorImpl
 import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.LocationInteractor
 import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.LocationInteractorImpl
 import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.UserProfileInteractor
@@ -58,8 +60,8 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.my_gr
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.host.HostViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.main.main.MainViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.main.notifications.NotificationsViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.search.search_request.SearchRequestViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.search.search_results.SearchResultsViewModel
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.search.search_user.SearchUserViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.common.EditProfileCommunicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.edit.EditProfileViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.main_profile.ProfileSettingsViewModel
@@ -106,6 +108,7 @@ val repoModule = module {
 
     factory<UserProfileInteractor> { UserProfileInteractorImpl(get(), get(), get(), get(), get()) }
     factory<LocationInteractor> { LocationInteractorImpl(get(), get(), get()) }
+    factory<GroupsInteractor> { GroupsInteractorImpl(get(), get(), get()) }
 
     single<ScreenNavigator> { ScreenNavigatorImpl() }
     single { BitmapHelper(androidApplication()) }
@@ -147,7 +150,7 @@ val standaloneGroupSearchModule = module {
     single { GroupSearchStandaloneCommunicator() }
     viewModel { ChooseChildStandaloneViewModel(get(), get(), get(), get(), get()) }
     viewModel { SetAreaViewModel(get(), get(), get()) }
-    viewModel { FoundGroupsStandaloneViewModel(get(), get(), get(), get(), get(), get(), get()) }
+    viewModel { FoundGroupsStandaloneViewModel(get(), get(), get(), get(), get()) }
 }
 
 val mainModule = module {
@@ -172,13 +175,13 @@ val mainModule = module {
     viewModel { NotificationsViewModel(get(), get(), get(), get(), get(), get()) }
     viewModel { ChooseChildViewModel(get(), get()) }
     viewModel {
-        MyGroupsViewModel(get(), get(), get(), get(), get())
+        MyGroupsViewModel(get(), get(), get(), get())
     }
     viewModel { (childId: String) ->
         CreateGroupViewModel(childId, get(), get(), get(), get(), get(), get(), get())
     }
     viewModel { (navigator: ScreenNavigator) -> ImageCropViewModel(navigator, get(), get()) }
-    viewModel { SearchUserViewModel(get(), get(), get()) }
+    viewModel { SearchRequestViewModel(get(), get(), get(), get()) }
     viewModel { SearchResultsViewModel(get(), get(), get(), get()) }
     viewModel { ProfileSettingsViewModel(get(), get(), get(), get(), get()) }
     viewModel { EditProfileViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
