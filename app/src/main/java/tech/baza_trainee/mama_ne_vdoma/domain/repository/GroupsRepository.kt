@@ -37,4 +37,5 @@ interface GroupsRepository {
     suspend fun acceptRequest(groupId: String, childId: String) : RequestResult<Unit>
     suspend fun declineRequest(groupId: String, childId: String) : RequestResult<Unit>
     suspend fun kickUser(groupId: String, childId: String) : RequestResult<Unit>
+    suspend fun leaveGroup(groupId: String) : RequestResult<Unit>
 }

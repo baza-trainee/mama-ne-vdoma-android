@@ -58,4 +58,7 @@ interface GroupsApi {
 
     @POST("api/group/kick/{groupId}/{childId}")
     suspend fun kickUser(@Path("groupId") groupId: String, @Path("childId") childId: String): Response<Unit>
+
+    @POST("api/group/leave/{groupId}")
+    suspend fun leaveGroup(@Path("groupId") groupId: String): Response<Unit>
 }

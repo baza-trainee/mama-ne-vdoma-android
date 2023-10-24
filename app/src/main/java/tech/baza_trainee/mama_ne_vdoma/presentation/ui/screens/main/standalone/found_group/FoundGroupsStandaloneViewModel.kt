@@ -119,6 +119,7 @@ class FoundGroupsStandaloneViewModel(
                         groups = entityList.map {
                             GroupUiModel(
                                 id = it.id,
+                                adminId = it.adminId,
                                 name = it.name,
                                 description = it.description,
                                 ages = it.ages

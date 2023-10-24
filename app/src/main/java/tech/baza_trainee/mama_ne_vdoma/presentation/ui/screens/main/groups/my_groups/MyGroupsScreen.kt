@@ -85,12 +85,15 @@ fun MyGroupsScreen(
             )
         }
 
-        screenState.value.groups.forEach {
+        screenState.value.groups.forEach { groupUiModel ->
             Spacer(modifier = Modifier.height(8.dp))
 
             GroupInfoDesk(
                 modifier = Modifier.fillMaxWidth(),
-                group = it
+                group = groupUiModel,
+                currentUserId = screenState.value.userId,
+                onKick = { groupId, childrenIds -> handleEvent(MyGroupsEvent.OnKick(groupId, childrenIds)) },
+                onLeave = { handleEvent(MyGroupsEvent.OnLeave(it)) }
             )
         }
 

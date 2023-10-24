@@ -99,4 +99,11 @@ class GroupsRepositoryImpl(
             RequestResult.Success(Unit)
         else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage())
     }
+
+    override suspend fun leaveGroup(groupId: String): RequestResult<Unit> {
+        val result = groupsApi.leaveGroup(groupId)
+        return if (result.isSuccessful)
+            RequestResult.Success(Unit)
+        else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage())
+    }
 }

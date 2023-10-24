@@ -1,6 +1,8 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.cards
 
+import android.content.Intent
 import android.graphics.Bitmap
+import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -15,6 +17,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Logout
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -24,6 +30,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,15 +40,21 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import kotlinx.coroutines.launch
 import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.GroupUiModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.LogoutButtonColor
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.LogoutButtonTextColor
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.BitmapHelper
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.ButtonText
 
 @Composable
 @Preview
@@ -49,9 +62,14 @@ fun GroupInfoDesk(
     modifier: Modifier = Modifier,
     groupAvatar: Bitmap = BitmapHelper.DEFAULT_BITMAP,
     group: GroupUiModel = GroupUiModel(),
-    isMyGroup: Boolean = false,
-    onSelect: (String) -> Unit = {}
+    currentUserId: String = "",
+    onSelect: (String) -> Unit = {},
+    onKick: (String, List<String>) -> Unit = {_,_->},
+    onLeave: (String) -> Unit = {}
 ) {
+    val isAdmin = currentUserId == group.adminId
+    val isMyGroup = group.members.map { it.id }.contains(currentUserId) && !isAdmin
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -59,12 +77,11 @@ fun GroupInfoDesk(
                 color = MaterialTheme.colorScheme.surface,
                 shape = RoundedCornerShape(4.dp)
             )
+            .padding(all = 16.dp)
     ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp)
-                .padding(bottom = 2.dp, top = 16.dp)
                 .height(96.dp),
             contentAlignment = Alignment.Center
         ) {
@@ -83,37 +100,66 @@ fun GroupInfoDesk(
 
             Row(
                 modifier = Modifier
-                    .padding(8.dp)
-                    .height(28.dp)
-                    .width(64.dp)
-                    .background(
-                        color = Color.White,
-                        shape = RoundedCornerShape(4.dp)
-                    )
+                    .fillMaxWidth()
                     .align(Alignment.TopEnd),
-                horizontalArrangement = Arrangement.Center,
+                horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Image(
+                if (isAdmin) {
+                    Box(
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .height(28.dp)
+                            .background(
+                                color = Color.White,
+                                shape = RoundedCornerShape(4.dp)
+                            )
+                            .padding(horizontal = 4.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "Ви адміністратор групи",
+                            fontSize = 14.sp,
+                            fontFamily = redHatDisplayFontFamily,
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.weight(1f))
+
+                Row(
                     modifier = Modifier
-                        .padding(end = 4.dp),
-                    painter = painterResource(id = R.drawable.ic_star),
-                    contentDescription = "rating"
-                )
-                Text(
-                    text = "rating",
-                    fontSize = 14.sp,
-                    fontFamily = redHatDisplayFontFamily
-                )
+                        .padding(8.dp)
+                        .height(28.dp)
+                        .width(64.dp)
+                        .background(
+                            color = Color.White,
+                            shape = RoundedCornerShape(4.dp)
+                        )
+                        .padding(horizontal = 4.dp),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Image(
+                        modifier = Modifier
+                            .padding(end = 4.dp),
+                        painter = painterResource(id = R.drawable.ic_star),
+                        contentDescription = "rating"
+                    )
+                    Text(
+                        text = "5.0",
+                        fontSize = 14.sp,
+                        fontFamily = redHatDisplayFontFamily
+                    )
+                }
             }
         }
 
         Spacer(modifier = Modifier.height(8.dp))
 
         Text(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
+            modifier = Modifier.fillMaxWidth(),
             text = "ID: ${group.id}",
             fontSize = 11.sp,
             fontFamily = redHatDisplayFontFamily
@@ -122,9 +168,7 @@ fun GroupInfoDesk(
         Spacer(modifier = Modifier.height(4.dp))
 
         Text(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
+            modifier = Modifier.fillMaxWidth(),
             text = group.name,
             fontSize = 16.sp,
             fontFamily = redHatDisplayFontFamily,
@@ -134,9 +178,7 @@ fun GroupInfoDesk(
         Spacer(modifier = Modifier.height(4.dp))
 
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
+            modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Start
         ) {
@@ -160,48 +202,48 @@ fun GroupInfoDesk(
         var toggleMoreInfo by remember { mutableStateOf(false) }
 
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
+            modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Start
         ) {
             group.members.forEachIndexed { index, member ->
-                if (index < 3) {
-                    AsyncImage(
+                if (member.id != currentUserId) {
+                    if (index < 3) {
+                        AsyncImage(
+                            modifier = Modifier
+                                .padding(end = 2.dp)
+                                .height(24.dp)
+                                .width(24.dp)
+                                .clip(CircleShape),
+                            model = ImageRequest.Builder(LocalContext.current)
+                                .data(member.avatar)
+                                .crossfade(true)
+                                .build(),
+                            placeholder = painterResource(id = R.drawable.no_photo),
+                            contentDescription = "member",
+                            contentScale = ContentScale.Fit
+                        )
+                    }
+                }
+                if (group.members.size > 3)
+                    Box(
                         modifier = Modifier
-                            .padding(end = 2.dp)
                             .height(24.dp)
                             .width(24.dp)
-                            .clip(CircleShape),
-                        model = ImageRequest.Builder(LocalContext.current)
-                            .data(member.avatar)
-                            .crossfade(true)
-                            .build(),
-                        placeholder = painterResource(id = R.drawable.no_photo),
-                        contentDescription = "member",
-                        contentScale = ContentScale.Fit
-                    )
-                }
+                            .background(
+                                color = MaterialTheme.colorScheme.primary,
+                                shape = CircleShape
+                            ),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "+${group.members.size - 3}",
+                            color = MaterialTheme.colorScheme.onPrimary,
+                            fontSize = 10.sp,
+                            fontFamily = redHatDisplayFontFamily
+                        )
+                    }
             }
-            if (group.members.size > 3)
-                Box(
-                    modifier = Modifier
-                        .height(24.dp)
-                        .width(24.dp)
-                        .background(
-                            color = MaterialTheme.colorScheme.primary,
-                            shape = CircleShape
-                        ),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = "+${group.members.size - 3}",
-                        color = MaterialTheme.colorScheme.onPrimary,
-                        fontSize = 10.sp,
-                        fontFamily = redHatDisplayFontFamily
-                    )
-                }
 
             Spacer(modifier = Modifier.weight(1f))
 
@@ -225,9 +267,9 @@ fun GroupInfoDesk(
 
         if (toggleMoreInfo) {
             Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Top
             ) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -260,82 +302,131 @@ fun GroupInfoDesk(
                 Spacer(modifier = Modifier.height(8.dp))
 
                 group.members.forEach {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Start
-                    ) {
-                        AsyncImage(
-                            modifier = Modifier
-                                .padding(end = 8.dp)
-                                .height(24.dp)
-                                .width(24.dp)
-                                .clip(CircleShape),
-                            model = ImageRequest.Builder(LocalContext.current)
-                                .data(it.avatar)
-                                .crossfade(true)
-                                .build(),
-                            placeholder = painterResource(id = R.drawable.no_photo),
-                            contentDescription = "member",
-                            contentScale = ContentScale.Fit
-                        )
-                        Text(
-                            text = it.name,
-                            fontSize = 14.sp,
-                            fontFamily = redHatDisplayFontFamily
-                        )
+                    if (it.id != currentUserId) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Start
+                        ) {
+                            AsyncImage(
+                                modifier = Modifier
+                                    .padding(end = 8.dp)
+                                    .height(24.dp)
+                                    .width(24.dp)
+                                    .clip(CircleShape),
+                                model = ImageRequest.Builder(LocalContext.current)
+                                    .data(it.avatar)
+                                    .crossfade(true)
+                                    .build(),
+                                placeholder = painterResource(id = R.drawable.no_photo),
+                                contentDescription = "member",
+                                contentScale = ContentScale.Fit
+                            )
+                            Text(
+                                text = it.name,
+                                fontSize = 14.sp,
+                                fontFamily = redHatDisplayFontFamily
+                            )
 
-                        Spacer(modifier = Modifier.weight(1f))
+                            Spacer(modifier = Modifier.weight(1f))
 
-                        if (isMyGroup) {
-                            IconButton(
-                                onClick = {}
-                            ) {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.ic_mail),
-                                    contentDescription = "email",
-                                    tint = MaterialTheme.colorScheme.primary
-                                )
+                            if (isAdmin) {
+                                IconButton(
+                                    onClick = { onKick(group.id, it.children) }
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.AutoMirrored.Filled.Logout,
+                                        contentDescription = "kick",
+                                        tint = Color.Red
+                                    )
+                                }
                             }
 
-                            IconButton(
-                                onClick = {}
-                            ) {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.ic_phone),
-                                    contentDescription = "phone",
-                                    tint = MaterialTheme.colorScheme.primary
-                                )
+                            if (isMyGroup) {
+                                val context = LocalContext.current
+                                val scope = rememberCoroutineScope()
+
+                                IconButton(
+                                    onClick = {
+                                        scope.launch {
+                                            val intent = Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:${it.email}"))
+                                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                            ContextCompat.startActivity(context, intent, null)
+                                        }
+                                    }
+                                ) {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.ic_mail),
+                                        contentDescription = "email",
+                                        tint = MaterialTheme.colorScheme.primary
+                                    )
+                                }
+
+                                IconButton(
+                                    onClick = {
+                                        scope.launch {
+                                            val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:${it.phone}"))
+                                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                            ContextCompat.startActivity(context, intent, null)
+                                        }
+                                    }
+                                ) {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.ic_phone),
+                                        contentDescription = "phone",
+                                        tint = MaterialTheme.colorScheme.primary
+                                    )
+                                }
                             }
                         }
-                    }
 
-                    Spacer(modifier = Modifier.height(4.dp))
+                        Spacer(modifier = Modifier.height(4.dp))
+                    }
                 }
             }
         }
 
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Start
-        ) {
-            Text(
+        if (isMyGroup || isAdmin) {
+            Button(
                 modifier = Modifier
-                    .padding(end = 4.dp),
-                text = "Приєднатись до групи",
-                fontSize = 11.sp,
-                fontFamily = redHatDisplayFontFamily
-            )
+                    .fillMaxWidth()
+                    .height(48.dp),
+                onClick = { onLeave(group.id) },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = LogoutButtonColor,
+                    contentColor = LogoutButtonTextColor
+                )
+            ) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.Logout,
+                    contentDescription = "exit"
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+                ButtonText(
+                    text = "Покинути групу"
+                )
+            }
+        } else {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Start
+            ) {
+                Text(
+                    modifier = Modifier
+                        .padding(end = 4.dp),
+                    text = "Приєднатись до групи",
+                    fontSize = 11.sp,
+                    fontFamily = redHatDisplayFontFamily
+                )
 
-            Spacer(modifier = Modifier.weight(1f))
+                Spacer(modifier = Modifier.weight(1f))
 
-            Checkbox(
-                checked = group.isChecked,
-                onCheckedChange = { onSelect(group.id) }
-            )
+                Checkbox(
+                    checked = group.isChecked,
+                    onCheckedChange = { onSelect(group.id) }
+                )
+            }
         }
     }
 }

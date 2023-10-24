@@ -4,6 +4,7 @@ import android.net.Uri
 
 data class GroupUiModel(
     val id: String = "",
+    val adminId: String = "",
     val name: String = "",
     val description: String = "",
     val ages: String = "",
@@ -16,5 +17,8 @@ data class GroupUiModel(
 data class MemberUiModel(
     val id: String = "",
     val name: String = "",
-    val avatar: Uri = Uri.EMPTY
+    val email: String = "",
+    val phone: String = "",
+    val avatar: Uri = Uri.EMPTY,
+    val children: List<String> = emptyList()
 )

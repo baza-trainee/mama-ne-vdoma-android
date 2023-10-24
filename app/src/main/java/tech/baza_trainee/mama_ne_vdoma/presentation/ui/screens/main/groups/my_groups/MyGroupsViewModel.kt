@@ -49,6 +49,8 @@ class MyGroupsViewModel(
             MyGroupsEvent.ResetUiState -> _uiState.value = RequestState.Idle
             MyGroupsEvent.OnBack -> navigator.goToPrevious()
             MyGroupsEvent.CreateNewGroup -> navigator.navigate(GroupsScreenRoutes.ChooseChild)
+            is MyGroupsEvent.OnKick -> event.children.forEach { kickUser(event.group, it) }
+            is MyGroupsEvent.OnLeave -> leaveGroup(event.group)
         }
     }
 
@@ -59,6 +61,11 @@ class MyGroupsViewModel(
             }
             onSuccess { entity ->
                 getGroups(entity.id)
+                _viewState.update {
+                    it.copy(
+                        userId = entity.id
+                    )
+                }
             }
             onError { error ->
                 _uiState.value = RequestState.OnError(error)
@@ -79,21 +86,30 @@ class MyGroupsViewModel(
                 groupsRepository.getGroupsForParent(parent)
             }
             onSuccess { entityList ->
-                _viewState.update { state ->
-                    state.copy(
-                        groups = entityList.map {
-                            GroupUiModel(
-                                id = it.id,
-                                name = it.name,
-                                description = it.description,
-                                ages = it.ages
-                            )
-                        }
-                    )
-                }
                 entityList.forEach { group ->
-                    group.members.forEach { member ->
-                        getUser(member.parentId, group.id)
+                    val members = group.members
+                        .groupBy { it.parentId }
+                        .map { (parentId, children) ->
+                            MemberUiModel(id = parentId, children = children.map { it.childId }.toList())
+                        }
+
+                    _viewState.update { state ->
+                        state.copy(
+                            groups = entityList.map {
+                                GroupUiModel(
+                                    id = it.id,
+                                    adminId = it.adminId,
+                                    name = it.name,
+                                    description = it.description,
+                                    ages = it.ages,
+                                    members = members
+                                )
+                            }
+                        )
+                    }
+
+                    members.forEach { member ->
+                        getUser(member.id, group.id)
                     }
 
                     if (group.avatar.isNotEmpty())
@@ -128,25 +144,35 @@ class MyGroupsViewModel(
                 userProfileRepository.getUserById(userId)
             }
             onSuccess { user ->
-                getUserAvatar(user.avatar, groupId, userId)
-
                 val currentGroups = _viewState.value.groups.toMutableList()
-                var currentGroup = currentGroups.find { it.id == groupId }
+                var currentGroup = currentGroups.firstOrNull { it.id == groupId } ?: GroupUiModel()
                 val index = currentGroups.indexOf(currentGroup)
-                val currentMembers = currentGroup?.members?.toMutableList()
-                val member = MemberUiModel(
-                    id = user.id,
-                    name = user.name
-                )
-                currentMembers?.add(member)
-                currentGroup = currentGroup?.copy(members = currentMembers.orEmpty())
-                currentGroups[index] = currentGroup ?: GroupUiModel()
+                if (index != -1) {
+                    val currentMembers = currentGroup.members.toMutableList()
+                    var member = currentMembers.firstOrNull { it.id == userId } ?: MemberUiModel()
+                    val indexOfUser = currentGroup.members.indexOf(member)
+                    if (indexOfUser != -1) {
+                        member = member.copy(
+                            name = user.name,
+                            email = user.email,
+                            phone = "${user.countryCode}${user.phone}"
+                        )
+                        currentMembers.apply {
+                            removeAt(indexOfUser)
+                            add(indexOfUser, member)
+                        }
+                        currentGroup = currentGroup.copy(members = currentMembers)
+                        currentGroups[index] = currentGroup
 
-                _viewState.update {
-                    it.copy(
-                        groups = currentGroups
-                    )
+                        _viewState.update {
+                            it.copy(
+                                groups = currentGroups
+                            )
+                        }
+                    }
                 }
+
+                getUserAvatar(user.avatar, groupId, userId)
             }
             onError { error ->
                 _uiState.value = RequestState.OnError(error)
@@ -166,17 +192,19 @@ class MyGroupsViewModel(
             execute { filesRepository.getAvatar(avatarId) }
             onSuccess { uri ->
                 val currentGroups = _viewState.value.groups.toMutableList()
-                var currentGroup = currentGroups.find { it.id == groupId } ?: GroupUiModel()
+                var currentGroup = currentGroups.firstOrNull { it.id == groupId } ?: GroupUiModel()
                 val indexOfGroup = currentGroups.indexOf(currentGroup)
-                currentGroup = currentGroup.copy(
-                    avatar = uri
-                )
-                currentGroups[indexOfGroup] = currentGroup
-
-                _viewState.update {
-                    it.copy(
-                        groups = currentGroups
+                if (indexOfGroup != -1) {
+                    currentGroup = currentGroup.copy(
+                        avatar = uri
                     )
+                    currentGroups[indexOfGroup] = currentGroup
+
+                    _viewState.update {
+                        it.copy(
+                            groups = currentGroups
+                        )
+                    }
                 }
             }
             onError { error ->
@@ -195,27 +223,32 @@ class MyGroupsViewModel(
     private fun getUserAvatar(avatarId: String, groupId: String, userId: String) {
         networkExecutor {
             execute { filesRepository.getAvatar(avatarId) }
-            onSuccess { bmp ->
+            onSuccess { uri ->
                 val currentGroups = _viewState.value.groups.toMutableList()
-                var currentGroup = currentGroups.find { it.id == groupId }
+                var currentGroup = currentGroups.firstOrNull { it.id == groupId } ?: GroupUiModel()
                 val indexOfGroup = currentGroups.indexOf(currentGroup)
-                val currentMembers = currentGroup?.members?.toMutableList()
-                var currentUser = currentGroup?.members?.find { it.id == userId } ?: MemberUiModel()
-                val indexOfUser = currentGroup?.members?.indexOf(currentUser) ?: 0
-                currentUser = currentUser.copy(
-                    avatar = bmp
-                )
-                currentMembers?.apply{
-                    removeAt(indexOfUser)
-                    add(indexOfUser, currentUser)
-                }
-                currentGroup = currentGroup?.copy(members = currentMembers.orEmpty())
-                currentGroups[indexOfGroup] = currentGroup ?: GroupUiModel()
+                if (indexOfGroup != -1) {
+                    val currentMembers = currentGroup.members.toMutableList()
+                    var member =
+                        currentGroup.members.firstOrNull() { it.id == userId } ?: MemberUiModel()
+                    val indexOfUser = currentGroup.members.indexOf(member)
+                    if (indexOfUser != -1) {
+                        member = member.copy(
+                            avatar = uri
+                        )
+                        currentMembers.apply {
+                            removeAt(indexOfUser)
+                            add(indexOfUser, member)
+                        }
+                        currentGroup = currentGroup.copy(members = currentMembers)
+                        currentGroups[indexOfGroup] = currentGroup
 
-                _viewState.update {
-                    it.copy(
-                        groups = currentGroups
-                    )
+                        _viewState.update {
+                            it.copy(
+                                groups = currentGroups
+                            )
+                        }
+                    }
                 }
             }
             onError { error ->
@@ -238,18 +271,58 @@ class MyGroupsViewModel(
             }
             onSuccess { address ->
                 val currentGroups = _viewState.value.groups.toMutableList()
-                var currentGroup = currentGroups.find { it.id == groupId }
+                var currentGroup = currentGroups.firstOrNull { it.id == groupId } ?: GroupUiModel()
                 val indexOfGroup = currentGroups.indexOf(currentGroup)
-                currentGroup = currentGroup?.copy(
-                    location = address.orEmpty()
-                )
-                currentGroups[indexOfGroup] = currentGroup ?: GroupUiModel()
+                if (indexOfGroup != -1) {
+                    currentGroup = currentGroup.copy(
+                        location = address.orEmpty()
+                    )
+                    currentGroups[indexOfGroup] = currentGroup
+                    _viewState.update {
+                        it.copy(
+                            groups = currentGroups
+                        )
+                    }
+                }
+            }
+            onError { error ->
+                _uiState.value = RequestState.OnError(error)
+            }
+            onLoading { isLoading ->
                 _viewState.update {
                     it.copy(
-                        groups = currentGroups
+                        isLoading = isLoading
                     )
                 }
             }
+        }
+    }
+
+    private fun leaveGroup(groupId: String) {
+        networkExecutor {
+            execute {
+                groupsRepository.leaveGroup(groupId)
+            }
+            onSuccess { getUserInfo() }
+            onError { error ->
+                _uiState.value = RequestState.OnError(error)
+            }
+            onLoading { isLoading ->
+                _viewState.update {
+                    it.copy(
+                        isLoading = isLoading
+                    )
+                }
+            }
+        }
+    }
+
+    private fun kickUser(groupId: String, childId: String) {
+        networkExecutor {
+            execute {
+                groupsRepository.kickUser(groupId, childId)
+            }
+            onSuccess { getUserInfo() }
             onError { error ->
                 _uiState.value = RequestState.OnError(error)
             }
