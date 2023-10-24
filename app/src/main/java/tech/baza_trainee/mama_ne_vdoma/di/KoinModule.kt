@@ -169,7 +169,7 @@ val mainModule = module {
         )
     }
     viewModel { MainViewModel(get(), get()) }
-    viewModel { NotificationsViewModel(get(), get(), get(), get(), get()) }
+    viewModel { NotificationsViewModel(get(), get(), get(), get(), get(), get()) }
     viewModel { ChooseChildViewModel(get(), get()) }
     viewModel {
         MyGroupsViewModel(get(), get(), get(), get(), get())

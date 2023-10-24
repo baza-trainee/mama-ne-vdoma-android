@@ -28,7 +28,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.cards.ParentCardInNotifications
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.cards.AdminJoinRequestCard
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.cards.MyRequestCard
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -82,7 +83,25 @@ fun NotificationScreen(
         ) { page ->
             when (page) {
                 0 -> {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .verticalScroll(rememberScrollState()),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Top
+                    ) {
+                        Spacer(modifier = Modifier.height(8.dp))
 
+                        screenState.value.adminJoinRequests.forEach {
+                            MyRequestCard(
+                                request = it,
+                                goToMain = { handleEvent(NotificationsEvent.GoToMain) },
+                                onDecline = { groupId, childId -> handleEvent(NotificationsEvent.DeclineUser(groupId, childId)) }
+                            )
+
+                            Spacer(modifier = Modifier.height(8.dp))
+                        }
+                    }
                 }
                 1 -> {
                     Column(
@@ -94,8 +113,8 @@ fun NotificationScreen(
                     ) {
                         Spacer(modifier = Modifier.height(8.dp))
 
-                        screenState.value.joinRequests.forEach {
-                            ParentCardInNotifications(
+                        screenState.value.adminJoinRequests.forEach {
+                            AdminJoinRequestCard(
                                 request = it,
                                 onAccept = { groupId, childId -> handleEvent(NotificationsEvent.AcceptUser(groupId, childId)) },
                                 onDecline = { groupId, childId -> handleEvent(NotificationsEvent.DeclineUser(groupId, childId)) }

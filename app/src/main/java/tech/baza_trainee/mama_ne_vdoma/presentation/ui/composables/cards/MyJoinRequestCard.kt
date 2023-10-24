@@ -2,10 +2,7 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.cards
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.basicMarquee
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -29,13 +26,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -51,10 +44,10 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.ButtonText
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 @Preview
-fun ParentCardInNotifications(
+fun MyRequestCard(
     modifier: Modifier = Modifier,
     request: JoinRequestUiModel = JoinRequestUiModel(),
-    onAccept: (String, String) -> Unit = {_,_ ->},
+    goToMain: () -> Unit = {},
     onDecline: (String, String) -> Unit = {_,_ ->}
 ) {
     Column(
@@ -130,44 +123,6 @@ fun ParentCardInNotifications(
                         )
                     }
                 }
-
-                Spacer(modifier = Modifier.height(24.dp))
-
-                Row(
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp)
-                        .padding(bottom = 16.dp)
-                        .align(Alignment.End),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        modifier = Modifier
-                            .padding(horizontal = 8.dp)
-                            .clickable {
-                                onDecline(request.groupId, request.child.childId)
-                            },
-                        text = "Відхилити",
-                        fontSize = 16.sp,
-                        fontFamily = redHatDisplayFontFamily,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.Red,
-                        textAlign = TextAlign.Center
-                    )
-
-                    Text(
-                        modifier = Modifier
-                            .padding(horizontal = 8.dp)
-                            .clickable {
-                                onAccept(request.groupId, request.child.childId)
-                            },
-                        text = "Погодити",
-                        fontSize = 16.sp,
-                        fontFamily = redHatDisplayFontFamily,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.primary,
-                        textAlign = TextAlign.Center
-                    )
-                }
             }
         } else {
             Column(
@@ -181,94 +136,14 @@ fun ParentCardInNotifications(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Top
             ) {
-                AsyncImage(
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data(request.parentAvatar)
-                        .crossfade(true)
-                        .build(),
-                    placeholder = painterResource(id = R.drawable.no_photo),
-                    contentDescription = "avatar",
-                    contentScale = ContentScale.FillBounds,
-                    modifier = Modifier
-                        .width(120.dp)
-                        .height(120.dp)
-                        .clip(CircleShape)
-                )
-
-                Spacer(modifier = Modifier.height(4.dp))
-
-                Text(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = request.parentName,
-                    fontSize = 20.sp,
-                    textAlign = TextAlign.Center,
-                    color = MaterialTheme.colorScheme.primary,
-                    fontFamily = redHatDisplayFontFamily
-                )
-
-                Spacer(modifier = Modifier.height(4.dp))
-
-                Text(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = request.parentPhone,
-                    fontSize = 16.sp,
-                    textAlign = TextAlign.Center,
-                    fontFamily = redHatDisplayFontFamily
-                )
-
-                Spacer(modifier = Modifier.height(2.dp))
-
-                Text(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = request.parentEmail,
-                    fontSize = 16.sp,
-                    textAlign = TextAlign.Center,
-                    fontFamily = redHatDisplayFontFamily
-                )
-
-                Spacer(modifier = Modifier.height(2.dp))
-
-                Text(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .basicMarquee(),
-                    text = request.parentAddress,
-                    fontSize = 16.sp,
-                    textAlign = TextAlign.Center,
-                    fontFamily = redHatDisplayFontFamily
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 4.dp)
-                        .height(1.dp)
-                        .background(
-                            color = MaterialTheme.colorScheme.onBackground,
-                            shape = RectangleShape
-                        )
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                ChildInfoDesk(
-                    child = request.child,
-                    canEdit = false,
-                    canDelete = false,
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
                 Button(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(48.dp),
-                    onClick = { onAccept(request.groupId, request.child.childId) }
+                    onClick = goToMain
                 ) {
                     ButtonText(
-                        text = "Погодити запит"
+                        text = "На головну"
                     )
                 }
 
@@ -278,14 +153,14 @@ fun ParentCardInNotifications(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(48.dp),
-                    onClick = { onDecline(request.groupId, request.child.childId) },
+                    onClick = {  },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = LogoutButtonColor,
                         contentColor = LogoutButtonTextColor
                     )
                 ) {
                     ButtonText(
-                        text = "Відхилити запит"
+                        text = "Скасувати запит"
                     )
                 }
             }

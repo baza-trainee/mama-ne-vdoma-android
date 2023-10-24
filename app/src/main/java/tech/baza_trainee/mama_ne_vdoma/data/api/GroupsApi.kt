@@ -26,6 +26,11 @@ interface GroupsApi {
         @Body updateGroupInfo: UpdateGroupDto
     ): Response<Unit>
 
+    @GET("api/group/{groupId}")
+    suspend fun getGroupById(
+        @Path("groupId") groupId: String
+    ): Response<GroupDto>
+
     @PATCH("api/group/geo/{groupId}")
     suspend fun updateGroupLocation(
         @Path("groupId") groupId: String,

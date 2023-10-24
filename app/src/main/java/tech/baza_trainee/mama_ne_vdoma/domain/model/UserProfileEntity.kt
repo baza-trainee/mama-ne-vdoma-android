@@ -9,5 +9,6 @@ data class UserProfileEntity(
     val sendingEmails: Boolean = true,
     val avatar: String = "",
     val location: LocationEntity = LocationEntity(),
-    val schedule: ScheduleModel = ScheduleModel()
+    val schedule: ScheduleModel = ScheduleModel(),
+    val groupJoinRequests: List<String> = emptyList()
 )

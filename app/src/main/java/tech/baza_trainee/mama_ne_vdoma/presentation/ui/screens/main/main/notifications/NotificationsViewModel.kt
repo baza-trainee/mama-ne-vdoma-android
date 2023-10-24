@@ -11,11 +11,13 @@ import kotlinx.coroutines.flow.update
 import tech.baza_trainee.mama_ne_vdoma.domain.model.ChildEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.GroupEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UserProfileEntity
+import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatastoreManager
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.FilesRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.GroupsRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.LocationRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.PageNavigator
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.MainScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.JoinRequestUiModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
@@ -29,7 +31,8 @@ class NotificationsViewModel(
     private val filesRepository: FilesRepository,
     private val groupsRepository: GroupsRepository,
     private val locationRepository: LocationRepository,
-    private val navigator: PageNavigator
+    private val navigator: PageNavigator,
+    private val preferencesDatastoreManager: UserPreferencesDatastoreManager
 ): ViewModel() {
 
     private val _viewState = MutableStateFlow(NotificationsViewState())
@@ -49,6 +52,7 @@ class NotificationsViewModel(
             NotificationsEvent.OnBack -> navigator.goToPrevious()
             is NotificationsEvent.AcceptUser -> acceptJoinRequest(event.group, event.child)
             is NotificationsEvent.DeclineUser -> declineJoinRequest(event.group, event.child)
+            NotificationsEvent.GoToMain -> navigator.navigate(MainScreenRoutes.Main)
         }
     }
 
@@ -97,6 +101,44 @@ class NotificationsViewModel(
             }
             onSuccess { entity ->
                 getGroups(entity.id)
+
+                entity.groupJoinRequests.forEach(::getGroupById)
+            }
+            onError { error ->
+                _uiState.value = RequestState.OnError(error)
+            }
+            onLoading { isLoading ->
+                _viewState.update {
+                    it.copy(
+                        isLoading = isLoading
+                    )
+                }
+            }
+        }
+    }
+
+    private fun getGroupById(groupId: String) {
+        networkExecutor<GroupEntity> {
+            execute {
+                groupsRepository.getGroupById(groupId)
+            }
+            onSuccess { entity ->
+                val currentList = _viewState.value.myJoinRequests.toMutableList()
+                var currentRequest = currentList.find { it.groupId == groupId } ?: JoinRequestUiModel()
+                val indexOfGroup = currentList.indexOf(currentRequest)
+                currentRequest = currentRequest.copy(
+                    groupId = entity.id,
+                    groupName = entity.name,
+                    parentAvatar = preferencesDatastoreManager.avatarUri,
+                    parentName = preferencesDatastoreManager.name,
+                    parentId = preferencesDatastoreManager.id
+                )
+                currentList[indexOfGroup] = currentRequest
+                _viewState.update {
+                    it.copy(
+                        myJoinRequests = currentList
+                    )
+                }
             }
             onError { error ->
                 _uiState.value = RequestState.OnError(error)
@@ -133,7 +175,7 @@ class NotificationsViewModel(
                 }
                 _viewState.update {
                     it.copy(
-                        joinRequests = joinRequests
+                        adminJoinRequests = joinRequests
                     )
                 }
             }
@@ -167,7 +209,7 @@ class NotificationsViewModel(
                         groupId
                     )
 
-                val currentRequests = _viewState.value.joinRequests.toMutableList()
+                val currentRequests = _viewState.value.adminJoinRequests.toMutableList()
                 var currentRequest = currentRequests.find { it.groupId == groupId } ?: JoinRequestUiModel()
                 val indexOfGroup = currentRequests.indexOf(currentRequest)
                 currentRequest = currentRequest.copy(
@@ -179,7 +221,7 @@ class NotificationsViewModel(
 
                 _viewState.update {
                     it.copy(
-                        joinRequests = currentRequests
+                        adminJoinRequests = currentRequests
                     )
                 }
             }
@@ -200,7 +242,7 @@ class NotificationsViewModel(
         networkExecutor {
             execute { filesRepository.getAvatar(avatarId) }
             onSuccess { uri ->
-                val currentRequests = _viewState.value.joinRequests.toMutableList()
+                val currentRequests = _viewState.value.adminJoinRequests.toMutableList()
                 var currentRequest = currentRequests.find { it.groupId == groupId } ?: JoinRequestUiModel()
                 val indexOfGroup = currentRequests.indexOf(currentRequest)
                 currentRequest = currentRequest.copy(
@@ -209,7 +251,7 @@ class NotificationsViewModel(
                 currentRequests[indexOfGroup] = currentRequest
                 _viewState.update {
                     it.copy(
-                        joinRequests = currentRequests
+                        adminJoinRequests = currentRequests
                     )
                 }
             }
@@ -232,7 +274,7 @@ class NotificationsViewModel(
                 userProfileRepository.getChildById(childId)
             }
             onSuccess { child ->
-                val currentRequests = _viewState.value.joinRequests.toMutableList()
+                val currentRequests = _viewState.value.adminJoinRequests.toMutableList()
                 var currentRequest = currentRequests.find { it.groupId == groupId } ?: JoinRequestUiModel()
                 val indexOfGroup = currentRequests.indexOf(currentRequest)
                 currentRequest = currentRequest.copy(
@@ -241,7 +283,7 @@ class NotificationsViewModel(
                 currentRequests[indexOfGroup] = currentRequest
                 _viewState.update {
                     it.copy(
-                        joinRequests = currentRequests
+                        adminJoinRequests = currentRequests
                     )
                 }
             }
@@ -264,7 +306,7 @@ class NotificationsViewModel(
                 locationRepository.getAddressFromLocation(latLng)
             }
             onSuccess { address ->
-                val currentRequests = _viewState.value.joinRequests.toMutableList()
+                val currentRequests = _viewState.value.adminJoinRequests.toMutableList()
                 var currentRequest = currentRequests.find { it.groupId == groupId } ?: JoinRequestUiModel()
                 val indexOfGroup = currentRequests.indexOf(currentRequest)
                 currentRequest = currentRequest.copy(
@@ -273,7 +315,7 @@ class NotificationsViewModel(
                 currentRequests[indexOfGroup] = currentRequest
                 _viewState.update {
                     it.copy(
-                        joinRequests = currentRequests
+                        adminJoinRequests = currentRequests
                     )
                 }
             }

@@ -25,6 +25,8 @@ interface GroupsRepository {
 
     suspend fun getGroupsForParent(parent: String): RequestResult<List<GroupEntity>>
 
+    suspend fun getGroupById(group: String): RequestResult<GroupEntity>
+
     suspend fun getGroupsByArea(
         lat: Double,
         lng: Double,

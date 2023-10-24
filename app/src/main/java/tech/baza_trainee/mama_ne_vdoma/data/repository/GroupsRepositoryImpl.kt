@@ -47,6 +47,13 @@ class GroupsRepositoryImpl(
         else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage())
     }
 
+    override suspend fun getGroupById(group: String): RequestResult<GroupEntity> {
+        val result = groupsApi.getGroupById(group)
+        return if (result.isSuccessful)
+            RequestResult.Success(result.body()?.toDomainModel() ?: GroupEntity())
+        else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage())
+    }
+
     override suspend fun getGroupsForParent(parent: String): RequestResult<List<GroupEntity>> {
         val result = groupsApi.getGroupsForParent(parent)
         return if (result.isSuccessful)
