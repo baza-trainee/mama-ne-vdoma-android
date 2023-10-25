@@ -96,7 +96,9 @@ fun FoundGroupScreen(
 
             if (screenState.value.groups.isNotEmpty()) {
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
@@ -127,7 +129,8 @@ fun FoundGroupScreen(
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(all = 16.dp)
+                        .weight(1f)
+                        .padding(horizontal = 16.dp)
                 ) {
                     itemsIndexed(screenState.value.groups) { index, group ->
                         if (index != 0)
@@ -136,6 +139,7 @@ fun FoundGroupScreen(
                         GroupInfoDesk(
                             modifier = Modifier.fillMaxWidth(),
                             group = group,
+                            currentUserId = screenState.value.currentUserId,
                             onSelect = { handleEvent(FoundGroupEvent.OnSelect(it)) }
                         )
                     }

@@ -1,7 +1,6 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.cards
 
 import android.content.Intent
-import android.graphics.Bitmap
 import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -53,14 +52,12 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.GroupU
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.LogoutButtonColor
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.LogoutButtonTextColor
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.BitmapHelper
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.ButtonText
 
 @Composable
 @Preview
 fun GroupInfoDesk(
     modifier: Modifier = Modifier,
-    groupAvatar: Bitmap = BitmapHelper.DEFAULT_BITMAP,
     group: GroupUiModel = GroupUiModel(),
     currentUserId: String = "",
     onSelect: (String) -> Unit = {},

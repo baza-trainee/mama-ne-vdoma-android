@@ -14,6 +14,7 @@ import com.google.android.gms.tasks.Task
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import tech.baza_trainee.mama_ne_vdoma.data.datasource.LocationDataSource
+import java.util.Locale
 import kotlin.coroutines.suspendCoroutine
 
 class LocationDataSourceImpl(
@@ -63,15 +64,15 @@ class LocationDataSourceImpl(
         return result
     }
 
-    override suspend fun getAddressFromLocation(latLng: LatLng): String? {
-        var result: String? = null
+    override suspend fun getAddressFromLocation(latLng: LatLng): String {
+        var result: String = ""
         withContext(Dispatchers.IO) {
             val coder = Geocoder(application)
             val addressList: List<Address>?
             try {
                 addressList = coder.getFromLocation(latLng.latitude, latLng.longitude, 1)
                 if (addressList != null) {
-                    val location: Address = addressList[0]
+                    val location: Address = addressList.firstOrNull() ?: Address(Locale.getDefault())
                     result = location.getAddressLine(0)
                 }
             } catch (ex: Exception) {

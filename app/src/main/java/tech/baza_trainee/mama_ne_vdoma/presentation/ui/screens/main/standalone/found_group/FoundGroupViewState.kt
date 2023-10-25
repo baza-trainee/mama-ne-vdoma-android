@@ -5,6 +5,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.GroupU
 
 data class FoundGroupViewState(
     val avatar: Uri = Uri.EMPTY,
+    val currentUserId: String = "",
     val groups: List<GroupUiModel> = emptyList(),
     val isLoading: Boolean = false
 )

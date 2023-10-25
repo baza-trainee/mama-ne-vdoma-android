@@ -5,11 +5,11 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import tech.baza_trainee.mama_ne_vdoma.domain.model.GroupEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatastoreManager
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.GroupsRepository
@@ -52,8 +52,17 @@ class FoundGroupsStandaloneViewModel(
 
         _viewState.update {
             it.copy(
-                avatar = Uri.parse(preferencesDatastoreManager.avatar)
+                avatar = Uri.parse(preferencesDatastoreManager.avatar),
+                currentUserId = preferencesDatastoreManager.id,
             )
+        }
+
+        viewModelScope.launch {
+            groupsFlow.collect { groups ->
+                _viewState.update {
+                    it.copy(groups = groups)
+                }
+            }
         }
     }
 
@@ -86,7 +95,7 @@ class FoundGroupsStandaloneViewModel(
     private fun sendJoinRequest() {
         networkExecutor {
             execute {
-                val groupId = _viewState.value.groups.first { it.isChecked }.id
+                val groupId = _viewState.value.groups.find { it.isChecked }?.id.orEmpty()
                 groupsRepository.sendJoinRequest(groupId, communicator.childId)
             }
             onSuccess {
@@ -132,36 +141,8 @@ class FoundGroupsStandaloneViewModel(
                     group.adminId != preferencesDatastoreManager.id &&
                             !group.members.map { it.parentId }.contains(preferencesDatastoreManager.id)
                 }
-                _viewState.update { state ->
-                    state.copy(
-                        groups = groups.map {
-                            GroupUiModel(
-                                id = it.id,
-                                adminId = it.adminId,
-                                name = it.name,
-                                description = it.description,
-                                ages = it.ages
-                            )
-                        }
-                    )
-                }
-                groups.forEach { group ->
-                    group.members.forEach { member ->
-                        getUser(member.parentId, group.id)
-                    }
 
-                    if (group.avatar.isNotEmpty())
-                        getGroupAvatar(group.avatar, group.id)
-
-                    if (group.location.coordinates.isNotEmpty())
-                        getAddressFromLocation(
-                            latLng = LatLng(
-                                group.location.coordinates[1],
-                                group.location.coordinates[0]
-                            ),
-                            group.id
-                        )
-                }
+                startFetching(groups)
             }
             onError { error ->
                 _uiState.value = FoundGroupUiState.OnError(error)
@@ -172,65 +153,6 @@ class FoundGroupsStandaloneViewModel(
                         isLoading = isLoading
                     )
                 }
-            }
-        }
-    }
-
-    private fun getUser(userId: String, groupId: String) {
-        getUser(
-            _viewState.value.groups,
-            userId,
-            groupId
-        ) { user, groups ->
-            _viewState.update {
-                it.copy(
-                    groups = groups
-                )
-            }
-
-            getUserAvatar(user.avatar, groupId, userId)
-        }
-    }
-
-    private fun getGroupAvatar(avatarId: String, groupId: String) {
-        getGroupAvatar(
-            _viewState.value.groups,
-            avatarId,
-            groupId
-        ) { groups ->
-            _viewState.update {
-                it.copy(
-                    groups = groups
-                )
-            }
-        }
-    }
-
-    private fun getUserAvatar(avatarId: String, groupId: String, userId: String) {
-        getUserAvatar(
-            _viewState.value.groups,
-            avatarId,
-            groupId,
-            userId
-        ) { groups ->
-            _viewState.update {
-                it.copy(
-                    groups = groups
-                )
-            }
-        }
-    }
-
-    private fun getAddressFromLocation(latLng: LatLng, groupId: String) {
-        getAddressFromLocation(
-            _viewState.value.groups,
-            latLng,
-            groupId
-        ) { groups ->
-            _viewState.update {
-                it.copy(
-                    groups = groups
-                )
             }
         }
     }

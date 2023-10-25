@@ -125,6 +125,7 @@ class FullInfoViewModel(
             communicator.schedule = entity.schedule.ifNullOrEmpty { ScheduleModel() }
 
             preferencesDatastoreManager.apply {
+                id = entity.id
                 name = entity.name
                 code = entity.countryCode
                 phone = entity.phone

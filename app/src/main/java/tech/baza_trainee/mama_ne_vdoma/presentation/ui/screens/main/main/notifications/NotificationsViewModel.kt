@@ -149,7 +149,7 @@ class NotificationsViewModel(
                     parentId = preferencesDatastoreManager.id
                 )
                 currentRequests.apply {
-                    if (size == 0)
+                    if (indexOfRequest == -1)
                         add(currentRequest)
                     else {
                         removeAt(indexOfRequest)
@@ -249,7 +249,7 @@ class NotificationsViewModel(
                     parentPhone = "${user.countryCode}${user.phone}"
                 )
                 currentRequests.apply {
-                    if (size == 0)
+                    if (indexOfRequest == -1)
                         add(currentRequest)
                     else {
                         removeAt(indexOfRequest)
@@ -297,7 +297,7 @@ class NotificationsViewModel(
 
                 currentMember = currentMember.copy(name = user.name)
                 currentMembers.apply {
-                    if (size == 0)
+                    if (index == -1)
                         add(currentMember)
                     else {
                         removeAt(index)
@@ -311,7 +311,7 @@ class NotificationsViewModel(
                     group = group
                 )
                 currentRequests.apply {
-                    if (size == 0)
+                    if (indexOfRequest == -1)
                         add(currentRequest)
                     else {
                         removeAt(indexOfRequest)
@@ -353,7 +353,7 @@ class NotificationsViewModel(
 
                 currentMember = currentMember.copy(avatar = uri)
                 currentMembers.apply {
-                    if (size == 0)
+                    if (index == -1)
                         add(currentMember)
                     else {
                         removeAt(index)
@@ -370,7 +370,7 @@ class NotificationsViewModel(
                     parentAvatar = uri
                 )
                 currentRequests.apply {
-                    if (size == 0)
+                    if (indexOfRequest == -1)
                         add(currentRequest)
                     else {
                         removeAt(indexOfRequest)
@@ -407,7 +407,7 @@ class NotificationsViewModel(
                     parentAvatar = uri
                 )
                 currentRequests.apply {
-                    if (size == 0)
+                    if (indexOfRequest == -1)
                         add(currentRequest)
                     else {
                         removeAt(indexOfRequest)
@@ -447,7 +447,7 @@ class NotificationsViewModel(
                     child = child
                 )
                 currentRequests.apply {
-                    if (size == 0)
+                    if (indexOfRequest == -1)
                         add(currentRequest)
                     else {
                         removeAt(indexOfRequest)
@@ -487,7 +487,7 @@ class NotificationsViewModel(
                     parentAddress = address.orEmpty()
                 )
                 currentRequests.apply {
-                    if (size == 0)
+                    if (indexOfRequest == -1)
                         add(currentRequest)
                     else {
                         removeAt(indexOfRequest)
