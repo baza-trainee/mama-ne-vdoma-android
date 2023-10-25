@@ -9,7 +9,6 @@ import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.GroupUiModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.MemberUiModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.indexOrZero
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.networkExecutor
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onError
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onLoading
@@ -61,10 +60,10 @@ class GroupsInteractorImpl(
             onSuccess { user ->
                 val currentGroups = groups.toMutableList()
                 var currentGroup = currentGroups.find { it.id == groupId } ?: GroupUiModel()
-                val index = currentGroups.indexOrZero(currentGroup)
+                val index = currentGroups.indexOf(currentGroup)
                 val currentMembers = currentGroup.members.toMutableList()
                 var member = currentMembers.find { it.id == userId } ?: MemberUiModel()
-                val indexOfUser = currentGroup.members.indexOrZero(member)
+                val indexOfUser = currentGroup.members.indexOf(member)
                 member = member.copy(
                     name = user.name,
                     email = user.email,
@@ -99,7 +98,7 @@ class GroupsInteractorImpl(
             onSuccess { uri ->
                 val currentGroups = groups.toMutableList()
                 var currentGroup = currentGroups.find { it.id == groupId } ?: GroupUiModel()
-                val indexOfGroup = currentGroups.indexOrZero(currentGroup)
+                val indexOfGroup = currentGroups.indexOf(currentGroup)
                 currentGroup = currentGroup.copy(
                     avatar = uri
                 )
@@ -124,11 +123,11 @@ class GroupsInteractorImpl(
             onSuccess { uri ->
                 val currentGroups = groups.toMutableList()
                 var currentGroup = currentGroups.find { it.id == groupId } ?: GroupUiModel()
-                val indexOfGroup = currentGroups.indexOrZero(currentGroup)
+                val indexOfGroup = currentGroups.indexOf(currentGroup)
                 val currentMembers = currentGroup.members.toMutableList()
                 var member =
                     currentGroup.members.find { it.id == userId } ?: MemberUiModel()
-                val indexOfUser = currentGroup.members.indexOrZero(member)
+                val indexOfUser = currentGroup.members.indexOf(member)
                 member = member.copy(
                     avatar = uri
                 )
@@ -171,7 +170,7 @@ class GroupsInteractorImpl(
             onSuccess { address ->
                 val currentGroups = groups.toMutableList()
                 var currentGroup = currentGroups.find { it.id == groupId } ?: GroupUiModel()
-                val indexOfGroup = currentGroups.indexOrZero(currentGroup)
+                val indexOfGroup = currentGroups.indexOf(currentGroup)
                 currentGroup = currentGroup.copy(
                     location = address.orEmpty()
                 )

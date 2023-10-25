@@ -9,6 +9,7 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 import tech.baza_trainee.mama_ne_vdoma.data.model.CreateGroupDto
 import tech.baza_trainee.mama_ne_vdoma.data.model.GroupDto
+import tech.baza_trainee.mama_ne_vdoma.data.model.GroupFullInfoDto
 import tech.baza_trainee.mama_ne_vdoma.data.model.LocationPatchDto
 import tech.baza_trainee.mama_ne_vdoma.data.model.UpdateGroupDto
 
@@ -61,4 +62,7 @@ interface GroupsApi {
 
     @POST("api/group/leave/{groupId}")
     suspend fun leaveGroup(@Path("groupId") groupId: String): Response<Unit>
+
+    @GET("api/group/full-info/{groupId}")
+    suspend fun getGroupFullInfo(@Path("groupId") groupId: String): Response<GroupFullInfoDto>
 }

@@ -8,6 +8,7 @@ import tech.baza_trainee.mama_ne_vdoma.data.model.LocationPatchDto
 import tech.baza_trainee.mama_ne_vdoma.data.utils.asCustomResponse
 import tech.baza_trainee.mama_ne_vdoma.data.utils.getMessage
 import tech.baza_trainee.mama_ne_vdoma.domain.model.GroupEntity
+import tech.baza_trainee.mama_ne_vdoma.domain.model.GroupFullInfoEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UpdateGroupEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.GroupsRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestResult
@@ -104,6 +105,13 @@ class GroupsRepositoryImpl(
         val result = groupsApi.leaveGroup(groupId)
         return if (result.isSuccessful)
             RequestResult.Success(Unit)
+        else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage())
+    }
+
+    override suspend fun getGroupFullInfo(groupId: String): RequestResult<GroupFullInfoEntity> {
+        val result = groupsApi.getGroupFullInfo(groupId)
+        return if (result.isSuccessful)
+            RequestResult.Success(result.body()?.toDomainModel() ?: GroupFullInfoEntity())
         else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage())
     }
 }
