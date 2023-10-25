@@ -279,4 +279,12 @@ class UserPreferencesDatastoreManager(private val context: Context) {
                 }
             }
         }
+
+    fun clearData() = runBlocking {
+        withContext(Dispatchers.Default) {
+            userDataStore.edit { preferences ->
+                preferences.clear()
+            }
+        }
+    }
 }
