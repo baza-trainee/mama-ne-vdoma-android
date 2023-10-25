@@ -77,6 +77,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.sche
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.user_info.UserInfoViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.user_location.UserLocationViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.BitmapHelper
+import java.util.concurrent.TimeUnit
 
 val repoModule = module {
     single {
@@ -227,12 +228,13 @@ fun createOkHttpClient(
     loggingInterceptor: ChuckerInterceptor
 ): OkHttpClient {
     return OkHttpClient.Builder()
-//        .hostnameVerifier { _, _ -> true }
-//        .addInterceptor(TokenInterceptor())
+        .connectTimeout(TIMEOUT, TimeUnit.SECONDS)
+        .readTimeout(TIMEOUT, TimeUnit.SECONDS)
+        .writeTimeout(TIMEOUT, TimeUnit.SECONDS)
         .addInterceptor(httpLoggingInterceptor)
         .addInterceptor(loggingInterceptor)
         .build()
 }
 
 private const val CHUCKER_CONTENT_MAX_LENGTH = 250000L
-private const val SINGLETON_FOR_MAIN = "MAIN"
+private const val TIMEOUT = 30L
