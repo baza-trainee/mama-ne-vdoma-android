@@ -207,6 +207,8 @@ fun MainScreen(
                 contentScale = ContentScale.FillHeight
             )
         }
+
+        Spacer(modifier = Modifier.height(16.dp))
     }
 
     if (screenState.value.isLoading) LoadingIndicator()

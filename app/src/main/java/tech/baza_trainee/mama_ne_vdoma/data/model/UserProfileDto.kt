@@ -12,7 +12,8 @@ data class UserProfileDto(
     val sendingEmails: Boolean = true,
     val avatar: String? = null,
     val location: LocationDto? = null,
-    val week: Map<String, DayScheduleDto>? = null
+    val week: Map<String, DayScheduleDto>? = null,
+    val groupJoinRequests: List<String> = emptyList()
 )
 
 data class UserProfileResponse(

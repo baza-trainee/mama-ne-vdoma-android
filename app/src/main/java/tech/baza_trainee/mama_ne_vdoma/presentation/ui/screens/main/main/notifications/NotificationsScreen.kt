@@ -2,16 +2,15 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.main.notifi
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
@@ -79,50 +78,45 @@ fun NotificationScreen(
             state = pagerState,
             modifier = Modifier
                 .fillMaxSize()
-                .weight(1f)
+                .weight(1f),
+            verticalAlignment = Alignment.Top
         ) { page ->
             when (page) {
                 0 -> {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .verticalScroll(rememberScrollState()),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Top
-                    ) {
-                        Spacer(modifier = Modifier.height(8.dp))
+                    LazyColumn {
+                        items(screenState.value.myJoinRequests) {
+                            Spacer(modifier = Modifier.height(8.dp))
 
-                        screenState.value.adminJoinRequests.forEach {
                             MyRequestCard(
                                 request = it,
-                                goToMain = { handleEvent(NotificationsEvent.GoToMain) },
-                                onDecline = { groupId, childId -> handleEvent(NotificationsEvent.DeclineUser(groupId, childId)) }
+                                onDecline = { groupId, childId ->
+                                    handleEvent(
+                                        NotificationsEvent.DeclineUser(
+                                            groupId,
+                                            childId
+                                        )
+                                    )
+                                }
                             )
-
-                            Spacer(modifier = Modifier.height(8.dp))
                         }
                     }
+
+                    Spacer(modifier = Modifier.height(8.dp))
                 }
                 1 -> {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .verticalScroll(rememberScrollState()),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Top
-                    ) {
-                        Spacer(modifier = Modifier.height(8.dp))
+                    LazyColumn {
+                        items(screenState.value.adminJoinRequests) {
+                            Spacer(modifier = Modifier.height(8.dp))
 
-                        screenState.value.adminJoinRequests.forEach {
                             AdminJoinRequestCard(
                                 request = it,
                                 onAccept = { groupId, childId -> handleEvent(NotificationsEvent.AcceptUser(groupId, childId)) },
                                 onDecline = { groupId, childId -> handleEvent(NotificationsEvent.DeclineUser(groupId, childId)) }
                             )
-
-                            Spacer(modifier = Modifier.height(8.dp))
                         }
                     }
+
+                    Spacer(modifier = Modifier.height(8.dp))
                 }
             }
         }

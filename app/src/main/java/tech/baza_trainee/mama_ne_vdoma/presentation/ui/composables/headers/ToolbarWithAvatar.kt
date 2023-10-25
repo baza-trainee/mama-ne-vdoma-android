@@ -103,9 +103,6 @@ fun ToolbarWithAvatar(
                 modifier = Modifier
                     .fillMaxHeight()
                     .padding(16.dp)
-                    .height(32.dp)
-                    .width(32.dp)
-                    .clip(CircleShape)
                     .clickable {
                         onNotificationsClicked()
                     },

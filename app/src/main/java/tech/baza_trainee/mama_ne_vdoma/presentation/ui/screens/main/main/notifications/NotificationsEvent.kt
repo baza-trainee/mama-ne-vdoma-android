@@ -7,5 +7,4 @@ sealed interface NotificationsEvent {
     data object ResetUiState: NotificationsEvent
 
     data object OnBack: NotificationsEvent
-    data object GoToMain: NotificationsEvent
 }

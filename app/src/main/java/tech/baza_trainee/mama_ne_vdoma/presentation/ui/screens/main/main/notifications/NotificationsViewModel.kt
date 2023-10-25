@@ -17,10 +17,12 @@ import tech.baza_trainee.mama_ne_vdoma.domain.repository.GroupsRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.LocationRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.PageNavigator
-import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.MainScreenRoutes
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.GroupUiModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.JoinRequestUiModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.MemberUiModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.indexOrZero
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.networkExecutor
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onError
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onLoading
@@ -52,7 +54,6 @@ class NotificationsViewModel(
             NotificationsEvent.OnBack -> navigator.goToPrevious()
             is NotificationsEvent.AcceptUser -> acceptJoinRequest(event.group, event.child)
             is NotificationsEvent.DeclineUser -> declineJoinRequest(event.group, event.child)
-            NotificationsEvent.GoToMain -> navigator.navigate(MainScreenRoutes.Main)
         }
     }
 
@@ -123,21 +124,45 @@ class NotificationsViewModel(
                 groupsRepository.getGroupById(groupId)
             }
             onSuccess { entity ->
-                val currentList = _viewState.value.myJoinRequests.toMutableList()
-                var currentRequest = currentList.find { it.groupId == groupId } ?: JoinRequestUiModel()
-                val indexOfGroup = currentList.indexOf(currentRequest)
+                val currentRequests = _viewState.value.myJoinRequests.toMutableList()
+                var currentRequest = currentRequests.find { it.group.id == groupId } ?: JoinRequestUiModel()
+                val indexOfRequest = currentRequests.indexOrZero(currentRequest)
+                val members = entity.members
+                    .groupBy { it.parentId }
+                    .map { (parentId, children) ->
+                        MemberUiModel(id = parentId, children = children.map { it.childId }.toList())
+                    }
+                val uiModel = GroupUiModel(
+                    id = entity.id,
+                    adminId = entity.adminId,
+                    name = entity.name,
+                    description = entity.description,
+                    ages = entity.ages,
+                    members = members
+                )
                 currentRequest = currentRequest.copy(
-                    groupId = entity.id,
-                    groupName = entity.name,
+                    group = uiModel,
                     parentAvatar = preferencesDatastoreManager.avatarUri,
                     parentName = preferencesDatastoreManager.name,
                     parentId = preferencesDatastoreManager.id
                 )
-                currentList[indexOfGroup] = currentRequest
+                currentRequests.apply {
+                    if (size == 0)
+                        add(currentRequest)
+                    else {
+                        removeAt(indexOfRequest)
+                        add(indexOfRequest, currentRequest)
+                    }
+                }
+
                 _viewState.update {
                     it.copy(
-                        myJoinRequests = currentList
+                        myJoinRequests = currentRequests
                     )
+                }
+
+                members.forEach {
+                    getUser(it.id, entity.id)
                 }
             }
             onError { error ->
@@ -162,12 +187,14 @@ class NotificationsViewModel(
                 val joinRequests = mutableListOf<JoinRequestUiModel>()
                 entityList.onEach { group ->
                     group.askingJoin.forEach { member ->
-                        getUser(member.parentId, group.id)
+                        getUserForJoin(member.parentId, group.id)
                         getChild(member.childId, group.id)
                         joinRequests.add(
                             JoinRequestUiModel(
-                                groupId = group.id,
-                                groupName = group.name,
+                                group = GroupUiModel(
+                                    id = group.id,
+                                    name = group.name
+                                ),
                                 parentId = member.parentId
                             )
                         )
@@ -192,13 +219,13 @@ class NotificationsViewModel(
         }
     }
 
-    private fun getUser(userId: String, groupId: String) {
+    private fun getUserForJoin(userId: String, groupId: String) {
         networkExecutor<UserProfileEntity> {
             execute {
                 userProfileRepository.getUserById(userId)
             }
             onSuccess { user ->
-                getUserAvatar(user.avatar, groupId)
+                getUserAvatarForJoin(user.avatar, groupId)
 
                 if (user.location.coordinates.isNotEmpty())
                     getAddressFromLocation(
@@ -210,14 +237,23 @@ class NotificationsViewModel(
                     )
 
                 val currentRequests = _viewState.value.adminJoinRequests.toMutableList()
-                var currentRequest = currentRequests.find { it.groupId == groupId } ?: JoinRequestUiModel()
-                val indexOfGroup = currentRequests.indexOf(currentRequest)
+
+                var currentRequest =
+                    currentRequests.find { it.group.id == groupId } ?: JoinRequestUiModel()
+                val indexOfRequest = currentRequests.indexOrZero(currentRequest)
                 currentRequest = currentRequest.copy(
                     parentName = user.name,
                     parentEmail = user.email,
                     parentPhone = "${user.countryCode}${user.phone}"
                 )
-                currentRequests[indexOfGroup] = currentRequest
+                currentRequests.apply {
+                    if (size == 0)
+                        add(currentRequest)
+                    else {
+                        removeAt(indexOfRequest)
+                        add(indexOfRequest, currentRequest)
+                    }
+                }
 
                 _viewState.update {
                     it.copy(
@@ -238,17 +274,144 @@ class NotificationsViewModel(
         }
     }
 
-    private fun getUserAvatar(avatarId: String, groupId: String) {
+    private fun getUser(userId: String, groupId: String) {
+        networkExecutor<UserProfileEntity> {
+            execute {
+                userProfileRepository.getUserById(userId)
+            }
+            onSuccess { user ->
+                getUserAvatar(user.avatar, groupId, user.id)
+
+                val currentRequests = _viewState.value.myJoinRequests.toMutableList()
+
+                var currentRequest =
+                    currentRequests.find { it.group.id == groupId } ?: JoinRequestUiModel()
+                val indexOfRequest = currentRequests.indexOrZero(currentRequest)
+                var group = currentRequest.group
+
+                val currentMembers = group.members.toMutableList()
+                var currentMember = currentMembers.find { it.id == userId } ?: MemberUiModel()
+                val index = currentMembers.indexOrZero(currentMember)
+
+                currentMember = currentMember.copy(name = user.name)
+                currentMembers.apply {
+                    if (size == 0)
+                        add(currentMember)
+                    else {
+                        removeAt(index)
+                        add(index, currentMember)
+                    }
+                }
+
+                group = group.copy(members = currentMembers)
+
+                currentRequest = currentRequest.copy(
+                    group = group
+                )
+                currentRequests.apply {
+                    if (size == 0)
+                        add(currentRequest)
+                    else {
+                        removeAt(indexOfRequest)
+                        add(indexOfRequest, currentRequest)
+                    }
+                }
+
+                _viewState.update {
+                    it.copy(
+                        myJoinRequests = currentRequests
+                    )
+                }
+            }
+            onError { error ->
+                _uiState.value = RequestState.OnError(error)
+            }
+            onLoading { isLoading ->
+                _viewState.update {
+                    it.copy(
+                        isLoading = isLoading
+                    )
+                }
+            }
+        }
+    }
+
+    private fun getUserAvatar(avatarId: String, groupId: String, userId: String) {
+        networkExecutor {
+            execute { filesRepository.getAvatar(avatarId) }
+            onSuccess { uri ->
+                val currentRequests = _viewState.value.myJoinRequests.toMutableList()
+                var currentRequest = currentRequests.find { it.group.id == groupId } ?: JoinRequestUiModel()
+                val indexOfRequest = currentRequests.indexOrZero(currentRequest)
+                var group = currentRequest.group
+
+                val currentMembers = group.members.toMutableList()
+                var currentMember = currentMembers.find { it.id == userId } ?: MemberUiModel()
+                val index = currentMembers.indexOrZero(currentMember)
+
+                currentMember = currentMember.copy(avatar = uri)
+                currentMembers.apply {
+                    if (size == 0)
+                        add(currentMember)
+                    else {
+                        removeAt(index)
+                        add(index, currentMember)
+                    }
+                }
+
+                group = group.copy(members = currentMembers)
+
+                currentRequest = currentRequest.copy(
+                    group = group
+                )
+                currentRequest = currentRequest.copy(
+                    parentAvatar = uri
+                )
+                currentRequests.apply {
+                    if (size == 0)
+                        add(currentRequest)
+                    else {
+                        removeAt(indexOfRequest)
+                        add(indexOfRequest, currentRequest)
+                    }
+                }
+                _viewState.update {
+                    it.copy(
+                        myJoinRequests = currentRequests
+                    )
+                }
+            }
+            onError { error ->
+                _uiState.value = RequestState.OnError(error)
+            }
+            onLoading { isLoading ->
+                _viewState.update {
+                    it.copy(
+                        isLoading = isLoading
+                    )
+                }
+            }
+        }
+    }
+
+    private fun getUserAvatarForJoin(avatarId: String, groupId: String) {
         networkExecutor {
             execute { filesRepository.getAvatar(avatarId) }
             onSuccess { uri ->
                 val currentRequests = _viewState.value.adminJoinRequests.toMutableList()
-                var currentRequest = currentRequests.find { it.groupId == groupId } ?: JoinRequestUiModel()
-                val indexOfGroup = currentRequests.indexOf(currentRequest)
+                var currentRequest = currentRequests.find { it.group.id == groupId } ?: JoinRequestUiModel()
+                val indexOfRequest = currentRequests.indexOrZero(currentRequest)
                 currentRequest = currentRequest.copy(
                     parentAvatar = uri
                 )
-                currentRequests[indexOfGroup] = currentRequest
+                currentRequests.apply {
+                    if (size == 0)
+                        add(currentRequest)
+                    else {
+                        removeAt(indexOfRequest)
+                        add(indexOfRequest, currentRequest)
+                    }
+                }
                 _viewState.update {
                     it.copy(
                         adminJoinRequests = currentRequests
@@ -275,12 +438,20 @@ class NotificationsViewModel(
             }
             onSuccess { child ->
                 val currentRequests = _viewState.value.adminJoinRequests.toMutableList()
-                var currentRequest = currentRequests.find { it.groupId == groupId } ?: JoinRequestUiModel()
-                val indexOfGroup = currentRequests.indexOf(currentRequest)
+                var currentRequest = currentRequests.find { it.group.id == groupId } ?: JoinRequestUiModel()
+                val indexOfRequest = currentRequests.indexOrZero(currentRequest)
                 currentRequest = currentRequest.copy(
                     child = child
                 )
-                currentRequests[indexOfGroup] = currentRequest
+                currentRequests.apply {
+                    if (size == 0)
+                        add(currentRequest)
+                    else {
+                        removeAt(indexOfRequest)
+                        add(indexOfRequest, currentRequest)
+                    }
+                }
+
                 _viewState.update {
                     it.copy(
                         adminJoinRequests = currentRequests
@@ -307,12 +478,20 @@ class NotificationsViewModel(
             }
             onSuccess { address ->
                 val currentRequests = _viewState.value.adminJoinRequests.toMutableList()
-                var currentRequest = currentRequests.find { it.groupId == groupId } ?: JoinRequestUiModel()
-                val indexOfGroup = currentRequests.indexOf(currentRequest)
+                var currentRequest = currentRequests.find { it.group.id == groupId } ?: JoinRequestUiModel()
+                val indexOfRequest = currentRequests.indexOrZero(currentRequest)
                 currentRequest = currentRequest.copy(
                     parentAddress = address.orEmpty()
                 )
-                currentRequests[indexOfGroup] = currentRequest
+                currentRequests.apply {
+                    if (size == 0)
+                        add(currentRequest)
+                    else {
+                        removeAt(indexOfRequest)
+                        add(indexOfRequest, currentRequest)
+                    }
+                }
+
                 _viewState.update {
                     it.copy(
                         adminJoinRequests = currentRequests

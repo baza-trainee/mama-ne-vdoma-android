@@ -55,6 +55,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.GrayText
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.Purple80
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.ButtonText
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.indexOrZero
 import java.time.DayOfWeek
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -247,7 +248,7 @@ fun ChildScheduleEditDialog(
                                         DropdownMenuItem(
                                             onClick = {
                                                 searchRequest = child.name
-                                                currentChild = children.indexOf(child)
+                                                currentChild = children.indexOrZero(child)
                                                 expanded = false
                                             },
                                             text = {

@@ -58,7 +58,8 @@ fun UserProfileDto.toDomainModel() = UserProfileEntity(
                     map[it] = DayPeriod()
                 }
         }
-    )
+    ),
+    groupJoinRequests = groupJoinRequests
 )
 
 fun LocationDto?.toDomainModel() = if (this != null)

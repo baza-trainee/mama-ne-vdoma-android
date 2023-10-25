@@ -4,8 +4,7 @@ import android.net.Uri
 import tech.baza_trainee.mama_ne_vdoma.domain.model.ChildEntity
 
 data class JoinRequestUiModel(
-    val groupId: String = "",
-    val groupName: String = "",
+    val group: GroupUiModel = GroupUiModel(),
     val parentId: String = "",
     val parentEmail: String = "",
     val parentName: String = "",

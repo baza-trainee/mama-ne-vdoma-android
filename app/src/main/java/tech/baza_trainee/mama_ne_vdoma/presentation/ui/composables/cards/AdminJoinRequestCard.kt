@@ -124,7 +124,7 @@ fun AdminJoinRequestCard(
                                 .fillMaxWidth()
                                 .padding(horizontal = 16.dp)
                                 .padding(bottom = 4.dp),
-                            text = "Запит на приєднання до групи \"${request.groupName}\"",
+                            text = "Запит на приєднання до групи \"${request.group.name}\"",
                             fontSize = 14.sp,
                             fontFamily = redHatDisplayFontFamily
                         )
@@ -144,7 +144,7 @@ fun AdminJoinRequestCard(
                         modifier = Modifier
                             .padding(horizontal = 8.dp)
                             .clickable {
-                                onDecline(request.groupId, request.child.childId)
+                                onDecline(request.group.id, request.child.childId)
                             },
                         text = "Відхилити",
                         fontSize = 16.sp,
@@ -158,7 +158,7 @@ fun AdminJoinRequestCard(
                         modifier = Modifier
                             .padding(horizontal = 8.dp)
                             .clickable {
-                                onAccept(request.groupId, request.child.childId)
+                                onAccept(request.group.id, request.child.childId)
                             },
                         text = "Погодити",
                         fontSize = 16.sp,
@@ -265,7 +265,7 @@ fun AdminJoinRequestCard(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(48.dp),
-                    onClick = { onAccept(request.groupId, request.child.childId) }
+                    onClick = { onAccept(request.group.id, request.child.childId) }
                 ) {
                     ButtonText(
                         text = "Погодити запит"
@@ -278,7 +278,7 @@ fun AdminJoinRequestCard(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(48.dp),
-                    onClick = { onDecline(request.groupId, request.child.childId) },
+                    onClick = { onDecline(request.group.id, request.child.childId) },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = LogoutButtonColor,
                         contentColor = LogoutButtonTextColor

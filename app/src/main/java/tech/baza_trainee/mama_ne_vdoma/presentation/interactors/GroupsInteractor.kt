@@ -9,6 +9,7 @@ import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.GroupUiModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.MemberUiModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.indexOrZero
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.networkExecutor
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onError
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onLoading
@@ -59,28 +60,28 @@ class GroupsInteractorImpl(
             }
             onSuccess { user ->
                 val currentGroups = groups.toMutableList()
-                var currentGroup = currentGroups.firstOrNull { it.id == groupId } ?: GroupUiModel()
-                val index = currentGroups.indexOf(currentGroup)
-                if (index != -1) {
-                    val currentMembers = currentGroup.members.toMutableList()
-                    var member = currentMembers.firstOrNull { it.id == userId } ?: MemberUiModel()
-                    val indexOfUser = currentGroup.members.indexOf(member)
-                    if (indexOfUser != -1) {
-                        member = member.copy(
-                            name = user.name,
-                            email = user.email,
-                            phone = "${user.countryCode}${user.phone}"
-                        )
-                        currentMembers.apply {
-                            removeAt(indexOfUser)
-                            add(indexOfUser, member)
-                        }
-                        currentGroup = currentGroup.copy(members = currentMembers)
-                        currentGroups[index] = currentGroup
-
-                        onSuccess(user, currentGroups)
+                var currentGroup = currentGroups.find { it.id == groupId } ?: GroupUiModel()
+                val index = currentGroups.indexOrZero(currentGroup)
+                val currentMembers = currentGroup.members.toMutableList()
+                var member = currentMembers.find { it.id == userId } ?: MemberUiModel()
+                val indexOfUser = currentGroup.members.indexOrZero(member)
+                member = member.copy(
+                    name = user.name,
+                    email = user.email,
+                    phone = "${user.countryCode}${user.phone}"
+                )
+                currentMembers.apply {
+                    if (size == 0)
+                        add(member)
+                    else {
+                        removeAt(indexOfUser)
+                        add(indexOfUser, member)
                     }
                 }
+                currentGroup = currentGroup.copy(members = currentMembers)
+                currentGroups[index] = currentGroup
+
+                onSuccess(user, currentGroups)
             }
             onError(networkListener::onError)
             onLoading(networkListener::onLoading)
@@ -98,7 +99,7 @@ class GroupsInteractorImpl(
             onSuccess { uri ->
                 val currentGroups = groups.toMutableList()
                 var currentGroup = currentGroups.find { it.id == groupId } ?: GroupUiModel()
-                val indexOfGroup = currentGroups.indexOf(currentGroup)
+                val indexOfGroup = currentGroups.indexOrZero(currentGroup)
                 currentGroup = currentGroup.copy(
                     avatar = uri
                 )
@@ -122,27 +123,35 @@ class GroupsInteractorImpl(
             execute { filesRepository.getAvatar(avatarId) }
             onSuccess { uri ->
                 val currentGroups = groups.toMutableList()
-                var currentGroup = currentGroups.firstOrNull { it.id == groupId } ?: GroupUiModel()
-                val indexOfGroup = currentGroups.indexOf(currentGroup)
-                if (indexOfGroup != -1) {
-                    val currentMembers = currentGroup.members.toMutableList()
-                    var member =
-                        currentGroup.members.firstOrNull() { it.id == userId } ?: MemberUiModel()
-                    val indexOfUser = currentGroup.members.indexOf(member)
-                    if (indexOfUser != -1) {
-                        member = member.copy(
-                            avatar = uri
-                        )
-                        currentMembers.apply {
-                            removeAt(indexOfUser)
-                            add(indexOfUser, member)
-                        }
-                        currentGroup = currentGroup.copy(members = currentMembers)
-                        currentGroups[indexOfGroup] = currentGroup
-
-                        onSuccess(currentGroups)
+                var currentGroup = currentGroups.find { it.id == groupId } ?: GroupUiModel()
+                val indexOfGroup = currentGroups.indexOrZero(currentGroup)
+                val currentMembers = currentGroup.members.toMutableList()
+                var member =
+                    currentGroup.members.find { it.id == userId } ?: MemberUiModel()
+                val indexOfUser = currentGroup.members.indexOrZero(member)
+                member = member.copy(
+                    avatar = uri
+                )
+                currentMembers.apply {
+                    if (size == 0)
+                        add(member)
+                    else {
+                        removeAt(indexOfUser)
+                        add(indexOfUser, member)
                     }
                 }
+
+                currentGroup = currentGroup.copy(members = currentMembers)
+                currentGroups.apply {
+                    if (size == 0)
+                        add(currentGroup)
+                    else {
+                        removeAt(indexOfGroup)
+                        add(indexOfGroup, currentGroup)
+                    }
+                }
+
+                onSuccess(currentGroups)
             }
             onError(networkListener::onError)
             onLoading(networkListener::onLoading)
@@ -161,20 +170,24 @@ class GroupsInteractorImpl(
             }
             onSuccess { address ->
                 val currentGroups = groups.toMutableList()
-                var currentGroup = currentGroups.firstOrNull { it.id == groupId } ?: GroupUiModel()
-                val indexOfGroup = currentGroups.indexOf(currentGroup)
-                if (indexOfGroup != -1) {
-                    currentGroup = currentGroup.copy(
-                        location = address.orEmpty()
-                    )
-                    currentGroups[indexOfGroup] = currentGroup
-
-                    onSuccess(currentGroups)
+                var currentGroup = currentGroups.find { it.id == groupId } ?: GroupUiModel()
+                val indexOfGroup = currentGroups.indexOrZero(currentGroup)
+                currentGroup = currentGroup.copy(
+                    location = address.orEmpty()
+                )
+                currentGroups.apply {
+                    if (size == 0)
+                        add(currentGroup)
+                    else {
+                        removeAt(indexOfGroup)
+                        add(indexOfGroup, currentGroup)
+                    }
                 }
+
+                onSuccess(currentGroups)
             }
             onError(networkListener::onError)
             onLoading(networkListener::onLoading)
         }
     }
-
 }
