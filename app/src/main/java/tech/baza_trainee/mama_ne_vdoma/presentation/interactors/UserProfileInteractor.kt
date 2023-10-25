@@ -92,6 +92,7 @@ class UserProfileInteractorImpl(
                 userProfileRepository.deleteUser()
             }
             onSuccess {
+                preferencesDatastoreManager.clearData()
                 onSuccess()
             }
             onError(networkListener::onError)
