@@ -142,6 +142,11 @@ class HostViewModel(
                             longitude = entity.location.coordinates[0]
                         }
                     }
+                    _viewState.update {
+                        it.copy(
+                            myRequests = entity.groupJoinRequests.size
+                        )
+                    }
                 }
             }
             onError { error ->
@@ -163,11 +168,9 @@ class HostViewModel(
                 groupsRepository.getGroupsForParent(parent)
             }
             onSuccess { entityList ->
-                val notifications = entityList.flatMap { it.askingJoin }.size
-                preferencesDatastoreManager.notifications = notifications
                 _viewState.update { state ->
                     state.copy(
-                        notifications = notifications
+                        joinRequests = entityList.flatMap { it.askingJoin }.size
                     )
                 }
             }

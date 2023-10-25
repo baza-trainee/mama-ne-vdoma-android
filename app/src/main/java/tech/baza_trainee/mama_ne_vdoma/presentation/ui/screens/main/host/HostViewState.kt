@@ -6,7 +6,8 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.MainScreen
 
 data class HostViewState(
     val currentRoute: CommonHostRoute = MainScreenRoutes.Main,
-    val notifications: Int = 0,
+    val myRequests: Int = 0,
+    val joinRequests: Int = 0,
     val avatar: Uri = Uri.EMPTY,
     val isLoading: Boolean = false
 )

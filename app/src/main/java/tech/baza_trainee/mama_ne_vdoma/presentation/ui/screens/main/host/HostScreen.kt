@@ -60,6 +60,8 @@ fun HostScreen(
             MainNavigationItem("Налаштування", R.drawable.ic_settings)
         )
 
+        val notificationsCount = screenState.value.myRequests + screenState.value.joinRequests
+
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             topBar = {
@@ -68,8 +70,8 @@ fun HostScreen(
                         title = screenState.value.currentRoute.title,
                         avatar = screenState.value.avatar,
                         showArrow = false,
-                        showNotification = screenState.value.notifications != 0,
-                        notificationCount = screenState.value.notifications,
+                        showNotification = notificationsCount != 0,
+                        notificationCount = notificationsCount,
                         onNotificationsClicked = { handleEvent(HostEvent.GoToNotifications) },
                         onAvatarClicked = { handleEvent(HostEvent.SwitchTab(SETTINGS_PAGE)) }
                     )
@@ -77,8 +79,9 @@ fun HostScreen(
                     HeaderWithToolbar(
                         title = screenState.value.currentRoute.title,
                         avatar = screenState.value.avatar,
-                        showNotification = screenState.value.notifications != 0,
-                        notificationCount = screenState.value.notifications,
+                        showNotification = notificationsCount != 0,
+                        notificationCount = notificationsCount,
+                        onNotificationsClicked = { handleEvent(HostEvent.GoToNotifications) },
                         onBack = { handleEvent(HostEvent.OnBackLocal) }
                     )
                 }
