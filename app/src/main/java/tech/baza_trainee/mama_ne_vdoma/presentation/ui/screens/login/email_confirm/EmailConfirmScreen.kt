@@ -69,7 +69,7 @@ fun EmailConfirmScreen(
                 modifier = Modifier.fillMaxWidth(),
                 painter = painterResource(id = R.drawable.email_confirm),
                 contentDescription = null,
-                contentScale = ContentScale.FillHeight
+                contentScale = ContentScale.FillWidth
             )
 
             Spacer(modifier = Modifier.weight(1f))

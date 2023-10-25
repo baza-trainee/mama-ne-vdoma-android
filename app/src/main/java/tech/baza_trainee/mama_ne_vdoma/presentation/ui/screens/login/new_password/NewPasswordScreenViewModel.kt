@@ -78,7 +78,7 @@ class NewPasswordScreenViewModel(
     private fun resetPassword() {
         networkExecutor {
             execute {
-                authRepository.resetPassword(email, _viewState.value.password, otp)
+                authRepository.resetPassword(email, otp, _viewState.value.password)
             }
             onSuccess {
                 navigator.navigate(LoginRoutes.RestoreSuccess)
