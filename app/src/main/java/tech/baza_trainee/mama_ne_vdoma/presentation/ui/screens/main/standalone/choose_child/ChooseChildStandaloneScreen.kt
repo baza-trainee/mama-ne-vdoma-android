@@ -9,8 +9,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -67,7 +67,7 @@ fun ChooseChildStandaloneScreen(
         Column(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceBetween
+            verticalArrangement = Arrangement.Top
         ) {
 
             HeaderWithToolbar(
@@ -82,41 +82,35 @@ fun ChooseChildStandaloneScreen(
 
             Spacer(modifier = Modifier.height(4.dp))
 
-            Column(
+            Text(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .verticalScroll(rememberScrollState())
-                    .padding(horizontal = 16.dp)
-                    .weight(1f),
-                verticalArrangement = Arrangement.Top,
-                horizontalAlignment = Alignment.CenterHorizontally
+                    .padding(horizontal = 16.dp),
+                text = "Для кого шукаємо групу?",
+                fontFamily = redHatDisplayFontFamily,
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Start
+            )
+
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .padding(all = 16.dp)
             ) {
-                Text(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = "Для кого шукаємо групу?",
-                    fontFamily = redHatDisplayFontFamily,
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Start
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                screenState.value.children.forEach { childEntity ->
-                    Spacer(modifier = Modifier.height(8.dp))
+                itemsIndexed(screenState.value.children) { index, child ->
+                    if (index != 0)
+                        Spacer(modifier = Modifier.height(8.dp))
 
                     ChildCard(
                         modifier = Modifier.fillMaxWidth(),
-                        child = childEntity,
-                        isSelected = selectedChild == childEntity,
+                        child = child,
+                        isSelected = selectedChild == child,
                         onSelected = { selectedChild = it }
                     )
                 }
-
-                Spacer(modifier = Modifier.height(8.dp))
             }
-
-            Spacer(modifier = Modifier.weight(1f))
 
             Button(
                 modifier = Modifier

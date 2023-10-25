@@ -17,8 +17,8 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.GroupsInteractor
 import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.NetworkEventsListener
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.HostScreenRoutes
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.GROUPS_PAGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.GroupSearchStandaloneCommunicator
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.MAIN_PAGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.SETTINGS_PAGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.GroupUiModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
@@ -76,7 +76,7 @@ class FoundGroupsStandaloneViewModel(
             FoundGroupEvent.OnJoin -> sendJoinRequest()
             is FoundGroupEvent.OnSelect -> setSelectedGroup(event.group)
             FoundGroupEvent.GoToMain ->
-                navigator.navigate(HostScreenRoutes.Host.getDestination(GROUPS_PAGE))
+                navigator.navigate(HostScreenRoutes.Host.getDestination(MAIN_PAGE))
 
             FoundGroupEvent.OnAvatarClicked ->
                 navigator.navigate(HostScreenRoutes.Host.getDestination(SETTINGS_PAGE))
@@ -124,13 +124,17 @@ class FoundGroupsStandaloneViewModel(
                 groupsRepository.getGroupsByArea(
                     preferencesDatastoreManager.latitude,
                     preferencesDatastoreManager.longitude,
-                    KM * preferencesDatastoreManager.radius
+                    preferencesDatastoreManager.radius
                 )
             }
             onSuccess { entityList ->
+                val groups = entityList.filter { group ->
+                    group.adminId != preferencesDatastoreManager.id &&
+                            !group.members.map { it.parentId }.contains(preferencesDatastoreManager.id)
+                }
                 _viewState.update { state ->
                     state.copy(
-                        groups = entityList.map {
+                        groups = groups.map {
                             GroupUiModel(
                                 id = it.id,
                                 adminId = it.adminId,
@@ -141,7 +145,7 @@ class FoundGroupsStandaloneViewModel(
                         }
                     )
                 }
-                entityList.forEach { group ->
+                groups.forEach { group ->
                     group.members.forEach { member ->
                         getUser(member.parentId, group.id)
                     }
@@ -229,10 +233,5 @@ class FoundGroupsStandaloneViewModel(
                 )
             }
         }
-    }
-
-    companion object {
-
-        private const val KM = 1000
     }
 }

@@ -14,9 +14,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -92,70 +92,27 @@ fun FoundGroupScreen(
                 onAvatarClicked = { handleEvent(FoundGroupEvent.OnAvatarClicked) },
                 onBack = { handleEvent(FoundGroupEvent.OnBack) }
             )
+            Spacer(modifier = Modifier.height(8.dp))
 
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                verticalArrangement = Arrangement.SpaceBetween,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Spacer(modifier = Modifier.height(8.dp))
-
-                if (screenState.value.groups.isNotEmpty()) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            modifier = Modifier
-                                .weight(1f),
-                            text = "Рекомендовані групи",
-                            fontFamily = redHatDisplayFontFamily,
-                            fontSize = 16.sp
-                        )
-                        Text(
-                            modifier = Modifier
-                                .weight(1f)
-                                .clickable(
-                                    indication = null,
-                                    interactionSource = remember { MutableInteractionSource() }
-                                ) { handleEvent(FoundGroupEvent.GoToMain) },
-                            text = "Створити групу",
-                            fontFamily = redHatDisplayFontFamily,
-                            fontSize = 14.sp,
-                            textDecoration = TextDecoration.Underline,
-                            textAlign = TextAlign.End,
-                            color = MaterialTheme.colorScheme.primary
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    Column(
-                        modifier = Modifier
-                            .weight(1f)
-                            .verticalScroll(rememberScrollState())
-                    ) {
-                        screenState.value.groups.forEach { model ->
-                            GroupInfoDesk(
-                                modifier = Modifier.fillMaxWidth(),
-                                group = model,
-                                onSelect = { handleEvent(FoundGroupEvent.OnSelect(it)) }
-                            )
-
-                            Spacer(modifier = Modifier.height(8.dp))
-                        }
-                    }
-                } else if (!screenState.value.isLoading) {
+            if (screenState.value.groups.isNotEmpty()) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     Text(
                         modifier = Modifier
-                            .wrapContentWidth()
-                            .align(alignment = Alignment.End)
+                            .weight(1f),
+                        text = "Рекомендовані групи",
+                        fontFamily = redHatDisplayFontFamily,
+                        fontSize = 16.sp
+                    )
+                    Text(
+                        modifier = Modifier
+                            .weight(1f)
                             .clickable(
                                 indication = null,
                                 interactionSource = remember { MutableInteractionSource() }
-                            ) { },
+                            ) { handleEvent(FoundGroupEvent.GoToMain) },
                         text = "Створити групу",
                         fontFamily = redHatDisplayFontFamily,
                         fontSize = 14.sp,
@@ -163,30 +120,69 @@ fun FoundGroupScreen(
                         textAlign = TextAlign.End,
                         color = MaterialTheme.colorScheme.primary
                     )
-
-                    Spacer(modifier = Modifier.height(32.dp))
-
-                    Text(
-                        modifier = Modifier
-                            .weight(1f),
-                        text = "На жаль, групи за даною локацією не знайдені. Ви можете бути першою і створити нову групу",
-                        fontFamily = redHatDisplayFontFamily,
-                        fontSize = 14.sp
-                    )
                 }
 
-                Button(
+                Spacer(modifier = Modifier.height(8.dp))
+
+                LazyColumn(
                     modifier = Modifier
-                        .padding(horizontal = 16.dp, vertical = 16.dp)
                         .fillMaxWidth()
-                        .height(48.dp),
-                    onClick = { handleEvent(FoundGroupEvent.OnJoin) },
-                    enabled = screenState.value.groups.map { it.isChecked }.contains(true)
+                        .padding(all = 16.dp)
                 ) {
-                    ButtonText(
-                        text = "Приєднатися до групи"
-                    )
+                    itemsIndexed(screenState.value.groups) { index, group ->
+                        if (index != 0)
+                            Spacer(modifier = Modifier.height(8.dp))
+
+                        GroupInfoDesk(
+                            modifier = Modifier.fillMaxWidth(),
+                            group = group,
+                            onSelect = { handleEvent(FoundGroupEvent.OnSelect(it)) }
+                        )
+                    }
                 }
+            } else if (!screenState.value.isLoading) {
+                Text(
+                    modifier = Modifier
+                        .wrapContentWidth()
+                        .padding(horizontal = 16.dp)
+                        .align(alignment = Alignment.End)
+                        .clickable(
+                            indication = null,
+                            interactionSource = remember { MutableInteractionSource() }
+                        ) { },
+                    text = "Створити групу",
+                    fontFamily = redHatDisplayFontFamily,
+                    fontSize = 14.sp,
+                    textDecoration = TextDecoration.Underline,
+                    textAlign = TextAlign.End,
+                    color = MaterialTheme.colorScheme.primary
+                )
+
+                Spacer(modifier = Modifier.height(32.dp))
+
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    text = "На жаль, групи за даною локацією не знайдені. Ви можете бути першою і створити нову групу",
+                    fontFamily = redHatDisplayFontFamily,
+                    fontSize = 14.sp
+                )
+
+                Spacer(modifier = Modifier.weight(1f))
+            }
+
+            Button(
+                modifier = Modifier
+                    .padding(horizontal = 16.dp, vertical = 16.dp)
+                    .fillMaxWidth()
+                    .height(48.dp),
+                onClick = { handleEvent(FoundGroupEvent.OnJoin) },
+                enabled = screenState.value.groups.map { it.isChecked }.contains(true)
+            ) {
+                ButtonText(
+                    text = "Приєднатися до групи"
+                )
             }
         }
 

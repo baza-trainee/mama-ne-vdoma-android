@@ -129,7 +129,7 @@ fun SetAreaForSearchScreen(
 
                             Circle(
                                 center = screenState.value.currentLocation,
-                                radius = KM * screenState.value.radius.toDouble(),
+                                radius = screenState.value.radius.toDouble(),
                                 strokeColor = MaterialTheme.colorScheme.primary,
                                 fillColor = SemiTransparent
                             )
@@ -176,9 +176,9 @@ fun SetAreaForSearchScreen(
                             .constrainAs(slider) {
                                 bottom.linkTo(parent.bottom, 8.dp)
                             },
-                        value = screenState.value.radius,
+                        value = screenState.value.radius / KM,
                         onValueChange = {
-                            handleEvent(SetAreaEvent.SetAreaRadius(it))
+                            handleEvent(SetAreaEvent.SetAreaRadius(it * KM))
                         },
                         colors = SliderDefaults.colors(
                             activeTrackColor = SliderColor

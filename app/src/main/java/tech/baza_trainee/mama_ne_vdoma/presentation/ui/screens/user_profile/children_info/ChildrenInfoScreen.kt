@@ -9,8 +9,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -52,32 +52,31 @@ fun  ChildrenInfoScreen(
                 title = "Анкета дитини",
                 onBack = onBack
             )
-
-            val scrollState = rememberScrollState()
             
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .verticalScroll(scrollState)
                     .padding(horizontal = 16.dp),
                 horizontalAlignment = Alignment.Start,
                 verticalArrangement = Arrangement.Top
             ) {
                 Spacer(modifier = Modifier.height(16.dp))
 
-                screenState.value.children.forEach { child ->
-                    ChildInfoDesk(
-                        modifier = Modifier.fillMaxWidth(),
-                        child = child,
-                        onEdit = {
-                            onHandleChildrenInfoEvent(ChildrenInfoEvent.SetChild(it))
-                            onEdit()
-                        },
-                        onDelete = {
-                            onHandleChildrenInfoEvent(ChildrenInfoEvent.DeleteChild(it))
-                        }
-                    )
-                    Spacer(modifier = Modifier.height(16.dp))
+                LazyColumn {
+                    items(screenState.value.children) { child ->
+                        ChildInfoDesk(
+                            modifier = Modifier.fillMaxWidth(),
+                            child = child,
+                            onEdit = {
+                                onHandleChildrenInfoEvent(ChildrenInfoEvent.SetChild(it))
+                                onEdit()
+                            },
+                            onDelete = {
+                                onHandleChildrenInfoEvent(ChildrenInfoEvent.DeleteChild(it))
+                            }
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                    }
                 }
 
                 Row(

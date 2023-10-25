@@ -9,8 +9,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -54,8 +55,7 @@ fun MyGroupsScreen(
     }
 
     Column(
-        modifier = Modifier
-            .verticalScroll(rememberScrollState())
+        modifier = Modifier.fillMaxWidth()
     ) {
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -85,19 +85,31 @@ fun MyGroupsScreen(
             )
         }
 
-        screenState.value.groups.forEach { groupUiModel ->
-            Spacer(modifier = Modifier.height(8.dp))
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 16.dp)
+        ) {
+            itemsIndexed(screenState.value.groups) { index, group ->
+                if (index != 0)
+                    Spacer(modifier = Modifier.height(8.dp))
 
-            GroupInfoDesk(
-                modifier = Modifier.fillMaxWidth(),
-                group = groupUiModel,
-                currentUserId = screenState.value.userId,
-                onKick = { groupId, childrenIds -> handleEvent(MyGroupsEvent.OnKick(groupId, childrenIds)) },
-                onLeave = { handleEvent(MyGroupsEvent.OnLeave(it)) }
-            )
+                GroupInfoDesk(
+                    modifier = Modifier.fillMaxWidth(),
+                    group = group,
+                    currentUserId = screenState.value.userId,
+                    onKick = { groupId, childrenIds ->
+                        handleEvent(
+                            MyGroupsEvent.OnKick(
+                                groupId,
+                                childrenIds
+                            )
+                        )
+                    },
+                    onLeave = { handleEvent(MyGroupsEvent.OnLeave(it)) }
+                )
+            }
         }
-
-        Spacer(modifier = Modifier.height(16.dp))
     }
 
     if (screenState.value.isLoading) LoadingIndicator()

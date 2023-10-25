@@ -5,10 +5,11 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.MaterialTheme
@@ -83,12 +84,17 @@ fun NotificationScreen(
         ) { page ->
             when (page) {
                 0 -> {
-                    LazyColumn {
-                        items(screenState.value.myJoinRequests) {
-                            Spacer(modifier = Modifier.height(8.dp))
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 16.dp)
+                    ) {
+                        itemsIndexed(screenState.value.myJoinRequests) { index, request ->
+                            if(index != 0)
+                                Spacer(modifier = Modifier.height(8.dp))
 
                             MyRequestCard(
-                                request = it,
+                                request = request,
                                 onDecline = { groupId, childId ->
                                     handleEvent(
                                         NotificationsEvent.DeclineUser(
@@ -100,23 +106,24 @@ fun NotificationScreen(
                             )
                         }
                     }
-
-                    Spacer(modifier = Modifier.height(8.dp))
                 }
                 1 -> {
-                    LazyColumn {
-                        items(screenState.value.adminJoinRequests) {
-                            Spacer(modifier = Modifier.height(8.dp))
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 16.dp)
+                    ) {
+                        itemsIndexed(screenState.value.adminJoinRequests) { index, request ->
+                            if(index != 0)
+                                Spacer(modifier = Modifier.height(8.dp))
 
                             AdminJoinRequestCard(
-                                request = it,
+                                request = request,
                                 onAccept = { groupId, childId -> handleEvent(NotificationsEvent.AcceptUser(groupId, childId)) },
                                 onDecline = { groupId, childId -> handleEvent(NotificationsEvent.DeclineUser(groupId, childId)) }
                             )
                         }
                     }
-
-                    Spacer(modifier = Modifier.height(8.dp))
                 }
             }
         }
