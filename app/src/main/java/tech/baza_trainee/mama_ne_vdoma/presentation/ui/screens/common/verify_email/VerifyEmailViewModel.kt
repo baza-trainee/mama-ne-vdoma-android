@@ -3,7 +3,6 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.verify_em
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -88,7 +87,7 @@ class VerifyEmailViewModel(
                 authRepository.loginUser(email, password)
             }
             onSuccess {
-                navigator.navigateOnMain(viewModelScope, Graphs.UserProfile)
+                navigator.navigate(Graphs.UserProfile)
             }
             onError { error ->
                 _uiState.value = RequestState.OnError(error)

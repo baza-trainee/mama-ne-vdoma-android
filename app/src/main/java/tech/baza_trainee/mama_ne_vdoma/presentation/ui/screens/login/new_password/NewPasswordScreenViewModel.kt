@@ -3,7 +3,6 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.new_passwo
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -82,7 +81,7 @@ class NewPasswordScreenViewModel(
                 authRepository.resetPassword(email, _viewState.value.password, otp)
             }
             onSuccess {
-                navigator.navigateOnMain(viewModelScope, LoginRoutes.RestoreSuccess)
+                navigator.navigate(LoginRoutes.RestoreSuccess)
             }
             onError { error ->
                 _uiState.value = RequestState.OnError(error)

@@ -1,12 +1,8 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator
 
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.CommonRoute
 
 interface ScreenNavigator {
@@ -15,11 +11,7 @@ interface ScreenNavigator {
 
     fun goBack()
 
-    fun goBackOnMain(scope: CoroutineScope)
-
     fun navigate(route: CommonRoute)
-
-    fun navigateOnMain(scope: CoroutineScope, route: CommonRoute)
 }
 
 class ScreenNavigatorImpl: ScreenNavigator {
@@ -33,23 +25,7 @@ class ScreenNavigatorImpl: ScreenNavigator {
         navigationChannel.trySend(NavigationIntent.NavigateBack)
     }
 
-    override fun goBackOnMain(scope: CoroutineScope) {
-        scope.launch {
-            withContext(Dispatchers.Main) {
-                navigationChannel.send(NavigationIntent.NavigateBack)
-            }
-        }
-    }
-
     override fun navigate(route: CommonRoute) {
         navigationChannel.trySend(NavigationIntent.NavigateTo(route))
-    }
-
-    override fun navigateOnMain(scope: CoroutineScope, route: CommonRoute) {
-        scope.launch {
-            withContext(Dispatchers.Main) {
-                navigationChannel.send(NavigationIntent.NavigateTo(route))
-            }
-        }
     }
 }

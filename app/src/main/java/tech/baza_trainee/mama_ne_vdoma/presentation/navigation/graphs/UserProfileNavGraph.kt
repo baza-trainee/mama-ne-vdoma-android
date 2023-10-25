@@ -1,6 +1,5 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.navigation.graphs
 
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
@@ -71,11 +70,10 @@ fun NavGraphBuilder.userProfileGraph() {
             )
         }
         composable(UserProfileRoutes.ChildInfo.route) {
-            val scope = rememberCoroutineScope()
             val navigator: ScreenNavigator = koinInject()
             val childInfoViewModel: ChildInfoViewModel = koinNavViewModel {
                 parametersOf(
-                    { navigator.navigateOnMain(scope, UserProfileRoutes.ChildSchedule) },
+                    { navigator.navigate(UserProfileRoutes.ChildSchedule) },
                     { navigator.navigate(UserProfileRoutes.FullProfile) }
                 )
             }
@@ -86,11 +84,10 @@ fun NavGraphBuilder.userProfileGraph() {
             )
         }
         composable(UserProfileRoutes.ChildSchedule.route) {
-            val scope = rememberCoroutineScope()
             val navigator: ScreenNavigator = koinInject()
             val childScheduleViewModel: ChildScheduleViewModel = koinNavViewModel {
                 parametersOf(
-                    { navigator.navigateOnMain(scope, UserProfileRoutes.FullProfile) },
+                    { navigator.navigate(UserProfileRoutes.FullProfile) },
                     { navigator.navigate(UserProfileRoutes.FullProfile) }
                 )
             }

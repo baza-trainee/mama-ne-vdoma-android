@@ -1,16 +1,12 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator
 
 import android.util.Log
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.CommonHostRoute
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.CommonRoute
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.MainScreenRoutes
@@ -46,15 +42,6 @@ class PageNavigatorImpl: PageNavigator {
         navigationChannel.trySend(NavigationIntent.NavigateBack)
     }
 
-    override fun goBackOnMain(scope: CoroutineScope) {
-        routesQueue.pollLast()
-        scope.launch {
-            withContext(Dispatchers.Main) {
-                navigationChannel.send(NavigationIntent.NavigateBack)
-            }
-        }
-    }
-
     override fun navigate(route: CommonRoute) {
         (route as CommonHostRoute).let {
             if (!goBack) {
@@ -70,27 +57,6 @@ class PageNavigatorImpl: PageNavigator {
             }
             Log.d("ROUTES", "navigate $routesQueue")
             navigationChannel.trySend(NavigationIntent.NavigateTo(route))
-        }
-    }
-
-    override fun navigateOnMain(scope: CoroutineScope, route: CommonRoute) {
-        (route as CommonHostRoute).let {
-            if (!goBack) {
-                routesQueue.offerLast(route)
-            }
-            goBack = false
-            if (route == MainScreenRoutes.Main) {
-                routesQueue.clear()
-                routesQueue.offerLast(MainScreenRoutes.Main)
-            }
-            _routesFlow.update {
-                route
-            }
-            scope.launch {
-                withContext(Dispatchers.Main) {
-                    navigationChannel.send(NavigationIntent.NavigateTo(route))
-                }
-            }
         }
     }
 

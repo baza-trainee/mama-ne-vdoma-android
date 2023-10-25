@@ -91,7 +91,7 @@ class FullInfoViewModel(
     }
 
     private fun deleteUser() {
-        deleteUser { navigator.navigateOnMain(viewModelScope, Graphs.CreateUser) }
+        deleteUser { navigator.navigate(Graphs.CreateUser) }
     }
 
     private fun getChildren() {

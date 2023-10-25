@@ -311,7 +311,7 @@ class EditProfileViewModel(
 
     private fun deleteUser() {
         deleteUser {
-            mainNavigator.navigateOnMain(viewModelScope, Graphs.CreateUser)
+            mainNavigator.navigate(Graphs.CreateUser)
         }
     }
 

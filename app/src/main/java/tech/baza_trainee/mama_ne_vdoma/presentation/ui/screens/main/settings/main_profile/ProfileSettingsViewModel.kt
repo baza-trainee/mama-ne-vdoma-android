@@ -1,6 +1,5 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.main_profile
 
-import android.net.Uri
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -105,7 +104,7 @@ class ProfileSettingsViewModel(
 
     private fun deleteUser() {
         deleteUser {
-            mainNavigator.navigateOnMain(viewModelScope, Graphs.CreateUser)
+            mainNavigator.navigate(Graphs.CreateUser)
         }
     }
 

@@ -86,7 +86,7 @@ class UserLocationViewModel(
                 )
             },
             onSuccess = {
-                navigator.navigateOnMain(viewModelScope, UserProfileRoutes.ParentSchedule)
+                navigator.navigate(UserProfileRoutes.ParentSchedule)
             }
         )
     }

@@ -67,7 +67,7 @@ fun UserInfoScreen(
 
         val context = LocalContext.current
 
-        when(val state = uiState.value) {
+        when (val state = uiState.value) {
             UserInfoUiState.Idle -> Unit
             is UserInfoUiState.OnError -> {
                 if (state.error.isNotBlank()) Toast.makeText(
@@ -77,6 +77,7 @@ fun UserInfoScreen(
                 ).show()
                 handleEvent(UserInfoEvent.ResetUiState)
             }
+
             UserInfoUiState.OnAvatarError -> {
                 Toast.makeText(
                     context,
@@ -94,149 +95,135 @@ fun UserInfoScreen(
             modifier = Modifier
                 .verticalScroll(scrollState)
                 .imePadding()
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
             verticalArrangement = Arrangement.SpaceBetween,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Column(
+            Text(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(1f),
-                verticalArrangement = Arrangement.Top,
-                horizontalAlignment = Alignment.CenterHorizontally
+                    .padding(top = 16.dp),
+                text = "Заповнення профілю",
+                fontSize = 20.sp,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onBackground,
+                fontFamily = redHatDisplayFontFamily
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            UserAvatarWithCameraAndGallery(
+                modifier = Modifier.fillMaxWidth(),
+                avatar = screenState.value.userAvatar,
+                setUriForCrop = {
+                    handleEvent(UserInfoEvent.SetImageToCrop(it))
+                },
+                onEditPhoto = { handleEvent(UserInfoEvent.OnEditPhoto) },
+                onDeletePhoto = { handleEvent(UserInfoEvent.OnDeletePhoto) }
+            )
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            OutlinedTextFieldWithError(
+                modifier = Modifier.fillMaxWidth(),
+                text = screenState.value.name,
+                label = "Введіть своє ім'я (нікнейм)",
+                onValueChange = { handleEvent(UserInfoEvent.ValidateUserName(it)) },
+                isError = screenState.value.nameValid == ValidField.INVALID,
+                errorText = "Ви ввели некоректнe ім'я"
+            )
+
+            Spacer(modifier = Modifier.height(4.dp))
+
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                text = "Ваше ім’я повинне складатись із 2-18 символів і може містити букви та цифри, а також пробіли та дефіси",
+                textAlign = TextAlign.Start,
+                fontFamily = redHatDisplayFontFamily
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            var isPhoneFocused by remember { mutableStateOf(false) }
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
+                OutlinedTextField(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 24.dp)
-                        .padding(top = 16.dp),
-                    text = "Заповнення профілю",
-                    fontSize = 20.sp,
-                    textAlign = TextAlign.Center,
-                    color = MaterialTheme.colorScheme.onBackground,
-                    fontFamily = redHatDisplayFontFamily
+                        .weight(.25f)
+                        .clickable {
+                            openBottomSheet = true
+                        },
+                    value = screenState.value.code,
+                    label = { Text("Код") },
+                    onValueChange = {},
+                    enabled = false,
+                    maxLines = 1,
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedContainerColor = SlateGray,
+                        unfocusedContainerColor = SlateGray,
+                        disabledContainerColor = SlateGray,
+                        focusedBorderColor = MaterialTheme.colorScheme.surface,
+                        unfocusedBorderColor = MaterialTheme.colorScheme.surface,
+                        disabledBorderColor = MaterialTheme.colorScheme.primary
+                    ),
+                    shape = RoundedCornerShape(topStart = 4.dp, bottomStart = 4.dp)
                 )
 
-                Spacer(modifier = Modifier.height(16.dp))
+                val focusRequester = remember { FocusRequester() }
 
-                UserAvatarWithCameraAndGallery(
+                OutlinedTextField(
                     modifier = Modifier
-                        .padding(horizontal = 24.dp),
-                    avatar = screenState.value.userAvatar,
-                    setUriForCrop = {
-                        handleEvent(UserInfoEvent.SetImageToCrop(it))
-                    },
-                    onEditPhoto = { handleEvent(UserInfoEvent.OnEditPhoto) },
-                    onDeletePhoto = { handleEvent(UserInfoEvent.OnDeletePhoto) }
+                        .focusRequester(focusRequester)
+                        .onFocusChanged {
+                            isPhoneFocused = it.isFocused
+                        }
+                        .weight(.75f),
+                    value = screenState.value.phone,
+                    label = { Text("Введіть свій номер телефону") },
+                    onValueChange = { handleEvent(UserInfoEvent.ValidatePhone(it)) },
+                    isError = screenState.value.phoneValid == ValidField.INVALID && isPhoneFocused,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+                    maxLines = 1,
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedContainerColor = MaterialTheme.colorScheme.surface,
+                        unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                        disabledContainerColor = MaterialTheme.colorScheme.surface,
+                        focusedBorderColor = MaterialTheme.colorScheme.primary,
+                        unfocusedBorderColor = MaterialTheme.colorScheme.surface,
+                        disabledBorderColor = MaterialTheme.colorScheme.surface
+                    ),
+                    shape = RoundedCornerShape(topEnd = 4.dp, bottomEnd = 4.dp),
+                    enabled = screenState.value.code.isNotEmpty(),
+                    textStyle = TextStyle(
+                        fontFamily = redHatDisplayFontFamily
+                    )
                 )
-
-                Spacer(modifier = Modifier.height(32.dp))
-
-                OutlinedTextFieldWithError(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 24.dp),
-                    text = screenState.value.name,
-                    label = "Введіть своє ім'я (нікнейм)",
-                    onValueChange = { handleEvent(UserInfoEvent.ValidateUserName(it)) },
-                    isError = screenState.value.nameValid == ValidField.INVALID,
-                    errorText = "Ви ввели некоректнe ім'я"
-                )
-
+            }
+            if (screenState.value.phoneValid == ValidField.INVALID && isPhoneFocused) {
                 Spacer(modifier = Modifier.height(4.dp))
 
                 Text(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 24.dp),
-                    text = "Ваше ім’я повинне складатись із 2-18 символів і може містити букви та цифри, а також пробіли та дефіси",
-                    textAlign = TextAlign.Start,
-                    fontFamily = redHatDisplayFontFamily
+                    text = "Ви ввели некоректний номер",
+                    color = Color.Red,
+                    modifier = Modifier.fillMaxWidth(),
+                    fontFamily = redHatDisplayFontFamily,
+                    style = TextStyle(
+                        fontFamily = redHatDisplayFontFamily
+                    ),
+                    fontSize = 14.sp
                 )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                var isPhoneFocused by remember { mutableStateOf(false) }
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    OutlinedTextField(
-                        modifier = Modifier
-                            .weight(.25f)
-                            .padding(start = 24.dp)
-                            .clickable {
-                                openBottomSheet = true
-                            },
-                        value = screenState.value.code,
-                        label = { Text("Код") },
-                        onValueChange = {},
-                        enabled = false,
-                        maxLines = 1,
-                        colors = OutlinedTextFieldDefaults.colors(
-                            focusedContainerColor = SlateGray,
-                            unfocusedContainerColor = SlateGray,
-                            disabledContainerColor = SlateGray,
-                            focusedBorderColor = MaterialTheme.colorScheme.surface,
-                            unfocusedBorderColor = MaterialTheme.colorScheme.surface,
-                            disabledBorderColor = MaterialTheme.colorScheme.primary
-                        ),
-                        shape = RoundedCornerShape(topStart = 4.dp, bottomStart = 4.dp)
-                    )
-
-                    val focusRequester = remember { FocusRequester() }
-
-                    OutlinedTextField(
-                        modifier = Modifier
-                            .focusRequester(focusRequester)
-                            .onFocusChanged {
-                                isPhoneFocused = it.isFocused
-                            }
-                            .weight(.75f)
-                            .padding(end = 24.dp),
-                        value = screenState.value.phone,
-                        label = { Text("Введіть свій номер телефону") },
-                        onValueChange = { handleEvent(UserInfoEvent.ValidatePhone(it)) },
-                        isError = screenState.value.phoneValid == ValidField.INVALID && isPhoneFocused,
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
-                        maxLines = 1,
-                        colors = OutlinedTextFieldDefaults.colors(
-                            focusedContainerColor = MaterialTheme.colorScheme.surface,
-                            unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-                            disabledContainerColor = MaterialTheme.colorScheme.surface,
-                            focusedBorderColor = MaterialTheme.colorScheme.primary,
-                            unfocusedBorderColor = MaterialTheme.colorScheme.surface,
-                            disabledBorderColor = MaterialTheme.colorScheme.surface
-                        ),
-                        shape = RoundedCornerShape(topEnd = 4.dp, bottomEnd = 4.dp),
-                        enabled = screenState.value.code.isNotEmpty(),
-                        textStyle = TextStyle(
-                            fontFamily = redHatDisplayFontFamily
-                        )
-                    )
-                }
-                if (screenState.value.phoneValid == ValidField.INVALID && isPhoneFocused) {
-                    Spacer(modifier = Modifier.height(4.dp))
-
-                    Text(
-                        text = "Ви ввели некоректний номер",
-                        color = Color.Red,
-                        modifier = Modifier
-                            .padding(horizontal = 24.dp),
-                        fontFamily = redHatDisplayFontFamily,
-                        style = TextStyle(
-                            fontFamily = redHatDisplayFontFamily
-                        ),
-                        fontSize = 14.sp
-                    )
-                }
             }
+
+
+            Spacer(modifier = Modifier.weight(1f))
 
             Button(
                 modifier = Modifier
-                    .padding(horizontal = 24.dp, vertical = 16.dp)
+                    .padding(vertical = 16.dp)
                     .fillMaxWidth()
                     .height(48.dp),
                 onClick = { handleEvent(UserInfoEvent.SaveInfo) },

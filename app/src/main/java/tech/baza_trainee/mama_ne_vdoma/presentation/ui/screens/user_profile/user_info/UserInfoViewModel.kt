@@ -165,7 +165,7 @@ class UserInfoViewModel(
                 schedule = communicator.schedule
             )
         ) {
-            navigator.navigateOnMain(viewModelScope, UserProfileRoutes.UserLocation)
+            navigator.navigate(UserProfileRoutes.UserLocation)
         }
     }
 }

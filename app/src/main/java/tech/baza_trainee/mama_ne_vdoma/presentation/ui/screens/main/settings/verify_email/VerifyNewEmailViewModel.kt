@@ -3,7 +3,6 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.ve
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -64,7 +63,7 @@ class VerifyNewEmailViewModel(
             }
             onSuccess {
                 communicator.setEmailChanged(true)
-                navigator.goBackOnMain(viewModelScope)
+                navigator.goBack()
             }
             onError { error ->
                 _uiState.value = RequestState.OnError(error)

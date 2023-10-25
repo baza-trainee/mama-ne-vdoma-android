@@ -84,7 +84,7 @@ class ParentScheduleViewModel(
             )
         ) {
             preferencesDatastoreManager.isUserProfileFilled = true
-            navigator.navigateOnMain(viewModelScope, UserProfileRoutes.FullProfile)
+            navigator.navigate(UserProfileRoutes.FullProfile)
         }
     }
 
