@@ -18,8 +18,10 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.NetworkEventsLis
 import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.UserProfileInteractor
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.Graphs
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.HostScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.InitialGroupSearchRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.UserProfileRoutes
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.SETTINGS_PAGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.model.UserProfileCommunicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 
@@ -79,7 +81,12 @@ class FullInfoViewModel(
             FullInfoEvent.ResetUiState -> _uiState.value = RequestState.Idle
             FullInfoEvent.EditUser -> navigator.navigate(UserProfileRoutes.UserInfo)
             FullInfoEvent.OnBack -> navigator.navigate(Graphs.Login)
-            FullInfoEvent.OnNext -> navigator.navigate(InitialGroupSearchRoutes.ChooseChild)
+            FullInfoEvent.OnNext -> {
+                if (preferencesDatastoreManager.isChildrenDataProvided)
+                    navigator.navigate(InitialGroupSearchRoutes.ChooseChild)
+                else
+                    navigator.navigate(HostScreenRoutes.Host.getDestination(SETTINGS_PAGE))
+            }
         }
     }
 
