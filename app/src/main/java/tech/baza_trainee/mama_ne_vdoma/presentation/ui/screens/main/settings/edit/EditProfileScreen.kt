@@ -497,53 +497,53 @@ fun EditProfileScreen(
             onEdit = { editUserSchedule = true }
         )
 
-        if (screenState.value.children.isNotEmpty()) {
-            Spacer(modifier = Modifier.height(16.dp))
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    modifier = Modifier.weight(1f),
-                    text = "Інформація о дітях",
-                    fontSize = 16.sp,
-                    fontFamily = redHatDisplayFontFamily,
-                    fontWeight = FontWeight.Bold
-                )
+        Spacer(modifier = Modifier.height(16.dp))
 
-                Text(
-                    modifier = Modifier
-                        .weight(1f)
-                        .clickable(
-                            indication = null,
-                            interactionSource = remember { MutableInteractionSource() }
-                        ) { handleEvent(EditProfileEvent.AddChild) },
-                    text = "+ Додати дитину",
-                    fontFamily = redHatDisplayFontFamily,
-                    fontSize = 14.sp,
-                    textDecoration = TextDecoration.Underline,
-                    textAlign = TextAlign.End,
-                    color = MaterialTheme.colorScheme.primary
-                )
-            }
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                modifier = Modifier.weight(1f),
+                text = "Інформація о дітях",
+                fontSize = 16.sp,
+                fontFamily = redHatDisplayFontFamily,
+                fontWeight = FontWeight.Bold
+            )
 
-            screenState.value.children.forEachIndexed { index, child ->
+            Text(
+                modifier = Modifier
+                    .weight(1f)
+                    .clickable(
+                        indication = null,
+                        interactionSource = remember { MutableInteractionSource() }
+                    ) { handleEvent(EditProfileEvent.AddChild) },
+                text = "+ Додати дитину",
+                fontFamily = redHatDisplayFontFamily,
+                fontSize = 14.sp,
+                textDecoration = TextDecoration.Underline,
+                textAlign = TextAlign.End,
+                color = MaterialTheme.colorScheme.primary
+            )
+        }
+
+        screenState.value.children.forEachIndexed { index, child ->
+            if (index != 0)
                 Spacer(modifier = Modifier.height(8.dp))
 
-                ChildInfoDesk(
-                    modifier = Modifier.fillMaxWidth(),
-                    child = child,
-                    onEdit = {
-                        selectedChild = index
-                        editChildSchedule = true
-                    },
-                    onDelete = {
-                        selectedChild = index
-                        deleteChildDialog = true
-                    }
-                )
-            }
+            ChildInfoDesk(
+                modifier = Modifier.fillMaxWidth(),
+                child = child,
+                onEdit = {
+                    selectedChild = index
+                    editChildSchedule = true
+                },
+                onDelete = {
+                    selectedChild = index
+                    deleteChildDialog = true
+                }
+            )
         }
 
         Button(
