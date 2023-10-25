@@ -139,7 +139,7 @@ val verifyEmailModule = module {
 
 val loginKoinModule = module {
     viewModel {
-        LoginScreenViewModel(get(), get())
+        LoginScreenViewModel(get(), get(), get())
     }
     viewModel { (email: String, otp: String) ->
         NewPasswordScreenViewModel(email, otp, get(), get())
