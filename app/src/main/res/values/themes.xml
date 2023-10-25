@@ -7,8 +7,8 @@
     
     <!-- Splash -->
     <style name="Theme.Mama_ne_vdoma.Starting" parent="Theme.SplashScreen">
-        <item name="windowSplashScreenBackground">@color/white</item>
-        <item name="windowSplashScreenAnimatedIcon">@drawable/logo_splash</item>
+        <item name="windowSplashScreenBackground">@color/main_theme</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/logo_240_240</item>
         <item name="postSplashScreenTheme">@style/Theme.Mama_ne_vdoma</item>
     </style>
 </resources>
