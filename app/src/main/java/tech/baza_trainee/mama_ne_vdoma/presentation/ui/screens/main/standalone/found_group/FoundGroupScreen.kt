@@ -149,7 +149,7 @@ fun FoundGroupScreen(
                         .clickable(
                             indication = null,
                             interactionSource = remember { MutableInteractionSource() }
-                        ) { },
+                        ) { handleEvent(FoundGroupEvent.GoToMain) },
                     text = "Створити групу",
                     fontFamily = redHatDisplayFontFamily,
                     fontSize = 14.sp,
