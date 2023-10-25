@@ -28,6 +28,7 @@ fun NavGraphBuilder.mainNavGraph() {
             val viewModel: NotificationsViewModel = koinNavViewModel()
             NotificationScreen(
                 screenState = viewModel.viewState.collectAsStateWithLifecycle(),
+                uiState = viewModel.uiState,
                 handleEvent = { viewModel.handleEvent(it) }
             )
         }

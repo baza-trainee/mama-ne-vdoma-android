@@ -54,8 +54,8 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.ButtonText
 fun AdminJoinRequestCard(
     modifier: Modifier = Modifier,
     request: JoinRequestUiModel = JoinRequestUiModel(),
-    onAccept: (String, String) -> Unit = {_,_ ->},
-    onDecline: (String, String) -> Unit = {_,_ ->}
+    onAccept: () -> Unit = {},
+    onDecline: () -> Unit = {}
 ) {
     Column(
         modifier = Modifier
@@ -144,7 +144,7 @@ fun AdminJoinRequestCard(
                         modifier = Modifier
                             .padding(horizontal = 8.dp)
                             .clickable {
-                                onDecline(request.group.id, request.child.childId)
+                                onDecline()
                             },
                         text = "Відхилити",
                         fontSize = 16.sp,
@@ -158,7 +158,7 @@ fun AdminJoinRequestCard(
                         modifier = Modifier
                             .padding(horizontal = 8.dp)
                             .clickable {
-                                onAccept(request.group.id, request.child.childId)
+                                onAccept()
                             },
                         text = "Погодити",
                         fontSize = 16.sp,
@@ -265,7 +265,7 @@ fun AdminJoinRequestCard(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(48.dp),
-                    onClick = { onAccept(request.group.id, request.child.childId) }
+                    onClick = onAccept
                 ) {
                     ButtonText(
                         text = "Погодити запит"
@@ -278,7 +278,7 @@ fun AdminJoinRequestCard(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(48.dp),
-                    onClick = { onDecline(request.group.id, request.child.childId) },
+                    onClick = onDecline,
                     colors = ButtonDefaults.buttonColors(
                         containerColor = LogoutButtonColor,
                         contentColor = LogoutButtonTextColor

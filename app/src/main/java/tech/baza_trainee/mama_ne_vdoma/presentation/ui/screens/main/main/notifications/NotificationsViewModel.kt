@@ -21,7 +21,6 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.PageNav
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.GroupUiModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.JoinRequestUiModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.MemberUiModel
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.networkExecutor
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onError
@@ -40,8 +39,8 @@ class NotificationsViewModel(
     private val _viewState = MutableStateFlow(NotificationsViewState())
     val viewState: StateFlow<NotificationsViewState> = _viewState.asStateFlow()
 
-    private val _uiState = mutableStateOf<RequestState>(RequestState.Idle)
-    val uiState: State<RequestState>
+    private val _uiState = mutableStateOf<NotificationsUiState>(NotificationsUiState.Idle)
+    val uiState: State<NotificationsUiState>
         get() = _uiState
 
     init {
@@ -50,7 +49,7 @@ class NotificationsViewModel(
 
     fun handleEvent(event: NotificationsEvent) {
         when (event) {
-            NotificationsEvent.ResetUiState -> _uiState.value = RequestState.Idle
+            NotificationsEvent.ResetUiState -> _uiState.value = NotificationsUiState.Idle
             NotificationsEvent.OnBack -> navigator.goToPrevious()
             is NotificationsEvent.AcceptUser -> acceptJoinRequest(event.group, event.child)
             is NotificationsEvent.DeclineUser -> declineJoinRequest(event.group, event.child)
@@ -62,9 +61,12 @@ class NotificationsViewModel(
             execute {
                 groupsRepository.acceptRequest(group, child)
             }
-            onSuccess { getUserInfo() }
+            onSuccess {
+                _uiState.value = NotificationsUiState.OnAccepted
+                getUserInfo()
+            }
             onError { error ->
-                _uiState.value = RequestState.OnError(error)
+                _uiState.value = NotificationsUiState.OnError(error)
             }
             onLoading { isLoading ->
                 _viewState.update {
@@ -83,7 +85,7 @@ class NotificationsViewModel(
             }
             onSuccess { getUserInfo() }
             onError { error ->
-                _uiState.value = RequestState.OnError(error)
+                _uiState.value = NotificationsUiState.OnError(error)
             }
             onLoading { isLoading ->
                 _viewState.update {
@@ -106,7 +108,7 @@ class NotificationsViewModel(
                 entity.groupJoinRequests.forEach(::getGroupById)
             }
             onError { error ->
-                _uiState.value = RequestState.OnError(error)
+                _uiState.value = NotificationsUiState.OnError(error)
             }
             onLoading { isLoading ->
                 _viewState.update {
@@ -166,7 +168,7 @@ class NotificationsViewModel(
                 }
             }
             onError { error ->
-                _uiState.value = RequestState.OnError(error)
+                _uiState.value = NotificationsUiState.OnError(error)
             }
             onLoading { isLoading ->
                 _viewState.update {
@@ -207,7 +209,7 @@ class NotificationsViewModel(
                 }
             }
             onError { error ->
-                _uiState.value = RequestState.OnError(error)
+                _uiState.value = NotificationsUiState.OnError(error)
             }
             onLoading { isLoading ->
                 _viewState.update {
@@ -262,7 +264,7 @@ class NotificationsViewModel(
                 }
             }
             onError { error ->
-                _uiState.value = RequestState.OnError(error)
+                _uiState.value = NotificationsUiState.OnError(error)
             }
             onLoading { isLoading ->
                 _viewState.update {
@@ -324,7 +326,7 @@ class NotificationsViewModel(
                 }
             }
             onError { error ->
-                _uiState.value = RequestState.OnError(error)
+                _uiState.value = NotificationsUiState.OnError(error)
             }
             onLoading { isLoading ->
                 _viewState.update {
@@ -382,7 +384,7 @@ class NotificationsViewModel(
                 }
             }
             onError { error ->
-                _uiState.value = RequestState.OnError(error)
+                _uiState.value = NotificationsUiState.OnError(error)
             }
             onLoading { isLoading ->
                 _viewState.update {
@@ -419,7 +421,7 @@ class NotificationsViewModel(
                 }
             }
             onError { error ->
-                _uiState.value = RequestState.OnError(error)
+                _uiState.value = NotificationsUiState.OnError(error)
             }
             onLoading { isLoading ->
                 _viewState.update {
@@ -460,7 +462,7 @@ class NotificationsViewModel(
                 }
             }
             onError { error ->
-                _uiState.value = RequestState.OnError(error)
+                _uiState.value = NotificationsUiState.OnError(error)
             }
             onLoading { isLoading ->
                 _viewState.update {
@@ -500,7 +502,7 @@ class NotificationsViewModel(
                 }
             }
             onError { error ->
-                _uiState.value = RequestState.OnError(error)
+                _uiState.value = NotificationsUiState.OnError(error)
             }
             onLoading { isLoading ->
                 _viewState.update {
