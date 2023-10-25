@@ -24,7 +24,6 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.GroupsScre
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.MainScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.SearchScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.SettingsScreenRoutes
-import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.UserProfileRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.GROUPS_PAGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.SEARCH_PAGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.SETTINGS_PAGE
@@ -117,7 +116,7 @@ class HostViewModel(
             }
             onSuccess { entity ->
                 if (entity.name.isEmpty() || entity.location.coordinates.isEmpty())
-                    mainNavigator.navigateOnMain(viewModelScope, UserProfileRoutes.FullProfile)
+                    navigator.navigate(SettingsScreenRoutes.EditProfile)
                 else {
                     preferencesDatastoreManager.apply {
                         id = entity.id
