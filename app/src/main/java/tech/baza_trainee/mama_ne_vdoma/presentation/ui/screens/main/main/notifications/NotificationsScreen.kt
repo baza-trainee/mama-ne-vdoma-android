@@ -141,12 +141,7 @@ fun NotificationScreen(
                             MyRequestCard(
                                 request = request,
                                 onDecline = { groupId, childId ->
-                                    handleEvent(
-                                        NotificationsEvent.DeclineUser(
-                                            groupId,
-                                            childId
-                                        )
-                                    )
+                                    handleEvent(NotificationsEvent.DeclineUser(groupId,childId))
                                 }
                             )
                         }
@@ -166,6 +161,7 @@ fun NotificationScreen(
                             AdminJoinRequestCard(
                                 request = request,
                                 onAccept = {
+                                    dialogData = Triple(request.group.id, request.child.childId, request.group.name)
                                     handleEvent(NotificationsEvent.AcceptUser(request.group.id, request.child.childId))
                                 },
                                 onDecline = {
