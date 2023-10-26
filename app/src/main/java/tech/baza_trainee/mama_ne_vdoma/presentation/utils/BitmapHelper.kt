@@ -4,6 +4,8 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
+import android.graphics.Matrix
+import android.media.ExifInterface
 import android.net.Uri
 import android.util.Base64
 import androidx.core.graphics.applyCanvas
@@ -30,20 +32,6 @@ class BitmapHelper(private val context: Context) {
         return byteArrayOutputStream.toByteArray().size
     }
 
-    suspend fun bitmapFromUri(uri: Uri): Bitmap {
-        return withContext(Dispatchers.IO) {
-            try {
-                val inputStream = context.contentResolver.openInputStream(uri)
-                if (inputStream != null) {
-                    return@withContext BitmapFactory.decodeStream(inputStream)
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-            return@withContext DEFAULT_BITMAP
-        }
-    }
-
     fun bitmapToFile(bitmap: Bitmap): File {
         val filename = "${System.currentTimeMillis()}_$AVATAR"
         context.openFileOutput(filename, Context.MODE_PRIVATE)
@@ -61,6 +49,37 @@ class BitmapHelper(private val context: Context) {
             val bitmap = BitmapFactory.decodeByteArray(fileContents, 0, fileContents.size)
             return bitmapToFile(bitmap).toUri()
         } ?: return Uri.EMPTY
+    }
+
+    suspend fun bitmapFromUri(selectedImage: Uri): Bitmap {
+        return withContext(Dispatchers.IO) {
+            try {
+                context.contentResolver.openInputStream(selectedImage)?.let {
+                    val img =  BitmapFactory.decodeStream(it)
+                    val orientation = ExifInterface(it).getAttributeInt(
+                        ExifInterface.TAG_ORIENTATION,
+                        ExifInterface.ORIENTATION_NORMAL
+                    )
+                    return@withContext when(orientation) {
+                        ExifInterface.ORIENTATION_ROTATE_90 -> rotateImage(img, 90)
+                        ExifInterface.ORIENTATION_ROTATE_180 -> rotateImage(img, 180)
+                        ExifInterface.ORIENTATION_ROTATE_270 -> rotateImage(img, 270)
+                        else -> img
+                    }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+            return@withContext DEFAULT_BITMAP
+        }
+    }
+
+    private fun rotateImage(img: Bitmap, degree: Int): Bitmap {
+        val matrix = Matrix()
+        matrix.postRotate(degree.toFloat())
+        val rotatedImg = Bitmap.createBitmap(img, 0, 0, img.width, img.height, matrix, true)
+        img.recycle()
+        return rotatedImg
     }
 
     companion object {
