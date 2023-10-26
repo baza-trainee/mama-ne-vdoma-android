@@ -44,7 +44,7 @@ class LoginScreenViewModel(
             LoginEvent.ResetUiState -> _uiState.value = RequestState.Idle
             LoginEvent.OnBack -> {
                 clearInputs()
-                navigator.goBack()
+                navigator.navigate(Graphs.Start)
             }
             LoginEvent.OnCreate -> {
                 clearInputs()
