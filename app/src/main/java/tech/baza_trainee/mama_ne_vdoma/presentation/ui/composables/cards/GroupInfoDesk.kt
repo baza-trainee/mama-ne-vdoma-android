@@ -383,7 +383,7 @@ fun GroupInfoDesk(
             }
         }
 
-        if (isMyGroup || isAdmin) {
+        if (isMyGroup) {
             Button(
                 modifier = Modifier
                     .fillMaxWidth()
