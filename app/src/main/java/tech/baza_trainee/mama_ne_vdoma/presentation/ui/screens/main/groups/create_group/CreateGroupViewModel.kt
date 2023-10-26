@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import tech.baza_trainee.mama_ne_vdoma.domain.model.ChildEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.DayPeriod
 import tech.baza_trainee.mama_ne_vdoma.domain.model.GroupEntity
@@ -28,6 +29,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.GroupsScre
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.HostScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.image_crop.CropImageCommunicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.GROUPS_PAGE
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.GroupSearchCommunicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.BitmapHelper
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
@@ -38,7 +40,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onSuccess
 import java.time.DayOfWeek
 
 class CreateGroupViewModel(
-    private val childId: String,
+    private val childCommunicator: GroupSearchCommunicator,
     private val communicator: CropImageCommunicator,
     private val navigator: PageNavigator,
     private val userProfileRepository: UserProfileRepository,
@@ -80,9 +82,10 @@ class CreateGroupViewModel(
             CreateGroupEvent.OnDeletePhoto -> Unit
             CreateGroupEvent.OnEditPhoto -> navigator.navigate(GroupsScreenRoutes.ImageCrop)
             is CreateGroupEvent.SetImageToCrop -> communicator.uriForCrop = event.uri
-            CreateGroupEvent.GoToMain -> navigator.navigate(
-                HostScreenRoutes.Host.getDestination(GROUPS_PAGE)
-            )
+            CreateGroupEvent.GoToMain -> {
+                childCommunicator.childId = ""
+                navigator.navigate(HostScreenRoutes.Host.getDestination(GROUPS_PAGE))
+            }
         }
     }
 
@@ -99,12 +102,12 @@ class CreateGroupViewModel(
                 else image
                 val newImageSize = bitmapHelper.getSize(newImage)
                 if (newImageSize < IMAGE_SIZE) {
-                    _viewState.update {
-                        it.copy(
-                            avatar = newImage
-                        )
+                    withContext(Dispatchers.Main) {
+                        _viewState.update {
+                            it.copy(avatar = newImage)
+                        }
                     }
-                    uploadAvatar(newImage)
+                    communicator.setCroppedImage(null)
                 } else {
                     _uiState.value = CreateGroupUiState.OnAvatarError
                 }
@@ -112,14 +115,14 @@ class CreateGroupViewModel(
         }
     }
 
-    private fun uploadAvatar(image: Bitmap) {
-        networkExecutor<String> {
+    private fun uploadAvatar(image: Bitmap, groupId: String) {
+        networkExecutor {
             execute {
                 filesRepository.saveAvatar(image)
             }
             onSuccess {
                 avatarServerPath = it
-                communicator.setCroppedImage(null)
+                updateGroup(groupId)
             }
             onError { error ->
                 _uiState.value = CreateGroupUiState.OnError(error)
@@ -138,12 +141,14 @@ class CreateGroupViewModel(
         networkExecutor<GroupEntity> {
             execute {
                 groupsRepository.createGroup(
-                    childId,
+                    childCommunicator.childId,
                     _viewState.value.name,
                     _viewState.value.description
                 )
             }
-            onSuccess { updateGroup(it.id) }
+            onSuccess {
+                uploadAvatar(_viewState.value.avatar, it.id)
+            }
             onError { error ->
                 _uiState.value = CreateGroupUiState.OnError(error)
             }
@@ -247,7 +252,7 @@ class CreateGroupViewModel(
                 userProfileRepository.getChildren()
             }
             onSuccess { entity ->
-                val child = entity.find { it.childId == childId }
+                val child = entity.find { it.childId == childCommunicator.childId }
                 _viewState.update { state ->
                     state.copy(
                         schedule = child?.schedule ?: ScheduleModel(),

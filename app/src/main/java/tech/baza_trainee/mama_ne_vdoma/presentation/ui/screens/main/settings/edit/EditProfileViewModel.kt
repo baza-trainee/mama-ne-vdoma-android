@@ -508,6 +508,7 @@ class EditProfileViewModel(
                     }
                     newAvatar = newImage
                     communicator.justCropped = false
+                    communicator.setCroppedImage(null)
                 },
                 onError = {
                     _uiState.value = EditProfileUiState.OnAvatarError

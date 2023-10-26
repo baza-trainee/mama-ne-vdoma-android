@@ -1,6 +1,5 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.edit
 
-import android.net.Uri
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -53,6 +52,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -162,16 +162,16 @@ fun EditProfileScreen(
                 contentAlignment = Alignment.Center
             ) {
                 AsyncImage(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier.fillMaxWidth(),
                     model = ImageRequest.Builder(LocalContext.current)
                         .data(screenState.value.userAvatar)
                         .crossfade(true)
                         .build(),
-                    contentDescription = null
+                    contentDescription = null,
+                    contentScale = ContentScale.Fit
                 )
                 UserAvatarWithCameraAndGallery(
-                    modifier = Modifier.fillMaxSize(),
-                    avatar = Uri.EMPTY,
+                    modifier = Modifier.fillMaxWidth(),
                     setUriForCrop = {
                         handleEvent(EditProfileEvent.SetImageToCrop(it))
                     },

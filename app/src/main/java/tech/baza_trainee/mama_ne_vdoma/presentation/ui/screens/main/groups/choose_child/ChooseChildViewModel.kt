@@ -13,6 +13,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.PageNav
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.GroupsScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.ChooseChildEvent
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.ChooseChildViewState
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.GroupSearchCommunicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.networkExecutor
@@ -21,6 +22,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onLoading
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onSuccess
 
 class ChooseChildViewModel(
+    private val communicator: GroupSearchCommunicator,
     private val userProfileRepository: UserProfileRepository,
     private val navigator: PageNavigator
 ): ViewModel() {
@@ -33,6 +35,7 @@ class ChooseChildViewModel(
         get() = _uiState
 
     init {
+        communicator.childId = ""
         getChildren()
     }
 
@@ -40,9 +43,10 @@ class ChooseChildViewModel(
         when (event) {
             ChooseChildEvent.ResetUiState -> _uiState.value = RequestState.Idle
             ChooseChildEvent.OnBack -> navigator.goBack()
-            is ChooseChildEvent.OnChooseChild -> navigator.navigate(
-                GroupsScreenRoutes.CreateGroup.getDestination(event.childId)
-            )
+            is ChooseChildEvent.OnChooseChild -> {
+                communicator.childId = event.childId
+                navigator.navigate(GroupsScreenRoutes.CreateGroup)
+            }
 
             ChooseChildEvent.OnAvatarClicked -> Unit
         }

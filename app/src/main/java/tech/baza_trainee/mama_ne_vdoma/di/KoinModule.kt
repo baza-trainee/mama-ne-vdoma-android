@@ -11,6 +11,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidApplication
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -52,7 +53,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.UserC
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.login.LoginScreenViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.new_password.NewPasswordScreenViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.restore_password.RestorePasswordScreenViewModel
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.GroupSearchStandaloneCommunicator
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.GroupSearchCommunicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.SearchResultsCommunicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.choose_child.ChooseChildViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.create_group.CreateGroupViewModel
@@ -148,13 +149,14 @@ val loginKoinModule = module {
 }
 
 val standaloneGroupSearchModule = module {
-    single { GroupSearchStandaloneCommunicator() }
+    single { GroupSearchCommunicator() }
     viewModel { ChooseChildStandaloneViewModel(get(), get(), get(), get(), get()) }
     viewModel { SetAreaViewModel(get(), get(), get()) }
     viewModel { FoundGroupsStandaloneViewModel(get(), get(), get(), get(), get()) }
 }
 
 val mainModule = module {
+    single(named(SINGLETON_FOR_MAIN)) { GroupSearchCommunicator() }
     single { CropImageCommunicator() }
     single { SearchResultsCommunicator() }
     single { EditProfileCommunicator() }
@@ -173,10 +175,10 @@ val mainModule = module {
     }
     viewModel { MainViewModel(get(), get()) }
     viewModel { NotificationsViewModel(get(), get(), get(), get(), get(), get()) }
-    viewModel { ChooseChildViewModel(get(), get()) }
+    viewModel { ChooseChildViewModel(get(named(SINGLETON_FOR_MAIN)), get(), get()) }
     viewModel { MyGroupsViewModel(get(), get(), get(), get(), get()) }
-    viewModel { (childId: String) ->
-        CreateGroupViewModel(childId, get(), get(), get(), get(), get(), get(), get())
+    viewModel {
+        CreateGroupViewModel(get(named(SINGLETON_FOR_MAIN)), get(), get(), get(), get(), get(), get(), get())
     }
     viewModel { (navigator: ScreenNavigator) -> ImageCropViewModel(navigator, get(), get()) }
     viewModel { SearchRequestViewModel(get(), get(), get(), get()) }
@@ -235,3 +237,4 @@ fun createOkHttpClient(
 
 private const val CHUCKER_CONTENT_MAX_LENGTH = 250000L
 private const val TIMEOUT = 30L
+private const val SINGLETON_FOR_MAIN = "main_singleton"

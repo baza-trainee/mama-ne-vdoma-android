@@ -19,6 +19,7 @@ import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.PageNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.CommonHostRoute
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.Graphs
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.GroupsScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.MainScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.SearchScreenRoutes
@@ -84,7 +85,7 @@ class HostViewModel(
 
     fun handleEvent(event: HostEvent) {
         when (event) {
-            HostEvent.OnBack -> mainNavigator.goBack()
+            HostEvent.OnBack -> mainNavigator.navigate(Graphs.Login)
             is HostEvent.SwitchTab -> {
                 val route = getRouteFromPage(event.index)
                 switchTab(route)
@@ -93,7 +94,7 @@ class HostViewModel(
             HostEvent.ResetUiState -> _uiState.value = RequestState.Idle
             HostEvent.OnBackLocal -> {
                 when (navigator.getCurrentRoute()) {
-                    MainScreenRoutes.Main.route -> mainNavigator.goBack()
+                    MainScreenRoutes.Main.route -> mainNavigator.navigate(Graphs.Login)
                     else -> navigator.goToPrevious()
                 }
             }

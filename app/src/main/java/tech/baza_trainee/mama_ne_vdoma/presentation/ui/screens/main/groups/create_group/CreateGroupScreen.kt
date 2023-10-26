@@ -5,6 +5,7 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -42,6 +43,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -51,6 +53,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.GroupAvatarWithCameraAndGallery
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.LoadingIndicator
@@ -289,16 +293,36 @@ fun CreateGroupScreen(
 
         Spacer(modifier = Modifier.width(4.dp))
 
-        GroupAvatarWithCameraAndGallery(
-            modifier = Modifier.fillMaxWidth(),
-            avatar = screenState.value.avatar,
-            canDelete = false,
-            setUriForCrop = {
-                handleEvent(CreateGroupEvent.SetImageToCrop(it))
-            },
-            onEditPhoto = { handleEvent(CreateGroupEvent.OnEditPhoto) },
-            onDeletePhoto = { handleEvent(CreateGroupEvent.OnDeletePhoto) }
-        )
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(88.dp)
+                .background(
+                    color = MaterialTheme.colorScheme.surface,
+                    shape = RoundedCornerShape(4.dp)
+                ),
+            contentAlignment = Alignment.Center
+        ) {
+            AsyncImage(
+                modifier = Modifier.fillMaxWidth(),
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(screenState.value.avatar)
+                    .crossfade(true)
+                    .build(),
+                contentDescription = null,
+                contentScale = ContentScale.FillWidth
+            )
+
+            GroupAvatarWithCameraAndGallery(
+                modifier = Modifier.fillMaxWidth(),
+                canDelete = false,
+                setUriForCrop = {
+                    handleEvent(CreateGroupEvent.SetImageToCrop(it))
+                },
+                onEditPhoto = { handleEvent(CreateGroupEvent.OnEditPhoto) },
+                onDeletePhoto = { handleEvent(CreateGroupEvent.OnDeletePhoto) }
+            )
+        }
 
         OutlinedTextField(
             modifier = Modifier.fillMaxWidth(),

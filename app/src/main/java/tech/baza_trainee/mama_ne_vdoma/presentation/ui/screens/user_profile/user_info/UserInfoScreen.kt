@@ -4,6 +4,7 @@ import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -34,6 +36,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -42,6 +45,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.canopas.campose.countrypicker.CountryPickerBottomSheet
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.LoadingIndicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.SurfaceWithSystemBars
@@ -113,15 +118,30 @@ fun UserInfoScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            UserAvatarWithCameraAndGallery(
-                modifier = Modifier.fillMaxWidth(),
-                avatar = screenState.value.userAvatar,
-                setUriForCrop = {
-                    handleEvent(UserInfoEvent.SetImageToCrop(it))
-                },
-                onEditPhoto = { handleEvent(UserInfoEvent.OnEditPhoto) },
-                onDeletePhoto = { handleEvent(UserInfoEvent.OnDeletePhoto) }
-            )
+            Box(
+                modifier = Modifier
+                    .height(192.dp)
+                    .width(192.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                AsyncImage(
+                    modifier = Modifier.fillMaxWidth(),
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(screenState.value.userAvatar)
+                        .crossfade(true)
+                        .build(),
+                    contentDescription = null,
+                    contentScale = ContentScale.Fit
+                )
+                UserAvatarWithCameraAndGallery(
+                    modifier = Modifier.fillMaxWidth(),
+                    setUriForCrop = {
+                        handleEvent(UserInfoEvent.SetImageToCrop(it))
+                    },
+                    onEditPhoto = { handleEvent(UserInfoEvent.OnEditPhoto) },
+                    onDeletePhoto = { handleEvent(UserInfoEvent.OnDeletePhoto) }
+                )
+            }
 
             Spacer(modifier = Modifier.height(32.dp))
 

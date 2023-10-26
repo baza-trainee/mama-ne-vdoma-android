@@ -18,7 +18,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.HostScreen
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.InitialGroupSearchRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.ChooseChildEvent
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.ChooseChildViewState
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.GroupSearchStandaloneCommunicator
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.GroupSearchCommunicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.SETTINGS_PAGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
@@ -28,7 +28,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onLoading
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onSuccess
 
 class ChooseChildStandaloneViewModel(
-    private val communicator: GroupSearchStandaloneCommunicator,
+    private val communicator: GroupSearchCommunicator,
     private val userProfileRepository: UserProfileRepository,
     private val filesRepository: FilesRepository,
     private val navigator: ScreenNavigator,

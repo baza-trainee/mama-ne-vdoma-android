@@ -67,6 +67,8 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.7.4")
     implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
 
+    implementation("androidx.exifinterface:exifinterface:1.3.6")
+
     implementation(platform("androidx.compose:compose-bom:2023.10.00"))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")

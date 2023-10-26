@@ -7,7 +7,7 @@ import androidx.navigation.navigation
 import org.koin.androidx.compose.navigation.koinNavViewModel
 import org.koin.compose.koinInject
 import org.koin.core.parameter.parametersOf
-import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.PageNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.Graphs
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.GroupsScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.image_crop.ImageCropViewModel
@@ -41,13 +41,9 @@ fun NavGraphBuilder.groupNavGraph() {
             )
         }
         composable(
-            route = GroupsScreenRoutes.CreateGroup().route,
-            arguments = GroupsScreenRoutes.CreateGroup.argumentList
-        ) { entry ->
-            val (child) = GroupsScreenRoutes.CreateGroup.parseArguments(entry)
-            val createGroupViewModel: CreateGroupViewModel = koinNavViewModel {
-                parametersOf(child)
-            }
+            route = GroupsScreenRoutes.CreateGroup.route
+        ) {
+            val createGroupViewModel: CreateGroupViewModel = koinNavViewModel()
             CreateGroupScreen(
                 screenState = createGroupViewModel.viewState.collectAsStateWithLifecycle(),
                 uiState = createGroupViewModel.uiState,
@@ -55,7 +51,7 @@ fun NavGraphBuilder.groupNavGraph() {
             )
         }
         composable(GroupsScreenRoutes.ImageCrop.route) {
-            val navigator = koinInject<ScreenNavigator>()
+            val navigator = koinInject<PageNavigator>()
             val imageCropViewModel: ImageCropViewModel = koinNavViewModel {
                 parametersOf(navigator)
             }

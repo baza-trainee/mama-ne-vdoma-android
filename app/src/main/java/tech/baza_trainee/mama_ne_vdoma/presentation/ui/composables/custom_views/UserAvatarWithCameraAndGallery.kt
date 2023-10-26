@@ -6,12 +6,10 @@ import android.os.Environment
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -25,16 +23,13 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import androidx.core.content.FileProvider
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import tech.baza_trainee.mama_ne_vdoma.R
@@ -49,7 +44,6 @@ import java.io.File
 @Preview
 fun UserAvatarWithCameraAndGallery(
     modifier: Modifier = Modifier,
-    avatar: Uri = Uri.EMPTY,
     setUriForCrop: (Uri) -> Unit = {},
     onEditPhoto: () -> Unit = {},
     onDeletePhoto: () -> Unit = {}
@@ -99,46 +93,30 @@ fun UserAvatarWithCameraAndGallery(
     }
 
     Box(
-        modifier = Modifier
-            .width(172.dp)
-            .height(172.dp)
-            .clickable {
-                showPickerDialog = true
-            }
+        modifier = Modifier.clickable { showPickerDialog = true }
     ) {
-        if (avatar != Uri.EMPTY) {
-            AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(avatar)
-                    .crossfade(true)
-                    .build(),
-                placeholder = painterResource(id = R.drawable.no_photo),
-                contentDescription = "avatar",
-                contentScale = ContentScale.FillBounds,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .clip(CircleShape)
-            )
+        Image(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(
+                    color = Color.Transparent,
+                    shape = CircleShape
+                ),
+            painter = painterResource(id = R.drawable.no_photo),
+            contentDescription = "avatar",
+            contentScale = ContentScale.Fit
+        )
 
-            IconButton(
-                modifier = Modifier.align(Alignment.TopEnd),
-                onClick = { onDeletePhoto() }
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_delete),
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary
-                )
-            }
-        } else
-            Image(
-                painter = painterResource(id = R.drawable.no_photo),
-                contentDescription = "avatar",
-                contentScale = ContentScale.Fit,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(CircleShape)
+        IconButton(
+            modifier = Modifier.align(Alignment.TopEnd),
+            onClick = { onDeletePhoto() }
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_delete),
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary
             )
+        }
     }
 
     val cameraPermissionResultLauncher = rememberLauncherForActivityResult(
