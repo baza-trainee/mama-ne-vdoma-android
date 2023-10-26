@@ -4,6 +4,7 @@ import android.net.Uri
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -25,7 +26,9 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -45,6 +48,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
@@ -91,7 +95,9 @@ fun EditProfileScreen(
     uiState: State<EditProfileUiState> = mutableStateOf(EditProfileUiState.Idle),
     handleEvent: (EditProfileEvent) -> Unit = { _ -> }
 ) {
-    BackHandler { handleEvent(EditProfileEvent.OnBack) }
+    var exitScreen by remember { mutableIntStateOf(-1) }
+
+    BackHandler { exitScreen = 0 }
 
     val context = LocalContext.current
 
@@ -241,10 +247,16 @@ fun EditProfileScreen(
                 )
             },
             trailingIcon = {
-                if (screenState.value.isEmailChanged)
+                if (screenState.value.isEmailVerified)
                     Icon(
                         painterResource(id = R.drawable.ic_done),
                         contentDescription = null
+                    )
+                if (screenState.value.isEmailChanged)
+                    Icon(
+                        imageVector = Icons.Filled.Error,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary
                     )
             }
         )
@@ -497,7 +509,6 @@ fun EditProfileScreen(
             onEdit = { editUserSchedule = true }
         )
 
-
         Spacer(modifier = Modifier.height(16.dp))
 
         Row(
@@ -518,7 +529,7 @@ fun EditProfileScreen(
                     .clickable(
                         indication = null,
                         interactionSource = remember { MutableInteractionSource() }
-                    ) { handleEvent(EditProfileEvent.AddChild) },
+                    ) { exitScreen = 1 },
                 text = "+ Додати дитину",
                 fontFamily = redHatDisplayFontFamily,
                 fontSize = 14.sp,
@@ -551,7 +562,12 @@ fun EditProfileScreen(
                 .fillMaxWidth()
                 .padding(vertical = 16.dp)
                 .height(48.dp),
-            onClick = { handleEvent(EditProfileEvent.SaveInfo) }
+            onClick = {
+                if (screenState.value.isEmailChanged && !screenState.value.isEmailVerified)
+                    showEmailVerificationDialog = true
+                else
+                    handleEvent(EditProfileEvent.SaveInfo)
+            }
         ) {
             ButtonText(
                 text = "Зберегти зміни"
@@ -672,6 +688,90 @@ fun EditProfileScreen(
                     handleEvent(EditProfileEvent.DeleteChild(screenState.value.children[selectedChild].childId))
                 }
             )
+        }
+
+        if (exitScreen != -1) {
+            AlertDialog(onDismissRequest = { exitScreen = -1 }) {
+                Column(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(MaterialTheme.colorScheme.background)
+                        .padding(vertical = 8.dp)
+                        .fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Error,
+                        contentDescription = "alert",
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Text(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp),
+                        text = "Ви залишаете цей екран. Всі незбережені зміни будуть втрачені",
+                        fontSize = 14.sp,
+                        fontFamily = redHatDisplayFontFamily
+                    )
+
+                    Spacer(modifier = Modifier.height(24.dp))
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp)
+                            .padding(bottom = 16.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            modifier = Modifier
+                                .weight(0.5f)
+                                .clickable(
+                                    indication = null,
+                                    interactionSource = remember { MutableInteractionSource() }
+                                ) {
+                                    when (exitScreen) {
+                                        0 -> handleEvent(EditProfileEvent.OnBack)
+                                        1 -> handleEvent(EditProfileEvent.AddChild)
+                                        else -> Unit
+                                    }
+                                    exitScreen = -1
+                                },
+                            text = "Не зберігати",
+                            fontSize = 16.sp,
+                            fontFamily = redHatDisplayFontFamily,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.Red,
+                            textAlign = TextAlign.Center
+                        )
+
+                        Text(
+                            modifier = Modifier
+                                .weight(0.5f)
+                                .clickable(
+                                    indication = null,
+                                    interactionSource = remember { MutableInteractionSource() }
+                                ) {
+                                    when (exitScreen) {
+                                        0 -> handleEvent(EditProfileEvent.OnSaveAndBack)
+                                        1 -> handleEvent(EditProfileEvent.OnSaveAndAddChild)
+                                        else -> Unit
+                                    }
+                                    exitScreen = -1
+                                },
+                            text = "Зберегти",
+                            fontSize = 16.sp,
+                            fontFamily = redHatDisplayFontFamily,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.primary,
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                }
+            }
         }
     }
 

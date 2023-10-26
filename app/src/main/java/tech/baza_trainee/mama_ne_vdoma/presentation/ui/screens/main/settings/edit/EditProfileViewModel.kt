@@ -81,7 +81,7 @@ class EditProfileViewModel(
             profileCommunicator.emailChanged.collect { success ->
                 _viewState.update {
                     it.copy(
-                        isEmailChanged = success
+                        isEmailVerified = success
                     )
                 }
             }
@@ -149,6 +149,8 @@ class EditProfileViewModel(
             }
 
             EditProfileEvent.AddChild -> navigator.navigate(SettingsScreenRoutes.ChildInfo)
+            EditProfileEvent.OnSaveAndBack -> saveChanges { navigator.goToPrevious() }
+            EditProfileEvent.OnSaveAndAddChild -> saveChanges { navigator.navigate(SettingsScreenRoutes.ChildInfo) }
         }
     }
 
@@ -203,7 +205,7 @@ class EditProfileViewModel(
         backupChildrenNotes = null
     }
 
-    private fun saveChanges() {
+    private fun saveChanges(onFinish: () -> Unit = {}) {
         uploadUserAvatar(newAvatar) {
             saveParent()
         }
@@ -212,6 +214,7 @@ class EditProfileViewModel(
             childrenToRemove.forEach {
                 deleteChild(it) {}
             }
+        onFinish()
     }
 
     private fun saveParent() {
@@ -476,7 +479,8 @@ class EditProfileViewModel(
         _viewState.update {
             it.copy(
                 email = email,
-                emailValid = emailValid
+                emailValid = emailValid,
+                isEmailChanged = true
             )
         }
     }

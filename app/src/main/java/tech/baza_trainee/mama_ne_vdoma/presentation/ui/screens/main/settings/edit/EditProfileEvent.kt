@@ -7,6 +7,7 @@ import java.time.DayOfWeek
 
 sealed interface EditProfileEvent {
     data object OnBack: EditProfileEvent
+    data object OnSaveAndBack: EditProfileEvent
     data object SaveInfo: EditProfileEvent
     data object OnEditPhoto: EditProfileEvent
     data object OnDeletePhoto: EditProfileEvent
@@ -24,6 +25,7 @@ sealed interface EditProfileEvent {
     data class UpdateUserAddress(val address: String) : EditProfileEvent
     data object DeleteUser: EditProfileEvent
     data object AddChild: EditProfileEvent
+    data object OnSaveAndAddChild: EditProfileEvent
     data class EditParentSchedule(val dayOfWeek: DayOfWeek, val period: Period): EditProfileEvent
     data class DeleteChild(val id: String): EditProfileEvent
     data class EditParentNote(val note: String): EditProfileEvent

@@ -16,6 +16,7 @@ data class EditProfileViewState(
     val email: String = "",
     val emailValid: ValidField = ValidField.EMPTY,
     val isEmailChanged: Boolean = false,
+    val isEmailVerified: Boolean = false,
     val password: String = "",
     val passwordValid: ValidField = ValidField.EMPTY,
     val code: String = "",
