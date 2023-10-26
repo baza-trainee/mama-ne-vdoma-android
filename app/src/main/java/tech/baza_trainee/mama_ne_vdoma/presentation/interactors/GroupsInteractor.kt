@@ -51,41 +51,40 @@ class GroupsInteractorImpl(
     private val _groupsFlow = MutableStateFlow<List<GroupUiModel>>(emptyList())
     override val groupsFlow: StateFlow<List<GroupUiModel>> = _groupsFlow.asStateFlow()
 
-    private val initialGroups = mutableListOf<GroupUiModel>()
-
     override fun setGroupsCoroutineScope(coroutineScope: CoroutineScope) {
         this.coroutineScope = coroutineScope
 
         coroutineScope.launch {
             combine(avatarsFlow, locationsFlow, membersFlow, avatarsMembersFlow) { avatar, location, user, memberAvatar ->
+                val currentGroups = _groupsFlow.value.toMutableList()
                 if (avatar.first.isNotEmpty()) {
                     var currentGroup =
-                        initialGroups.find { it.id == avatar.first } ?: GroupUiModel()
-                    val index = initialGroups.indexOf(currentGroup)
+                        currentGroups.find { it.id == avatar.first } ?: GroupUiModel()
+                    val index = currentGroups.indexOf(currentGroup)
                     currentGroup = currentGroup.copy(id = avatar.first, avatar = avatar.second)
                     if (index == -1)
-                        initialGroups.add(currentGroup)
+                        currentGroups.add(currentGroup)
                     else {
-                        initialGroups.removeAt(index)
-                        initialGroups.add(index, currentGroup)
+                        currentGroups.removeAt(index)
+                        currentGroups.add(index, currentGroup)
                     }
                 }
 
                 if (location.first.isNotEmpty()) {
-                    var currentGroup = initialGroups.find { it.id == location.first } ?: GroupUiModel()
-                    val index = initialGroups.indexOf(currentGroup)
+                    var currentGroup = currentGroups.find { it.id == location.first } ?: GroupUiModel()
+                    val index = currentGroups.indexOf(currentGroup)
                     currentGroup = currentGroup.copy(location = location.second)
                     if (index == -1)
-                        initialGroups.add(currentGroup)
+                        currentGroups.add(currentGroup)
                     else {
-                        initialGroups.removeAt(index)
-                        initialGroups.add(index, currentGroup)
+                        currentGroups.removeAt(index)
+                        currentGroups.add(index, currentGroup)
                     }
                 }
 
                 if (user.first.isNotEmpty()) {
-                    var currentGroup = initialGroups.find { it.id == user.first } ?: GroupUiModel()
-                    val index = initialGroups.indexOf(currentGroup)
+                    var currentGroup = currentGroups.find { it.id == user.first } ?: GroupUiModel()
+                    val index = currentGroups.indexOf(currentGroup)
                     val currentMembers = currentGroup.members.toMutableList()
                     var member = currentMembers.find { it.id == user.second.id } ?: MemberUiModel()
                     val indexOfUser = currentGroup.members.indexOf(member)
@@ -108,17 +107,17 @@ class GroupsInteractorImpl(
                     }
                     currentGroup = currentGroup.copy(id = user.first, members = currentMembers)
                     if (index == -1)
-                        initialGroups.add(currentGroup)
+                        currentGroups.add(currentGroup)
                     else {
-                        initialGroups.removeAt(index)
-                        initialGroups.add(index, currentGroup)
+                        currentGroups.removeAt(index)
+                        currentGroups.add(index, currentGroup)
                     }
                 }
 
                 if (memberAvatar.first.isNotEmpty()) {
                     var currentGroup =
-                        initialGroups.find { it.id == memberAvatar.first } ?: GroupUiModel()
-                    val index = initialGroups.indexOf(currentGroup)
+                        currentGroups.find { it.id == memberAvatar.first } ?: GroupUiModel()
+                    val index = currentGroups.indexOf(currentGroup)
                     val currentMembers = currentGroup.members.toMutableList()
                     var member = currentMembers.find { it.id == memberAvatar.second } ?: MemberUiModel()
                     val indexOfUser = currentGroup.members.indexOf(member)
@@ -137,17 +136,17 @@ class GroupsInteractorImpl(
                     currentGroup =
                         currentGroup.copy(id = memberAvatar.first, members = currentMembers)
                     if (index == -1)
-                        initialGroups.add(currentGroup)
+                        currentGroups.add(currentGroup)
                     else {
-                        initialGroups.removeAt(index)
-                        initialGroups.add(index, currentGroup)
+                        currentGroups.removeAt(index)
+                        currentGroups.add(index, currentGroup)
                     }
                 }
 
-                initialGroups
-            }.collect {
+                currentGroups
+            }.collect { list ->
                 _groupsFlow.update {
-                    initialGroups
+                    list
                 }
             }
         }
@@ -158,6 +157,7 @@ class GroupsInteractorImpl(
     }
 
     override fun startFetching(entities: List<GroupEntity>, isMine: Boolean) {
+        val initialGroups = mutableListOf<GroupUiModel>()
         initialGroups.addAll(
             entities.map {
                 GroupUiModel(
@@ -169,6 +169,9 @@ class GroupsInteractorImpl(
                 )
             }
         )
+        _groupsFlow.update {
+            initialGroups
+        }
 
         entities.forEach { group ->
             val members = group.members
