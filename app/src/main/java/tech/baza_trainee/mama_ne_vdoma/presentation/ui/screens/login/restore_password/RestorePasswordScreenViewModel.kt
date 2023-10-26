@@ -33,7 +33,7 @@ class RestorePasswordScreenViewModel(
 
     fun handleRestoreEvent(event: RestorePasswordEvent) {
         when(event) {
-            RestorePasswordEvent.OnBack -> navigator.goBack()
+            RestorePasswordEvent.OnBack -> navigator.navigate(LoginRoutes.Login)
             RestorePasswordEvent.SendEmail -> forgetPassword()
             RestorePasswordEvent.ResetUiState -> _uiState.value = RequestState.Idle
 
