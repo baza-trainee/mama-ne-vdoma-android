@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesKeys.KEY_ADDRESS
+import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesKeys.KEY_ADMIN_JOIN_REQUESTS
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesKeys.KEY_AVATAR
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesKeys.KEY_AVATAR_URI
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesKeys.KEY_CHILDREN_PROVIDED
@@ -24,6 +25,7 @@ import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesKeys.KE
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesKeys.KEY_ID
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesKeys.KEY_LOCATION_LAT
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesKeys.KEY_LOCATION_LNG
+import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesKeys.KEY_MY_JOIN_REQUESTS
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesKeys.KEY_NAME
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesKeys.KEY_PHONE_NUMBER
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesKeys.KEY_PROFILE_FILLED
@@ -62,11 +64,14 @@ class UserPreferencesDatastoreManager(private val context: Context) {
             val profileFilled = preferences[KEY_PROFILE_FILLED] ?: true
             val childrenProvided = preferences[KEY_CHILDREN_PROVIDED] ?: true
             val currentChild = preferences[KEY_CURRENT_CHILD].orEmpty()
+            val myJoinRequests = preferences[KEY_MY_JOIN_REQUESTS] ?: 0
+            val adminJoinRequests = preferences[KEY_ADMIN_JOIN_REQUESTS] ?: 0
             UserPreferences(
                 id, avatar, avatarUri, name, code,
                 phone, email, address, radius,
                 latitude, longitude, sendEmail,
-                profileFilled, childrenProvided, currentChild
+                profileFilled, childrenProvided, currentChild,
+                myJoinRequests, adminJoinRequests
             )
         }
 
@@ -276,6 +281,34 @@ class UserPreferencesDatastoreManager(private val context: Context) {
             withContext(Dispatchers.Default ) {
                 userDataStore.edit {
                     it[KEY_CURRENT_CHILD] = value
+                }
+            }
+        }
+
+    var myJoinRequests: Int
+        get() = runBlocking {
+            withContext(Dispatchers.Default) {
+                userPreferencesFlow.first().myJoinRequests
+            }
+        }
+        set(value) = runBlocking {
+            withContext(Dispatchers.Default ) {
+                userDataStore.edit {
+                    it[KEY_MY_JOIN_REQUESTS] = value
+                }
+            }
+        }
+
+    var adminJoinRequests: Int
+        get() = runBlocking {
+            withContext(Dispatchers.Default) {
+                userPreferencesFlow.first().adminJoinRequests
+            }
+        }
+        set(value) = runBlocking {
+            withContext(Dispatchers.Default ) {
+                userDataStore.edit {
+                    it[KEY_ADMIN_JOIN_REQUESTS] = value
                 }
             }
         }

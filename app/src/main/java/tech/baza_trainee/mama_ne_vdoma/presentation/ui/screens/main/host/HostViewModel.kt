@@ -13,7 +13,6 @@ import kotlinx.coroutines.launch
 import tech.baza_trainee.mama_ne_vdoma.domain.model.GroupEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UserProfileEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatastoreManager
-import tech.baza_trainee.mama_ne_vdoma.domain.repository.FilesRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.GroupsRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.LocationRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
@@ -39,7 +38,6 @@ class HostViewModel(
     private val mainNavigator: ScreenNavigator,
     private val navigator: PageNavigator,
     private val userProfileRepository: UserProfileRepository,
-    private val filesRepository: FilesRepository,
     private val locationRepository: LocationRepository,
     private val groupsRepository: GroupsRepository,
     private val preferencesDatastoreManager: UserPreferencesDatastoreManager
@@ -60,7 +58,10 @@ class HostViewModel(
         viewModelScope.launch {
             preferencesDatastoreManager.userPreferencesFlow.collect { pref ->
                 _viewState.update {
-                    it.copy(avatar = pref.avatarUri)
+                    it.copy(
+                        avatar = pref.avatarUri,
+                        notifications = pref.myJoinRequests + pref.adminJoinRequests
+                    )
                 }
             }
         }
@@ -141,11 +142,7 @@ class HostViewModel(
                             longitude = entity.location.coordinates[0]
                         }
                     }
-                    _viewState.update {
-                        it.copy(
-                            myRequests = entity.groupJoinRequests.size
-                        )
-                    }
+                    preferencesDatastoreManager.myJoinRequests = entity.groupJoinRequests.size
                 }
             }
             onError { error ->
@@ -167,11 +164,7 @@ class HostViewModel(
                 groupsRepository.getGroupsForParent(parent)
             }
             onSuccess { entityList ->
-                _viewState.update { state ->
-                    state.copy(
-                        joinRequests = entityList.flatMap { it.askingJoin }.size
-                    )
-                }
+                preferencesDatastoreManager.adminJoinRequests = entityList.flatMap { it.askingJoin }.size
             }
             onError { error ->
                 _uiState.value = RequestState.OnError(error)

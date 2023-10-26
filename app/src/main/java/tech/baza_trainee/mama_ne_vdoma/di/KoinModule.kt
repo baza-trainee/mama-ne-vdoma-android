@@ -168,16 +168,13 @@ val mainModule = module {
             get(),
             get(),
             get(),
-            get(),
             get()
         )
     }
     viewModel { MainViewModel(get(), get()) }
     viewModel { NotificationsViewModel(get(), get(), get(), get(), get(), get()) }
     viewModel { ChooseChildViewModel(get(), get()) }
-    viewModel {
-        MyGroupsViewModel(get(), get(), get(), get())
-    }
+    viewModel { MyGroupsViewModel(get(), get(), get(), get(), get()) }
     viewModel { (childId: String) ->
         CreateGroupViewModel(childId, get(), get(), get(), get(), get(), get(), get())
     }

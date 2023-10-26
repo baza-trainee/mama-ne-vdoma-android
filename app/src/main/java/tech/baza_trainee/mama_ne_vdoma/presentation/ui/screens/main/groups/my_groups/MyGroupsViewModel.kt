@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import tech.baza_trainee.mama_ne_vdoma.domain.model.GroupEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UserProfileEntity
+import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatastoreManager
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.GroupsRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.GroupsInteractor
@@ -27,6 +28,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onSuccess
 class MyGroupsViewModel(
     private val userProfileRepository: UserProfileRepository,
     private val groupsRepository: GroupsRepository,
+    private val preferencesDatastoreManager: UserPreferencesDatastoreManager,
     private val navigator: PageNavigator,
     groupsInteractor: GroupsInteractor
 ): ViewModel(), GroupsInteractor by groupsInteractor, NetworkEventsListener {
@@ -89,6 +91,8 @@ class MyGroupsViewModel(
                         userId = entity.id
                     )
                 }
+
+                preferencesDatastoreManager.myJoinRequests = entity.groupJoinRequests.size
             }
             onError { error ->
                 _uiState.value = RequestState.OnError(error)
@@ -108,7 +112,10 @@ class MyGroupsViewModel(
             execute {
                 groupsRepository.getGroupsForParent(parent)
             }
-            onSuccess(::startFetching)
+            onSuccess { entities ->
+                startFetching(entities, true)
+                preferencesDatastoreManager.adminJoinRequests = entities.flatMap { it.askingJoin }.size
+            }
             onError { error ->
                 _uiState.value = RequestState.OnError(error)
             }

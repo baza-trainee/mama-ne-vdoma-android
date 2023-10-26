@@ -17,7 +17,9 @@ data class UserPreferences(
     val sendEmail: Boolean,
     val isUserProfileFilled: Boolean,
     val isChildrenDataProvided: Boolean,
-    val currentChild: String
+    val currentChild: String,
+    val myJoinRequests: Int,
+    val adminJoinRequests: Int,
 )
 
 

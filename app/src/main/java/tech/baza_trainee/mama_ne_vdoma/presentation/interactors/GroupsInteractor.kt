@@ -30,7 +30,7 @@ interface GroupsInteractor {
 
     fun setGroupsNetworkListener(listener: NetworkEventsListener)
 
-    fun startFetching(entities: List<GroupEntity>)
+    fun startFetching(entities: List<GroupEntity>, isMine: Boolean = false)
 }
 
 class GroupsInteractorImpl(
@@ -45,7 +45,7 @@ class GroupsInteractorImpl(
 
     private val avatarsFlow: MutableStateFlow<Pair<String, Uri>> = MutableStateFlow("" to Uri.EMPTY)
     private val avatarsMembersFlow: MutableStateFlow<Triple<String, String, Uri>> = MutableStateFlow(Triple("", "", Uri.EMPTY))
-    private val membersFlow: MutableStateFlow<Pair<String, UserProfileEntity>> = MutableStateFlow("" to UserProfileEntity())
+    private val membersFlow: MutableStateFlow<Triple<String, UserProfileEntity, Boolean>> = MutableStateFlow(Triple("", UserProfileEntity(), false))
     private val locationsFlow: MutableStateFlow<Pair<String, String>> = MutableStateFlow("" to "")
 
     private val _groupsFlow = MutableStateFlow<List<GroupUiModel>>(emptyList())
@@ -93,6 +93,11 @@ class GroupsInteractorImpl(
                         id = user.second.id,
                         name = user.second.name
                     )
+                    if (user.third)
+                        member = member.copy(
+                            phone = "${user.second.countryCode}${user.second.phone}",
+                            email = user.second.email
+                        )
                     currentMembers.apply {
                         if (indexOfUser == -1)
                             add(member)
@@ -152,7 +157,7 @@ class GroupsInteractorImpl(
         this.networkListener = listener
     }
 
-    override fun startFetching(entities: List<GroupEntity>) {
+    override fun startFetching(entities: List<GroupEntity>, isMine: Boolean) {
         initialGroups.addAll(
             entities.map {
                 GroupUiModel(
@@ -173,7 +178,7 @@ class GroupsInteractorImpl(
                 }
 
             members.forEach { member ->
-                getUser(member.id, group.id)
+                getUser(member.id, group.id, isMine)
             }
 
             if (group.avatar.isNotEmpty())
@@ -192,7 +197,8 @@ class GroupsInteractorImpl(
 
     private fun getUser(
         userId: String,
-        groupId: String
+        groupId: String,
+        isMine: Boolean
     ) {
         coroutineScope.networkExecutor<UserProfileEntity> {
             execute {
@@ -200,7 +206,7 @@ class GroupsInteractorImpl(
             }
             onSuccess { user ->
                 membersFlow.update {
-                    groupId to user
+                    Triple(groupId, user, isMine)
                 }
                 getUserAvatar(user.avatar, userId, groupId)
             }

@@ -106,6 +106,8 @@ class NotificationsViewModel(
                 getGroups(entity.id)
 
                 entity.groupJoinRequests.forEach(::getGroupById)
+
+                preferencesDatastoreManager.myJoinRequests = entity.groupJoinRequests.size
             }
             onError { error ->
                 _uiState.value = NotificationsUiState.OnError(error)
@@ -207,6 +209,7 @@ class NotificationsViewModel(
                         adminJoinRequests = joinRequests
                     )
                 }
+                preferencesDatastoreManager.adminJoinRequests = entityList.flatMap { it.askingJoin }.size
             }
             onError { error ->
                 _uiState.value = NotificationsUiState.OnError(error)

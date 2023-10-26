@@ -21,4 +21,6 @@ object UserPreferencesKeys {
     val KEY_PROFILE_FILLED = booleanPreferencesKey(PROFILE_FILLED)
     val KEY_CHILDREN_PROVIDED = booleanPreferencesKey(CHILDREN_PROVIDED)
     val KEY_CURRENT_CHILD = stringPreferencesKey(CURRENT_CHILD)
+    val KEY_MY_JOIN_REQUESTS = intPreferencesKey(MY_JOIN_REQUESTS)
+    val KEY_ADMIN_JOIN_REQUESTS = intPreferencesKey(ADMIN_JOIN_REQUESTS)
 }

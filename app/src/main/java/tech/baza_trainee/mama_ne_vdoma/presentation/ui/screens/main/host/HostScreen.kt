@@ -60,7 +60,7 @@ fun HostScreen(
             MainNavigationItem("Налаштування", R.drawable.ic_settings)
         )
 
-        val notificationsCount = screenState.value.myRequests + screenState.value.joinRequests
+        val notificationsCount = screenState.value.notifications
 
         Scaffold(
             modifier = Modifier.fillMaxSize(),
