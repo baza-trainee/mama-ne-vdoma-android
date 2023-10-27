@@ -131,23 +131,6 @@ class NotificationsViewModel(
             combine(groupAvatarFlow, membersFlow, groupsFlow, memberAvatarsFlow) { avatar, member, group, memberAvatar ->
                 val currentRequests = _viewState.value.myJoinRequests.toMutableList()
 
-                if (avatar.first.isNotEmpty()) {
-                    var currentUiModel =
-                        currentRequests.find { it.group.id == avatar.first } ?: JoinRequestUiModel()
-                    val index = currentRequests.indexOf(currentUiModel)
-                    val newGroup = currentUiModel.group.copy(
-                        id = avatar.first,
-                        avatar = avatar.second
-                    )
-                    currentUiModel = currentUiModel.copy(group = newGroup)
-                    if (index == -1)
-                        currentRequests.add(currentUiModel)
-                    else {
-                        currentRequests.removeAt(index)
-                        currentRequests.add(index, currentUiModel)
-                    }
-                }
-
                 if (group.first.isNotEmpty()) {
                     var currentRequest = currentRequests.find { it.group.id == group.first } ?: JoinRequestUiModel()
                     val indexOfRequest = currentRequests.indexOf(currentRequest)
@@ -177,9 +160,7 @@ class NotificationsViewModel(
                 if (avatar.first.isNotEmpty()) {
                     var currentRequest = currentRequests.find { it.group.id == avatar.first } ?: JoinRequestUiModel()
                     val indexOfRequest = currentRequests.indexOf(currentRequest)
-                    var newGroup = currentRequest.group
-
-                    newGroup = newGroup.copy(
+                    val newGroup = currentRequest.group.copy(
                         id = avatar.first,
                         avatar = avatar.second
                     )

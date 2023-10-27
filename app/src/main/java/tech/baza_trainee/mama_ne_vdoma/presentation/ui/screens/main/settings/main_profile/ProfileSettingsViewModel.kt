@@ -94,6 +94,7 @@ class ProfileSettingsViewModel(
             ProfileSettingsEvent.EditProfile -> navigator.navigate(SettingsScreenRoutes.EditProfile)
             ProfileSettingsEvent.LogOut -> {
                 AuthInterceptor.AUTH_TOKEN = AuthInterceptor.EMPTY_TOKEN
+                preferencesDatastoreManager.clearData()
                 mainNavigator.navigate(LoginRoutes.Login)
             }
 

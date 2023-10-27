@@ -99,6 +99,8 @@ fun EditProfileScreen(
 
     BackHandler { exitScreen = 0 }
 
+    var showSuccessDialog by rememberSaveable { mutableStateOf(false) }
+
     val context = LocalContext.current
 
     when (val state = uiState.value) {
@@ -117,6 +119,8 @@ fun EditProfileScreen(
             ).show()
             handleEvent(EditProfileEvent.ResetUiState)
         }
+
+        EditProfileUiState.OnProfileSaved -> showSuccessDialog = true
     }
 
     val focusRequester = remember { FocusRequester() }
@@ -770,6 +774,51 @@ fun EditProfileScreen(
                             textAlign = TextAlign.Center
                         )
                     }
+                }
+            }
+        }
+
+        if (showSuccessDialog) {
+            AlertDialog(onDismissRequest = { showSuccessDialog = false }) {
+                Column(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(MaterialTheme.colorScheme.background)
+                        .padding(16.dp)
+                        .fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_ok),
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+
+                    Text(
+                        modifier = Modifier
+                            .padding(top = 16.dp)
+                            .padding(horizontal = 16.dp)
+                            .fillMaxWidth(),
+                        text = "Інформація успішно оновлена!",
+                        fontSize = 14.sp,
+                        textAlign = TextAlign.Center,
+                        fontFamily = redHatDisplayFontFamily
+                    )
+
+                    Text(
+                        text = "На головну",
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center,
+                        color = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier
+                            .wrapContentWidth()
+                            .align(Alignment.End)
+                            .clickable {
+                                showSuccessDialog = false
+                                handleEvent(EditProfileEvent.GoToMain)
+                            }
+                            .padding(16.dp)
+                    )
                 }
             }
         }

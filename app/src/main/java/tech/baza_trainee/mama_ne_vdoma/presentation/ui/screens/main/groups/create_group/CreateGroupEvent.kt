@@ -5,6 +5,8 @@ import tech.baza_trainee.mama_ne_vdoma.domain.model.Period
 import java.time.DayOfWeek
 
 sealed interface CreateGroupEvent {
+    data object GetLocationFromAddress : CreateGroupEvent
+    data class UpdateGroupAddress(val address: String) : CreateGroupEvent
     data class UpdateGroupSchedule(val day: DayOfWeek, val period: Period) : CreateGroupEvent
     data class UpdateName(val value: String) : CreateGroupEvent
     data class UpdateDescription(val value: String) : CreateGroupEvent

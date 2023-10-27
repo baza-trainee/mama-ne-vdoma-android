@@ -35,4 +35,5 @@ sealed interface EditProfileEvent {
     data object SaveChildren: EditProfileEvent
     data object RestoreParentInfo: EditProfileEvent
     data object SaveParentInfo: EditProfileEvent
+    data object GoToMain: EditProfileEvent
 }

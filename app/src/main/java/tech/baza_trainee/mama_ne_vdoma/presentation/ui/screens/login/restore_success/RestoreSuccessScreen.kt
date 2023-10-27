@@ -4,6 +4,7 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -41,7 +42,9 @@ fun RestoreSuccessScreen(
             )
 
             Image(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight(.5f),
                 painter = painterResource(id = R.drawable.restore_pass_end),
                 contentDescription = null,
                 contentScale = ContentScale.FillWidth

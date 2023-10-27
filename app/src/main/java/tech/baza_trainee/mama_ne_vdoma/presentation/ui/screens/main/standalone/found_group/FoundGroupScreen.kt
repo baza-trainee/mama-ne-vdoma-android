@@ -144,6 +144,19 @@ fun FoundGroupScreen(
                         )
                     }
                 }
+
+                Button(
+                    modifier = Modifier
+                        .padding(all = 16.dp)
+                        .fillMaxWidth()
+                        .height(48.dp),
+                    onClick = { handleEvent(FoundGroupEvent.OnJoin) },
+                    enabled = screenState.value.groups.map { it.isChecked }.contains(true)
+                ) {
+                    ButtonText(
+                        text = "Приєднатися до групи"
+                    )
+                }
             } else if (!screenState.value.isLoading) {
                 Text(
                     modifier = Modifier
@@ -174,19 +187,18 @@ fun FoundGroupScreen(
                 )
 
                 Spacer(modifier = Modifier.weight(1f))
-            }
 
-            Button(
-                modifier = Modifier
-                    .padding(horizontal = 16.dp, vertical = 16.dp)
-                    .fillMaxWidth()
-                    .height(48.dp),
-                onClick = { handleEvent(FoundGroupEvent.OnJoin) },
-                enabled = screenState.value.groups.map { it.isChecked }.contains(true)
-            ) {
-                ButtonText(
-                    text = "Приєднатися до групи"
-                )
+                Button(
+                    modifier = Modifier
+                        .padding(all = 16.dp)
+                        .fillMaxWidth()
+                        .height(48.dp),
+                    onClick = { handleEvent(FoundGroupEvent.GoToMain) }
+                ) {
+                    ButtonText(
+                        text = "На головну"
+                    )
+                }
             }
         }
 

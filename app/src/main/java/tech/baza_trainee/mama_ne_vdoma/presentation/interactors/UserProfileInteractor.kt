@@ -5,8 +5,6 @@ import android.net.Uri
 import androidx.core.net.toUri
 import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import tech.baza_trainee.mama_ne_vdoma.domain.model.ChildEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.DayPeriod
 import tech.baza_trainee.mama_ne_vdoma.domain.model.PatchChildEntity
@@ -126,18 +124,15 @@ class UserProfileInteractorImpl(
     }
 
     override fun saveUserAvatar(avatar: Bitmap, onSuccess: (Bitmap, Uri) -> Unit, onError: () -> Unit) {
-        coroutineScope.launch(Dispatchers.IO) {
-            val newImage = if (avatar.height > IMAGE_DIM)
-                Bitmap.createScaledBitmap(avatar,
-                    IMAGE_DIM,
-                    IMAGE_DIM, true)
-            else avatar
-            val newImageSize = bitmapHelper.getSize(newImage)
-            if (newImageSize < IMAGE_SIZE) {
-                val uri = bitmapHelper.bitmapToFile(newImage).toUri()
-                onSuccess(newImage, uri)
-            } else onError()
-        }
+        bitmapHelper.resizeBitmap(
+            scope = coroutineScope,
+            image = avatar,
+            onSuccess = { bmp ->
+                val uri = bitmapHelper.bitmapToFile(bmp).toUri()
+                onSuccess(bmp, uri)
+            },
+            onError = onError
+        )
     }
 
     override fun validatePhone(phone: String, country: String, onSuccess: (ValidField) -> Unit) {
@@ -352,7 +347,5 @@ class UserProfileInteractorImpl(
     companion object {
 
         private val NAME_LENGTH = 2..18
-        private const val IMAGE_SIZE = 1 * 1024 * 1024
-        private const val IMAGE_DIM = 512
     }
 }

@@ -6,13 +6,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.model.LatLng
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import tech.baza_trainee.mama_ne_vdoma.domain.model.ChildEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.DayPeriod
 import tech.baza_trainee.mama_ne_vdoma.domain.model.GroupEntity
@@ -26,9 +24,8 @@ import tech.baza_trainee.mama_ne_vdoma.domain.repository.LocationRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.PageNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.GroupsScreenRoutes
-import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.HostScreenRoutes
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.MainScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.image_crop.CropImageCommunicator
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.GROUPS_PAGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.GroupSearchCommunicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.BitmapHelper
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
@@ -84,35 +81,87 @@ class CreateGroupViewModel(
             is CreateGroupEvent.SetImageToCrop -> communicator.uriForCrop = event.uri
             CreateGroupEvent.GoToMain -> {
                 childCommunicator.childId = ""
-                navigator.navigate(HostScreenRoutes.Host.getDestination(GROUPS_PAGE))
+                navigator.navigate(MainScreenRoutes.Main)
+            }
+
+            CreateGroupEvent.GetLocationFromAddress -> getLocationFromAddress()
+            is CreateGroupEvent.UpdateGroupAddress -> updateGroupAddress(event.address)
+        }
+    }
+
+    private fun updateGroupAddress(address: String) {
+        _viewState.update {
+            it.copy(
+                address = address,
+                isAddressChecked = false
+            )
+        }
+    }
+
+    private fun getLocationFromAddress() {
+        networkExecutor<LatLng?> {
+            execute {
+                locationRepository.getLocationFromAddress(_viewState.value.address)
+            }
+            onSuccess { location ->
+                location?.let {
+                    _viewState.update {
+                        it.copy(
+                            location = location,
+                            isAddressChecked = true
+                        )
+                    }
+                }
+            }
+            onError { error ->
+                _uiState.value = CreateGroupUiState.OnError(error)
+            }
+            onLoading { isLoading ->
+                _viewState.update {
+                    it.copy(
+                        isLoading = isLoading
+                    )
+                }
+            }
+        }
+    }
+
+    private fun updateGroupLocation(location: LatLng, groupId: String) {
+        networkExecutor {
+            execute {
+                groupsRepository.updateGroupLocation(
+                    groupId,
+                    location.latitude,
+                    location.longitude
+                )
+            }
+            onError { error ->
+                _uiState.value = CreateGroupUiState.OnError(error)
+            }
+            onLoading { isLoading ->
+                _viewState.update {
+                    it.copy(
+                        isLoading = isLoading
+                    )
+                }
             }
         }
     }
 
     private fun saveGroupAvatar(image: Bitmap) {
-        if (image != BitmapHelper.DEFAULT_BITMAP) {
-            viewModelScope.launch(Dispatchers.IO) {
-                val newImage = if (image.height > IMAGE_HEIGHT)
-                    Bitmap.createScaledBitmap(
-                        image,
-                        IMAGE_WIDTH,
-                        IMAGE_HEIGHT,
-                        true
-                    )
-                else image
-                val newImageSize = bitmapHelper.getSize(newImage)
-                if (newImageSize < IMAGE_SIZE) {
-                    withContext(Dispatchers.Main) {
-                        _viewState.update {
-                            it.copy(avatar = newImage)
-                        }
-                    }
-                    communicator.setCroppedImage(null)
-                } else {
-                    _uiState.value = CreateGroupUiState.OnAvatarError
+        bitmapHelper.resizeBitmap(
+            scope = viewModelScope,
+            image = image,
+            onSuccess = { bmp ->
+                _viewState.update {
+                    it.copy(avatar = bmp)
                 }
+                communicator.setCroppedImage(null)
+            },
+            onError = {
+                _uiState.value = CreateGroupUiState.OnAvatarError
             }
-        }
+        )
     }
 
     private fun uploadAvatar(image: Bitmap, groupId: String) {
@@ -138,28 +187,31 @@ class CreateGroupViewModel(
     }
 
     private fun createGroup() {
-        networkExecutor<GroupEntity> {
-            execute {
-                groupsRepository.createGroup(
-                    childCommunicator.childId,
-                    _viewState.value.name,
-                    _viewState.value.description
-                )
-            }
-            onSuccess {
-                uploadAvatar(_viewState.value.avatar, it.id)
-            }
-            onError { error ->
-                _uiState.value = CreateGroupUiState.OnError(error)
-            }
-            onLoading { isLoading ->
-                _viewState.update {
-                    it.copy(
-                        isLoading = isLoading
+        if (_viewState.value.isAddressChecked) {
+            networkExecutor<GroupEntity> {
+                execute {
+                    groupsRepository.createGroup(
+                        childCommunicator.childId,
+                        _viewState.value.name,
+                        _viewState.value.description
                     )
                 }
+                onSuccess {
+                    uploadAvatar(_viewState.value.avatar, it.id)
+                    updateGroupLocation(_viewState.value.location, it.id)
+                }
+                onError { error ->
+                    _uiState.value = CreateGroupUiState.OnError(error)
+                }
+                onLoading { isLoading ->
+                    _viewState.update {
+                        it.copy(
+                            isLoading = isLoading
+                        )
+                    }
+                }
             }
-        }
+        } else _uiState.value = CreateGroupUiState.AddressNotChecked
     }
 
     private fun updateGroup(groupId: String) {
@@ -447,8 +499,5 @@ class CreateGroupViewModel(
         private val NAME_LENGTH = 6..18
         private const val MIN_AGE = 1
         private const val MAX_AGE = 18
-        private const val IMAGE_SIZE = 1 * 1024 * 1024
-        private const val IMAGE_HEIGHT = 960
-        private const val IMAGE_WIDTH = 360
     }
 }

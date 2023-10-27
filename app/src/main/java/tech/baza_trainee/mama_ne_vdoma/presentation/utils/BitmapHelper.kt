@@ -10,7 +10,9 @@ import android.util.Base64
 import androidx.core.graphics.applyCanvas
 import androidx.core.net.toUri
 import androidx.exifinterface.media.ExifInterface
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.ResponseBody
 import java.io.ByteArrayOutputStream
@@ -30,6 +32,32 @@ class BitmapHelper(private val context: Context) {
         val byteArrayOutputStream = ByteArrayOutputStream()
         bitmap.compress(Bitmap.CompressFormat.PNG, PNG_QUALITY, byteArrayOutputStream)
         return byteArrayOutputStream.toByteArray().size
+    }
+
+    fun resizeBitmap(
+        scope: CoroutineScope,
+        image: Bitmap,
+        onSuccess: (Bitmap) -> Unit,
+        onError: () -> Unit
+        ) {
+        if (image != DEFAULT_BITMAP) {
+            scope.launch(Dispatchers.IO) {
+                val newImage = if (image.height > IMAGE_HEIGHT)
+                    Bitmap.createScaledBitmap(
+                        image,
+                        IMAGE_WIDTH,
+                        IMAGE_HEIGHT,
+                        true
+                    )
+                else image
+                val newImageSize = getSize(newImage)
+                if (newImageSize < IMAGE_SIZE) {
+                    onSuccess(newImage)
+                } else {
+                    onError()
+                }
+            }
+        }
     }
 
     fun bitmapToFile(bitmap: Bitmap): File {
@@ -86,6 +114,9 @@ class BitmapHelper(private val context: Context) {
 
         private const val PNG_QUALITY = 75
         private const val AVATAR = "avatar.png"
+        private const val IMAGE_SIZE = 1 * 1024 * 1024
+        private const val IMAGE_HEIGHT = 960
+        private const val IMAGE_WIDTH = 360
 
         val DEFAULT_BITMAP = Bitmap.createBitmap(200, 200, Bitmap.Config.ARGB_8888).applyCanvas {
             drawColor(Color.GRAY)

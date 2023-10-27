@@ -403,7 +403,7 @@ fun GroupInfoDesk(
                     text = "Покинути групу"
                 )
             }
-        } else {
+        } else if (!isAdmin) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,

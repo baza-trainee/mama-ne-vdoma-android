@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import tech.baza_trainee.mama_ne_vdoma.data.interceptors.AuthInterceptor
 import tech.baza_trainee.mama_ne_vdoma.domain.model.GroupEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UserProfileEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatastoreManager
@@ -94,7 +95,11 @@ class HostViewModel(
             HostEvent.ResetUiState -> _uiState.value = RequestState.Idle
             HostEvent.OnBackLocal -> {
                 when (navigator.getCurrentRoute()) {
-                    MainScreenRoutes.Main.route -> mainNavigator.navigate(Graphs.Login)
+                    MainScreenRoutes.Main.route ->  {
+                        AuthInterceptor.AUTH_TOKEN = AuthInterceptor.EMPTY_TOKEN
+                        preferencesDatastoreManager.clearData()
+                        mainNavigator.navigate(Graphs.Login)
+                    }
                     else -> navigator.goToPrevious()
                 }
             }

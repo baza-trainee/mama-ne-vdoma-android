@@ -94,11 +94,10 @@ fun UserInfoScreen(
         }
 
         var openBottomSheet by rememberSaveable { mutableStateOf(false) }
-        val scrollState = rememberScrollState()
 
         Column(
             modifier = Modifier
-                .verticalScroll(scrollState)
+                .verticalScroll(rememberScrollState())
                 .imePadding()
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp),
@@ -237,7 +236,6 @@ fun UserInfoScreen(
                     fontSize = 14.sp
                 )
             }
-
 
             Spacer(modifier = Modifier.weight(1f))
 

@@ -1,6 +1,7 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.restore_password
 
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -44,6 +45,10 @@ fun RestorePasswordScreen(
     handleEvent: (RestorePasswordEvent) -> Unit = { _ -> }
 ) {
     SurfaceWithSystemBars {
+        BackHandler {
+            handleEvent(RestorePasswordEvent.OnBack)
+        }
+
         val context = LocalContext.current
 
         when(val state = uiState.value) {

@@ -26,6 +26,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.UserProfileInter
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.PageNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.Graphs
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.MainScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.SettingsScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.image_crop.CropImageCommunicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.common.EditProfileCommunicator
@@ -94,6 +95,7 @@ class EditProfileViewModel(
                 }
             }
         }
+
         getUserInfo()
 
         viewModelScope.launch {
@@ -119,7 +121,7 @@ class EditProfileViewModel(
             is EditProfileEvent.DeleteChild -> deleteChild(event.id)
             EditProfileEvent.ResetUiState -> _uiState.value = EditProfileUiState.Idle
             EditProfileEvent.OnBack -> navigator.goToPrevious()
-            EditProfileEvent.SaveInfo -> saveChanges()
+            EditProfileEvent.SaveInfo -> saveChanges() { _uiState.value = EditProfileUiState.OnProfileSaved }
             EditProfileEvent.GetLocationFromAddress -> getLocationFromAddress()
             EditProfileEvent.OnDeletePhoto -> deleteUserAvatar()
             EditProfileEvent.OnEditPhoto -> navigator.navigate(SettingsScreenRoutes.EditProfilePhoto)
@@ -151,6 +153,7 @@ class EditProfileViewModel(
             EditProfileEvent.AddChild -> navigator.navigate(SettingsScreenRoutes.ChildInfo)
             EditProfileEvent.OnSaveAndBack -> saveChanges { navigator.goToPrevious() }
             EditProfileEvent.OnSaveAndAddChild -> saveChanges { navigator.navigate(SettingsScreenRoutes.ChildInfo) }
+            EditProfileEvent.GoToMain -> navigator.navigate(MainScreenRoutes.Main)
         }
     }
 
@@ -174,12 +177,14 @@ class EditProfileViewModel(
                 map[it] = (backupParentSchedule?.get(it) ?: DayPeriod()).copy()
             }
         }
+
         _viewState.update {
             it.copy(
                 schedule = ScheduleModel(schedule),
                 note = backupParentNote.orEmpty()
             )
         }
+
         backupParentSchedule = null
         backupParentNote = null
     }
@@ -198,22 +203,30 @@ class EditProfileViewModel(
                 note = note
             )
         }.toList()
+
         _viewState.update {
             it.copy(children = children)
         }
+
         backupChildrenSchedule = null
         backupChildrenNotes = null
     }
 
     private fun saveChanges(onFinish: () -> Unit = {}) {
-        uploadUserAvatar(newAvatar) {
+        if (newAvatar != BitmapHelper.DEFAULT_BITMAP) {
+            uploadUserAvatar(newAvatar) {
+                saveParent()
+            }
+        } else
             saveParent()
-        }
+
         saveChildren()
+
         if (childrenToRemove.isNotEmpty())
             childrenToRemove.forEach {
                 deleteChild(it) {}
             }
+
         onFinish()
     }
 
@@ -248,6 +261,7 @@ class EditProfileViewModel(
                     map[it] = (_viewState.value.schedule.schedule[it] ?: DayPeriod()).copy()
                 }
             }
+
         _viewState.update {
             it.copy(
                 schedule = updateSchedule(it.schedule, dayOfWeek, dayPeriod)
@@ -258,7 +272,9 @@ class EditProfileViewModel(
     private fun updateParentNote(value: String) {
         if (backupParentNote == null)
             backupParentNote = value
+
         val fieldValid = if (value.length < 1000) ValidField.VALID else ValidField.INVALID
+
         _viewState.update {
             it.copy(
                 note = value,
@@ -314,7 +330,7 @@ class EditProfileViewModel(
 
     private fun deleteUser() {
         deleteUser {
-            mainNavigator.navigate(Graphs.CreateUser)
+            mainNavigator.navigate(Graphs.Start)
         }
     }
 
@@ -425,7 +441,6 @@ class EditProfileViewModel(
                 )
             }
         }
-
     }
 
     private fun validateUserName(name: String) {
@@ -446,6 +461,7 @@ class EditProfileViewModel(
                     currentLocation = location
                 )
             }
+
             getAddressFromLocation(location)
 
             preferencesDatastoreManager.apply {
@@ -514,9 +530,5 @@ class EditProfileViewModel(
                     _uiState.value = EditProfileUiState.OnAvatarError
                 }
             )
-    }
-
-    private fun uploadUserAvatar(image: Bitmap) {
-        uploadUserAvatar(image) {}
     }
 }

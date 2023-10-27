@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
@@ -21,10 +22,12 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Error
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -78,6 +81,7 @@ fun CreateGroupScreen(
     val context = LocalContext.current
 
     var showSuccessDialog by rememberSaveable { mutableStateOf(false) }
+    var showAddressDialog by rememberSaveable { mutableStateOf(false) }
 
     when (val state = uiState.value) {
         CreateGroupUiState.Idle -> Unit
@@ -97,12 +101,17 @@ fun CreateGroupScreen(
         }
 
         CreateGroupUiState.OnGroupCreated -> showSuccessDialog = true
+        CreateGroupUiState.AddressNotChecked -> {
+            showAddressDialog = true
+            handleEvent(CreateGroupEvent.ResetUiState)
+        }
     }
 
     Column(
         modifier = Modifier
             .verticalScroll(rememberScrollState())
             .imePadding()
+            .fillMaxSize()
     ) {
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -116,18 +125,37 @@ fun CreateGroupScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Text(
+        OutlinedTextField(
+            value = screenState.value.address,
+            onValueChange = {
+                handleEvent(CreateGroupEvent.UpdateGroupAddress(it))
+            },
             modifier = Modifier.fillMaxWidth(),
-            text = "Адреса групи",
-            fontFamily = redHatDisplayFontFamily,
-            fontSize = 14.sp
-        )
-
-        Text(
-            modifier = Modifier.fillMaxWidth(),
-            text = screenState.value.address,
-            fontFamily = redHatDisplayFontFamily,
-            fontSize = 14.sp
+            label = { Text("Введіть Вашу адресу") },
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedContainerColor = MaterialTheme.colorScheme.surface,
+                unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                disabledContainerColor = MaterialTheme.colorScheme.surface,
+                focusedBorderColor = MaterialTheme.colorScheme.primary,
+                unfocusedBorderColor = MaterialTheme.colorScheme.surface,
+            ),
+            trailingIcon = {
+                IconButton(
+                    onClick = { handleEvent(CreateGroupEvent.GetLocationFromAddress) }
+                ) {
+                    if (screenState.value.isAddressChecked) {
+                        Icon(
+                            painterResource(id = R.drawable.ic_done),
+                            contentDescription = "search_location",
+                        )
+                    } else {
+                        Icon(
+                            imageVector = Icons.Filled.LocationOn,
+                            contentDescription = "search_location"
+                        )
+                    }
+                }
+            }
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -147,7 +175,8 @@ fun CreateGroupScreen(
                 .padding(horizontal = 8.dp),
             text = "Назва групи повинна складатись від 6 до 18 символів, може містити латинські чи кириличні букви та цифри, пробіли, дефіси. НЕ є унікальною",
             fontFamily = redHatDisplayFontFamily,
-            fontSize = 12.sp
+            fontSize = 12.sp,
+            lineHeight = 14.sp
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -371,6 +400,7 @@ fun CreateGroupScreen(
                 text = "Створити нову групу"
             )
         }
+
         if (showSuccessDialog) {
             AlertDialog(onDismissRequest = { showSuccessDialog = false }) {
                 Column(
@@ -392,7 +422,7 @@ fun CreateGroupScreen(
                             .padding(top = 16.dp)
                             .padding(horizontal = 16.dp)
                             .fillMaxWidth(),
-                        text = "Запит до групи успішно відправлений. Ми повідомимо вас, коли адміністратор групи затвердить ваш запит",
+                        text = "Ваша група успішно створена",
                         fontSize = 14.sp,
                         textAlign = TextAlign.Center,
                         fontFamily = redHatDisplayFontFamily
@@ -409,6 +439,50 @@ fun CreateGroupScreen(
                             .clickable {
                                 showSuccessDialog = false
                                 handleEvent(CreateGroupEvent.GoToMain)
+                            }
+                            .padding(16.dp)
+                    )
+                }
+            }
+        }
+
+        if (showAddressDialog) {
+            AlertDialog(onDismissRequest = { showAddressDialog = false }) {
+                Column(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(MaterialTheme.colorScheme.background)
+                        .padding(16.dp)
+                        .fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.LocationOn,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+
+                    Text(
+                        modifier = Modifier
+                            .padding(top = 16.dp)
+                            .padding(horizontal = 16.dp)
+                            .fillMaxWidth(),
+                        text = "Ви не перевірили вказану адресу",
+                        fontSize = 14.sp,
+                        textAlign = TextAlign.Center,
+                        fontFamily = redHatDisplayFontFamily
+                    )
+
+                    Text(
+                        text = "Зрозуміло",
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center,
+                        color = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier
+                            .wrapContentWidth()
+                            .align(Alignment.End)
+                            .clickable {
+                                showAddressDialog = false
                             }
                             .padding(16.dp)
                     )
