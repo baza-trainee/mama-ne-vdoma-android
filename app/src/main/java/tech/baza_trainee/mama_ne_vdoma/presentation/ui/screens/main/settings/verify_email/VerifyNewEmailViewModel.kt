@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import tech.baza_trainee.mama_ne_vdoma.data.interceptors.AuthInterceptor
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatastoreManager
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.AuthRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
@@ -48,7 +49,10 @@ class VerifyNewEmailViewModel(
             VerifyEmailEvent.ResetUiState -> _uiState.value = VerifyEmailUiState.Idle
             VerifyEmailEvent.ResendCode -> resendCode()
             VerifyEmailEvent.OnBack -> navigator.goBack()
-            VerifyEmailEvent.GoToMain -> navigator.navigate(Graphs.Login)
+            VerifyEmailEvent.GoToMain -> {
+                AuthInterceptor.AUTH_TOKEN = AuthInterceptor.EMPTY_TOKEN
+                navigator.navigate(Graphs.Login)
+            }
         }
     }
 
