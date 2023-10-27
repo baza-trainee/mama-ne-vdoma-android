@@ -15,6 +15,8 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.child_sche
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.image_crop.ImageCropViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.add_child.ChildInfoScreenInSettings
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.add_child.ChildScheduleScreenInSettings
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.change_credentials.EditCredentialsScreen
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.change_credentials.EditCredentialsViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.edit.EditProfileScreen
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.edit.EditProfileViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.image_crop.ProfileImageCropScreen
@@ -87,6 +89,14 @@ fun NavGraphBuilder.settingsNavGraph() {
                 screenState = childScheduleViewModel.viewState.collectAsStateWithLifecycle(),
                 uiState = childScheduleViewModel.uiState,
                 handleEvent = { childScheduleViewModel.handleScheduleEvent(it) }
+            )
+        }
+        composable(SettingsScreenRoutes.EditCredentials.route) {
+            val viewModel: EditCredentialsViewModel = koinNavViewModel()
+            EditCredentialsScreen(
+                screenState = viewModel.viewState.collectAsStateWithLifecycle(),
+                uiState = viewModel.uiState,
+                handleEvent = { viewModel.handleEvent(it) }
             )
         }
     }

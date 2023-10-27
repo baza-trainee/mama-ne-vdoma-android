@@ -39,7 +39,7 @@ class VerifyEmailViewModel(
 
     fun handleEvent(event: VerifyEmailEvent) {
         when (event) {
-            is VerifyEmailEvent.VerifyEmail -> verifyEmail(
+            is VerifyEmailEvent.Verify -> verifyEmail(
                 event.otp,
                 event.otpInputFilled
             )
@@ -48,6 +48,8 @@ class VerifyEmailViewModel(
             VerifyEmailEvent.ResendCode -> resendCode()
             VerifyEmailEvent.OnBack -> if (password.isNotEmpty()) navigator.goBack()
             else navigator.navigate(LoginRoutes.RestorePassword)
+
+            else -> Unit
         }
     }
 
@@ -115,8 +117,13 @@ class VerifyEmailViewModel(
             onSuccess {
                 navigator.navigate(LoginRoutes.RestoreSuccess)
             }
-            onError { error ->
-                _uiState.value = RequestState.OnError(error)
+            onErrorWithCode { error, code ->
+                if (code == HttpURLConnection.HTTP_BAD_REQUEST)
+                    _viewState.update {
+                        it.copy(otpValid = ValidField.INVALID)
+                    }
+                else
+                    _uiState.value = RequestState.OnError(error)
             }
             onLoading { isLoading ->
                 _viewState.update {

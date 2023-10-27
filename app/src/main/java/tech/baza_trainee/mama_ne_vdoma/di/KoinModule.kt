@@ -63,6 +63,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.main.main.Ma
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.main.notifications.NotificationsViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.search.search_request.SearchRequestViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.search.search_results.SearchResultsViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.change_credentials.EditCredentialsViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.common.EditProfileCommunicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.edit.EditProfileViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.main_profile.ProfileSettingsViewModel
@@ -185,7 +186,8 @@ val mainModule = module {
     viewModel { SearchResultsViewModel(get(), get(), get(), get()) }
     viewModel { ProfileSettingsViewModel(get(), get(), get(), get(), get()) }
     viewModel { EditProfileViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
-    viewModel { VerifyNewEmailViewModel(get(), get(), get()) }
+    viewModel { VerifyNewEmailViewModel(get(), get(), get(), get()) }
+    viewModel { EditCredentialsViewModel(get(), get(), get(), get()) }
 }
 
 const val BASE_URL = "https://mommy-not-home.online/back/"

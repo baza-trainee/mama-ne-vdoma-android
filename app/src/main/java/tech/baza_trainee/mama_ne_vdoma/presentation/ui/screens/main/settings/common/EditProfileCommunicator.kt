@@ -11,8 +11,11 @@ class EditProfileCommunicator {
     private val _email = MutableStateFlow("")
     val email: StateFlow<String> = _email.asStateFlow()
 
-    private val _emailChanged = MutableStateFlow(false)
-    val emailChanged: StateFlow<Boolean> = _emailChanged.asStateFlow()
+    private val _password = MutableStateFlow("")
+    val password: StateFlow<String> = _password.asStateFlow()
+
+    private val _isForReset = MutableStateFlow(false)
+    val isForReset: StateFlow<Boolean> = _isForReset.asStateFlow()
 
     private val _profileChanged = MutableStateFlow(false)
     val profileChanged: StateFlow<Boolean> = _profileChanged.asStateFlow()
@@ -23,8 +26,14 @@ class EditProfileCommunicator {
         }
     }
 
-    fun setEmailChanged(value: Boolean) {
-        _emailChanged.update {
+    fun setPassword(value: String) {
+        _password.update {
+            value
+        }
+    }
+
+    fun setForReset(value: Boolean) {
+        _isForReset.update {
             value
         }
     }

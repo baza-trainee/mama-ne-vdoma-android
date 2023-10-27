@@ -32,13 +32,6 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.image_crop
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.common.EditProfileCommunicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.BitmapHelper
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.networkExecutor
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.validateEmail
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.validatePassword
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onError
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onLoading
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onSuccess
 import java.time.DayOfWeek
 
 class EditProfileViewModel(
@@ -76,16 +69,6 @@ class EditProfileViewModel(
         locationInteractor.apply {
             setLocationCoroutineScope(viewModelScope)
             setLocationNetworkListener(this@EditProfileViewModel)
-        }
-
-        viewModelScope.launch {
-            profileCommunicator.emailChanged.collect { success ->
-                _viewState.update {
-                    it.copy(
-                        isEmailVerified = success
-                    )
-                }
-            }
         }
 
         viewModelScope.launch {
@@ -130,11 +113,8 @@ class EditProfileViewModel(
             is EditProfileEvent.SetCode -> setCode(event.code, event.country)
             is EditProfileEvent.SetImageToCrop -> communicator.uriForCrop = event.uri
             is EditProfileEvent.UpdateUserAddress -> updateUserAddress(event.address)
-            is EditProfileEvent.ValidateEmail -> validateEmail(event.email)
-            is EditProfileEvent.ValidatePassword -> validatePassword(event.password)
             is EditProfileEvent.ValidatePhone -> validatePhone(event.phone)
             is EditProfileEvent.ValidateUserName -> validateUserName(event.name)
-            EditProfileEvent.VerifyEmail -> verifyEmail()
             is EditProfileEvent.EditChildNote -> updateChildNote(event.child, event.note)
             is EditProfileEvent.EditChildSchedule -> updateChildSchedule(event.child, event.dayOfWeek, event.period)
             is EditProfileEvent.EditParentNote -> updateParentNote(event.note)
@@ -154,20 +134,6 @@ class EditProfileViewModel(
             EditProfileEvent.OnSaveAndBack -> saveChanges { navigator.goToPrevious() }
             EditProfileEvent.OnSaveAndAddChild -> saveChanges { navigator.navigate(SettingsScreenRoutes.ChildInfo) }
             EditProfileEvent.GoToMain -> navigator.navigate(MainScreenRoutes.Main)
-        }
-    }
-
-    private fun verifyEmail() {
-        networkExecutor {
-            execute {
-                authRepository.changeEmailInit(_viewState.value.email)
-            }
-            onSuccess {
-                profileCommunicator.setEmail(_viewState.value.email)
-                navigator.navigate(SettingsScreenRoutes.VerifyNewEmail)
-            }
-            onError(::onError)
-            onLoading(::onLoading)
         }
     }
 
@@ -350,8 +316,6 @@ class EditProfileViewModel(
                 it.copy(
                     name = entity.name,
                     nameValid = ValidField.VALID,
-                    email = entity.email,
-                    emailValid = ValidField.VALID,
                     code = entity.countryCode,
                     phone = entity.phone,
                     phoneValid = ValidField.VALID,
@@ -485,29 +449,6 @@ class EditProfileViewModel(
         _viewState.update {
             it.copy(
                 address = address
-            )
-        }
-    }
-
-    private fun validateEmail(email: String) {
-        val emailValid = if (email.validateEmail()) ValidField.VALID
-        else ValidField.INVALID
-        _viewState.update {
-            it.copy(
-                email = email,
-                emailValid = emailValid,
-                isEmailChanged = true
-            )
-        }
-    }
-
-    private fun validatePassword(password: String) {
-        val passwordValid = if (password.validatePassword()) ValidField.VALID
-        else ValidField.INVALID
-        _viewState.update {
-            it.copy(
-                password = password,
-                passwordValid = passwordValid
             )
         }
     }

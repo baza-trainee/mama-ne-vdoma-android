@@ -30,7 +30,7 @@ class AuthRepositoryImpl(private val authApi: AuthApi): AuthRepository {
         )
         return if (result.isSuccessful)
             RequestResult.Success(Unit)
-        else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage())
+        else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage(), result.code())
     }
 
     override suspend fun resendCode(email: String): RequestResult<Unit> {
@@ -59,7 +59,7 @@ class AuthRepositoryImpl(private val authApi: AuthApi): AuthRepository {
         val result = authApi.resetPassword(RestorePasswordDto(email, code, password))
         return if (result.isSuccessful)
             RequestResult.Success(Unit)
-        else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage())
+        else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage(), result.code())
     }
 
     override suspend fun changeEmailInit(email: String): RequestResult<Unit> {
@@ -75,6 +75,6 @@ class AuthRepositoryImpl(private val authApi: AuthApi): AuthRepository {
         val result = authApi.changeEmail(auth, VerifyEmailDto(code))
         return if (result.isSuccessful)
             RequestResult.Success(Unit)
-        else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage())
+        else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage(), result.code())
     }
 }

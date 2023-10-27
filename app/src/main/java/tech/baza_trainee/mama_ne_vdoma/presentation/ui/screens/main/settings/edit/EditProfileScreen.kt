@@ -24,7 +24,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.AlertDialog
@@ -77,9 +76,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.dialogs.DangerousActionAlertDialog
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.functions.LocationPermission
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.text_fields.OutlinedTextFieldWithError
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.text_fields.PasswordTextFieldWithError
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.edit.dialogs.ChildScheduleEditDialog
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.edit.dialogs.EmailVerificationInfoDialog
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.edit.dialogs.ParentScheduleEditDialog
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.GrayText
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.SlateGray
@@ -125,7 +122,6 @@ fun EditProfileScreen(
 
     val focusRequester = remember { FocusRequester() }
     var openBottomSheet by rememberSaveable { mutableStateOf(false) }
-    var showEmailVerificationDialog by rememberSaveable { mutableStateOf(false) }
     var editUserSchedule by remember { mutableStateOf(false) }
     var editChildSchedule by remember { mutableStateOf(false) }
     var deleteChildDialog by remember { mutableStateOf(false) }
@@ -199,105 +195,6 @@ fun EditProfileScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        //Login
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                modifier = Modifier.wrapContentWidth(),
-                text = "Логін",
-                fontSize = 14.sp,
-                fontFamily = redHatDisplayFontFamily
-            )
-
-            IconButton(onClick = { showEmailVerificationDialog = true }) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_info),
-                    contentDescription = "email_info"
-                )
-            }
-
-            Spacer(modifier = Modifier.weight(1f))
-
-            Text(
-                modifier = Modifier
-                    .wrapContentWidth()
-                    .clickable(
-                        indication = null,
-                        interactionSource = remember { MutableInteractionSource() }
-                    ) { handleEvent(EditProfileEvent.VerifyEmail) },
-                text = "Перевірити емейл",
-                fontFamily = redHatDisplayFontFamily,
-                fontSize = 14.sp,
-                textDecoration = TextDecoration.Underline,
-                textAlign = TextAlign.End,
-                color = GrayText
-            )
-        }
-
-        OutlinedTextFieldWithError(
-            modifier = Modifier.fillMaxWidth(),
-            text = screenState.value.email,
-            label = "Введіть свій email",
-            onValueChange = { handleEvent(EditProfileEvent.ValidateEmail(it)) },
-            isError = screenState.value.emailValid == ValidField.INVALID,
-            errorText = "Ви ввели некоректний email",
-            leadingIcon = {
-                Icon(
-                    imageVector = Icons.Default.Email,
-                    contentDescription = null
-                )
-            },
-            trailingIcon = {
-                if (screenState.value.isEmailVerified)
-                    Icon(
-                        painterResource(id = R.drawable.ic_done),
-                        contentDescription = null
-                    )
-                if (screenState.value.isEmailChanged)
-                    Icon(
-                        imageVector = Icons.Filled.Error,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.primary
-                    )
-            }
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        //Password
-        Text(
-            modifier = Modifier.fillMaxWidth(),
-            text = "Пароль",
-            fontSize = 14.sp,
-            fontFamily = redHatDisplayFontFamily
-        )
-
-        PasswordTextFieldWithError(
-            modifier = Modifier.fillMaxWidth(),
-            label = "Введіть новий пароль",
-            password = screenState.value.password,
-            onValueChange = { handleEvent(EditProfileEvent.ValidatePassword(it)) },
-            isError = screenState.value.passwordValid == ValidField.INVALID
-        )
-
-        Spacer(modifier = Modifier.height(4.dp))
-
-        Text(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
-            text = "Ваш пароль повинен складатись з 6-24 символів і обов’язково містити великі та малі латинські букви, цифри, спеціальні знаки",
-            fontSize = 11.sp,
-            fontFamily = redHatDisplayFontFamily,
-            color = GrayText,
-            style = TextStyle(lineHeight = 18.sp)
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
         //Nickname
         Text(
             modifier = Modifier.fillMaxWidth(),
@@ -325,7 +222,7 @@ fun EditProfileScreen(
             fontSize = 11.sp,
             fontFamily = redHatDisplayFontFamily,
             color = GrayText,
-            style = TextStyle(lineHeight = 18.sp)
+            lineHeight = 18.sp
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -460,7 +357,7 @@ fun EditProfileScreen(
             fontSize = 11.sp,
             fontFamily = redHatDisplayFontFamily,
             color = GrayText,
-            style = TextStyle(lineHeight = 18.sp)
+            lineHeight = 18.sp
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -566,12 +463,7 @@ fun EditProfileScreen(
                 .fillMaxWidth()
                 .padding(vertical = 16.dp)
                 .height(48.dp),
-            onClick = {
-                if (screenState.value.isEmailChanged && !screenState.value.isEmailVerified)
-                    showEmailVerificationDialog = true
-                else
-                    handleEvent(EditProfileEvent.SaveInfo)
-            }
+            onClick = { handleEvent(EditProfileEvent.SaveInfo) }
         ) {
             ButtonText(
                 text = "Зберегти зміни"
@@ -617,12 +509,6 @@ fun EditProfileScreen(
                 }, onDismissRequest = {
                     openBottomSheet = false
                 }
-            )
-        }
-
-        if (showEmailVerificationDialog) {
-            EmailVerificationInfoDialog(
-                onDismissRequest = { showEmailVerificationDialog = false }
             )
         }
 

@@ -18,7 +18,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -107,7 +106,7 @@ fun NewPasswordScreen(
                     text = "Ваш пароль повинен складатись з 6-24 символів і обов’язково містити великі та малі латинські букви, цифри, спеціальні знаки",
                     fontSize = 14.sp,
                     fontFamily = redHatDisplayFontFamily,
-                    style = TextStyle(lineHeight = 18.sp)
+                    lineHeight = 18.sp
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))

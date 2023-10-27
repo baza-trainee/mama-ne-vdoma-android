@@ -100,6 +100,8 @@ class ProfileSettingsViewModel(
 
             ProfileSettingsEvent.ToggleEmail -> getUserInfo()
             ProfileSettingsEvent.DeleteUser -> deleteUser()
+            ProfileSettingsEvent.EditCredentials ->
+                navigator.navigate(SettingsScreenRoutes.EditCredentials)
         }
     }
 

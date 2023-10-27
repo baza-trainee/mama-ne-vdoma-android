@@ -13,7 +13,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.functions.getTextWithUnderline
@@ -42,7 +41,7 @@ fun PrivacyPolicyBlock(
                 text = "Даю згоду на обробку моїх персональних даних, а також ознайомлена та погоджуюсь із:",
                 fontSize = 14.sp,
                 fontFamily = redHatDisplayFontFamily,
-                style = TextStyle(lineHeight = 18.sp)
+                lineHeight = 18.sp
             )
 
             Spacer(modifier = Modifier.height(4.dp))

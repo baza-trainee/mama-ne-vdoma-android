@@ -7,12 +7,13 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatastoreManager
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.AuthRepository
-import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.PageNavigator
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.Graphs
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.verify_email.VerifyEmailEvent
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.verify_email.VerifyEmailViewState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.common.EditProfileCommunicator
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.networkExecutor
@@ -25,38 +26,43 @@ import java.net.HttpURLConnection
 
 class VerifyNewEmailViewModel(
     private val communicator: EditProfileCommunicator,
-    private val navigator: PageNavigator,
-    private val authRepository: AuthRepository
+    private val navigator: ScreenNavigator,
+    private val authRepository: AuthRepository,
+    private val preferencesDatastoreManager: UserPreferencesDatastoreManager
 ): ViewModel() {
 
     private val _viewState = MutableStateFlow(VerifyEmailViewState())
     val viewState: StateFlow<VerifyEmailViewState> = _viewState.asStateFlow()
 
-    private val _uiState = mutableStateOf<RequestState>(RequestState.Idle)
-    val uiState: State<RequestState>
+    private val _uiState = mutableStateOf<VerifyEmailUiState>(VerifyEmailUiState.Idle)
+    val uiState: State<VerifyEmailUiState>
         get() = _uiState
 
     fun handleEvent(event: VerifyEmailEvent) {
         when (event) {
-            is VerifyEmailEvent.VerifyEmail -> verifyEmail(
+            is VerifyEmailEvent.Verify -> verify(
                 event.otp,
                 event.otpInputFilled
             )
 
-            VerifyEmailEvent.ResetUiState -> _uiState.value = RequestState.Idle
+            VerifyEmailEvent.ResetUiState -> _uiState.value = VerifyEmailUiState.Idle
             VerifyEmailEvent.ResendCode -> resendCode()
             VerifyEmailEvent.OnBack -> navigator.goBack()
+            VerifyEmailEvent.GoToMain -> navigator.navigate(Graphs.Login)
         }
     }
 
-    private fun verifyEmail(otp: String, isLastDigit: Boolean) {
+    private fun verify(otp: String, isLastDigit: Boolean) {
         _viewState.update {
             it.copy(
                 otp = otp
             )
         }
         if (isLastDigit) {
-            confirmUser()
+            if (communicator.isForReset.value)
+                resetPassword()
+            else
+                confirmUser()
         }
     }
 
@@ -72,8 +78,7 @@ class VerifyNewEmailViewModel(
                 authRepository.changeEmail(otp)
             }
             onSuccess {
-                communicator.setEmailChanged(true)
-                navigator.goBack()
+                _uiState.value = VerifyEmailUiState.OnEmailChanged
             }
             onErrorWithCode { error, code ->
                 if (code == HttpURLConnection.HTTP_BAD_REQUEST)
@@ -81,7 +86,39 @@ class VerifyNewEmailViewModel(
                         it.copy(otpValid = ValidField.INVALID)
                     }
                 else
-                    _uiState.value = RequestState.OnError(error)
+                    _uiState.value = VerifyEmailUiState.OnError(error)
+            }
+            onLoading { isLoading ->
+                _viewState.update {
+                    it.copy(
+                        isLoading = isLoading
+                    )
+                }
+            }
+        }
+    }
+
+    private fun resetPassword() {
+        val otp = _viewState.value.otp
+        networkExecutor {
+            onStart {
+                _viewState.update {
+                    it.copy(otp = "")
+                }
+            }
+            execute {
+                authRepository.resetPassword(preferencesDatastoreManager.email, otp, communicator.password.value)
+            }
+            onSuccess {
+                _uiState.value = VerifyEmailUiState.OnPasswordChanged
+            }
+            onErrorWithCode { error, code ->
+                if (code == HttpURLConnection.HTTP_BAD_REQUEST)
+                    _viewState.update {
+                        it.copy(otpValid = ValidField.INVALID)
+                    }
+                else
+                    _uiState.value = VerifyEmailUiState.OnError(error)
             }
             onLoading { isLoading ->
                 _viewState.update {
@@ -99,7 +136,7 @@ class VerifyNewEmailViewModel(
                 authRepository.changeEmailInit(communicator.email.value)
             }
             onError { error ->
-                _uiState.value = RequestState.OnError(error)
+                _uiState.value = VerifyEmailUiState.OnError(error)
             }
             onLoading { isLoading ->
                 _viewState.update {

@@ -23,6 +23,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Error
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -42,7 +43,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -212,7 +212,7 @@ fun ProfileSettingsScreen(
                 fontSize = 12.sp,
                 fontFamily = redHatDisplayFontFamily,
                 color = Color.Red,
-                style = TextStyle(lineHeight = 18.sp)
+                lineHeight = 18.sp
             )
             Icon(
                 imageVector = Icons.Filled.Error,
@@ -244,11 +244,29 @@ fun ProfileSettingsScreen(
         ) {
             Icon(
                 imageVector = Icons.Filled.Edit,
-                contentDescription = "edit"
+                contentDescription = "edit_profile"
             )
             Spacer(modifier = Modifier.width(4.dp))
             ButtonText(
                 text = "Редагувати інформацію"
+            )
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Button(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(48.dp),
+            onClick = { handleEvent(ProfileSettingsEvent.EditCredentials) }
+        ) {
+            Icon(
+                imageVector = Icons.Filled.Lock,
+                contentDescription = "edit_credentials"
+            )
+            Spacer(modifier = Modifier.width(4.dp))
+            ButtonText(
+                text = "Змінити дані для входу в застосунок"
             )
         }
 

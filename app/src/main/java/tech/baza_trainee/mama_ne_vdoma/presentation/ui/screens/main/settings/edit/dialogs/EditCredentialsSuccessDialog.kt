@@ -15,7 +15,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -24,12 +23,13 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFa
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EmailVerificationInfoDialog(
+fun EditCredentialsSuccessDialog(
     modifier: Modifier = Modifier,
+    title: String = "Title",
     onDismissRequest: () -> Unit = {}
 ) {
     AlertDialog(
-        onDismissRequest = onDismissRequest
+        onDismissRequest = {}
     ) {
         Column(
             modifier = Modifier
@@ -43,14 +43,14 @@ fun EmailVerificationInfoDialog(
                     .padding(top = 16.dp)
                     .padding(horizontal = 16.dp)
                     .fillMaxWidth(),
-                text = "Для перевірки емейлу натисніть кнопку “Перевірити емейл”. На пошту прийде лист із повідомленням про підтвердження нової електронної пошти",
+                text = title,
                 fontSize = 14.sp,
                 fontFamily = redHatDisplayFontFamily,
-                style = TextStyle(lineHeight = 18.sp)
+                lineHeight = 18.sp
             )
 
             Text(
-                text = "Закрити",
+                text = "На головну",
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.primary,
