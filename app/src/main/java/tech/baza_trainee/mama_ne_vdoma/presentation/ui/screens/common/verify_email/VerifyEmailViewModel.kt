@@ -12,13 +12,18 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenN
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.Graphs
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.LoginRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.networkExecutor
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onError
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onErrorWithCode
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onLoading
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onStart
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onSuccess
+import java.net.HttpURLConnection
 
 class VerifyEmailViewModel(
+    private val isReset: Boolean = false,
     private val email: String,
     private val password: String,
     private val navigator: ScreenNavigator,
@@ -53,20 +58,62 @@ class VerifyEmailViewModel(
             )
         }
         if (isLastDigit) {
-            if (password.isNotEmpty())
-                confirmUser()
+            if (isReset)
+                resetPassword()
             else
-                navigator.navigate(LoginRoutes.NewPassword.getDestination(email, otp))
+                confirmUser()
         }
     }
 
     private fun confirmUser() {
+        val otp = _viewState.value.otp
         networkExecutor {
+            onStart {
+                _viewState.update {
+                    it.copy(otp = "")
+                }
+            }
             execute {
-                authRepository.confirmEmail(email, _viewState.value.otp)
+                authRepository.confirmEmail(email, otp)
             }
             onSuccess {
+                _viewState.update {
+                    it.copy(otp = "")
+                }
+
                 loginUser()
+            }
+            onErrorWithCode { error, code ->
+                if (code == HttpURLConnection.HTTP_BAD_REQUEST)
+                    _viewState.update {
+                        it.copy(otpValid = ValidField.INVALID)
+                    }
+                else
+                    _uiState.value = RequestState.OnError(error)
+            }
+            onLoading { isLoading ->
+                _viewState.update {
+                    it.copy(
+                        isLoading = isLoading
+                    )
+                }
+            }
+        }
+    }
+
+    private fun resetPassword() {
+        val otp = _viewState.value.otp
+        networkExecutor {
+            onStart {
+                _viewState.update {
+                    it.copy(otp = "")
+                }
+            }
+            execute {
+                authRepository.resetPassword(email, otp, password)
+            }
+            onSuccess {
+                navigator.navigate(LoginRoutes.RestoreSuccess)
             }
             onError { error ->
                 _uiState.value = RequestState.OnError(error)

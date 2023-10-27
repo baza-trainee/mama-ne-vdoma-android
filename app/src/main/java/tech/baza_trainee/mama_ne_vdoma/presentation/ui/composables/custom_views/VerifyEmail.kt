@@ -27,7 +27,8 @@ fun VerifyEmail(
     modifier: Modifier = Modifier,
     otp: String = "",
     isOtpValid: Boolean = false,
-    onVerify: (String, Boolean) -> Unit = {_,_->}
+    onVerify: (String, Boolean) -> Unit = {_,_->},
+    onResend: () -> Unit = {}
 ) {
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -71,7 +72,7 @@ fun VerifyEmail(
                 .padding(vertical = 16.dp)
                 .fillMaxWidth()
                 .height(48.dp),
-            onClick = {}
+            onClick = onResend
         ) {
             ButtonText(
                 text = "Надіслати код ще раз"

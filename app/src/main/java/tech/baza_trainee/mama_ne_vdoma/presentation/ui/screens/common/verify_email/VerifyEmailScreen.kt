@@ -82,7 +82,8 @@ fun VerifyEmailScreen(
                 isOtpValid = screenState.value.otpValid != ValidField.INVALID,
                 onVerify = { value, otpInputFilled ->
                     handleEvent(VerifyEmailEvent.VerifyEmail(value, otpInputFilled))
-                }
+                },
+                onResend = { handleEvent(VerifyEmailEvent.ResendCode) }
             )
         }
 

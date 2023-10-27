@@ -38,7 +38,7 @@ class RestorePasswordScreenViewModel(
             RestorePasswordEvent.ResetUiState -> _uiState.value = RequestState.Idle
 
             is RestorePasswordEvent.ValidateEmail -> validateEmail(event.email)
-            is RestorePasswordEvent.OnLogin -> navigator.navigate(LoginRoutes.VerifyEmail.getDestination(event.email, ""))
+            is RestorePasswordEvent.OnLogin -> navigator.navigate(LoginRoutes.VerifyEmail.getDestination(event.email, event.password))
         }
     }
 
@@ -60,7 +60,7 @@ class RestorePasswordScreenViewModel(
                 authRepository.forgetPassword(_viewState.value.email)
             }
             onSuccess {
-                navigator.navigate(LoginRoutes.EmailConfirm.getDestination(_viewState.value.email))
+                navigator.navigate(LoginRoutes.NewPassword.getDestination(_viewState.value.email))
             }
             onError { error ->
                 _uiState.value = RequestState.OnError(error)

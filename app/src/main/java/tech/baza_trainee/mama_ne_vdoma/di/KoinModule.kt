@@ -135,15 +135,15 @@ val userCreateModule = module {
 }
 
 val verifyEmailModule = module {
-    viewModel { (email: String, password: String) -> VerifyEmailViewModel(email, password, get(), get()) }
+    viewModel { (isReset: Boolean, email: String, password: String) -> VerifyEmailViewModel(isReset, email, password, get(), get()) }
 }
 
 val loginKoinModule = module {
     viewModel {
         LoginScreenViewModel(get(), get(), get())
     }
-    viewModel { (email: String, otp: String) ->
-        NewPasswordScreenViewModel(email, otp, get(), get())
+    viewModel { (email: String) ->
+        NewPasswordScreenViewModel(email, get())
     }
     viewModel { RestorePasswordScreenViewModel(get(), get()) }
 }

@@ -7,23 +7,15 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import tech.baza_trainee.mama_ne_vdoma.domain.repository.AuthRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.LoginRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.networkExecutor
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.validatePassword
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onError
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onLoading
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onSuccess
 
 class NewPasswordScreenViewModel(
     private val email: String,
-    private val otp: String,
-    private val navigator: ScreenNavigator,
-    private val authRepository: AuthRepository
+    private val navigator: ScreenNavigator
 ): ViewModel() {
 
     private val _viewState = MutableStateFlow(NewPasswordViewState())
@@ -37,7 +29,7 @@ class NewPasswordScreenViewModel(
     fun handleNewPasswordEvent(event: NewPasswordEvent) {
         when(event) {
             NewPasswordEvent.OnBack -> navigator.navigate(LoginRoutes.Login)
-            NewPasswordEvent.ResetPassword -> resetPassword()
+            NewPasswordEvent.ResetPassword -> navigator.navigate(LoginRoutes.EmailConfirm.getDestination(email, _viewState.value.password))
             is NewPasswordEvent.ValidatePassword -> validatePassword(event.password)
             is NewPasswordEvent.ValidateConfirmPassword -> validateConfirmPassword(event.confirmPassword)
             NewPasswordEvent.ResetUiState -> _uiState.value = RequestState.Idle
@@ -72,27 +64,6 @@ class NewPasswordScreenViewModel(
             it.copy(
                 confirmPasswordValid = confirmPasswordValid
             )
-        }
-    }
-
-    private fun resetPassword() {
-        networkExecutor {
-            execute {
-                authRepository.resetPassword(email, otp, _viewState.value.password)
-            }
-            onSuccess {
-                navigator.navigate(LoginRoutes.RestoreSuccess)
-            }
-            onError { error ->
-                _uiState.value = RequestState.OnError(error)
-            }
-            onLoading { isLoading ->
-                _viewState.update {
-                    it.copy(
-                        isLoading = isLoading
-                    )
-                }
-            }
         }
     }
 }

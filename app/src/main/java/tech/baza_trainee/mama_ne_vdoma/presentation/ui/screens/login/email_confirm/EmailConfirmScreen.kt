@@ -38,6 +38,7 @@ fun EmailConfirmScreen(
     modifier: Modifier = Modifier,
     uiState: State<RequestState> = mutableStateOf(RequestState.Idle),
     email: String = "",
+    password: String = "",
     handleEvent: (RestorePasswordEvent) -> Unit = { _ -> }
 ) {
     SurfaceWithNavigationBars {
@@ -82,7 +83,7 @@ fun EmailConfirmScreen(
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp, vertical = 16.dp)
                     .height(48.dp),
-                onClick = { handleEvent(RestorePasswordEvent.OnLogin(email)) }
+                onClick = { handleEvent(RestorePasswordEvent.OnLogin(email, password)) }
             ) {
                 ButtonText(
                     text = "Увійти"

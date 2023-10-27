@@ -48,10 +48,11 @@ fun NavGraphBuilder.loginNavGraph(
             route = LoginRoutes.EmailConfirm().route,
             arguments = LoginRoutes.EmailConfirm.argumentList
         ) { entry ->
-            val (email) = LoginRoutes.EmailConfirm.parseArguments(entry)
+            val (email, password) = LoginRoutes.EmailConfirm.parseArguments(entry)
             val restorePasswordScreenViewModel: RestorePasswordScreenViewModel = entry.sharedViewModel(navHostController)
             EmailConfirmScreen(
                 email = email,
+                password = password,
                 handleEvent = { restorePasswordScreenViewModel.handleRestoreEvent(it) }
             )
         }
@@ -61,7 +62,7 @@ fun NavGraphBuilder.loginNavGraph(
         ) { entry ->
             val (email, password) = LoginRoutes.VerifyEmail.parseArguments(entry)
             val verifyEmailViewModel: VerifyEmailViewModel = koinNavViewModel {
-                parametersOf(email, password)
+                parametersOf(true, email, password)
             }
             VerifyEmailScreen(
                 screenState = verifyEmailViewModel.viewState.collectAsStateWithLifecycle(),
@@ -74,9 +75,9 @@ fun NavGraphBuilder.loginNavGraph(
             route = LoginRoutes.NewPassword().route,
             arguments = LoginRoutes.NewPassword.argumentList
             ) { entry ->
-            val (email, otp) = LoginRoutes.NewPassword.parseArguments(entry)
+            val (email) = LoginRoutes.NewPassword.parseArguments(entry)
             val newPasswordScreenViewModel: NewPasswordScreenViewModel = koinNavViewModel {
-                parametersOf(email, otp)
+                parametersOf(email)
             }
             NewPasswordScreen(
                 screenState = newPasswordScreenViewModel.viewState.collectAsStateWithLifecycle(),
@@ -85,7 +86,7 @@ fun NavGraphBuilder.loginNavGraph(
             )
         }
         composable(LoginRoutes.RestoreSuccess.route) {
-            RestoreSuccessScreen { navHostController.navigate(LoginRoutes.Login.route) }
+            RestoreSuccessScreen { navHostController.navigate(Graphs.Start.route) }
         }
     }
 }

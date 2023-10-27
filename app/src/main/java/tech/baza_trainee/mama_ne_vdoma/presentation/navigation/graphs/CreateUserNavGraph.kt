@@ -32,7 +32,7 @@ fun NavGraphBuilder.createUserNavGraph() {
         ) { entry ->
             val (email, password) = CreateUserRoute.VerifyEmail.parseArguments(entry)
             val verifyEmailViewModel: VerifyEmailViewModel = koinNavViewModel {
-                parametersOf(email, password)
+                parametersOf(false, email, password)
             }
             VerifyEmailScreen(
                 screenState = verifyEmailViewModel.viewState.collectAsStateWithLifecycle(),

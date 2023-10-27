@@ -13,11 +13,15 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.verify_ema
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.verify_email.VerifyEmailViewState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.common.EditProfileCommunicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.networkExecutor
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onError
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onErrorWithCode
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onLoading
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onStart
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onSuccess
+import java.net.HttpURLConnection
 
 class VerifyNewEmailViewModel(
     private val communicator: EditProfileCommunicator,
@@ -57,16 +61,27 @@ class VerifyNewEmailViewModel(
     }
 
     private fun confirmUser() {
+        val otp = _viewState.value.otp
         networkExecutor {
+            onStart {
+                _viewState.update {
+                    it.copy(otp = "")
+                }
+            }
             execute {
-                authRepository.changeEmail(_viewState.value.otp)
+                authRepository.changeEmail(otp)
             }
             onSuccess {
                 communicator.setEmailChanged(true)
                 navigator.goBack()
             }
-            onError { error ->
-                _uiState.value = RequestState.OnError(error)
+            onErrorWithCode { error, code ->
+                if (code == HttpURLConnection.HTTP_BAD_REQUEST)
+                    _viewState.update {
+                        it.copy(otpValid = ValidField.INVALID)
+                    }
+                else
+                    _uiState.value = RequestState.OnError(error)
             }
             onLoading { isLoading ->
                 _viewState.update {

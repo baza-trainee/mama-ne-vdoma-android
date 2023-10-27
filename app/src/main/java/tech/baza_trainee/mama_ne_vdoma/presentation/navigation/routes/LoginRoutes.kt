@@ -49,48 +49,48 @@ sealed class LoginRoutes(override val route: String): CommonRoute(route) {
         }
     }
 
-    class NewPassword : LoginRoutes(ROUTE) {
+    class EmailConfirm : LoginRoutes(ROUTE) {
 
-        data class NewPassArgs (
+        data class EmailConfirmArgs (
             val email: String,
-            val otp: String
+            val password: String
         )
 
         companion object {
 
-            const val ROUTE = "$BASE_ROUTE_PASSWORD?$EMAIL={$EMAIL},$OTP={$OTP}"
+            const val ROUTE = "$BASE_ROUTE_PASSWORD?$EMAIL={$EMAIL},$PASSWORD={$PASSWORD}"
 
             val argumentList: MutableList<NamedNavArgument>
                 get() = mutableListOf(
                     navArgument(EMAIL) {
                         type = NavType.StringType
                     },
-                    navArgument(OTP) {
+                    navArgument(PASSWORD) {
                         type = NavType.StringType
                     }
                 )
 
-            fun parseArguments(backStackEntry: NavBackStackEntry): NewPassArgs {
-                return NewPassArgs(
+            fun parseArguments(backStackEntry: NavBackStackEntry): EmailConfirmArgs {
+                return EmailConfirmArgs(
                     email = backStackEntry.arguments?.getString(EMAIL) ?: "",
-                    otp = backStackEntry.arguments?.getString(OTP) ?: ""
+                    password = backStackEntry.arguments?.getString(PASSWORD) ?: ""
                 )
             }
 
-            fun getDestination(email: String, otp: String): CommonRoute {
+            fun getDestination(email: String, password: String): CommonRoute {
                 return CommonRoute(
                     "$BASE_ROUTE_PASSWORD?" +
                         "$EMAIL=$email," +
-                        "$OTP=$otp" +
+                        "$PASSWORD=$password" +
                         ""
                 )
             }
         }
     }
 
-    class EmailConfirm : LoginRoutes(ROUTE) {
+    class NewPassword : LoginRoutes(ROUTE) {
 
-        data class EmailConfirmArgs (
+        data class NewPassArgs (
             val email: String
         )
 
@@ -105,8 +105,8 @@ sealed class LoginRoutes(override val route: String): CommonRoute(route) {
                     }
                 )
 
-            fun parseArguments(backStackEntry: NavBackStackEntry): EmailConfirmArgs {
-                return EmailConfirmArgs(
+            fun parseArguments(backStackEntry: NavBackStackEntry): NewPassArgs {
+                return NewPassArgs(
                     email = backStackEntry.arguments?.getString(EMAIL) ?: ""
                 )
             }
