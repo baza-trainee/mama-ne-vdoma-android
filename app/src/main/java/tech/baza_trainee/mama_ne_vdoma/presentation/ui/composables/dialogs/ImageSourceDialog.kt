@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import tech.baza_trainee.mama_ne_vdoma.R
@@ -27,10 +28,11 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFa
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
+@Preview
 fun ImageSourceDialog(
-    onPickFromGallery: () -> Unit,
-    onPickFromCamera: () -> Unit,
-    onHideDialog: () -> Unit
+    onPickFromGallery: () -> Unit = {},
+    onPickFromCamera: () -> Unit = {},
+    onHideDialog: () -> Unit = {}
 ) {
     AlertDialog(
         onDismissRequest = onHideDialog
