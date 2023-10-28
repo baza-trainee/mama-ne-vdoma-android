@@ -23,4 +23,6 @@ object UserPreferencesKeys {
     val KEY_CURRENT_CHILD = stringPreferencesKey(CURRENT_CHILD)
     val KEY_MY_JOIN_REQUESTS = intPreferencesKey(MY_JOIN_REQUESTS)
     val KEY_ADMIN_JOIN_REQUESTS = intPreferencesKey(ADMIN_JOIN_REQUESTS)
+    val KEY_ACCOUNT_LOGIN = stringPreferencesKey(ACCOUNT_LOGIN)
+    val KEY_ACCOUNT_AUTH_TOKEN = stringPreferencesKey(ACCOUNT_AUTH_TOKEN)
 }

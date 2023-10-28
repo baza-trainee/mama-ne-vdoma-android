@@ -44,6 +44,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.PageNav
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.PageNavigatorImpl
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigatorImpl
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.MainActivityViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.add_child.ChildInfoViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.child_schedule.ChildScheduleViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.image_crop.CropImageCommunicator
@@ -98,11 +99,11 @@ val repoModule = module {
         )
     }
     single { createOkHttpClient(get(), get()) }
-    single<UserProfileApi> { createAuthorizedApi(get(), get()) }
-    single<FilesApi> { createAuthorizedApi(get(), get()) }
-    single<GroupsApi> { createAuthorizedApi(get(), get()) }
+    single<UserProfileApi> { createAuthorizedApi(get(), get(), get()) }
+    single<FilesApi> { createAuthorizedApi(get(), get(), get()) }
+    single<GroupsApi> { createAuthorizedApi(get(), get(), get()) }
     single<AuthApi> { createCustomApi(get()) }
-    factory<AuthRepository> { AuthRepositoryImpl(get()) }
+    factory<AuthRepository> { AuthRepositoryImpl(get(), get()) }
     factory<UserProfileRepository> { UserProfileRepositoryImpl(get()) }
     factory<FilesRepository> { FilesRepositoryImpl(get(), get()) }
     factory<LocationDataSource> { LocationDataSourceImpl(androidApplication()) }
@@ -147,6 +148,7 @@ val loginKoinModule = module {
         NewPasswordScreenViewModel(email, get())
     }
     viewModel { RestorePasswordScreenViewModel(get(), get()) }
+    viewModel { MainActivityViewModel(get(), get()) }
 }
 
 val standaloneGroupSearchModule = module {
@@ -208,10 +210,11 @@ fun createGson(): Gson = GsonBuilder()
 
 private inline fun <reified T: Any> createAuthorizedApi(
     httpLoggingInterceptor: HttpLoggingInterceptor,
-    loggingInterceptor: ChuckerInterceptor
+    loggingInterceptor: ChuckerInterceptor,
+    preferencesDatastoreManager: UserPreferencesDatastoreManager
 ): T {
     val okHttpBuilder = OkHttpClient.Builder()
-        .addInterceptor(AuthInterceptor())
+        .addInterceptor(AuthInterceptor(preferencesDatastoreManager))
         .addInterceptor(httpLoggingInterceptor)
         .addInterceptor(loggingInterceptor)
 

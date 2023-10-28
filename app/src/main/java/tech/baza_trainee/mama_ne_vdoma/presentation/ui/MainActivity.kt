@@ -21,6 +21,8 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.Mama_ne_vdomaTheme
 
 class MainActivity : ComponentActivity() {
 
+    private val viewModel: MainActivityViewModel by inject()
+
     override fun onCreate(savedInstanceState: Bundle?) {
 
         val splashScreen = installSplashScreen()
@@ -28,6 +30,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         enableEdgeToEdge()
+
+        viewModel.checkAuthorization()
 
         setContent {
             Mama_ne_vdomaTheme {

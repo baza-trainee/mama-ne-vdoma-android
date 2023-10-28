@@ -20,6 +20,8 @@ data class UserPreferences(
     val currentChild: String,
     val myJoinRequests: Int,
     val adminJoinRequests: Int,
+    val login: String,
+    val authToken: String
 )
 
 

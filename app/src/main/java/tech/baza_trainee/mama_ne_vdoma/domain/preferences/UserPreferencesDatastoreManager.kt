@@ -14,6 +14,8 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesKeys.KEY_ACCOUNT_AUTH_TOKEN
+import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesKeys.KEY_ACCOUNT_LOGIN
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesKeys.KEY_ADDRESS
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesKeys.KEY_ADMIN_JOIN_REQUESTS
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesKeys.KEY_AVATAR
@@ -66,12 +68,14 @@ class UserPreferencesDatastoreManager(private val context: Context) {
             val currentChild = preferences[KEY_CURRENT_CHILD].orEmpty()
             val myJoinRequests = preferences[KEY_MY_JOIN_REQUESTS] ?: 0
             val adminJoinRequests = preferences[KEY_ADMIN_JOIN_REQUESTS] ?: 0
+            val login = preferences[KEY_ACCOUNT_LOGIN].orEmpty()
+            val authToken = preferences[KEY_ACCOUNT_AUTH_TOKEN].orEmpty()
             UserPreferences(
                 id, avatar, avatarUri, name, code,
                 phone, email, address, radius,
                 latitude, longitude, sendEmail,
                 profileFilled, childrenProvided, currentChild,
-                myJoinRequests, adminJoinRequests
+                myJoinRequests, adminJoinRequests, login, authToken
             )
         }
 
@@ -309,6 +313,34 @@ class UserPreferencesDatastoreManager(private val context: Context) {
             withContext(Dispatchers.Default ) {
                 userDataStore.edit {
                     it[KEY_ADMIN_JOIN_REQUESTS] = value
+                }
+            }
+        }
+
+    var login: String
+        get() = runBlocking {
+            withContext(Dispatchers.Default) {
+                userPreferencesFlow.first().login
+            }
+        }
+        set(value) = runBlocking {
+            withContext(Dispatchers.Default ) {
+                userDataStore.edit {
+                    it[KEY_ACCOUNT_LOGIN] = value
+                }
+            }
+        }
+
+    var authToken: String
+        get() = runBlocking {
+            withContext(Dispatchers.Default) {
+                userPreferencesFlow.first().authToken
+            }
+        }
+        set(value) = runBlocking {
+            withContext(Dispatchers.Default ) {
+                userDataStore.edit {
+                    it[KEY_ACCOUNT_AUTH_TOKEN] = value
                 }
             }
         }

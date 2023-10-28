@@ -4,24 +4,18 @@ import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
 import okhttp3.Response
 import tech.baza_trainee.mama_ne_vdoma.data.utils.createEmptyResponse
+import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatastoreManager
 import java.io.IOException
 
-class AuthInterceptor() : Interceptor {
-    companion object {
-        const val AUTH_HEADER = "Authorization"
-        const val EMPTY_TOKEN = ""
-        var AUTH_TOKEN = EMPTY_TOKEN
-
-        private const val BEARER_TEMPLATE = "Bearer %s"
-
-        fun bearerHeader(token: String) = BEARER_TEMPLATE.format(token)
-    }
+class AuthInterceptor(
+    private val preferencesDatastoreManager: UserPreferencesDatastoreManager
+) : Interceptor {
 
     @Throws(IOException::class)
     override fun intercept(chain: Interceptor.Chain): Response = try {
         runBlocking {
             val requestBuilder = chain.request().newBuilder()
-            requestBuilder.header(AUTH_HEADER, bearerHeader(AUTH_TOKEN))
+            requestBuilder.header(AUTH_HEADER, bearerHeader(preferencesDatastoreManager.authToken))
             val response = chain.proceed(requestBuilder.build())
 //            if (response.code == HttpURLConnection.HTTP_UNAUTHORIZED) {//token expired
 //                Timber.d("intercepted 401 call")
@@ -69,4 +63,13 @@ class AuthInterceptor() : Interceptor {
 //    } catch (e: Exception) {
 //        e.handleException()
 //    }
+
+    companion object {
+
+        const val AUTH_HEADER = "Authorization"
+
+        private const val BEARER_TEMPLATE = "Bearer %s"
+
+        fun bearerHeader(token: String) = BEARER_TEMPLATE.format(token)
+    }
 }
