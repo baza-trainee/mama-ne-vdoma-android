@@ -148,7 +148,7 @@ val loginKoinModule = module {
         NewPasswordScreenViewModel(email, get())
     }
     viewModel { RestorePasswordScreenViewModel(get(), get()) }
-    viewModel { MainActivityViewModel(get(), get()) }
+    viewModel { MainActivityViewModel(get()) }
 }
 
 val standaloneGroupSearchModule = module {
