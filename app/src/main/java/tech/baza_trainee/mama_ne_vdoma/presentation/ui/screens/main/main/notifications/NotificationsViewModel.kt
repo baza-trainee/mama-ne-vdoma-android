@@ -52,16 +52,17 @@ class NotificationsViewModel(
     private val groupsFlow = MutableStateFlow(Triple("", GroupEntity(), ""))
     private val membersFlow = MutableStateFlow("" to UserProfileEntity())
     private val memberAvatarsFlow = MutableStateFlow(Triple("", "", Uri.EMPTY))
+    private val groupLocationsFlow = MutableStateFlow("" to "")
 
     private val childrenFlow = MutableStateFlow(Triple("", "", GroupFullInfoEntity()))
     private val userFlow = MutableStateFlow("" to UserProfileEntity())
-    private val locationsFlow = MutableStateFlow("" to "")
+    private val userLocationsFlow = MutableStateFlow("" to "")
 
     init {
         getUserInfo()
 
         viewModelScope.launch {
-            combine(locationsFlow, userFlow, childrenFlow) { location, user, child ->
+            combine(userLocationsFlow, userFlow, childrenFlow) { location, user, child ->
                 val currentRequests = _viewState.value.adminJoinRequests.toMutableList()
 
                 if (location.first.isNotEmpty()) {
@@ -129,7 +130,7 @@ class NotificationsViewModel(
         }
 
         viewModelScope.launch {
-            combine(groupAvatarFlow, membersFlow, groupsFlow, memberAvatarsFlow) { avatar, member, group, memberAvatar ->
+            combine(groupAvatarFlow, membersFlow, groupsFlow, memberAvatarsFlow, groupLocationsFlow) { avatar, member, group, memberAvatar, location ->
                 val currentRequests = _viewState.value.myJoinRequests.toMutableList()
 
                 if (group.first.isNotEmpty()) {
@@ -252,6 +253,19 @@ class NotificationsViewModel(
                             removeAt(indexOfRequest)
                             add(indexOfRequest, currentRequest)
                         }
+                    }
+                }
+
+                if (location.first.isNotEmpty()) {
+                    var currentUiModel = currentRequests.find { it.group.id == location.first } ?: JoinRequestUiModel()
+                    val index = currentRequests.indexOf(currentUiModel)
+                    val newGroup = currentUiModel.group.copy(id = location.first, location = location.second)
+                    currentUiModel = currentUiModel.copy(group = newGroup)
+                    if (index == -1)
+                        currentRequests.add(currentUiModel)
+                    else {
+                        currentRequests.removeAt(index)
+                        currentRequests.add(index, currentUiModel)
                     }
                 }
 
@@ -576,7 +590,32 @@ class NotificationsViewModel(
                 locationRepository.getAddressFromLocation(latLng)
             }
             onSuccess { address ->
-                locationsFlow.update {
+                groupLocationsFlow.update {
+                    groupId to address
+                }
+            }
+            onError { error ->
+                _uiState.value = NotificationsUiState.OnError(error)
+            }
+            onLoading { isLoading ->
+                _viewState.update {
+                    it.copy(
+                        isLoading = isLoading
+                    )
+                }
+            }
+        }
+    }
+
+
+
+    private fun getAddressFromLocationForJoin(latLng: LatLng, groupId: String) {
+        networkExecutor {
+            execute {
+                locationRepository.getAddressFromLocation(latLng)
+            }
+            onSuccess { address ->
+                userLocationsFlow.update {
                     groupId to address
                 }
             }

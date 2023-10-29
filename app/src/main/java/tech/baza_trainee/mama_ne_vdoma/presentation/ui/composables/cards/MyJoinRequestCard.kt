@@ -239,6 +239,27 @@ fun MyRequestCard(
                     )
                 }
 
+                Spacer(modifier = Modifier.height(4.dp))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Start
+                ) {
+                    Image(
+                        modifier = Modifier.padding(end = 4.dp),
+                        painter = painterResource(id = R.drawable.ic_group_location),
+                        contentDescription = "group_location",
+                        contentScale = ContentScale.Inside
+                    )
+
+                    Text(
+                        text = request.group.location,
+                        fontSize = 14.sp,
+                        fontFamily = redHatDisplayFontFamily
+                    )
+                }
+
                 Spacer(modifier = Modifier.height(8.dp))
 
                 request.group.members.forEachIndexed { index, member ->
