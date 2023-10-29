@@ -45,4 +45,6 @@ interface GroupsRepository {
     suspend fun leaveGroup(groupId: String) : RequestResult<Unit>
 
     suspend fun getGroupFullInfo(groupId: String) : RequestResult<GroupFullInfoEntity>
+
+    suspend fun cancelRequest(groupId: String, childId: String) : RequestResult<Unit>
 }

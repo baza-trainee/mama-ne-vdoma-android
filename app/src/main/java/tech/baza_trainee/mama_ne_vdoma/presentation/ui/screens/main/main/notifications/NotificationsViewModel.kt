@@ -15,6 +15,7 @@ import kotlinx.coroutines.launch
 import tech.baza_trainee.mama_ne_vdoma.domain.model.ChildEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.GroupEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.GroupFullInfoEntity
+import tech.baza_trainee.mama_ne_vdoma.domain.model.JoinRequestEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UserProfileEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatastoreManager
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.FilesRepository
@@ -47,14 +48,14 @@ class NotificationsViewModel(
     val uiState: State<NotificationsUiState>
         get() = _uiState
 
-    private val groupAvatarFlow: MutableStateFlow<Pair<String, Uri>> = MutableStateFlow( "" to Uri.EMPTY)
-    private val groupsFlow: MutableStateFlow<Pair<String, GroupEntity>> = MutableStateFlow("" to GroupEntity())
-    private val membersFlow: MutableStateFlow<Pair<String, UserProfileEntity>> = MutableStateFlow("" to UserProfileEntity())
-    private val memberAvatarsFlow: MutableStateFlow<Triple<String, String, Uri>> = MutableStateFlow(Triple("", "", Uri.EMPTY))
+    private val groupAvatarFlow = MutableStateFlow( "" to Uri.EMPTY)
+    private val groupsFlow = MutableStateFlow(Triple("", GroupEntity(), ""))
+    private val membersFlow = MutableStateFlow("" to UserProfileEntity())
+    private val memberAvatarsFlow = MutableStateFlow(Triple("", "", Uri.EMPTY))
 
-    private val childrenFlow: MutableStateFlow<Triple<String, String, GroupFullInfoEntity>> = MutableStateFlow(Triple("", "", GroupFullInfoEntity()))
-    private val userFlow: MutableStateFlow<Pair<String, UserProfileEntity>> = MutableStateFlow("" to UserProfileEntity())
-    private val locationsFlow: MutableStateFlow<Pair<String, String>> = MutableStateFlow("" to "")
+    private val childrenFlow = MutableStateFlow(Triple("", "", GroupFullInfoEntity()))
+    private val userFlow = MutableStateFlow("" to UserProfileEntity())
+    private val locationsFlow = MutableStateFlow("" to "")
 
     init {
         getUserInfo()
@@ -145,7 +146,8 @@ class NotificationsViewModel(
                         group = uiModel,
                         parentAvatar = preferencesDatastoreManager.avatarUri,
                         parentName = preferencesDatastoreManager.name,
-                        parentId = preferencesDatastoreManager.id
+                        parentId = preferencesDatastoreManager.id,
+                        child = ChildEntity(childId = group.third)
                     )
                     currentRequests.apply {
                         if (indexOfRequest == -1)
@@ -270,6 +272,7 @@ class NotificationsViewModel(
             NotificationsEvent.OnBack -> navigator.goToPrevious()
             is NotificationsEvent.AcceptUser -> acceptJoinRequest(event.group, event.child)
             is NotificationsEvent.DeclineUser -> declineJoinRequest(event.group, event.child)
+            is NotificationsEvent.CancelRequest -> cancelRequest(event.group, event.child)
         }
     }
 
@@ -280,6 +283,27 @@ class NotificationsViewModel(
             }
             onSuccess {
                 _uiState.value = NotificationsUiState.OnAccepted
+                getUserInfo()
+            }
+            onError { error ->
+                _uiState.value = NotificationsUiState.OnError(error)
+            }
+            onLoading { isLoading ->
+                _viewState.update {
+                    it.copy(
+                        isLoading = isLoading
+                    )
+                }
+            }
+        }
+    }
+
+    private fun cancelRequest(group: String, child: String) {
+        networkExecutor {
+            execute {
+                groupsRepository.cancelRequest(group, child)
+            }
+            onSuccess {
                 getUserInfo()
             }
             onError { error ->
@@ -322,7 +346,12 @@ class NotificationsViewModel(
             onSuccess { entity ->
                 getGroups(entity.id)
 
-                entity.groupJoinRequests.forEach(::getGroupById)
+                if (entity.groupJoinRequests.isNotEmpty())
+                    entity.groupJoinRequests.forEach(::getGroupById)
+                else
+                    _viewState.update {
+                        it.copy(myJoinRequests = emptyList())
+                    }
 
                 preferencesDatastoreManager.myJoinRequests = entity.groupJoinRequests.size
             }
@@ -339,18 +368,29 @@ class NotificationsViewModel(
         }
     }
 
-    private fun getGroupById(groupId: String) {
+    private fun getGroupById(joinRequest: JoinRequestEntity) {
         networkExecutor<GroupEntity> {
             execute {
-                groupsRepository.getGroupById(groupId)
+                groupsRepository.getGroupById(joinRequest.groupId)
             }
             onSuccess { entity ->
+                getGroupAvatar(entity.avatar, joinRequest.groupId)
+
+                if (entity.location.coordinates.isNotEmpty())
+                    getAddressFromLocation(
+                        latLng = LatLng(
+                            entity.location.coordinates[1],
+                            entity.location.coordinates[0]
+                        ),
+                        joinRequest.groupId
+                    )
+
                 entity.members.map { it.parentId }.forEach {
-                    getUser(it, groupId)
+                    getUser(it, joinRequest.groupId)
                 }
 
                 groupsFlow.update {
-                    groupId to entity
+                    Triple(joinRequest.groupId, entity, joinRequest.childId)
                 }
             }
             onError { error ->
@@ -373,27 +413,36 @@ class NotificationsViewModel(
             }
             onSuccess { entityList ->
                 val joinRequests = mutableListOf<JoinRequestUiModel>()
-                entityList.onEach { group ->
-                    group.askingJoin.forEach { member ->
-                        getUserForJoin(member.parentId, group.id)
-                        getChild(member.childId, group.id)
-                        joinRequests.add(
-                            JoinRequestUiModel(
-                                group = GroupUiModel(
-                                    id = group.id,
-                                    name = group.name
-                                ),
-                                parentId = member.parentId
-                            )
+                if (entityList.flatMap { it.askingJoin }.isNotEmpty()) {
+                    entityList.onEach { group ->
+                        if (group.askingJoin.isNotEmpty())
+                            group.askingJoin.forEach { member ->
+                                getUserForJoin(member.parentId, group.id)
+                                getChild(member.childId, group.id)
+                                joinRequests.add(
+                                    JoinRequestUiModel(
+                                        group = GroupUiModel(
+                                            id = group.id,
+                                            name = group.name
+                                        ),
+                                        parentId = member.parentId
+                                    )
+                                )
+                            }
+                    }
+
+                    _viewState.update {
+                        it.copy(
+                            adminJoinRequests = joinRequests
                         )
                     }
-                }
-                _viewState.update {
-                    it.copy(
-                        adminJoinRequests = joinRequests
-                    )
-                }
-                preferencesDatastoreManager.adminJoinRequests = entityList.flatMap { it.askingJoin }.size
+                } else
+                    _viewState.update {
+                        it.copy(adminJoinRequests = emptyList())
+                    }
+
+                preferencesDatastoreManager.adminJoinRequests =
+                    entityList.flatMap { it.askingJoin }.size
             }
             onError { error ->
                 _uiState.value = NotificationsUiState.OnError(error)
@@ -414,17 +463,6 @@ class NotificationsViewModel(
                 userProfileRepository.getUserById(userId)
             }
             onSuccess { user ->
-                getUserAvatarForJoin(user.avatar, groupId)
-
-                if (user.location.coordinates.isNotEmpty())
-                    getAddressFromLocation(
-                        latLng = LatLng(
-                            user.location.coordinates[1],
-                            user.location.coordinates[0]
-                        ),
-                        groupId
-                    )
-
                 userFlow.update {
                     Pair(groupId, user)
                 }
@@ -488,7 +526,7 @@ class NotificationsViewModel(
         }
     }
 
-    private fun getUserAvatarForJoin(avatarId: String, groupId: String) {
+    private fun getGroupAvatar(avatarId: String, groupId: String) {
         networkExecutor {
             execute { filesRepository.getAvatar(avatarId) }
             onSuccess { uri ->

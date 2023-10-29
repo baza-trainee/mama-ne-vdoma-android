@@ -5,6 +5,7 @@ import tech.baza_trainee.mama_ne_vdoma.data.model.ChildDto
 import tech.baza_trainee.mama_ne_vdoma.data.model.DayScheduleDto
 import tech.baza_trainee.mama_ne_vdoma.data.model.GroupDto
 import tech.baza_trainee.mama_ne_vdoma.data.model.GroupFullInfoDto
+import tech.baza_trainee.mama_ne_vdoma.data.model.JoinRequestDto
 import tech.baza_trainee.mama_ne_vdoma.data.model.LocationDto
 import tech.baza_trainee.mama_ne_vdoma.data.model.MemberDto
 import tech.baza_trainee.mama_ne_vdoma.data.model.UpdateGroupDto
@@ -16,6 +17,7 @@ import tech.baza_trainee.mama_ne_vdoma.domain.model.DayPeriod
 import tech.baza_trainee.mama_ne_vdoma.domain.model.Gender
 import tech.baza_trainee.mama_ne_vdoma.domain.model.GroupEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.GroupFullInfoEntity
+import tech.baza_trainee.mama_ne_vdoma.domain.model.JoinRequestEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.LocationEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.MemberEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.PatchChildEntity
@@ -61,8 +63,10 @@ fun UserProfileDto.toDomainModel() = UserProfileEntity(
                 }
         }
     ),
-    groupJoinRequests = groupJoinRequests
+    groupJoinRequests = groupJoinRequests.map { it.toDomainModel() }
 )
+
+fun JoinRequestDto.toDomainModel() = JoinRequestEntity(groupId, childId)
 
 fun LocationDto?.toDomainModel() = if (this != null)
         LocationEntity(type, coordinates)

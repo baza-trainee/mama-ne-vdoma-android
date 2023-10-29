@@ -65,4 +65,7 @@ interface GroupsApi {
 
     @GET("api/group/full-info/{groupId}")
     suspend fun getGroupFullInfo(@Path("groupId") groupId: String): Response<GroupFullInfoDto>
+
+    @POST("api/group/cancel-membership/{groupId}/{childId}")
+    suspend fun cancelRequest(@Path("groupId") groupId: String, @Path("childId") childId: String): Response<Unit>
 }

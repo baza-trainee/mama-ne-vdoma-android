@@ -13,9 +13,14 @@ data class UserProfileDto(
     val avatar: String? = null,
     val location: LocationDto? = null,
     val week: Map<String, DayScheduleDto>? = null,
-    val groupJoinRequests: List<String> = emptyList()
+    val groupJoinRequests: List<JoinRequestDto> = emptyList()
 )
 
 data class UserProfileResponse(
     val user: UserProfileDto
+)
+
+data class JoinRequestDto(
+    val groupId: String = "",
+    val childId: String = ""
 )

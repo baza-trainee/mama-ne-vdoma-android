@@ -2,6 +2,7 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.cards
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,6 +15,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -31,6 +34,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -38,14 +42,17 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.JoinRequestUiModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.LogoutButtonColor
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.LogoutButtonTextColor
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.ButtonText
 
 @Composable
 @Preview
 fun MyRequestCard(
     modifier: Modifier = Modifier,
     request: JoinRequestUiModel = JoinRequestUiModel(),
-    onDecline: (String, String) -> Unit = {_,_ ->}
+    onCancel: () -> Unit = {}
 ) {
     Column(
         modifier = Modifier
@@ -113,25 +120,25 @@ fun MyRequestCard(
                                 .fillMaxWidth()
                                 .padding(horizontal = 16.dp)
                                 .padding(bottom = 4.dp),
-                            text = "Запит на приєднання до групи \"${request.group.name}\"",
+                            text = "Запит до групи \"${request.group.name}\" успішно відправлений. Ми повідомимо вас, коли адміністратор групи затвердить ваш запит",
                             fontSize = 14.sp,
                             fontFamily = redHatDisplayFontFamily
                         )
                     }
                 }
 
-//                Text(
-//                    modifier = Modifier
-//                        .padding(horizontal = 8.dp)
-//                        .align(Alignment.End)
-//                        .clickable { },
-//                    text = "Скасувати запит",
-//                    fontSize = 16.sp,
-//                    fontFamily = redHatDisplayFontFamily,
-//                    fontWeight = FontWeight.Bold,
-//                    color = Color.Red,
-//                    textAlign = TextAlign.Center
-//                )
+                Text(
+                    modifier = Modifier
+                        .padding(horizontal = 8.dp)
+                        .align(Alignment.End)
+                        .clickable { onCancel() },
+                    text = "Скасувати запит",
+                    fontSize = 16.sp,
+                    fontFamily = redHatDisplayFontFamily,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Red,
+                    textAlign = TextAlign.Center
+                )
             }
         } else {
             Column(
@@ -265,22 +272,22 @@ fun MyRequestCard(
                         Spacer(modifier = Modifier.height(4.dp))
                 }
 
-//                Spacer(modifier = Modifier.height(8.dp))
-//
-//                Button(
-//                    modifier = Modifier
-//                        .fillMaxWidth()
-//                        .height(48.dp),
-//                    onClick = { },
-//                    colors = ButtonDefaults.buttonColors(
-//                        containerColor = LogoutButtonColor,
-//                        contentColor = LogoutButtonTextColor
-//                    )
-//                ) {
-//                    ButtonText(
-//                        text = "Скасувати запит"
-//                    )
-//                }
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Button(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(48.dp),
+                    onClick = { onCancel() },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = LogoutButtonColor,
+                        contentColor = LogoutButtonTextColor
+                    )
+                ) {
+                    ButtonText(
+                        text = "Скасувати запит"
+                    )
+                }
             }
         }
     }

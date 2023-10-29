@@ -10,5 +10,10 @@ data class UserProfileEntity(
     val avatar: String = "",
     val location: LocationEntity = LocationEntity(),
     val schedule: ScheduleModel = ScheduleModel(),
-    val groupJoinRequests: List<String> = emptyList()
+    val groupJoinRequests: List<JoinRequestEntity> = emptyList()
+)
+
+data class JoinRequestEntity(
+    val groupId: String = "",
+    val childId: String = ""
 )

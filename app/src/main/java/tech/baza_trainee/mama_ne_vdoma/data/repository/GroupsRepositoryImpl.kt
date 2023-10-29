@@ -114,4 +114,11 @@ class GroupsRepositoryImpl(
             RequestResult.Success(result.body()?.toDomainModel() ?: GroupFullInfoEntity())
         else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage())
     }
+
+    override suspend fun cancelRequest(groupId: String, childId: String): RequestResult<Unit> {
+        val result = groupsApi.cancelRequest(groupId, childId)
+        return if (result.isSuccessful)
+            RequestResult.Success(Unit)
+        else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage())
+    }
 }

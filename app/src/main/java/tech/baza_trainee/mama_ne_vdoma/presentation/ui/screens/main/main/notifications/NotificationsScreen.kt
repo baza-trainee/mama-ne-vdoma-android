@@ -83,8 +83,9 @@ fun NotificationScreen(
         }
     }
 
+    var showCancelDialog by remember { mutableStateOf(false) }
     var showDeclineDialog by remember { mutableStateOf(false) }
-    var dialogData: Triple<String, String, String> = Triple("", "", "")
+    var dialogData by remember { mutableStateOf(Triple("", "", "")) }
 
     Column {
         val tabs = listOf("Мої запити", "Вхідні запити")
@@ -140,8 +141,9 @@ fun NotificationScreen(
 
                             MyRequestCard(
                                 request = request,
-                                onDecline = { groupId, childId ->
-                                    handleEvent(NotificationsEvent.DeclineUser(groupId,childId))
+                                onCancel = {
+                                    dialogData = Triple(request.group.id, request.child.childId, request.group.name)
+                                    showCancelDialog = true
                                 }
                             )
                         }
@@ -247,7 +249,7 @@ fun NotificationScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 16.dp),
-                        text = "Ви впевнені що хочете відхилити  запит  на приєднання до групи \"${dialogData.third}\"",
+                        text = "Ви впевнені, що хочете відхилити запит на приєднання до групи \"${dialogData.third}\"",
                         fontSize = 14.sp,
                         fontFamily = redHatDisplayFontFamily
                     )
@@ -294,6 +296,84 @@ fun NotificationScreen(
                             fontFamily = redHatDisplayFontFamily,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.primary,
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                }
+            }
+        }
+
+        if (showCancelDialog) {
+            AlertDialog(onDismissRequest = { showCancelDialog = false }) {
+                Column(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(MaterialTheme.colorScheme.background)
+                        .padding(vertical = 8.dp)
+                        .fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Error,
+                        contentDescription = "alert",
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Text(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp),
+                        text = "Ви впевнені, що хочете скасувати запит на приєднання до групи \"${dialogData.third}\"?",
+                        fontSize = 14.sp,
+                        fontFamily = redHatDisplayFontFamily
+                    )
+
+                    Spacer(modifier = Modifier.height(24.dp))
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp)
+                            .padding(bottom = 16.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            modifier = Modifier
+                                .weight(0.5f)
+                                .clickable(
+                                    indication = null,
+                                    interactionSource = remember { MutableInteractionSource() }
+                                ) { showCancelDialog = false },
+                            text = "Ні",
+                            fontSize = 16.sp,
+                            fontFamily = redHatDisplayFontFamily,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.primary,
+                            textAlign = TextAlign.Center
+                        )
+
+                        Text(
+                            modifier = Modifier
+                                .weight(0.5f)
+                                .clickable(
+                                    indication = null,
+                                    interactionSource = remember { MutableInteractionSource() }
+                                ) {
+                                    showCancelDialog = false
+                                    handleEvent(
+                                        NotificationsEvent.CancelRequest(
+                                            dialogData.first,
+                                            dialogData.second
+                                        )
+                                    )
+                                },
+                            text = "Так, скасувати",
+                            fontSize = 16.sp,
+                            fontFamily = redHatDisplayFontFamily,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.Red,
                             textAlign = TextAlign.Center
                         )
                     }
