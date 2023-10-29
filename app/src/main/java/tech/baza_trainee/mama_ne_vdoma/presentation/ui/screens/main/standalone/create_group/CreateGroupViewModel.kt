@@ -1,4 +1,4 @@
-package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.create_group
+package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.standalone.create_group
 
 import android.graphics.Bitmap
 import androidx.compose.runtime.State
@@ -18,15 +18,18 @@ import tech.baza_trainee.mama_ne_vdoma.domain.model.Period
 import tech.baza_trainee.mama_ne_vdoma.domain.model.ScheduleModel
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UpdateGroupEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UserProfileEntity
+import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatastoreManager
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.FilesRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.GroupsRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.LocationRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
-import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.PageNavigator
-import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.GroupsScreenRoutes
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.HostScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.MainScreenRoutes
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.StandaloneGroupsRoutes
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.GroupSearchCommunicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.image_crop.CropImageCommunicator
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.GroupSearchCommunicator
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.SETTINGS_PAGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.BitmapHelper
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
@@ -39,12 +42,13 @@ import java.time.DayOfWeek
 class CreateGroupViewModel(
     private val childCommunicator: GroupSearchCommunicator,
     private val communicator: CropImageCommunicator,
-    private val navigator: PageNavigator,
+    private val navigator: ScreenNavigator,
     private val userProfileRepository: UserProfileRepository,
     private val filesRepository: FilesRepository,
     private val locationRepository: LocationRepository,
     private val groupsRepository: GroupsRepository,
-    private val bitmapHelper: BitmapHelper
+    private val bitmapHelper: BitmapHelper,
+    private val preferencesDatastoreManager: UserPreferencesDatastoreManager
 ): ViewModel() {
 
 
@@ -64,6 +68,10 @@ class CreateGroupViewModel(
         viewModelScope.launch {
             communicator.croppedImageFlow.collect(::saveGroupAvatar)
         }
+
+        _viewState.update {
+            it.copy(userAvatar = preferencesDatastoreManager.avatarUri)
+        }
     }
 
     fun handleEvent(event: CreateGroupEvent) {
@@ -77,7 +85,7 @@ class CreateGroupViewModel(
             is CreateGroupEvent.UpdateMinAge -> validateMinAge(event.value)
             is CreateGroupEvent.UpdateDescription -> updateDescription(event.value)
             CreateGroupEvent.OnDeletePhoto -> Unit
-            CreateGroupEvent.OnEditPhoto -> navigator.navigate(GroupsScreenRoutes.ImageCrop)
+            CreateGroupEvent.OnEditPhoto -> navigator.navigate(StandaloneGroupsRoutes.GroupImageCrop)
             is CreateGroupEvent.SetImageToCrop -> communicator.uriForCrop = event.uri
             CreateGroupEvent.GoToMain -> {
                 childCommunicator.childId = ""
@@ -86,6 +94,8 @@ class CreateGroupViewModel(
 
             CreateGroupEvent.GetLocationFromAddress -> getLocationFromAddress()
             is CreateGroupEvent.UpdateGroupAddress -> updateGroupAddress(event.address)
+            CreateGroupEvent.OnAvatarClicked ->
+                navigator.navigate(HostScreenRoutes.Host.getDestination(SETTINGS_PAGE))
         }
     }
 
@@ -247,16 +257,16 @@ class CreateGroupViewModel(
     }
 
     private fun getUserInfo() {
-        networkExecutor<UserProfileEntity?> {
+        networkExecutor<UserProfileEntity> {
             execute {
                 userProfileRepository.getUserInfo()
             }
             onSuccess { entity ->
-                if (!entity?.location?.coordinates.isNullOrEmpty())
+                if (entity.location.coordinates.isNotEmpty())
                     getAddressFromLocation(
                         latLng = LatLng(
-                            entity?.location?.coordinates?.get(1) ?: 0.00,
-                            entity?.location?.coordinates?.get(0) ?: 0.00
+                            entity.location.coordinates[1],
+                            entity.location.coordinates[0]
                         )
                     )
             }

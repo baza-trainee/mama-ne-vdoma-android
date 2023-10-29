@@ -11,9 +11,9 @@ import tech.baza_trainee.mama_ne_vdoma.domain.model.UserProfileEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.PageNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
-import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.InitialGroupSearchRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.MainScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.SearchScreenRoutes
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.StandaloneGroupsRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.SearchResultsCommunicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.ParentInSearchUiModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
@@ -46,7 +46,7 @@ class SearchRequestViewModel(
             SearchRequestEvent.SearchUser -> searchUser()
             is SearchRequestEvent.ValidateEmail -> validateEmail(event.value)
             SearchRequestEvent.OnMain -> navigator.navigate(MainScreenRoutes.Main)
-            SearchRequestEvent.SearchGroup -> mainNavigator.navigate(InitialGroupSearchRoutes.ChooseChild)
+            SearchRequestEvent.SearchGroup -> mainNavigator.navigate(StandaloneGroupsRoutes.ChooseChild.getDestination(isForSearch = true))
         }
     }
 

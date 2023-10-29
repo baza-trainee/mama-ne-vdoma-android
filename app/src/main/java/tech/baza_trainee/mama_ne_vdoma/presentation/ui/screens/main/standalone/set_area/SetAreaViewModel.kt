@@ -1,6 +1,5 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.standalone.set_area
 
-import android.net.Uri
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -15,7 +14,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.LocationInteract
 import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.NetworkEventsListener
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.HostScreenRoutes
-import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.InitialGroupSearchRoutes
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.StandaloneGroupsRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.SETTINGS_PAGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 
@@ -44,7 +43,7 @@ class SetAreaViewModel(
         getAddressFromLocation(location)
         _viewState.update {
             it.copy(
-                avatar = Uri.parse(preferencesDatastoreManager.avatar),
+                avatar = preferencesDatastoreManager.avatarUri,
                 currentLocation = location
             )
         }
@@ -76,7 +75,7 @@ class SetAreaViewModel(
                     latitude = _viewState.value.currentLocation.latitude
                     longitude = _viewState.value.currentLocation.longitude
                 }
-                navigator.navigate(InitialGroupSearchRoutes.GroupsFound)
+                navigator.navigate(StandaloneGroupsRoutes.GroupsFound)
             }
 
             SetAreaEvent.OnBack -> navigator.goBack()

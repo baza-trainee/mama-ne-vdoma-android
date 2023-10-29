@@ -45,6 +45,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.PageNav
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigatorImpl
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.MainActivityViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.GroupSearchCommunicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.add_child.ChildInfoViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.child_schedule.ChildScheduleViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.image_crop.CropImageCommunicator
@@ -54,10 +55,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.UserC
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.login.LoginScreenViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.new_password.NewPasswordScreenViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.restore_password.RestorePasswordScreenViewModel
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.GroupSearchCommunicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.SearchResultsCommunicator
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.choose_child.ChooseChildViewModel
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.create_group.CreateGroupViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.my_groups.MyGroupsViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.host.HostViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.main.main.MainViewModel
@@ -70,11 +68,11 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.edi
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.main_profile.ProfileSettingsViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.verify_email.VerifyNewEmailViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.standalone.choose_child.ChooseChildStandaloneViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.standalone.create_group.CreateGroupViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.standalone.found_group.FoundGroupsStandaloneViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.standalone.set_area.SetAreaViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.children_info.ChildrenInfoViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.full_info.FullInfoViewModel
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.image_crop.UserImageCropViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.model.UserProfileCommunicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.schedule.parent_schedule.ParentScheduleViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.user_info.UserInfoViewModel
@@ -127,8 +125,7 @@ val commonScreensModule = module {
 val userCreateModule = module {
     single { PhoneNumberUtil.createInstance(androidContext()) }
     single { UserProfileCommunicator() }
-    viewModel { UserInfoViewModel(get(), get(), get(), get()) }
-    viewModel { UserImageCropViewModel(get(), get(), get()) }
+    viewModel { UserInfoViewModel(get(), get(), get(), get(), get()) }
     viewModel { UserLocationViewModel(get(), get(), get()) }
     viewModel { ChildrenInfoViewModel(get(), get()) }
     viewModel { ParentScheduleViewModel(get(), get(), get(), get()) }
@@ -153,7 +150,8 @@ val loginKoinModule = module {
 
 val standaloneGroupSearchModule = module {
     single { GroupSearchCommunicator() }
-    viewModel { ChooseChildStandaloneViewModel(get(), get(), get(), get(), get()) }
+    viewModel { (navigator: ScreenNavigator) -> ImageCropViewModel(navigator, get(), get()) }
+    viewModel { (isForSearch: Boolean) -> ChooseChildStandaloneViewModel(isForSearch, get(), get(), get(), get(), get()) }
     viewModel { SetAreaViewModel(get(), get(), get()) }
     viewModel { FoundGroupsStandaloneViewModel(get(), get(), get(), get(), get()) }
 }
@@ -178,12 +176,10 @@ val mainModule = module {
     }
     viewModel { MainViewModel(get(), get()) }
     viewModel { NotificationsViewModel(get(), get(), get(), get(), get(), get()) }
-    viewModel { ChooseChildViewModel(get(named(SINGLETON_FOR_MAIN)), get(), get()) }
-    viewModel { MyGroupsViewModel(get(), get(), get(), get(), get()) }
+    viewModel { MyGroupsViewModel(get(), get(), get(), get(), get(), get()) }
     viewModel {
-        CreateGroupViewModel(get(named(SINGLETON_FOR_MAIN)), get(), get(), get(), get(), get(), get(), get())
+        CreateGroupViewModel(get(named(SINGLETON_FOR_MAIN)), get(), get(), get(), get(), get(), get(), get(), get())
     }
-    viewModel { (navigator: ScreenNavigator) -> ImageCropViewModel(navigator, get(), get()) }
     viewModel { SearchRequestViewModel(get(), get(), get(), get()) }
     viewModel { SearchResultsViewModel(get(), get(), get(), get()) }
     viewModel { ProfileSettingsViewModel(get(), get(), get(), get(), get()) }

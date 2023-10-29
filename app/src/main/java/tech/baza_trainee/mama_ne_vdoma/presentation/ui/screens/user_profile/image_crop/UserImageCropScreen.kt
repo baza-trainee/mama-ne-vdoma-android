@@ -1,6 +1,5 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.image_crop
 
-import android.graphics.Bitmap
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -14,6 +13,7 @@ import com.smarttoolfactory.cropper.model.OvalCropShape
 import com.smarttoolfactory.cropper.settings.CropDefaults
 import com.smarttoolfactory.cropper.settings.CropOutlineProperty
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.SurfaceWithSystemBars
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.image_crop.ImageCropEvent
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.image_crop.ImageCropScreen
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.image_crop.ImageCropViewState
 
@@ -21,7 +21,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.image_crop
 fun UserImageCropScreen(
     modifier: Modifier = Modifier,
     screenState: State<ImageCropViewState> = mutableStateOf(ImageCropViewState()),
-    handleEvent: (Bitmap) -> Unit = {}
+    handleEvent: (ImageCropEvent) -> Unit = {}
 ) {
     SurfaceWithSystemBars {
         val handleSize: Float = LocalDensity.current.run { 20.dp.toPx() }

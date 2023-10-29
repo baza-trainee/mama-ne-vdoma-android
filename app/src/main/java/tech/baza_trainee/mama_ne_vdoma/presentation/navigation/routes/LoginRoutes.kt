@@ -128,6 +128,5 @@ sealed class LoginRoutes(override val route: String): CommonRoute(route) {
         private const val BASE_ROUTE_EMAIL = "email_confirm_screen"
         private const val EMAIL = "email"
         private const val PASSWORD = "password"
-        private const val OTP = "otp"
     }
 }

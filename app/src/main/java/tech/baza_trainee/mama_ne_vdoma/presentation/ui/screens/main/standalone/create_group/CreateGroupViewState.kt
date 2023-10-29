@@ -1,12 +1,14 @@
-package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.create_group
+package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.standalone.create_group
 
 import android.graphics.Bitmap
+import android.net.Uri
 import com.google.android.gms.maps.model.LatLng
 import tech.baza_trainee.mama_ne_vdoma.domain.model.ScheduleModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.BitmapHelper
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 
 data class CreateGroupViewState(
+    val userAvatar: Uri = Uri.EMPTY,
     val address: String = "",
     val location: LatLng = LatLng(0.00, 0.00),
     val isAddressChecked: Boolean = false,

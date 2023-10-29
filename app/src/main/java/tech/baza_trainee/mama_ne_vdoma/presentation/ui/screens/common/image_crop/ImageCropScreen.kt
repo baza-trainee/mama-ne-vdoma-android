@@ -1,6 +1,5 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.image_crop
 
-import android.graphics.Bitmap
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -35,7 +34,7 @@ fun ImageCropScreen(
     modifier: Modifier = Modifier,
     imageForCrop: ImageBitmap = ImageBitmap(512, 512),
     cropProperties: CropProperties,
-    onImageCrop: (Bitmap) -> Unit = {}
+    onImageCrop: (ImageCropEvent) -> Unit = {}
 ) {
     var isCropping by remember { mutableStateOf(false) }
 
@@ -75,7 +74,7 @@ fun ImageCropScreen(
                     isCropping = true
                 },
                 onCropSuccess = {
-                    onImageCrop(it.asAndroidBitmap())
+                    onImageCrop(ImageCropEvent.OnImageCropped(it.asAndroidBitmap()))
                     crop = false
                     isCropping = false
                 }

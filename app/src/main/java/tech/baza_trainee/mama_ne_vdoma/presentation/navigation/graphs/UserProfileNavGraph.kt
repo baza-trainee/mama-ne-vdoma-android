@@ -12,11 +12,11 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.Graphs
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.UserProfileRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.add_child.ChildInfoViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.child_schedule.ChildScheduleViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.image_crop.ImageCropViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.child_info.ChildInfoScreen
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.full_info.FullInfoScreen
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.full_info.FullInfoViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.image_crop.UserImageCropScreen
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.image_crop.UserImageCropViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.schedule.child_schedule.ChildScheduleScreen
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.schedule.parent_schedule.ParentScheduleScreen
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.schedule.parent_schedule.ParentScheduleViewModel
@@ -47,10 +47,13 @@ fun NavGraphBuilder.userProfileGraph() {
             )
         }
         composable(UserProfileRoutes.ImageCrop.route) {
-            val userImageCropViewModel: UserImageCropViewModel = koinNavViewModel()
+            val navigator = koinInject<ScreenNavigator>()
+            val imageCropViewModel: ImageCropViewModel = koinNavViewModel {
+                parametersOf(navigator)
+            }
             UserImageCropScreen(
-                screenState = userImageCropViewModel.viewState.collectAsStateWithLifecycle(),
-                handleEvent = { userImageCropViewModel.saveCroppedImage(it) }
+                screenState = imageCropViewModel.viewState.collectAsStateWithLifecycle(),
+                handleEvent = { imageCropViewModel.handleEvent(it) }
             )
         }
         composable(UserProfileRoutes.UserLocation.route) {

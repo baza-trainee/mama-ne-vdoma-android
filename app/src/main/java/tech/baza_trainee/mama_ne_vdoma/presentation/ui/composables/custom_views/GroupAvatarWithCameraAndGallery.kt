@@ -43,7 +43,7 @@ import java.io.File
 @Preview
 fun GroupAvatarWithCameraAndGallery(
     modifier: Modifier = Modifier,
-    canDelete: Boolean = true,
+    canDelete: Boolean = false,
     setUriForCrop: (Uri) -> Unit = {},
     onEditPhoto: () -> Unit = {},
     onDeletePhoto: () -> Unit = {}

@@ -53,7 +53,7 @@ fun NavGraphBuilder.settingsNavGraph() {
             }
             ProfileImageCropScreen(
                 screenState = imageCropViewModel.viewState.collectAsStateWithLifecycle(),
-                handleEvent = { imageCropViewModel.saveCroppedImage(it) }
+                handleEvent = { imageCropViewModel.handleEvent(it) }
             )
         }
         composable(SettingsScreenRoutes.VerifyNewEmail.route) {

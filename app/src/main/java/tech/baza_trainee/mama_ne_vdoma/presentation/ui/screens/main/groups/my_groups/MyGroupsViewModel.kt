@@ -17,7 +17,8 @@ import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.GroupsInteractor
 import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.NetworkEventsListener
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.PageNavigator
-import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.GroupsScreenRoutes
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.StandaloneGroupsRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.networkExecutor
@@ -30,6 +31,7 @@ class MyGroupsViewModel(
     private val groupsRepository: GroupsRepository,
     private val preferencesDatastoreManager: UserPreferencesDatastoreManager,
     private val navigator: PageNavigator,
+    private val mainNavigator: ScreenNavigator,
     groupsInteractor: GroupsInteractor
 ): ViewModel(), GroupsInteractor by groupsInteractor, NetworkEventsListener {
 
@@ -73,7 +75,7 @@ class MyGroupsViewModel(
         when (event) {
             MyGroupsEvent.ResetUiState -> _uiState.value = RequestState.Idle
             MyGroupsEvent.OnBack -> navigator.goToPrevious()
-            MyGroupsEvent.CreateNewGroup -> navigator.navigate(GroupsScreenRoutes.ChooseChild)
+            MyGroupsEvent.CreateNewGroup -> mainNavigator.navigate(StandaloneGroupsRoutes.ChooseChild.getDestination(isForSearch = false))
             is MyGroupsEvent.OnKick -> event.children.forEach { kickUser(event.group, it) }
             is MyGroupsEvent.OnLeave -> leaveGroup(event.group)
         }

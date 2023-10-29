@@ -17,7 +17,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import org.koin.android.ext.android.inject
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.graphs.createUserNavGraph
-import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.graphs.firstGroupSearchNavGraph
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.graphs.groupStandaloneScreensNavGraph
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.graphs.loginNavGraph
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.graphs.main_host.hostNavGraph
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.graphs.startNavGraph
@@ -75,7 +75,7 @@ class MainActivity : FragmentActivity() {
                     loginNavGraph(navController)
                     createUserNavGraph()
                     userProfileGraph()
-                    firstGroupSearchNavGraph()
+                    groupStandaloneScreensNavGraph()
                     hostNavGraph()
                 }
             }

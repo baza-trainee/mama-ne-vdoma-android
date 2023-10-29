@@ -10,18 +10,20 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UserInfoEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatastoreManager
 import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.NetworkEventsListener
 import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.UserProfileInteractor
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.UserProfileRoutes
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.image_crop.CropImageCommunicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.model.UserProfileCommunicator
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.BitmapHelper
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 
 class UserInfoViewModel(
     private val communicator: UserProfileCommunicator,
+    private val imageCommunicator: CropImageCommunicator,
     private val navigator: ScreenNavigator,
     private val preferencesDatastoreManager: UserPreferencesDatastoreManager,
     userProfileInteractor: UserProfileInteractor
@@ -49,9 +51,9 @@ class UserInfoViewModel(
                 userAvatar = preferencesDatastoreManager.avatarUri
             )
         }
-        if (communicator.croppedImage != BitmapHelper.DEFAULT_BITMAP) {
-            saveUserAvatar(communicator.croppedImage)
-            communicator.croppedImage = BitmapHelper.DEFAULT_BITMAP
+
+        viewModelScope.launch {
+            imageCommunicator.croppedImageFlow.collect(::saveUserAvatar)
         }
     }
 
@@ -82,14 +84,12 @@ class UserInfoViewModel(
     }
 
     private fun setUriForCrop(uri: Uri) {
-        communicator.uriForCrop = uri
+        imageCommunicator.uriForCrop = uri
     }
 
     private fun deleteUserAvatar() {
         deleteUserAvatar {
-            communicator.apply {
-                uriForCrop = Uri.EMPTY
-            }
+            imageCommunicator.uriForCrop = Uri.EMPTY
 
             _viewState.update {
                 it.copy(

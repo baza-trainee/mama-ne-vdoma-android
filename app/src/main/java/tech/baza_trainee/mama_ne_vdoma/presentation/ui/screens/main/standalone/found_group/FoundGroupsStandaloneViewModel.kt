@@ -1,6 +1,5 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.standalone.found_group
 
-import android.net.Uri
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -17,7 +16,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.GroupsInteractor
 import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.NetworkEventsListener
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.HostScreenRoutes
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.GroupSearchCommunicator
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.GroupSearchCommunicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.MAIN_PAGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.SETTINGS_PAGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.GroupUiModel
@@ -52,7 +51,7 @@ class FoundGroupsStandaloneViewModel(
 
         _viewState.update {
             it.copy(
-                avatar = Uri.parse(preferencesDatastoreManager.avatar),
+                avatar = preferencesDatastoreManager.avatarUri,
                 currentUserId = preferencesDatastoreManager.id,
             )
         }

@@ -19,7 +19,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.UserProfileInter
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.Graphs
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.HostScreenRoutes
-import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.InitialGroupSearchRoutes
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.StandaloneGroupsRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.UserProfileRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.SETTINGS_PAGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.model.UserProfileCommunicator
@@ -83,7 +83,7 @@ class FullInfoViewModel(
             FullInfoEvent.OnBack -> navigator.navigate(Graphs.Login)
             FullInfoEvent.OnNext -> {
                 if (preferencesDatastoreManager.isChildrenDataProvided)
-                    navigator.navigate(InitialGroupSearchRoutes.ChooseChild)
+                    navigator.navigate(StandaloneGroupsRoutes.ChooseChild.getDestination(isForSearch = true))
                 else
                     navigator.navigate(HostScreenRoutes.Host.getDestination(SETTINGS_PAGE))
             }

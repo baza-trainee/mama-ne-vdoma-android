@@ -1,4 +1,4 @@
-package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.create_group
+package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.standalone.create_group
 
 import android.net.Uri
 import tech.baza_trainee.mama_ne_vdoma.domain.model.Period
@@ -19,4 +19,5 @@ sealed interface CreateGroupEvent {
     data object OnEditPhoto: CreateGroupEvent
     data object OnDeletePhoto: CreateGroupEvent
     data object GoToMain: CreateGroupEvent
+    data object OnAvatarClicked : CreateGroupEvent
 }

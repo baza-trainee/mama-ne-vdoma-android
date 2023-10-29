@@ -44,6 +44,7 @@ import java.io.File
 @Preview
 fun UserAvatarWithCameraAndGallery(
     modifier: Modifier = Modifier,
+    canDelete: Boolean = false,
     setUriForCrop: (Uri) -> Unit = {},
     onEditPhoto: () -> Unit = {},
     onDeletePhoto: () -> Unit = {}
@@ -107,15 +108,17 @@ fun UserAvatarWithCameraAndGallery(
             contentScale = ContentScale.Fit
         )
 
-        IconButton(
-            modifier = Modifier.align(Alignment.TopEnd),
-            onClick = { onDeletePhoto() }
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_delete),
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.primary
-            )
+        if (canDelete) {
+            IconButton(
+                modifier = Modifier.align(Alignment.TopEnd),
+                onClick = { onDeletePhoto() }
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_delete),
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary
+                )
+            }
         }
     }
 

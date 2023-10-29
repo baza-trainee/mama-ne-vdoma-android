@@ -1,4 +1,4 @@
-package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.create_group
+package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.standalone.create_group
 
 sealed interface CreateGroupUiState {
     data object Idle: CreateGroupUiState
