@@ -5,8 +5,10 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.ActivityCompat
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.dialogs.LocationPermissionTextProvider
@@ -19,39 +21,30 @@ fun LocationPermission(
     onPermissionGranted: (Boolean) -> Unit = {}
 ) {
     val activity = LocalContext.current.findActivity()
-    val permissionDialogQueue = remember { mutableStateListOf<String>() }
+    val permission = Manifest.permission.ACCESS_COARSE_LOCATION
+    var showRationale by rememberSaveable { mutableStateOf(false) }
 
-    val permissions = arrayOf(
-        Manifest.permission.ACCESS_FINE_LOCATION,
-        Manifest.permission.ACCESS_COARSE_LOCATION
-    )
-
-    val multiplePermissionResultLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestMultiplePermissions(),
-        onResult = { perms ->
-            if (perms.values.contains(false)) {
-                val permission = perms.filter { !it.value }.keys.first()
+    val locationPermissionResultLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission(),
+        onResult = { isGranted ->
+            if (!isGranted) {
                 if (activity.shouldShowRequestPermissionRationale(permission))
-                    permissionDialogQueue.add(permission)
-            } else if (perms.isNotEmpty())
-                onPermissionGranted(true)
+                    showRationale = true
+            } else onPermissionGranted(true)
         }
     )
 
     LaunchedEffect(key1 = true) {
-        multiplePermissionResultLauncher.launch(permissions)
+        locationPermissionResultLauncher.launch(permission)
     }
 
-    permissionDialogQueue.reversed().forEach {
+    if (showRationale) {
         PermissionDialog(
             permissionTextProvider = LocationPermissionTextProvider(),
             isPermanentlyDeclined = !ActivityCompat
-                .shouldShowRequestPermissionRationale(activity, it ),
-            onDismiss = { permissionDialogQueue.remove(it) },
-            onGranted = {
-                permissionDialogQueue.remove(it)
-                multiplePermissionResultLauncher.launch(permissions)
-            },
+                .shouldShowRequestPermissionRationale(activity, permission),
+            onDismiss = { showRationale = false },
+            onGranted = { showRationale = false },
             onGoToAppSettingsClick = { activity.openAppSettings() })
     }
 }
