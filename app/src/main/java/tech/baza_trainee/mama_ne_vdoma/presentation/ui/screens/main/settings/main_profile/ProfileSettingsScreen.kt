@@ -195,30 +195,32 @@ fun ProfileSettingsScreen(
             )
         }
 
-        Spacer(modifier = Modifier.height(8.dp))
+        if (!screenState.value.sendEmails) {
+            Spacer(modifier = Modifier.height(8.dp))
 
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 8.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
+            Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(end = 4.dp)
-                    .weight(1f),
-                text = "Сервісні повідомлення з питань відновлення пароля чи підтвердження електронної пошти, відправляються автоматично і не можуть бути відхилені Користувачем",
-                fontSize = 12.sp,
-                fontFamily = redHatDisplayFontFamily,
-                color = Color.Red,
-                lineHeight = 18.sp
-            )
-            Icon(
-                imageVector = Icons.Filled.Error,
-                contentDescription = "error",
-                tint = Color.Red
-            )
+                    .padding(horizontal = 8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(end = 4.dp)
+                        .weight(1f),
+                    text = "Сервісні повідомлення з питань відновлення пароля чи підтвердження електронної пошти, відправляються автоматично і не можуть бути відхилені Користувачем",
+                    fontSize = 12.sp,
+                    fontFamily = redHatDisplayFontFamily,
+                    color = Color.Red,
+                    lineHeight = 18.sp
+                )
+                Icon(
+                    imageVector = Icons.Filled.Error,
+                    contentDescription = "error",
+                    tint = Color.Red
+                )
+            }
         }
 
         Spacer(modifier = Modifier.height(24.dp))
