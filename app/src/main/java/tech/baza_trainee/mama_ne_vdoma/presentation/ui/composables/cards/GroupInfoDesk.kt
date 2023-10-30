@@ -220,27 +220,28 @@ fun GroupInfoDesk(
                             contentDescription = "member",
                             contentScale = ContentScale.Fit
                         )
-                    }
+                    } else return@forEachIndexed
                 }
-                if (group.members.size > 3)
-                    Box(
-                        modifier = Modifier
-                            .height(24.dp)
-                            .width(24.dp)
-                            .background(
-                                color = MaterialTheme.colorScheme.primary,
-                                shape = CircleShape
-                            ),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = "+${group.members.size - 3}",
-                            color = MaterialTheme.colorScheme.onPrimary,
-                            fontSize = 10.sp,
-                            fontFamily = redHatDisplayFontFamily
-                        )
-                    }
             }
+
+            if (group.members.size > 3)
+                Box(
+                    modifier = Modifier
+                        .height(24.dp)
+                        .width(24.dp)
+                        .background(
+                            color = MaterialTheme.colorScheme.primary,
+                            shape = CircleShape
+                        ),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "+${group.members.size - 3}",
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        fontSize = 10.sp,
+                        fontFamily = redHatDisplayFontFamily
+                    )
+                }
 
             Spacer(modifier = Modifier.weight(1f))
 
