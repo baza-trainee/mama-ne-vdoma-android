@@ -325,29 +325,28 @@ fun EditProfileScreen(
         var isPermissionGranted by remember { mutableStateOf(false) }
         LocationPermission { isPermissionGranted = it }
 
-        if (isPermissionGranted) {
-
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(160.dp)
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(160.dp)
+        ) {
+            CustomGoogleMap(
+                modifier = Modifier.fillMaxWidth(),
+                location = screenState.value.currentLocation,
+                showMyLocationButton = isPermissionGranted,
+                onMyLocationButtonClick = { handleEvent(EditProfileEvent.RequestUserLocation) },
+                onMapClick = { handleEvent(EditProfileEvent.OnMapClick(it)) }
             ) {
-                CustomGoogleMap(
-                    modifier = Modifier.fillMaxWidth(),
-                    location = screenState.value.currentLocation,
-                    onMyLocationButtonClick = { handleEvent(EditProfileEvent.RequestUserLocation) },
-                    onMapClick = { handleEvent(EditProfileEvent.OnMapClick(it)) }
-                ) {
-                    Marker(
-                        state = MarkerState(position = screenState.value.currentLocation),
-                        title = "Ви тут",
-                        snippet = "поточне місцезнаходження"
-                    )
-                }
+                Marker(
+                    state = MarkerState(position = screenState.value.currentLocation),
+                    title = "Ви тут",
+                    snippet = "поточне місцезнаходження"
+                )
             }
-
-            Spacer(modifier = Modifier.height(4.dp))
         }
+
+        Spacer(modifier = Modifier.height(4.dp))
+
 
         Text(
             modifier = Modifier

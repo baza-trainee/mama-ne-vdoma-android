@@ -3,6 +3,7 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.use
 import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -28,8 +29,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.constraintlayout.compose.Dimension
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.CustomGoogleMap
@@ -78,72 +77,56 @@ fun UserLocationScreen(
                         " щоб ви могли підібрати найближчі групи до вас"
             )
 
-            if (isPermissionGranted) {
-                ConstraintLayout(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1f)
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(0.7f)
+            ) {
+                CustomGoogleMap(
+                    modifier = Modifier.fillMaxWidth(),
+                    location = screenState.value.currentLocation,
+                    showMyLocationButton = isPermissionGranted,
+                    onMyLocationButtonClick = { handleEvent(UserLocationEvent.RequestUserLocation) },
+                    onMapClick = { handleEvent(UserLocationEvent.OnMapClick(it)) }
                 ) {
-                    val (map, input) = createRefs()
-
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .constrainAs(map) {
-                                top.linkTo(parent.top)
-                                bottom.linkTo(input.top, 16.dp)
-                                height = Dimension.fillToConstraints
-                            }
-                    ) {
-                        CustomGoogleMap(
-                            modifier = Modifier.fillMaxWidth(),
-                            location = screenState.value.currentLocation,
-                            onMyLocationButtonClick = { handleEvent(UserLocationEvent.RequestUserLocation) },
-                            onMapClick = { handleEvent(UserLocationEvent.OnMapClick(it)) }
-                        ) {
-                            Marker(
-                                state = MarkerState(position = screenState.value.currentLocation),
-                                title = "Ви тут",
-                                snippet = "поточне місцезнаходження"
-                            )
-                        }
-                    }
-
-                    OutlinedTextField(
-                        value = screenState.value.address,
-                        onValueChange = {
-                            handleEvent(
-                                UserLocationEvent.UpdateUserAddress(it)
-                            )
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp)
-                            .constrainAs(input) {
-                                bottom.linkTo(parent.bottom, 16.dp)
-                            },
-                        label = { Text("Введіть вашу адресу") },
-                        colors = OutlinedTextFieldDefaults.colors(
-                            focusedContainerColor = MaterialTheme.colorScheme.surface,
-                            unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-                            disabledContainerColor = MaterialTheme.colorScheme.surface,
-                            focusedBorderColor = MaterialTheme.colorScheme.primary,
-                            unfocusedBorderColor = MaterialTheme.colorScheme.surface,
-                        ),
-                        trailingIcon = {
-                            IconButton(
-                                onClick = { handleEvent(UserLocationEvent.GetLocationFromAddress) }
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Filled.Search,
-                                    contentDescription = "search_location"
-                                )
-                            }
-                        },
-                        maxLines = 2
+                    Marker(
+                        state = MarkerState(position = screenState.value.currentLocation),
+                        title = "Ви тут",
+                        snippet = "поточне місцезнаходження"
                     )
                 }
             }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            OutlinedTextField(
+                value = screenState.value.address,
+                onValueChange = {
+                    handleEvent(UserLocationEvent.UpdateUserAddress(it))
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                label = { Text("Введіть вашу адресу") },
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedContainerColor = MaterialTheme.colorScheme.surface,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                    disabledContainerColor = MaterialTheme.colorScheme.surface,
+                    focusedBorderColor = MaterialTheme.colorScheme.primary,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.surface,
+                ),
+                trailingIcon = {
+                    IconButton(
+                        onClick = { handleEvent(UserLocationEvent.GetLocationFromAddress) }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Search,
+                            contentDescription = "search_location"
+                        )
+                    }
+                },
+                maxLines = 2
+            )
 
             Button(
                 modifier = Modifier
@@ -156,9 +139,9 @@ fun UserLocationScreen(
                     text = "Далі"
                 )
             }
-        }
 
-        if (screenState.value.isLoading) LoadingIndicator()
+            if (screenState.value.isLoading) LoadingIndicator()
+        }
     }
 }
 
