@@ -65,57 +65,49 @@ class NotificationsViewModel(
             combine(userLocationsFlow, userFlow, childrenFlow) { location, user, child ->
                 val currentRequests = _viewState.value.adminJoinRequests.toMutableList()
 
-                if (location.first.isNotEmpty()) {
-                    var currentUiModel = currentRequests.find { it.group.id == location.first } ?: JoinRequestUiModel()
+                fun updateUiModel(groupId: String, updateAction: JoinRequestUiModel.() -> JoinRequestUiModel) {
+                    var currentUiModel = currentRequests.find { it.group.id == groupId } ?: JoinRequestUiModel()
                     val index = currentRequests.indexOf(currentUiModel)
-                    val newGroup = currentUiModel.group.copy(id = location.first)
-                    currentUiModel = currentUiModel.copy(
-                        group = newGroup,
-                        parentAddress = location.second
-                    )
+                    currentUiModel = currentUiModel.updateAction()
                     if (index == -1)
                         currentRequests.add(currentUiModel)
                     else {
                         currentRequests.removeAt(index)
                         currentRequests.add(index, currentUiModel)
+                    }
+                }
+
+                if (location.first.isNotEmpty()) {
+                    updateUiModel(location.first) {
+                        val newGroup = group.copy(id = location.first)
+                        copy(
+                            group = newGroup,
+                            parentAddress = location.second
+                        )
                     }
                 }
 
                 if (user.first.isNotEmpty()) {
-                    var currentUiModel = currentRequests.find { it.group.id == user.first } ?: JoinRequestUiModel()
-                    val index = currentRequests.indexOf(currentUiModel)
-                    val newGroup = currentUiModel.group.copy(id = user.first)
-                    currentUiModel = currentUiModel.copy(
-                        group = newGroup,
-                        parentId = user.second.id,
-                        parentName = user.second.name,
-                        parentEmail = user.second.email,
-                        parentPhone = "${user.second.countryCode}${user.second.phone}",
-                    )
-                    if (index == -1)
-                        currentRequests.add(currentUiModel)
-                    else {
-                        currentRequests.removeAt(index)
-                        currentRequests.add(index, currentUiModel)
+                    updateUiModel(user.first) {
+                        val newGroup = group.copy(id = user.first)
+                        copy(
+                            group = newGroup,
+                            parentId = user.second.id,
+                            parentName = user.second.name,
+                            parentEmail = user.second.email,
+                            parentPhone = "${user.second.countryCode}${user.second.phone}",
+                        )
                     }
                 }
 
                 if (child.first.isNotEmpty()) {
-                    val currentChild = child.third.children.find { it.childId == child.second } ?: ChildEntity()
-                    var currentRequest = currentRequests.find { it.group.id == child.first } ?: JoinRequestUiModel()
-                    val indexOfRequest = currentRequests.indexOf(currentRequest)
-                    val newGroup = currentRequest.group.copy(id = child.first)
-                    currentRequest = currentRequest.copy(
-                        group = newGroup,
-                        child = currentChild.copy(childId = child.second)
-                    )
-                    currentRequests.apply {
-                        if (indexOfRequest == -1)
-                            add(currentRequest)
-                        else {
-                            removeAt(indexOfRequest)
-                            add(indexOfRequest, currentRequest)
-                        }
+                    updateUiModel(child.first) {
+                        val currentChild = child.third.children.find { it.childId == child.second } ?: ChildEntity()
+                        val newGroup = group.copy(id = child.first)
+                        copy(
+                            group = newGroup,
+                            child = currentChild.copy(childId = child.second)
+                        )
                     }
                 }
 
@@ -133,139 +125,113 @@ class NotificationsViewModel(
             combine(groupAvatarFlow, membersFlow, groupsFlow, memberAvatarsFlow, groupLocationsFlow) { avatar, member, group, memberAvatar, location ->
                 val currentRequests = _viewState.value.myJoinRequests.toMutableList()
 
-                if (group.first.isNotEmpty()) {
-                    var currentRequest = currentRequests.find { it.group.id == group.first } ?: JoinRequestUiModel()
-                    val indexOfRequest = currentRequests.indexOf(currentRequest)
-                    val uiModel = GroupUiModel(
-                        id = group.second.id,
-                        adminId = group.second.adminId,
-                        name = group.second.name,
-                        description = group.second.description,
-                        ages = group.second.ages
-                    )
-                    currentRequest = currentRequest.copy(
-                        group = uiModel,
-                        parentAvatar = preferencesDatastoreManager.avatarUri,
-                        parentName = preferencesDatastoreManager.name,
-                        parentId = preferencesDatastoreManager.id,
-                        child = ChildEntity(childId = group.third)
-                    )
-                    currentRequests.apply {
-                        if (indexOfRequest == -1)
-                            add(currentRequest)
-                        else {
-                            removeAt(indexOfRequest)
-                            add(indexOfRequest, currentRequest)
-                        }
-                    }
-                }
-
-                if (avatar.first.isNotEmpty()) {
-                    var currentRequest = currentRequests.find { it.group.id == avatar.first } ?: JoinRequestUiModel()
-                    val indexOfRequest = currentRequests.indexOf(currentRequest)
-                    val newGroup = currentRequest.group.copy(
-                        id = avatar.first,
-                        avatar = avatar.second
-                    )
-
-                    currentRequest = currentRequest.copy(
-                        group = newGroup
-                    )
-                    currentRequests.apply {
-                        if (indexOfRequest == -1)
-                            add(currentRequest)
-                        else {
-                            removeAt(indexOfRequest)
-                            add(indexOfRequest, currentRequest)
-                        }
-                    }
-                }
-
-                if (member.first.isNotEmpty()) {
-                    var currentRequest =
-                        currentRequests.find { it.group.id == member.first } ?: JoinRequestUiModel()
-                    val indexOfRequest = currentRequests.indexOf(currentRequest)
-                    var newGroup = currentRequest.group
-
-                    val currentMembers = newGroup.members.toMutableList()
-                    var currentMember = currentMembers.find { it.id == member.second.id } ?: MemberUiModel()
-                    val index = currentMembers.indexOf(currentMember)
-
-                    currentMember = currentMember.copy(
-                        id = member.second.id,
-                        name = member.second.name
-                    )
-                    currentMembers.apply {
-                        if (index == -1)
-                            add(currentMember)
-                        else {
-                            removeAt(index)
-                            add(index, currentMember)
-                        }
-                    }
-
-                    newGroup = newGroup.copy(
-                        id = member.first,
-                        members = currentMembers
-                    )
-
-                    currentRequest = currentRequest.copy(
-                        group = newGroup
-                    )
-                    currentRequests.apply {
-                        if (indexOfRequest == -1)
-                            add(currentRequest)
-                        else {
-                            removeAt(indexOfRequest)
-                            add(indexOfRequest, currentRequest)
-                        }
-                    }
-                }
-
-                if (memberAvatar.first.isNotEmpty()) {
-                    var currentRequest = currentRequests.find { it.group.id == memberAvatar.first } ?: JoinRequestUiModel()
-                    val indexOfRequest = currentRequests.indexOf(currentRequest)
-                    var newGroup = currentRequest.group.copy()
-                    val currentMembers = newGroup.members.toMutableList()
-                    var currentMember = currentMembers.find { it.id == memberAvatar.second } ?: MemberUiModel()
-                    val index = currentMembers.indexOf(currentMember)
-                    currentMember = currentMember.copy(avatar = memberAvatar.third)
-                    currentMembers.apply {
-                        if (index == -1)
-                            add(currentMember)
-                        else {
-                            removeAt(index)
-                            add(index, currentMember)
-                        }
-                    }
-                    newGroup = newGroup.copy(
-                        id = memberAvatar.first,
-                        members = currentMembers
-                    )
-
-                    currentRequest = currentRequest.copy(
-                        group = newGroup
-                    )
-                    currentRequests.apply {
-                        if (indexOfRequest == -1)
-                            add(currentRequest)
-                        else {
-                            removeAt(indexOfRequest)
-                            add(indexOfRequest, currentRequest)
-                        }
-                    }
-                }
-
-                if (location.first.isNotEmpty()) {
-                    var currentUiModel = currentRequests.find { it.group.id == location.first } ?: JoinRequestUiModel()
+                fun updateUiModel(groupId: String, updateAction: JoinRequestUiModel.() -> JoinRequestUiModel) {
+                    var currentUiModel = currentRequests.find { it.group.id == groupId } ?: JoinRequestUiModel()
                     val index = currentRequests.indexOf(currentUiModel)
-                    val newGroup = currentUiModel.group.copy(id = location.first, location = location.second)
-                    currentUiModel = currentUiModel.copy(group = newGroup)
+                    currentUiModel = currentUiModel.updateAction()
                     if (index == -1)
                         currentRequests.add(currentUiModel)
                     else {
                         currentRequests.removeAt(index)
                         currentRequests.add(index, currentUiModel)
+                    }
+                }
+
+                if (group.first.isNotEmpty()) {
+                    updateUiModel(group.first) {
+                        val uiModel = GroupUiModel(
+                            id = group.second.id,
+                            adminId = group.second.adminId,
+                            name = group.second.name,
+                            description = group.second.description,
+                            ages = group.second.ages
+                        )
+                        copy(
+                            group = uiModel,
+                            parentAvatar = preferencesDatastoreManager.avatarUri,
+                            parentName = preferencesDatastoreManager.name,
+                            parentId = preferencesDatastoreManager.id,
+                            child = ChildEntity(childId = group.third)
+                        )
+                    }
+                }
+
+                if (avatar.first.isNotEmpty()) {
+                    updateUiModel(avatar.first) {
+                        val newGroup = this.group.copy(
+                            id = avatar.first,
+                            avatar = avatar.second
+                        )
+
+                        copy(
+                            group = newGroup
+                        )
+                    }
+                }
+
+                if (member.first.isNotEmpty()) {
+                    updateUiModel(member.first) {
+                        var newGroup = this.group
+
+                        val currentMembers = newGroup.members.toMutableList()
+                        var currentMember = currentMembers.find { it.id == member.second.id } ?: MemberUiModel()
+                        val index = currentMembers.indexOf(currentMember)
+
+                        currentMember = currentMember.copy(
+                            id = member.second.id,
+                            name = member.second.name
+                        )
+                        currentMembers.apply {
+                            if (index == -1)
+                                add(currentMember)
+                            else {
+                                removeAt(index)
+                                add(index, currentMember)
+                            }
+                        }
+
+                        newGroup = newGroup.copy(
+                            id = member.first,
+                            members = currentMembers
+                        )
+
+                        copy(
+                            group = newGroup
+                        )
+                    }
+                }
+
+                if (memberAvatar.first.isNotEmpty()) {
+                    updateUiModel(memberAvatar.first) {
+                        var newGroup = this.group.copy()
+                        val currentMembers = newGroup.members.toMutableList()
+                        var currentMember =
+                            currentMembers.find { it.id == memberAvatar.second } ?: MemberUiModel()
+                        val index = currentMembers.indexOf(currentMember)
+                        currentMember = currentMember.copy(avatar = memberAvatar.third)
+                        currentMembers.apply {
+                            if (index == -1)
+                                add(currentMember)
+                            else {
+                                removeAt(index)
+                                add(index, currentMember)
+                            }
+                        }
+                        newGroup = newGroup.copy(
+                            id = memberAvatar.first,
+                            members = currentMembers
+                        )
+
+                        copy(
+                            group = newGroup
+                        )
+                    }
+                }
+
+                if (location.first.isNotEmpty()) {
+                    updateUiModel(location.first) {
+                        val newGroup = this.group.copy(id = location.first, location = location.second)
+                        copy(group = newGroup)
                     }
                 }
 
@@ -591,31 +557,6 @@ class NotificationsViewModel(
             }
             onSuccess { address ->
                 groupLocationsFlow.update {
-                    groupId to address
-                }
-            }
-            onError { error ->
-                _uiState.value = NotificationsUiState.OnError(error)
-            }
-            onLoading { isLoading ->
-                _viewState.update {
-                    it.copy(
-                        isLoading = isLoading
-                    )
-                }
-            }
-        }
-    }
-
-
-
-    private fun getAddressFromLocationForJoin(latLng: LatLng, groupId: String) {
-        networkExecutor {
-            execute {
-                locationRepository.getAddressFromLocation(latLng)
-            }
-            onSuccess { address ->
-                userLocationsFlow.update {
                     groupId to address
                 }
             }

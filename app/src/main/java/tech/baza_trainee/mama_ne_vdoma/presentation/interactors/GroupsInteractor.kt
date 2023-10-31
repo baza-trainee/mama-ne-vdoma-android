@@ -57,89 +57,80 @@ class GroupsInteractorImpl(
         coroutineScope.launch {
             combine(avatarsFlow, locationsFlow, membersFlow, avatarsMembersFlow) { avatar, location, user, memberAvatar ->
                 val currentGroups = _groupsFlow.value.toMutableList()
-                if (avatar.first.isNotEmpty()) {
-                    var currentGroup =
-                        currentGroups.find { it.id == avatar.first } ?: GroupUiModel()
+
+                fun updateGroup(groupId: String, updateAction: GroupUiModel.() -> GroupUiModel) {
+                    val currentGroup = currentGroups.find { it.id == groupId } ?: GroupUiModel()
                     val index = currentGroups.indexOf(currentGroup)
-                    currentGroup = currentGroup.copy(id = avatar.first, avatar = avatar.second)
+                    val updatedGroup = currentGroup.updateAction()
                     if (index == -1)
-                        currentGroups.add(currentGroup)
+                        currentGroups.add(updatedGroup)
                     else {
                         currentGroups.removeAt(index)
-                        currentGroups.add(index, currentGroup)
+                        currentGroups.add(index, updatedGroup)
+                    }
+                }
+
+                if (avatar.first.isNotEmpty()) {
+                    updateGroup(avatar.first) {
+                        copy(id = avatar.first, avatar = avatar.second)
                     }
                 }
 
                 if (location.first.isNotEmpty()) {
-                    var currentGroup = currentGroups.find { it.id == location.first } ?: GroupUiModel()
-                    val index = currentGroups.indexOf(currentGroup)
-                    currentGroup = currentGroup.copy(location = location.second)
-                    if (index == -1)
-                        currentGroups.add(currentGroup)
-                    else {
-                        currentGroups.removeAt(index)
-                        currentGroups.add(index, currentGroup)
+                    updateGroup(location.first) {
+                        copy(id = location.first, location = location.second)
                     }
                 }
 
                 if (user.first.isNotEmpty()) {
-                    var currentGroup = currentGroups.find { it.id == user.first } ?: GroupUiModel()
-                    val index = currentGroups.indexOf(currentGroup)
-                    val currentMembers = currentGroup.members.toMutableList()
-                    var member = currentMembers.find { it.id == user.second.id } ?: MemberUiModel()
-                    val indexOfUser = currentGroup.members.indexOf(member)
-                    member = member.copy(
-                        id = user.second.id,
-                        name = user.second.name
-                    )
-                    if (user.third)
+                    updateGroup(user.first) {
+                        val currentMembers = members.toMutableList()
+                        var member = currentMembers.find { it.id == user.second.id } ?: MemberUiModel()
+                        val indexOfUser = members.indexOf(member)
                         member = member.copy(
-                            phone = "${user.second.countryCode}${user.second.phone}",
-                            email = user.second.email
+                            id = user.second.id,
+                            name = user.second.name
                         )
-                    currentMembers.apply {
-                        if (indexOfUser == -1)
-                            add(member)
-                        else {
-                            removeAt(indexOfUser)
-                            add(indexOfUser, member)
+
+                        if (user.third)
+                            member = member.copy(
+                                phone = "${user.second.countryCode}${user.second.phone}",
+                                email = user.second.email
+                            )
+
+                        currentMembers.apply {
+                            if (indexOfUser == -1)
+                                add(member)
+                            else {
+                                removeAt(indexOfUser)
+                                add(indexOfUser, member)
+                            }
                         }
-                    }
-                    currentGroup = currentGroup.copy(id = user.first, members = currentMembers)
-                    if (index == -1)
-                        currentGroups.add(currentGroup)
-                    else {
-                        currentGroups.removeAt(index)
-                        currentGroups.add(index, currentGroup)
+
+                        copy(id = user.first, members = currentMembers)
                     }
                 }
 
                 if (memberAvatar.first.isNotEmpty()) {
-                    var currentGroup =
-                        currentGroups.find { it.id == memberAvatar.first } ?: GroupUiModel()
-                    val index = currentGroups.indexOf(currentGroup)
-                    val currentMembers = currentGroup.members.toMutableList()
-                    var member = currentMembers.find { it.id == memberAvatar.second } ?: MemberUiModel()
-                    val indexOfUser = currentGroup.members.indexOf(member)
-                    member = member.copy(
-                        id = memberAvatar.second,
-                        avatar = memberAvatar.third
-                    )
-                    currentMembers.apply {
-                        if (indexOfUser == -1)
-                            add(member)
-                        else {
-                            removeAt(indexOfUser)
-                            add(indexOfUser, member)
+                    updateGroup(memberAvatar.first) {
+                        val currentMembers = members.toMutableList()
+                        var member = currentMembers.find { it.id == memberAvatar.second } ?: MemberUiModel()
+                        val indexOfUser = members.indexOf(member)
+                        member = member.copy(
+                            id = memberAvatar.second,
+                            avatar = memberAvatar.third
+                        )
+
+                        currentMembers.apply {
+                            if (indexOfUser == -1)
+                                add(member)
+                            else {
+                                removeAt(indexOfUser)
+                                add(indexOfUser, member)
+                            }
                         }
-                    }
-                    currentGroup =
-                        currentGroup.copy(id = memberAvatar.first, members = currentMembers)
-                    if (index == -1)
-                        currentGroups.add(currentGroup)
-                    else {
-                        currentGroups.removeAt(index)
-                        currentGroups.add(index, currentGroup)
+
+                        copy(id = memberAvatar.first, members = currentMembers)
                     }
                 }
 
