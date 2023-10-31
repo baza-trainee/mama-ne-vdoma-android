@@ -2,6 +2,9 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.login
 
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.IntentSenderRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -19,9 +22,12 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -30,6 +36,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.google.android.gms.auth.api.identity.BeginSignInRequest
+import com.google.android.gms.auth.api.identity.SignInClient
+import tech.baza_trainee.mama_ne_vdoma.di.SERVER_CLIENT_ID
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.LoadingIndicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.SocialLoginBlock
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.SurfaceWithSystemBars
@@ -39,10 +48,13 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.text_fields.P
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.beginSignInGoogleOneTap
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.findActivity
 
 @Composable
 fun LoginUserScreen(
     modifier: Modifier = Modifier,
+    oneTapClient: SignInClient? = null,
     screenState: State<LoginViewState> = mutableStateOf(LoginViewState()),
     uiState: State<RequestState> = mutableStateOf(RequestState.Idle),
     handleEvent: (LoginEvent) -> Unit = { _ -> }
@@ -57,6 +69,50 @@ fun LoginUserScreen(
             is RequestState.OnError -> {
                 if (state.error.isNotBlank()) Toast.makeText(context, state.error, Toast.LENGTH_LONG).show()
                 handleEvent(LoginEvent.ResetUiState)
+            }
+        }
+
+        var googleLogin by remember { mutableStateOf(false) }
+
+        val intentSender = rememberLauncherForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) {
+            val credential = oneTapClient?.getSignInCredentialFromIntent(it.data)
+            val idToken = credential?.googleIdToken
+            val username = credential?.id
+            val password = credential?.password
+            when {
+                idToken != null -> {
+                    Toast.makeText(context, "ID Token: $idToken", Toast.LENGTH_LONG).show()
+                }
+                password != null -> {
+                    Toast.makeText(context, "Got password: $password", Toast.LENGTH_LONG).show()
+                }
+                else -> {
+                    Toast.makeText(context, "No credentials received.", Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+
+        LaunchedEffect(key1 = googleLogin) {
+            if (googleLogin) {
+                val signInRequest = BeginSignInRequest.builder()
+                    .setPasswordRequestOptions(BeginSignInRequest.PasswordRequestOptions.builder()
+                        .setSupported(true)
+                        .build())
+                    .setGoogleIdTokenRequestOptions(
+                        BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
+                            .setSupported(true)
+                            .setServerClientId(SERVER_CLIENT_ID)
+                            .setFilterByAuthorizedAccounts(true)
+                            .build())
+                    .setAutoSelectEnabled(true)
+                    .build()
+
+                val activity = context.findActivity()
+                val result = activity.beginSignInGoogleOneTap(oneTapClient, signInRequest)
+                intentSender.launch(
+                    IntentSenderRequest.Builder(result.pendingIntent.intentSender)
+                        .build()
+                )
             }
         }
         
@@ -195,8 +251,13 @@ fun LoginUserScreen(
             }
 
             SocialLoginBlock(
-                textForBottomButton = getTextWithUnderline("Ще немає профілю? ", "Зареєструватись")
-            ) { handleEvent(LoginEvent.OnCreate) }
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                textForBottomButton = getTextWithUnderline("Ще немає профілю? ", "Зареєструватись"),
+                onGoogleLogin = { googleLogin = true},
+                onAction = { handleEvent(LoginEvent.OnCreate) }
+            )
         }
 
         if (screenState.value.isLoading) LoadingIndicator()

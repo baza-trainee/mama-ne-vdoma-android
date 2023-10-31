@@ -43,6 +43,7 @@ class UserCreateViewModel(
             is UserCreateEvent.ValidatePassword -> validatePassword(event.password)
             UserCreateEvent.OnBack -> navigator.navigate(Graphs.Start)
             UserCreateEvent.OnLogin -> navigator.navigate(Graphs.Login)
+            is UserCreateEvent.OnGoogleLogin -> Unit
         }
     }
 

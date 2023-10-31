@@ -2,8 +2,14 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user
 
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.IntentSenderRequest
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -18,8 +24,12 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -27,6 +37,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.google.android.gms.auth.api.identity.BeginSignInRequest
+import com.google.android.gms.auth.api.identity.SignInClient
+import tech.baza_trainee.mama_ne_vdoma.di.SERVER_CLIENT_ID
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.LoadingIndicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.PrivacyPolicyBlock
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.SocialLoginBlock
@@ -34,14 +47,18 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.functions.getTextWithUnderline
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.text_fields.OutlinedTextFieldWithError
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.text_fields.PasswordTextFieldWithError
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.SlateGray
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.ButtonText
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.beginSignInGoogleOneTap
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.findActivity
 
 @Composable
 fun CreateUserScreen(
     modifier: Modifier = Modifier,
+    oneTapClient: SignInClient? = null,
     screenState: State<UserCreateViewState> = mutableStateOf(UserCreateViewState()),
     uiState: State<RequestState> = mutableStateOf(RequestState.Idle),
     handleEvent: (UserCreateEvent) -> Unit = { _ -> }
@@ -63,11 +80,37 @@ fun CreateUserScreen(
             }
         }
 
-        val scrollState = rememberScrollState()
+        var googleLogin by remember { mutableStateOf(false) }
+
+        val intentSender = rememberLauncherForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) {
+                val credential = oneTapClient?.getSignInCredentialFromIntent(it.data)
+                handleEvent(UserCreateEvent.OnGoogleLogin(credential?.googleIdToken.orEmpty()))
+            }
+
+        LaunchedEffect(key1 = googleLogin) {
+            if (googleLogin) {
+                val signUpRequest = BeginSignInRequest.builder()
+                    .setGoogleIdTokenRequestOptions(
+                        BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
+                            .setSupported(true)
+                            .setServerClientId(SERVER_CLIENT_ID)
+                            .setFilterByAuthorizedAccounts(false)
+                            .build()
+                    )
+                    .build()
+
+                val activity = context.findActivity()
+                val result = activity.beginSignInGoogleOneTap(oneTapClient, signUpRequest)
+                intentSender.launch(
+                    IntentSenderRequest.Builder(result.pendingIntent.intentSender)
+                        .build()
+                )
+            }
+        }
 
         Column(
             modifier = Modifier
-                .verticalScroll(scrollState)
+                .verticalScroll(rememberScrollState())
                 .imePadding()
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp),
@@ -165,54 +208,40 @@ fun CreateUserScreen(
 
                 Spacer(modifier = Modifier.height(32.dp))
 
-//                ConstraintLayout(
-//                    modifier = Modifier.fillMaxWidth()
-//                ) {
-//                    val (box1, text, box2) = createRefs()
-//                    Box(
-//                        modifier = Modifier
-//                            .height(height = 2.dp)
-//                            .background(color = Gray)
-//                            .constrainAs(box1) {
-//                                start.linkTo(parent.start, 24.dp)
-//                                end.linkTo(text.start, 16.dp)
-//                                top.linkTo(parent.top)
-//                                bottom.linkTo(parent.bottom)
-//                                width = Dimension.fillToConstraints
-//                            }
-//                    )
-//                    Text(
-//                        modifier = Modifier
-//                            .constrainAs(text) {
-//                                start.linkTo(box1.end, 16.dp)
-//                                end.linkTo(box2.start, 16.dp)
-//                                top.linkTo(parent.top)
-//                                bottom.linkTo(parent.bottom)
-//                                width = Dimension.wrapContent
-//                            },
-//                        text = "чи",
-//                        fontSize = 14.sp,
-//                    )
-//                    Box(
-//                        modifier = Modifier
-//                            .height(height = 2.dp)
-//                            .background(color = Gray)
-//                            .constrainAs(box2) {
-//                                start.linkTo(text.end, 16.dp)
-//                                end.linkTo(parent.end, 24.dp)
-//                                top.linkTo(parent.top)
-//                                bottom.linkTo(parent.bottom)
-//                                width = Dimension.fillToConstraints
-//                            }
-//                    )
-//                }
+                Row(
+                    modifier = modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Box(
+                        modifier = modifier
+                            .weight(1f)
+                            .height(height = 2.dp)
+                            .background(color = SlateGray)
+                    )
+                    Text(
+                        modifier = Modifier.padding(horizontal = 4.dp),
+                        text = "чи",
+                        fontSize = 14.sp,
+                    )
+                    Box(
+                        modifier = modifier
+                            .weight(1f)
+                            .height(height = 2.dp)
+                            .background(color = SlateGray)
+                    )
+                }
 
                 Spacer(modifier = Modifier.height(32.dp))
             }
 
             SocialLoginBlock(
-                textForBottomButton = getTextWithUnderline("Вже є акаунт? ", "Увійти")
-            ) { handleEvent(UserCreateEvent.OnLogin) }
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                textForBottomButton = getTextWithUnderline("Вже є акаунт? ", "Увійти"),
+                onGoogleLogin = { googleLogin = true },
+                onAction = { handleEvent(UserCreateEvent.OnLogin) }
+            )
         }
 
         if (screenState.value.isLoading) LoadingIndicator()

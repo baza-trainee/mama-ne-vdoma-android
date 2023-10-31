@@ -5,7 +5,9 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import com.google.android.gms.auth.api.identity.SignInClient
 import org.koin.androidx.compose.navigation.koinNavViewModel
+import org.koin.compose.koinInject
 import org.koin.core.parameter.parametersOf
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.Graphs
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.LoginRoutes
@@ -30,7 +32,9 @@ fun NavGraphBuilder.loginNavGraph(
     ) {
         composable(LoginRoutes.Login.route) {
             val loginViewModel: LoginScreenViewModel = koinNavViewModel()
+            val oneTapClient: SignInClient = koinInject()
             LoginUserScreen(
+                oneTapClient = oneTapClient,
                 screenState = loginViewModel.viewState.collectAsStateWithLifecycle(),
                 uiState = loginViewModel.uiState,
                 handleEvent = { loginViewModel.handleLoginEvent(it) }

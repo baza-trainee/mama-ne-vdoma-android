@@ -5,6 +5,7 @@ sealed interface UserCreateEvent {
     data object OnLogin: UserCreateEvent
     data object RegisterUser: UserCreateEvent
     data object ResetUiState: UserCreateEvent
+    data class OnGoogleLogin(val token: String) : UserCreateEvent
     data class ValidateEmail(val email: String) : UserCreateEvent
     data class ValidatePassword(val password: String) : UserCreateEvent
     data class ValidateConfirmPassword(val confirmPassword: String) : UserCreateEvent

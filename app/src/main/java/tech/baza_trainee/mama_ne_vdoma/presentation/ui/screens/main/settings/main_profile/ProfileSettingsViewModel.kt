@@ -4,6 +4,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.android.gms.auth.api.identity.SignInClient
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -26,7 +27,8 @@ class ProfileSettingsViewModel(
     private val navigator: PageNavigator,
     private val communicator: EditProfileCommunicator,
     private val userProfileInteractor: UserProfileInteractor,
-    private val preferencesDatastoreManager: UserPreferencesDatastoreManager
+    private val preferencesDatastoreManager: UserPreferencesDatastoreManager,
+    private val oneTapClient: SignInClient
 ): ViewModel(), UserProfileInteractor by userProfileInteractor, NetworkEventsListener {
 
     private val _viewState = MutableStateFlow(ProfileSettingsViewState())
@@ -93,6 +95,7 @@ class ProfileSettingsViewModel(
             ProfileSettingsEvent.EditProfile -> navigator.navigate(SettingsScreenRoutes.EditProfile)
             ProfileSettingsEvent.LogOut -> {
                 preferencesDatastoreManager.clearData()
+                oneTapClient.signOut()
                 mainNavigator.navigate(LoginRoutes.Login)
             }
 

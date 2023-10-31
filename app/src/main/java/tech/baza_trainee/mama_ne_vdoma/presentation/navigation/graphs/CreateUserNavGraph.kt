@@ -4,7 +4,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import com.google.android.gms.auth.api.identity.SignInClient
 import org.koin.androidx.compose.navigation.koinNavViewModel
+import org.koin.compose.koinInject
 import org.koin.core.parameter.parametersOf
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.CreateUserRoute
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.Graphs
@@ -20,7 +22,9 @@ fun NavGraphBuilder.createUserNavGraph() {
     ) {
         composable(CreateUserRoute.CreateUser.route) {
             val userCreateViewModel: UserCreateViewModel = koinNavViewModel()
+            val oneTapClient: SignInClient = koinInject()
             CreateUserScreen(
+                oneTapClient = oneTapClient,
                 screenState = userCreateViewModel.viewState.collectAsStateWithLifecycle(),
                 uiState = userCreateViewModel.uiState,
                 handleEvent = { userCreateViewModel.handleUserCreateEvent(it) }

@@ -2,6 +2,7 @@ package tech.baza_trainee.mama_ne_vdoma.di
 
 import com.chuckerteam.chucker.api.ChuckerCollector
 import com.chuckerteam.chucker.api.ChuckerInterceptor
+import com.google.android.gms.auth.api.identity.Identity
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.ToNumberPolicy
@@ -79,6 +80,10 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.user
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.user_location.UserLocationViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.BitmapHelper
 import java.util.concurrent.TimeUnit
+
+val gsoModule = module {
+    single { Identity.getSignInClient(androidContext()) }
+}
 
 val repoModule = module {
     single {
@@ -182,7 +187,7 @@ val mainModule = module {
     }
     viewModel { SearchRequestViewModel(get(), get(), get(), get()) }
     viewModel { SearchResultsViewModel(get(), get(), get(), get()) }
-    viewModel { ProfileSettingsViewModel(get(), get(), get(), get(), get()) }
+    viewModel { ProfileSettingsViewModel(get(), get(), get(), get(), get(), get()) }
     viewModel { EditProfileViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
     viewModel { VerifyNewEmailViewModel(get(), get(), get(), get()) }
     viewModel { EditCredentialsViewModel(get(), get(), get(), get()) }
@@ -239,3 +244,5 @@ fun createOkHttpClient(
 private const val CHUCKER_CONTENT_MAX_LENGTH = 250000L
 private const val TIMEOUT = 30L
 private const val SINGLETON_FOR_MAIN = "main_singleton"
+const val SERVER_CLIENT_ID =
+    "661138941200-s8d83nrl4u0m9lra46v3ut7nv3qsj8pc.apps.googleusercontent.com"

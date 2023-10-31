@@ -20,7 +20,8 @@ fun initKoin(context: Context) {
                 loginKoinModule,
                 standaloneGroupSearchModule,
                 mainModule,
-                commonScreensModule
+                commonScreensModule,
+                gsoModule
             )
         )
     }

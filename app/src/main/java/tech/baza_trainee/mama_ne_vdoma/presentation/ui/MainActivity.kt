@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_WEAK
 import androidx.biometric.BiometricManager.Authenticators.DEVICE_CREDENTIAL
@@ -15,6 +16,7 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.fragment.app.FragmentActivity
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
+import com.google.android.gms.auth.api.signin.GoogleSignIn
 import org.koin.android.ext.android.inject
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.graphs.createUserNavGraph
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.graphs.groupStandaloneScreensNavGraph
@@ -29,9 +31,14 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.HostScreen
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.MAIN_PAGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.Mama_ne_vdomaTheme
 
+
 class MainActivity : FragmentActivity() {
 
     private val viewModel: MainActivityViewModel by inject()
+
+    private val signInLauncher = registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) {
+
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -80,6 +87,8 @@ class MainActivity : FragmentActivity() {
                 }
             }
         }
+
+        val account = GoogleSignIn.getLastSignedInAccount(this)
     }
 
     private fun checkAndAuthenticate() =
@@ -123,4 +132,10 @@ class MainActivity : FragmentActivity() {
             }
         }
     )
+
+    companion object {
+
+        private val REQ_ONE_TAP = 2  // Can be any integer unique to the Activity
+        private var showOneTapUI = true
+    }
 }
