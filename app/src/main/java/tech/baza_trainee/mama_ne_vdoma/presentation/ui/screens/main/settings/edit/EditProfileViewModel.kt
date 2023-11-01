@@ -69,12 +69,8 @@ class EditProfileViewModel(
             setLocationNetworkListener(this@EditProfileViewModel)
         }
 
-        viewModelScope.launch {
-            preferencesDatastoreManager.userPreferencesFlow.collect { pref ->
-                _viewState.update {
-                    it.copy(userAvatar = pref.avatarUri)
-                }
-            }
+        _viewState.update {
+            it.copy(userAvatar = preferencesDatastoreManager.avatarUri)
         }
 
         getUserInfo()
