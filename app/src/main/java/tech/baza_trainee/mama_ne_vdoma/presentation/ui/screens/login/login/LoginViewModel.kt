@@ -25,7 +25,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onError
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onLoading
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onSuccess
 
-class LoginScreenViewModel(
+class LoginViewModel(
     private val navigator: ScreenNavigator,
     private val authRepository: AuthRepository,
     private val preferencesDatastoreManager: UserPreferencesDatastoreManager
@@ -40,7 +40,7 @@ class LoginScreenViewModel(
 
     fun handleLoginEvent(event: LoginEvent) {
         when(event) {
-            LoginEvent.LoginUser -> loginUser()
+            LoginEvent.LoginUser -> loginWithPassword(_viewState.value.email, _viewState.value.password)
             LoginEvent.ResetUiState -> _uiState.value = RequestState.Idle
             LoginEvent.OnBack -> {
                 clearInputs()
@@ -57,6 +57,8 @@ class LoginScreenViewModel(
 
             is LoginEvent.ValidateEmail -> validateEmail(event.email)
             is LoginEvent.ValidatePassword -> validatePassword(event.password)
+            is LoginEvent.LoginWithPassword -> loginWithPassword(event.email, event.password)
+            is LoginEvent.LoginWithToken -> signInWithGoogle(event.token)
         }
     }
 
@@ -82,10 +84,10 @@ class LoginScreenViewModel(
         }
     }
 
-    private fun loginUser() {
+    private fun loginWithPassword(email: String, password: String) {
         networkExecutor {
             execute {
-                authRepository.loginUser(_viewState.value.email, _viewState.value.password)
+                authRepository.loginUser(email, password)
             }
             onSuccess {
                 clearInputs()
@@ -110,6 +112,27 @@ class LoginScreenViewModel(
     private fun clearInputs() {
         _viewState.update {
             LoginViewState()
+        }
+    }
+
+    private fun signInWithGoogle(token: String) {
+        networkExecutor {
+            execute {
+                authRepository.signupWithGoogle(token)
+            }
+            onSuccess {
+                navigator.navigate(Graphs.UserProfile)
+            }
+            onError { error ->
+                _uiState.value = RequestState.OnError(error)
+            }
+            onLoading { isLoading ->
+                _viewState.update {
+                    it.copy(
+                        isLoading = isLoading
+                    )
+                }
+            }
         }
     }
 }

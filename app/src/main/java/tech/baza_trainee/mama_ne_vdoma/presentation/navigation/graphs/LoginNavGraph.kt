@@ -14,8 +14,8 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.LoginRoute
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.verify_email.VerifyEmailScreen
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.verify_email.VerifyEmailViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.email_confirm.EmailConfirmScreen
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.login.LoginScreenViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.login.LoginUserScreen
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.login.LoginViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.new_password.NewPasswordScreen
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.new_password.NewPasswordScreenViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.restore_password.RestorePasswordScreen
@@ -31,7 +31,7 @@ fun NavGraphBuilder.loginNavGraph(
         startDestination = LoginRoutes.Login.route
     ) {
         composable(LoginRoutes.Login.route) {
-            val loginViewModel: LoginScreenViewModel = koinNavViewModel()
+            val loginViewModel: LoginViewModel = koinNavViewModel()
             val oneTapClient: SignInClient = koinInject()
             LoginUserScreen(
                 oneTapClient = oneTapClient,

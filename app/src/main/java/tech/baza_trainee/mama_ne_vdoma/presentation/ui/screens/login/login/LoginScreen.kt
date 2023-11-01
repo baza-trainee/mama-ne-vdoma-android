@@ -77,17 +77,13 @@ fun LoginUserScreen(
         val intentSender = rememberLauncherForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) {
             val credential = oneTapClient?.getSignInCredentialFromIntent(it.data)
             val idToken = credential?.googleIdToken
-            val username = credential?.id
+            val username = credential?.id.orEmpty()
             val password = credential?.password
             when {
-                idToken != null -> {
-                    Toast.makeText(context, "ID Token: $idToken", Toast.LENGTH_LONG).show()
-                }
-                password != null -> {
-                    Toast.makeText(context, "Got password: $password", Toast.LENGTH_LONG).show()
-                }
+                idToken != null -> handleEvent(LoginEvent.LoginWithToken(idToken))
+                password != null -> handleEvent(LoginEvent.LoginWithPassword(username, password))
                 else -> {
-                    Toast.makeText(context, "No credentials received.", Toast.LENGTH_LONG).show()
+                    Toast.makeText(context, "Немає даних для авторизації", Toast.LENGTH_LONG).show()
                 }
             }
         }

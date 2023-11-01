@@ -57,7 +57,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.image_crop
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.image_crop.ImageCropViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.verify_email.VerifyEmailViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.UserCreateViewModel
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.login.LoginScreenViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.login.LoginViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.new_password.NewPasswordScreenViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.restore_password.RestorePasswordScreenViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.SearchResultsCommunicator
@@ -150,7 +150,7 @@ val verifyEmailModule = module {
 
 val loginKoinModule = module {
     viewModel {
-        LoginScreenViewModel(get(), get(), get())
+        LoginViewModel(get(), get(), get())
     }
     viewModel { (email: String) ->
         NewPasswordScreenViewModel(email, get())

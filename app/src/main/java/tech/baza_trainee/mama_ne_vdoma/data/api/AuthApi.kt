@@ -3,6 +3,7 @@ package tech.baza_trainee.mama_ne_vdoma.data.api
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST
+import retrofit2.http.Path
 import tech.baza_trainee.mama_ne_vdoma.data.model.AuthUserDto
 import tech.baza_trainee.mama_ne_vdoma.data.model.ConfirmEmailDto
 import tech.baza_trainee.mama_ne_vdoma.data.model.RequestWithEmailDto
@@ -27,4 +28,7 @@ interface AuthApi {
 
     @POST("api/auth/reset-password")
     suspend fun resetPassword(@Body request: RestorePasswordDto): Response<Unit>
+
+    @POST("api/auth/google/{code}")
+    suspend fun signupWithGoogle(@Path("code") code: String): Response<Unit>
 }

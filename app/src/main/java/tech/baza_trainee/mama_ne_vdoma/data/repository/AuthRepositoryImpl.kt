@@ -62,4 +62,11 @@ class AuthRepositoryImpl(
             RequestResult.Success(Unit)
         else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage(), result.code())
     }
+
+    override suspend fun signupWithGoogle(code: String): RequestResult<Unit> {
+        val result = authApi.signupWithGoogle(code)
+        return if (result.isSuccessful)
+            RequestResult.Success(Unit)
+        else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage(), result.code())
+    }
 }

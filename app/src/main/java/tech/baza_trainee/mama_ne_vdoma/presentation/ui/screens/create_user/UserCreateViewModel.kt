@@ -43,7 +43,7 @@ class UserCreateViewModel(
             is UserCreateEvent.ValidatePassword -> validatePassword(event.password)
             UserCreateEvent.OnBack -> navigator.navigate(Graphs.Start)
             UserCreateEvent.OnLogin -> navigator.navigate(Graphs.Login)
-            is UserCreateEvent.OnGoogleLogin -> Unit
+            is UserCreateEvent.OnGoogleLogin -> signupWithGoogle(event.token)
         }
     }
 
@@ -118,6 +118,27 @@ class UserCreateViewModel(
             }
             onSuccess {
                 navigator.navigate(CreateUserRoute.VerifyEmail.getDestination(_viewState.value.email, _viewState.value.password))
+            }
+            onError { error ->
+                _uiState.value = RequestState.OnError(error)
+            }
+            onLoading { isLoading ->
+                _viewState.update {
+                    it.copy(
+                        isLoading = isLoading
+                    )
+                }
+            }
+        }
+    }
+
+    private fun signupWithGoogle(token: String) {
+        networkExecutor {
+            execute {
+                authRepository.signupWithGoogle(token)
+            }
+            onSuccess {
+                navigator.navigate(Graphs.UserProfile)
             }
             onError { error ->
                 _uiState.value = RequestState.OnError(error)

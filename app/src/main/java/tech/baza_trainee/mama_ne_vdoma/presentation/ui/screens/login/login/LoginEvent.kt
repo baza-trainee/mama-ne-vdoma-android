@@ -9,4 +9,6 @@ sealed interface LoginEvent {
     data object ResetUiState: LoginEvent
     data class ValidateEmail(val email: String) : LoginEvent
     data class ValidatePassword(val password: String) : LoginEvent
+    data class LoginWithToken(val token: String) : LoginEvent
+    data class LoginWithPassword(val email: String, val password: String) : LoginEvent
 }
