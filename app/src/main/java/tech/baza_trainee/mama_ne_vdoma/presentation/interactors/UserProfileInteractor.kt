@@ -197,7 +197,10 @@ class UserProfileInteractorImpl(
                     )
                 )
             }
-            onSuccess { onSuccess() }
+            onSuccess {
+                preferencesDatastoreManager.isChildrenDataProvided = true
+                onSuccess()
+            }
             onError(networkListener::onError)
             onLoading(networkListener::onLoading)
         }
@@ -302,6 +305,7 @@ class UserProfileInteractorImpl(
                     code = user.countryCode
                     phone = user.phone
                     avatar = user.avatar.orEmpty()
+                    isUserProfileFilled = true
                 }
                 getUserAvatar(preferencesDatastoreManager.avatar) {
                     preferencesDatastoreManager.avatarUri = it
