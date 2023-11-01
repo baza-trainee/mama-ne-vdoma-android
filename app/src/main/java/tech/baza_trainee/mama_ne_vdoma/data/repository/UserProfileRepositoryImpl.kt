@@ -19,13 +19,6 @@ class UserProfileRepositoryImpl(
     private val userProfileApi: UserProfileApi
 ): UserProfileRepository {
 
-    override suspend fun getUserInfo(): RequestResult<UserProfileEntity> {
-        val result = userProfileApi.getUserInfo()
-        return if (result.isSuccessful)
-            RequestResult.Success(result.body()?.toDomainModel() ?: UserProfileEntity())
-        else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage(), result.code())
-    }
-
     override suspend fun saveUserInfo(userInfo: UserInfoEntity): RequestResult<Unit> {
         val result = userProfileApi.saveUserInfo(userInfo.toDataModel())
         return if (result.isSuccessful)

@@ -21,6 +21,7 @@ import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatasto
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.FilesRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.GroupsRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.LocationRepository
+import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserAuthRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.PageNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.GroupUiModel
@@ -33,6 +34,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onLoading
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onSuccess
 
 class NotificationsViewModel(
+    private val userAuthRepository: UserAuthRepository,
     private val userProfileRepository: UserProfileRepository,
     private val filesRepository: FilesRepository,
     private val groupsRepository: GroupsRepository,
@@ -321,7 +323,7 @@ class NotificationsViewModel(
     private fun getUserInfo() {
         networkExecutor<UserProfileEntity> {
             execute {
-                userProfileRepository.getUserInfo()
+                userAuthRepository.getUserInfo()
             }
             onSuccess { entity ->
                 getGroups(entity.id)

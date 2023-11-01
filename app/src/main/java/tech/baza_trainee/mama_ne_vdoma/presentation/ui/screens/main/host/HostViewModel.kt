@@ -15,7 +15,7 @@ import tech.baza_trainee.mama_ne_vdoma.domain.model.UserProfileEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatastoreManager
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.GroupsRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.LocationRepository
-import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
+import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserAuthRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.PageNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.CommonHostRoute
@@ -38,7 +38,7 @@ class HostViewModel(
     private val page: Int,
     private val mainNavigator: ScreenNavigator,
     private val navigator: PageNavigator,
-    private val userProfileRepository: UserProfileRepository,
+    private val userAuthRepository: UserAuthRepository,
     private val locationRepository: LocationRepository,
     private val groupsRepository: GroupsRepository,
     private val preferencesDatastoreManager: UserPreferencesDatastoreManager
@@ -114,7 +114,7 @@ class HostViewModel(
     private fun getUserInfo() {
         networkExecutor<UserProfileEntity> {
             execute {
-                userProfileRepository.getUserInfo()
+                userAuthRepository.getUserInfo()
             }
             onSuccess { entity ->
                 if (entity.name.isEmpty() || entity.location.coordinates.isEmpty())

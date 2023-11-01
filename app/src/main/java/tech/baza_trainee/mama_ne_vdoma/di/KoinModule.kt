@@ -20,20 +20,24 @@ import tech.baza_trainee.mama_ne_vdoma.BuildConfig
 import tech.baza_trainee.mama_ne_vdoma.data.api.AuthApi
 import tech.baza_trainee.mama_ne_vdoma.data.api.FilesApi
 import tech.baza_trainee.mama_ne_vdoma.data.api.GroupsApi
+import tech.baza_trainee.mama_ne_vdoma.data.api.UserAuthApi
 import tech.baza_trainee.mama_ne_vdoma.data.api.UserProfileApi
 import tech.baza_trainee.mama_ne_vdoma.data.datasource.LocationDataSource
 import tech.baza_trainee.mama_ne_vdoma.data.datasource.impl.LocationDataSourceImpl
-import tech.baza_trainee.mama_ne_vdoma.data.interceptors.AuthInterceptor
+import tech.baza_trainee.mama_ne_vdoma.data.interceptors.AddCookiesInterceptor
+import tech.baza_trainee.mama_ne_vdoma.data.interceptors.ReceivedCookiesInterceptor
 import tech.baza_trainee.mama_ne_vdoma.data.repository.AuthRepositoryImpl
 import tech.baza_trainee.mama_ne_vdoma.data.repository.FilesRepositoryImpl
 import tech.baza_trainee.mama_ne_vdoma.data.repository.GroupsRepositoryImpl
 import tech.baza_trainee.mama_ne_vdoma.data.repository.LocationRepositoryImpl
+import tech.baza_trainee.mama_ne_vdoma.data.repository.UserAuthRepositoryImpl
 import tech.baza_trainee.mama_ne_vdoma.data.repository.UserProfileRepositoryImpl
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatastoreManager
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.AuthRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.FilesRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.GroupsRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.LocationRepository
+import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserAuthRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.GroupsInteractor
 import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.GroupsInteractorImpl
@@ -101,19 +105,21 @@ val repoModule = module {
             else HttpLoggingInterceptor.Level.NONE
         )
     }
-    single { createOkHttpClient(get(), get()) }
+    single { createOkHttpClient(get(), get(), get()) }
     single<UserProfileApi> { createAuthorizedApi(get(), get(), get()) }
     single<FilesApi> { createAuthorizedApi(get(), get(), get()) }
     single<GroupsApi> { createAuthorizedApi(get(), get(), get()) }
+    single<UserAuthApi> { createAuthorizedApi(get(), get(), get()) }
     single<AuthApi> { createCustomApi(get()) }
     factory<AuthRepository> { AuthRepositoryImpl(get(), get()) }
+    factory<UserAuthRepository> { UserAuthRepositoryImpl(get()) }
     factory<UserProfileRepository> { UserProfileRepositoryImpl(get()) }
     factory<FilesRepository> { FilesRepositoryImpl(get(), get()) }
     factory<LocationDataSource> { LocationDataSourceImpl(androidApplication()) }
     factory<LocationRepository> { LocationRepositoryImpl(get()) }
     factory<GroupsRepository> { GroupsRepositoryImpl(get()) }
 
-    factory<UserProfileInteractor> { UserProfileInteractorImpl(get(), get(), get(), get(), get()) }
+    factory<UserProfileInteractor> { UserProfileInteractorImpl(get(), get(), get(), get(), get(), get()) }
     factory<LocationInteractor> { LocationInteractorImpl(get(), get(), get()) }
     factory<GroupsInteractor> { GroupsInteractorImpl(get(), get(), get()) }
 
@@ -156,7 +162,7 @@ val loginKoinModule = module {
 val standaloneGroupSearchModule = module {
     single { GroupSearchCommunicator() }
     viewModel { (navigator: ScreenNavigator) -> ImageCropViewModel(navigator, get(), get()) }
-    viewModel { (isForSearch: Boolean) -> ChooseChildStandaloneViewModel(isForSearch, get(), get(), get(), get(), get()) }
+    viewModel { (isForSearch: Boolean) -> ChooseChildStandaloneViewModel(isForSearch, get(), get(), get(), get(), get(), get()) }
     viewModel { SetAreaViewModel(get(), get(), get()) }
     viewModel { FoundGroupsStandaloneViewModel(get(), get(), get(), get(), get()) }
 }
@@ -180,20 +186,18 @@ val mainModule = module {
         )
     }
     viewModel { MainViewModel(get(), get()) }
-    viewModel { NotificationsViewModel(get(), get(), get(), get(), get(), get()) }
-    viewModel { MyGroupsViewModel(get(), get(), get(), get(), get(), get()) }
+    viewModel { NotificationsViewModel(get(), get(), get(), get(), get(), get(), get()) }
+    viewModel { MyGroupsViewModel(get(), get(), get(), get(), get(), get(), get()) }
     viewModel {
-        CreateGroupViewModel(get(named(SINGLETON_FOR_MAIN)), get(), get(), get(), get(), get(), get(), get(), get())
+        CreateGroupViewModel(get(named(SINGLETON_FOR_MAIN)), get(), get(), get(), get(), get(), get(), get(), get(), get())
     }
     viewModel { SearchRequestViewModel(get(), get(), get(), get()) }
     viewModel { SearchResultsViewModel(get(), get(), get(), get()) }
     viewModel { ProfileSettingsViewModel(get(), get(), get(), get(), get(), get()) }
     viewModel { EditProfileViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
-    viewModel { VerifyNewEmailViewModel(get(), get(), get(), get()) }
-    viewModel { EditCredentialsViewModel(get(), get(), get(), get()) }
+    viewModel { VerifyNewEmailViewModel(get(), get(), get(), get(), get()) }
+    viewModel { EditCredentialsViewModel(get(), get(), get(), get(), get()) }
 }
-
-const val BASE_URL = "https://mommy-not-home.online/back/"
 
 inline fun <reified T> createWebService(
     okHttpClient: OkHttpClient
@@ -215,7 +219,8 @@ private inline fun <reified T: Any> createAuthorizedApi(
     preferencesDatastoreManager: UserPreferencesDatastoreManager
 ): T {
     val okHttpBuilder = OkHttpClient.Builder()
-        .addInterceptor(AuthInterceptor(preferencesDatastoreManager))
+//        .addInterceptor(AuthInterceptor(preferencesDatastoreManager))
+        .addInterceptor(AddCookiesInterceptor(preferencesDatastoreManager))
         .addInterceptor(httpLoggingInterceptor)
         .addInterceptor(loggingInterceptor)
 
@@ -230,12 +235,14 @@ inline fun <reified T> createCustomApi(
 
 fun createOkHttpClient(
     httpLoggingInterceptor: HttpLoggingInterceptor,
-    loggingInterceptor: ChuckerInterceptor
+    loggingInterceptor: ChuckerInterceptor,
+    preferencesDatastoreManager: UserPreferencesDatastoreManager
 ): OkHttpClient {
     return OkHttpClient.Builder()
         .connectTimeout(TIMEOUT, TimeUnit.SECONDS)
         .readTimeout(TIMEOUT, TimeUnit.SECONDS)
         .writeTimeout(TIMEOUT, TimeUnit.SECONDS)
+        .addInterceptor(ReceivedCookiesInterceptor(preferencesDatastoreManager))
         .addInterceptor(httpLoggingInterceptor)
         .addInterceptor(loggingInterceptor)
         .build()
@@ -244,5 +251,7 @@ fun createOkHttpClient(
 private const val CHUCKER_CONTENT_MAX_LENGTH = 250000L
 private const val TIMEOUT = 30L
 private const val SINGLETON_FOR_MAIN = "main_singleton"
+
+const val BASE_URL = "https://mommy-not-home.online/stage/"
 const val SERVER_CLIENT_ID =
     "661138941200-s8d83nrl4u0m9lra46v3ut7nv3qsj8pc.apps.googleusercontent.com"

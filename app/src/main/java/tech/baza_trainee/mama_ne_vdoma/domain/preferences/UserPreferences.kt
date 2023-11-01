@@ -21,7 +21,8 @@ data class UserPreferences(
     val myJoinRequests: Int,
     val adminJoinRequests: Int,
     val login: String,
-    val authToken: String
+    val authToken: String,
+    val cookies: Set<String>
 )
 
 

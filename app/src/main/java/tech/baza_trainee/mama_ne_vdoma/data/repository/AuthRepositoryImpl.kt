@@ -1,13 +1,10 @@
 package tech.baza_trainee.mama_ne_vdoma.data.repository
 
 import tech.baza_trainee.mama_ne_vdoma.data.api.AuthApi
-import tech.baza_trainee.mama_ne_vdoma.data.interceptors.AuthInterceptor
 import tech.baza_trainee.mama_ne_vdoma.data.model.AuthUserDto
 import tech.baza_trainee.mama_ne_vdoma.data.model.ConfirmEmailDto
 import tech.baza_trainee.mama_ne_vdoma.data.model.RequestWithEmailDto
 import tech.baza_trainee.mama_ne_vdoma.data.model.RestorePasswordDto
-import tech.baza_trainee.mama_ne_vdoma.data.model.ValidateEmailDto
-import tech.baza_trainee.mama_ne_vdoma.data.model.VerifyEmailDto
 import tech.baza_trainee.mama_ne_vdoma.data.utils.asCustomResponse
 import tech.baza_trainee.mama_ne_vdoma.data.utils.getMessage
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatastoreManager
@@ -47,10 +44,7 @@ class AuthRepositoryImpl(
     override suspend fun loginUser(email: String, password: String): RequestResult<Unit> {
         val result = authApi.loginUser(AuthUserDto(email, password))
         return if (result.isSuccessful) {
-            preferencesDatastoreManager.apply {
-                login = email
-                authToken = result.body()?.jwt.orEmpty()
-            }
+            preferencesDatastoreManager.login = email
             RequestResult.Success(Unit)
         } else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage())
     }
@@ -64,22 +58,6 @@ class AuthRepositoryImpl(
 
     override suspend fun resetPassword(email: String, code: String, password: String): RequestResult<Unit> {
         val result = authApi.resetPassword(RestorePasswordDto(email, code, password))
-        return if (result.isSuccessful)
-            RequestResult.Success(Unit)
-        else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage(), result.code())
-    }
-
-    override suspend fun changeEmailInit(email: String): RequestResult<Unit> {
-        val auth = AuthInterceptor.bearerHeader(preferencesDatastoreManager.authToken)
-        val result = authApi.changeEmailInit(auth, ValidateEmailDto(email))
-        return if (result.isSuccessful)
-            RequestResult.Success(Unit)
-        else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage())
-    }
-
-    override suspend fun changeEmail(code: String): RequestResult<Unit> {
-        val auth = AuthInterceptor.bearerHeader(preferencesDatastoreManager.authToken)
-        val result = authApi.changeEmail(auth, VerifyEmailDto(code))
         return if (result.isSuccessful)
             RequestResult.Success(Unit)
         else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage(), result.code())

@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatastoreManager
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.AuthRepository
+import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserAuthRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.Graphs
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.verify_email.VerifyEmailEvent
@@ -28,6 +29,7 @@ class VerifyNewEmailViewModel(
     private val communicator: EditProfileCommunicator,
     private val navigator: ScreenNavigator,
     private val authRepository: AuthRepository,
+    private val userAuthRepository: UserAuthRepository,
     private val preferencesDatastoreManager: UserPreferencesDatastoreManager
 ): ViewModel() {
 
@@ -49,7 +51,7 @@ class VerifyNewEmailViewModel(
             VerifyEmailEvent.ResendCode -> resendCode()
             VerifyEmailEvent.OnBack -> navigator.goBack()
             VerifyEmailEvent.GoToMain -> {
-                preferencesDatastoreManager.authToken = ""
+                preferencesDatastoreManager.cookies = emptySet()
                 navigator.navigate(Graphs.Login)
             }
         }
@@ -78,7 +80,7 @@ class VerifyNewEmailViewModel(
                 }
             }
             execute {
-                authRepository.changeEmail(otp)
+                userAuthRepository.changeEmail(otp)
             }
             onSuccess {
                 preferencesDatastoreManager.login = ""
@@ -137,7 +139,7 @@ class VerifyNewEmailViewModel(
     private fun resendCode() {
         networkExecutor {
             execute {
-                authRepository.changeEmailInit(communicator.email.value)
+                userAuthRepository.changeEmailInit(communicator.email.value)
             }
             onError { error ->
                 _uiState.value = VerifyEmailUiState.OnError(error)

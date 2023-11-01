@@ -13,6 +13,7 @@ import tech.baza_trainee.mama_ne_vdoma.domain.model.GroupEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UserProfileEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatastoreManager
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.GroupsRepository
+import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserAuthRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.GroupsInteractor
 import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.NetworkEventsListener
@@ -27,6 +28,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onLoading
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onSuccess
 
 class MyGroupsViewModel(
+    private val userAuthRepository: UserAuthRepository,
     private val userProfileRepository: UserProfileRepository,
     private val groupsRepository: GroupsRepository,
     private val preferencesDatastoreManager: UserPreferencesDatastoreManager,
@@ -84,7 +86,7 @@ class MyGroupsViewModel(
     private fun getUserInfo() {
         networkExecutor<UserProfileEntity> {
             execute {
-                userProfileRepository.getUserInfo()
+                userAuthRepository.getUserInfo()
             }
             onSuccess { entity ->
                 getGroups(entity.id)

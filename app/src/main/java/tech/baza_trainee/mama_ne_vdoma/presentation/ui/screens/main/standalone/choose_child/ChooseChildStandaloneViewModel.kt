@@ -12,6 +12,7 @@ import tech.baza_trainee.mama_ne_vdoma.domain.model.ChildEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UserProfileEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatastoreManager
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.FilesRepository
+import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserAuthRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.HostScreenRoutes
@@ -30,6 +31,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onSuccess
 class ChooseChildStandaloneViewModel(
     private val isForSearch: Boolean,
     private val communicator: GroupSearchCommunicator,
+    private val userAuthRepository: UserAuthRepository,
     private val userProfileRepository: UserProfileRepository,
     private val filesRepository: FilesRepository,
     private val navigator: ScreenNavigator,
@@ -68,7 +70,7 @@ class ChooseChildStandaloneViewModel(
     private fun getUserInfo() {
         networkExecutor<UserProfileEntity> {
             execute {
-                userProfileRepository.getUserInfo()
+                userAuthRepository.getUserInfo()
             }
             onSuccess { entity ->
                 preferencesDatastoreManager.apply {

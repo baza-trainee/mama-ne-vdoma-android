@@ -14,6 +14,7 @@ import tech.baza_trainee.mama_ne_vdoma.domain.model.UserInfoEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UserProfileEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatastoreManager
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.FilesRepository
+import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserAuthRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.BitmapHelper
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
@@ -64,6 +65,7 @@ interface UserProfileInteractor {
 }
 
 class UserProfileInteractorImpl(
+    private val userAuthRepository: UserAuthRepository,
     private val userProfileRepository: UserProfileRepository,
     private val filesRepository: FilesRepository,
     private val phoneNumberUtil: PhoneNumberUtil,
@@ -314,7 +316,7 @@ class UserProfileInteractorImpl(
     override fun getUserInfo(onSuccess: (UserProfileEntity) -> Unit) {
         coroutineScope.networkExecutor {
             execute {
-                userProfileRepository.getUserInfo()
+                userAuthRepository.getUserInfo()
             }
             onSuccess(onSuccess)
             onError(networkListener::onError)

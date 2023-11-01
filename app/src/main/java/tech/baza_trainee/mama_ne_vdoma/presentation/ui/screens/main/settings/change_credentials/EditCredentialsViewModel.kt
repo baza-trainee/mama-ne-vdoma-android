@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatastoreManager
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.AuthRepository
+import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserAuthRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.PageNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.SettingsScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.common.EditProfileCommunicator
@@ -25,6 +26,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onSuccess
 class EditCredentialsViewModel(
     private val navigator: PageNavigator,
     private val authRepository: AuthRepository,
+    private val userAuthRepository: UserAuthRepository,
     private val profileCommunicator: EditProfileCommunicator,
     private val preferencesDatastoreManager: UserPreferencesDatastoreManager
 ): ViewModel() {
@@ -93,7 +95,7 @@ class EditCredentialsViewModel(
     private fun verifyEmail() {
         networkExecutor {
             execute {
-                authRepository.changeEmailInit(_viewState.value.email)
+                userAuthRepository.changeEmailInit(_viewState.value.email)
             }
             onSuccess {
                 profileCommunicator.apply {

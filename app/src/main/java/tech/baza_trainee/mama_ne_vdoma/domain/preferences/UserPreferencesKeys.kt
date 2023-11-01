@@ -4,6 +4,7 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.doublePreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.core.stringSetPreferencesKey
 
 object UserPreferencesKeys {
     val KEY_ID = stringPreferencesKey(ID)
@@ -25,4 +26,5 @@ object UserPreferencesKeys {
     val KEY_ADMIN_JOIN_REQUESTS = intPreferencesKey(ADMIN_JOIN_REQUESTS)
     val KEY_ACCOUNT_LOGIN = stringPreferencesKey(ACCOUNT_LOGIN)
     val KEY_ACCOUNT_AUTH_TOKEN = stringPreferencesKey(ACCOUNT_AUTH_TOKEN)
+    val KEY_ACCOUNT_COOKIES = stringSetPreferencesKey(ACCOUNT_COOKIES)
 }

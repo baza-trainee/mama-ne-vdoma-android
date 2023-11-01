@@ -22,6 +22,7 @@ import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatasto
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.FilesRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.GroupsRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.LocationRepository
+import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserAuthRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.HostScreenRoutes
@@ -43,6 +44,7 @@ class CreateGroupViewModel(
     private val childCommunicator: GroupSearchCommunicator,
     private val communicator: CropImageCommunicator,
     private val navigator: ScreenNavigator,
+    private val userAuthRepository: UserAuthRepository,
     private val userProfileRepository: UserProfileRepository,
     private val filesRepository: FilesRepository,
     private val locationRepository: LocationRepository,
@@ -259,7 +261,7 @@ class CreateGroupViewModel(
     private fun getUserInfo() {
         networkExecutor<UserProfileEntity> {
             execute {
-                userProfileRepository.getUserInfo()
+                userAuthRepository.getUserInfo()
             }
             onSuccess { entity ->
                 if (entity.location.coordinates.isNotEmpty())
