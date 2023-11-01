@@ -121,7 +121,10 @@ class LoginViewModel(
                 authRepository.signupWithGoogle(token)
             }
             onSuccess {
-                navigator.navigate(Graphs.UserProfile)
+                if (preferencesDatastoreManager.isUserProfileFilled)
+                    navigator.navigate(HostScreenRoutes.Host.getDestination(MAIN_PAGE))
+                else
+                    navigator.navigate(UserProfileRoutes.FullProfile)
             }
             onError { error ->
                 _uiState.value = RequestState.OnError(error)
