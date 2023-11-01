@@ -455,10 +455,10 @@ class CreateGroupViewModel(
     }
 
     private fun validateMinAge(age: String) {
-        val intAge = age.toIntOrNull()
-        intAge?.let {
+        age.toIntOrNull()?.let { minAge ->
+            val maxAge = _viewState.value.maxAge.toIntOrNull() ?: minAge
             val minAgeValid =
-                if (intAge >= MIN_AGE && intAge <= _viewState.value.maxAge.toInt()) ValidField.VALID
+                if (minAge in MIN_AGE..maxAge) ValidField.VALID
                 else ValidField.INVALID
             _viewState.update {
                 it.copy(
@@ -477,10 +477,10 @@ class CreateGroupViewModel(
     }
 
     private fun validateMaxAge(age: String) {
-        val intAge = age.toIntOrNull()
-        intAge?.let {
+        age.toIntOrNull()?.let { maxAge ->
+            val minAge = _viewState.value.minAge.toIntOrNull() ?: maxAge
             val maxAgeValid =
-                if (age.toInt() <= MAX_AGE && age.toInt() >= _viewState.value.minAge.toInt()) ValidField.VALID
+                if (maxAge in minAge..MAX_AGE) ValidField.VALID
                 else ValidField.INVALID
             _viewState.update {
                 it.copy(
