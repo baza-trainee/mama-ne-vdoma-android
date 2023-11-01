@@ -98,7 +98,7 @@ class EditProfileViewModel(
             is EditProfileEvent.DeleteChild -> deleteChild(event.id)
             EditProfileEvent.ResetUiState -> _uiState.value = EditProfileUiState.Idle
             EditProfileEvent.OnBack -> navigator.goToPrevious()
-            EditProfileEvent.SaveInfo -> saveChanges() { _uiState.value = EditProfileUiState.OnProfileSaved }
+            EditProfileEvent.SaveInfo -> saveChanges { _uiState.value = EditProfileUiState.OnProfileSaved }
             EditProfileEvent.GetLocationFromAddress -> getLocationFromAddress()
             EditProfileEvent.OnDeletePhoto -> deleteUserAvatar()
             EditProfileEvent.OnEditPhoto -> navigator.navigate(SettingsScreenRoutes.EditProfilePhoto)
@@ -202,7 +202,9 @@ class EditProfileViewModel(
                 sendingEmails = preferencesDatastoreManager.sendEmail
             )
         ) {
-            profileCommunicator.setProfileChanged(true)
+            saveUserLocation(_viewState.value.currentLocation) {
+                profileCommunicator.setProfileChanged(true)
+            }
         }
     }
 

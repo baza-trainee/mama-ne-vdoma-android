@@ -24,7 +24,7 @@ interface LocationInteractor {
 
     fun requestCurrentLocation(onSuccess:(LatLng) -> Unit)
 
-    fun saveUserLocation(currentLocation: LatLng, onStart:() -> Unit, onSuccess: () -> Unit)
+    fun saveUserLocation(currentLocation: LatLng, onStart:() -> Unit = {}, onSuccess: () -> Unit = {})
 }
 
 class LocationInteractorImpl(
