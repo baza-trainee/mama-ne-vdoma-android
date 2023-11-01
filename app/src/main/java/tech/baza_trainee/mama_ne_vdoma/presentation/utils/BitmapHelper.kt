@@ -12,7 +12,6 @@ import android.util.Base64
 import android.view.OrientationEventListener
 import androidx.core.graphics.applyCanvas
 import androidx.core.net.toUri
-import androidx.exifinterface.media.ExifInterface
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -81,25 +80,21 @@ class BitmapHelper(private val context: Context) {
         return withContext(Dispatchers.IO) {
             try {
                 context.contentResolver.openInputStream(selectedImage)?.let {
-                    val deviceOrientation = context.resources.configuration.orientation
-                    val cameraManager =
-                        context.getSystemService(Context.CAMERA_SERVICE) as CameraManager
-                    val frontCamera = getFrontCameraId(cameraManager).orEmpty()
-                    val characteristics = cameraManager.getCameraCharacteristics(frontCamera)
-                    val orientation = getJpegOrientation(characteristics, deviceOrientation)
-                    val img = BitmapFactory.decodeStream(it)
-                    return@withContext when (orientation) {
-                        ExifInterface.ORIENTATION_ROTATE_90 -> rotateImage(img, 90)
-                        ExifInterface.ORIENTATION_ROTATE_180 -> rotateImage(img, 180)
-                        ExifInterface.ORIENTATION_ROTATE_270 -> rotateImage(img, 270)
-                        else -> img
-                    }
+                    return@withContext BitmapFactory.decodeStream(it)
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
             }
             return@withContext DEFAULT_BITMAP
         }
+    }
+
+    fun rotateImage(img: Bitmap, degree: Int): Bitmap {
+        val matrix = Matrix()
+        matrix.postRotate(degree.toFloat())
+        val rotatedImg = Bitmap.createBitmap(img, 0, 0, img.width, img.height, matrix, true)
+        img.recycle()
+        return rotatedImg
     }
 
     private fun getSize(bitmap: Bitmap): Int {
@@ -141,14 +136,6 @@ class BitmapHelper(private val context: Context) {
         // Calculate desired JPEG orientation relative to camera orientation to make
         // the image upright relative to the device orientation
         return (sensorOrientation + _deviceOrientation + 360) % 360
-    }
-
-    private fun rotateImage(img: Bitmap, degree: Int): Bitmap {
-        val matrix = Matrix()
-        matrix.postRotate(degree.toFloat())
-        val rotatedImg = Bitmap.createBitmap(img, 0, 0, img.width, img.height, matrix, true)
-        img.recycle()
-        return rotatedImg
     }
 
     companion object {

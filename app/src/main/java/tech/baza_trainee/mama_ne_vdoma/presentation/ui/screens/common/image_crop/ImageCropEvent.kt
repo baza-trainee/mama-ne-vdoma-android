@@ -6,4 +6,6 @@ sealed interface ImageCropEvent {
     data object OnBack: ImageCropEvent
     data class OnImageCropped(val image: Bitmap): ImageCropEvent
     data object OnAvatarClicked : ImageCropEvent
+    data object RotateLeft : ImageCropEvent
+    data object RotateRight : ImageCropEvent
 }

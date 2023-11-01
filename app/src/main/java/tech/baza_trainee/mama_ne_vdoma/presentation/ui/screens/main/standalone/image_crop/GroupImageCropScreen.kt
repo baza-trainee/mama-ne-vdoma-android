@@ -66,7 +66,7 @@ fun GroupImageCropScreen(
                     aspectRatio = aspectRatios[4].aspectRatio,
                     fixedAspectRatio = true
                 ),
-                onImageCrop = { handleEvent(it) }
+                handleEvent = { handleEvent(it) }
             )
         }
     }

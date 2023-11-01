@@ -37,7 +37,7 @@ fun UserImageCropScreen(
                 aspectRatio = AspectRatio(1f),
                 fixedAspectRatio = true
             ),
-            onImageCrop = { handleEvent(it) }
+            handleEvent = { handleEvent(it) }
         )
     }
 }

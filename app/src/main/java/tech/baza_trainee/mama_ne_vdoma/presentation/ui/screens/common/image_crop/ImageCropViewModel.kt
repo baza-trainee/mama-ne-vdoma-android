@@ -1,6 +1,7 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.image_crop
 
 import android.graphics.Bitmap
+import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -39,6 +40,18 @@ class ImageCropViewModel(
             is ImageCropEvent.OnImageCropped -> saveCroppedImage(event.image)
             ImageCropEvent.OnAvatarClicked ->
                 navigator.navigate(HostScreenRoutes.Host.getDestination(SETTINGS_PAGE))
+
+            ImageCropEvent.RotateLeft -> rotateBitmap(-90)
+            ImageCropEvent.RotateRight -> rotateBitmap(90)
+        }
+    }
+
+    private fun rotateBitmap(degrees: Int) {
+        val rotated = bitmapHelper.rotateImage(_viewState.value.image.asAndroidBitmap(), degrees)
+        _viewState.update {
+            it.copy(
+                image = rotated.asImageBitmap()
+            )
         }
     }
 
