@@ -75,7 +75,7 @@ class UserInfoViewModel(
             is UserInfoEvent.ValidateUserName -> validateUserName(event.name)
             is UserInfoEvent.ValidatePhone -> validatePhone(event.phone)
             is UserInfoEvent.SetCode -> setCode(event.code, event.country)
-            UserInfoEvent.SaveInfo -> saveUserInfo()
+            UserInfoEvent.SaveInfo -> uploadUserAvatar(_viewState.value.bitmapAvatar)
             UserInfoEvent.ResetUiState -> _uiState.value = UserInfoUiState.Idle
             UserInfoEvent.OnEditPhoto -> navigator.navigate(UserProfileRoutes.ImageCrop)
             UserInfoEvent.OnDeletePhoto -> deleteUserAvatar()
@@ -100,20 +100,24 @@ class UserInfoViewModel(
     }
 
     private fun saveUserAvatar(image: Bitmap) {
-        saveUserAvatar(
-            avatar = image,
-            onSuccess = { bitmap, uri ->
-                _viewState.update {
-                    it.copy(
-                        userAvatar = uri
-                    )
+        if (imageCommunicator.justCropped) {
+            saveUserAvatar(
+                avatar = image,
+                onSuccess = { bitmap, uri ->
+                    _viewState.update {
+                        it.copy(
+                            userAvatar = uri,
+                            bitmapAvatar = bitmap
+                        )
+                    }
+                    imageCommunicator.justCropped = false
+                    imageCommunicator.setCroppedImage(null)
+                },
+                onError = {
+                    _uiState.value = UserInfoUiState.OnAvatarError
                 }
-                uploadUserAvatar(bitmap)
-            },
-            onError = {
-                _uiState.value = UserInfoUiState.OnAvatarError
-            }
-        )
+            )
+        }
     }
 
     private fun setCode(code: String, country: String) {
@@ -152,7 +156,9 @@ class UserInfoViewModel(
     }
 
     private fun uploadUserAvatar(image: Bitmap) {
-        uploadUserAvatar(image) {}
+        uploadUserAvatar(image) {
+            saveUserInfo()
+        }
     }
 
     private fun saveUserInfo() {

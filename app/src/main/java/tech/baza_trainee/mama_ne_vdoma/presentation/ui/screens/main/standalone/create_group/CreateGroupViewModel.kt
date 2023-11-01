@@ -161,19 +161,22 @@ class CreateGroupViewModel(
     }
 
     private fun saveGroupAvatar(image: Bitmap) {
-        bitmapHelper.resizeBitmap(
-            scope = viewModelScope,
-            image = image,
-            onSuccess = { bmp ->
-                _viewState.update {
-                    it.copy(avatar = bmp)
+        if (communicator.justCropped) {
+            bitmapHelper.resizeBitmap(
+                scope = viewModelScope,
+                image = image,
+                onSuccess = { bmp ->
+                    _viewState.update {
+                        it.copy(avatar = bmp)
+                    }
+                    communicator.justCropped = false
+                    communicator.setCroppedImage(null)
+                },
+                onError = {
+                    _uiState.value = CreateGroupUiState.OnAvatarError
                 }
-                communicator.setCroppedImage(null)
-            },
-            onError = {
-                _uiState.value = CreateGroupUiState.OnAvatarError
-            }
-        )
+            )
+        }
     }
 
     private fun uploadAvatar(image: Bitmap, groupId: String) {

@@ -1,6 +1,8 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.user_info
 
+import android.graphics.Bitmap
 import android.net.Uri
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.BitmapHelper
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 
 data class UserInfoViewState(
@@ -11,5 +13,6 @@ data class UserInfoViewState(
     val code: String = "",
     val country: String = "",
     val userAvatar: Uri = Uri.EMPTY,
+    val bitmapAvatar: Bitmap = BitmapHelper.DEFAULT_BITMAP,
     val isLoading: Boolean = false
 )
