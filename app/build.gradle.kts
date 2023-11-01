@@ -14,8 +14,8 @@ android {
         applicationId = "tech.baza_trainee.mama_ne_vdoma"
         minSdk = 24
         targetSdk = 33
-        versionCode = 24
-        versionName = "0.3.4"
+        versionCode = 25
+        versionName = "0.3.5"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
