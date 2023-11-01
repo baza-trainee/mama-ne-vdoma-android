@@ -168,7 +168,7 @@ fun EditProfileScreen(
                         .crossfade(true)
                         .build(),
                     contentDescription = null,
-                    contentScale = ContentScale.Fit
+                    contentScale = ContentScale.FillBounds
                 )
                 UserAvatarWithCameraAndGallery(
                     modifier = Modifier.fillMaxWidth(),

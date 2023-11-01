@@ -144,7 +144,7 @@ fun ToolbarWithAvatar(
                 .build(),
             placeholder = painterResource(id = R.drawable.no_photo),
             contentDescription = "avatar",
-            contentScale = ContentScale.Fit
+            contentScale = ContentScale.FillBounds
         )
     }
 }

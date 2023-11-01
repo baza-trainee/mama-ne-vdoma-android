@@ -86,7 +86,7 @@ fun ParentInfoDesk(
                     .build(),
                 placeholder = painterResource(id = R.drawable.no_photo),
                 contentDescription = null,
-                contentScale = ContentScale.Fit
+                contentScale = ContentScale.FillBounds
             )
             Text(
                 modifier = Modifier

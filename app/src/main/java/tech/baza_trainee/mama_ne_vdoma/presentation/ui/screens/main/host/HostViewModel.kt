@@ -13,6 +13,7 @@ import kotlinx.coroutines.launch
 import tech.baza_trainee.mama_ne_vdoma.domain.model.GroupEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UserProfileEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatastoreManager
+import tech.baza_trainee.mama_ne_vdoma.domain.repository.FilesRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.GroupsRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.LocationRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserAuthRepository
@@ -35,10 +36,11 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onLoading
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onSuccess
 
 class HostViewModel(
-    private val page: Int,
+    page: Int,
     private val mainNavigator: ScreenNavigator,
     private val navigator: PageNavigator,
     private val userAuthRepository: UserAuthRepository,
+    private val filesRepository: FilesRepository,
     private val locationRepository: LocationRepository,
     private val groupsRepository: GroupsRepository,
     private val preferencesDatastoreManager: UserPreferencesDatastoreManager
@@ -144,6 +146,9 @@ class HostViewModel(
                         }
                     }
                     preferencesDatastoreManager.myJoinRequests = entity.groupJoinRequests.size
+
+                    if (preferencesDatastoreManager.avatar.isEmpty())
+                        getUserAvatar(entity.avatar)
                 }
             }
             onError { error ->
@@ -187,6 +192,31 @@ class HostViewModel(
             }
             onSuccess { address ->
                 preferencesDatastoreManager.address = address.orEmpty()
+            }
+            onError { error ->
+                _uiState.value = RequestState.OnError(error)
+            }
+            onLoading { isLoading ->
+                _viewState.update {
+                    it.copy(
+                        isLoading = isLoading
+                    )
+                }
+            }
+        }
+    }
+
+    private fun getUserAvatar(avatarId: String) {
+        networkExecutor {
+            onSuccess { preferencesDatastoreManager.avatar = avatarId }
+            execute { filesRepository.getAvatar(avatarId) }
+            onSuccess { uri ->
+                preferencesDatastoreManager.avatarUri = uri
+                _viewState.update {
+                    it.copy(
+                        avatar = uri
+                    )
+                }
             }
             onError { error ->
                 _uiState.value = RequestState.OnError(error)

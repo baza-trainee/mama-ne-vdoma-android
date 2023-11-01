@@ -182,6 +182,7 @@ val mainModule = module {
             get(),
             get(),
             get(),
+            get(),
             get()
         )
     }
