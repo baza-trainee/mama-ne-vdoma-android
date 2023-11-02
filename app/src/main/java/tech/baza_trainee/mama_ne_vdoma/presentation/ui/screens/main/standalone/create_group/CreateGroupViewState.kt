@@ -11,7 +11,7 @@ data class CreateGroupViewState(
     val userAvatar: Uri = Uri.EMPTY,
     val address: String = "",
     val location: LatLng = LatLng(0.00, 0.00),
-    val isAddressChecked: Boolean = false,
+    val isAddressChecked: Boolean = true,
     val name: String = "",
     val nameValid: ValidField = ValidField.EMPTY,
     val description: String = "",

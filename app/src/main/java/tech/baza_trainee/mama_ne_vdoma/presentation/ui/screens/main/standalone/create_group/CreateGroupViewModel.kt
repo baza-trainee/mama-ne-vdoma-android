@@ -270,23 +270,27 @@ class CreateGroupViewModel(
                 userAuthRepository.getUserInfo()
             }
             onSuccess { entity ->
-                if (entity.location.coordinates.isNotEmpty())
-                    getAddressFromLocation(
-                        latLng = LatLng(
-                            entity.location.coordinates[1],
-                            entity.location.coordinates[0]
-                        )
+                if (entity.location.coordinates.isNotEmpty()) {
+                    val location = LatLng(
+                        entity.location.coordinates[1],
+                        entity.location.coordinates[0]
                     )
+                    getAddressFromLocation(
+                        latLng = location
+                    )
+                    _viewState.update {
+                        it.copy(
+                            location = location
+                        )
+                    }
+                }
+
             }
             onError { error ->
                 _uiState.value = CreateGroupUiState.OnError(error)
             }
             onLoading { isLoading ->
-                _viewState.update {
-                    it.copy(
-                        isLoading = isLoading
-                    )
-                }
+
             }
         }
     }

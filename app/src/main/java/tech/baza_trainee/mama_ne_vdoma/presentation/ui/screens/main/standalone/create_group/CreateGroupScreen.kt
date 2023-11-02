@@ -147,20 +147,13 @@ fun CreateGroupScreen(
                     .fillMaxSize()
                     .padding(horizontal = 16.dp)
             ) {
-                OutlinedTextField(
-                    value = screenState.value.address,
+                OutlinedTextFieldWithError(
+                    text = screenState.value.address,
                     onValueChange = {
                         handleEvent(CreateGroupEvent.UpdateGroupAddress(it))
                     },
                     modifier = Modifier.fillMaxWidth(),
-                    label = { Text("Введіть Вашу адресу") },
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedContainerColor = MaterialTheme.colorScheme.surface,
-                        unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-                        disabledContainerColor = MaterialTheme.colorScheme.surface,
-                        focusedBorderColor = MaterialTheme.colorScheme.primary,
-                        unfocusedBorderColor = MaterialTheme.colorScheme.surface,
-                    ),
+                    label = "Введіть Вашу адресу",
                     trailingIcon = {
                         IconButton(
                             onClick = { handleEvent(CreateGroupEvent.GetLocationFromAddress) }
@@ -177,7 +170,9 @@ fun CreateGroupScreen(
                                 )
                             }
                         }
-                    }
+                    },
+                    isError = !screenState.value.isAddressChecked,
+                    errorText = "Адреса не перевірена"
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
