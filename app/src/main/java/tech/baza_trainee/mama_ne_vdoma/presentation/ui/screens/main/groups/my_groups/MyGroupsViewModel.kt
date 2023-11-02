@@ -80,6 +80,8 @@ class MyGroupsViewModel(
             MyGroupsEvent.CreateNewGroup -> mainNavigator.navigate(StandaloneGroupsRoutes.ChooseChild.getDestination(isForSearch = false))
             is MyGroupsEvent.OnKick -> event.children.forEach { kickUser(event.group, it) }
             is MyGroupsEvent.OnLeave -> leaveGroup(event.group)
+            is MyGroupsEvent.OnDelete -> deleteGroup(event.group)
+            is MyGroupsEvent.OnSwitchAdmin -> switchAdmin(event.group, event.member)
         }
     }
 
@@ -156,6 +158,44 @@ class MyGroupsViewModel(
         networkExecutor {
             execute {
                 groupsRepository.kickUser(groupId, childId)
+            }
+            onSuccess { getUserInfo() }
+            onError { error ->
+                _uiState.value = RequestState.OnError(error)
+            }
+            onLoading { isLoading ->
+                _viewState.update {
+                    it.copy(
+                        isLoading = isLoading
+                    )
+                }
+            }
+        }
+    }
+
+    private fun deleteGroup(groupId: String) {
+        networkExecutor {
+            execute {
+                groupsRepository.deleteGroup(groupId)
+            }
+            onSuccess { getUserInfo() }
+            onError { error ->
+                _uiState.value = RequestState.OnError(error)
+            }
+            onLoading { isLoading ->
+                _viewState.update {
+                    it.copy(
+                        isLoading = isLoading
+                    )
+                }
+            }
+        }
+    }
+
+    private fun switchAdmin(groupId: String, memberId: String) {
+        networkExecutor {
+            execute {
+                groupsRepository.switchAdmin(groupId, memberId)
             }
             onSuccess { getUserInfo() }
             onError { error ->

@@ -106,7 +106,8 @@ fun MyGroupsScreen(
                             )
                         )
                     },
-                    onLeave = { handleEvent(MyGroupsEvent.OnLeave(it)) }
+                    onLeave = { handleEvent(MyGroupsEvent.OnLeave(it)) },
+                    onSwitchAdmin = { groupId, memberId -> handleEvent(MyGroupsEvent.OnSwitchAdmin(groupId, memberId)) }
                 )
             }
         }

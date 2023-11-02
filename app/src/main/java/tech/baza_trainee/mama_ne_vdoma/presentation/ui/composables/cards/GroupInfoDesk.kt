@@ -62,7 +62,9 @@ fun GroupInfoDesk(
     currentUserId: String = "",
     onSelect: (String) -> Unit = {},
     onKick: (String, List<String>) -> Unit = {_,_->},
-    onLeave: (String) -> Unit = {}
+    onLeave: (String) -> Unit = {},
+    onSwitchAdmin: (String, String) -> Unit = {_,_->},
+    onDelete: (String) -> Unit = {}
 ) {
     val isAdmin = currentUserId == group.adminId
     val isMyGroup = group.members.map { it.id }.contains(currentUserId) && !isAdmin
@@ -329,6 +331,16 @@ fun GroupInfoDesk(
                             Spacer(modifier = Modifier.weight(1f))
 
                             if (isAdmin) {
+                                IconButton(
+                                    onClick = { onSwitchAdmin(group.id, it.id) }
+                                ) {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.ic_crown),
+                                        contentDescription = "make_admin",
+                                        tint = MaterialTheme.colorScheme.primary
+                                    )
+                                }
+
                                 IconButton(
                                     onClick = { onKick(group.id, it.children) }
                                 ) {
