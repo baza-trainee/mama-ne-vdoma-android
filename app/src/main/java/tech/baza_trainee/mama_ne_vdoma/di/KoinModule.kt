@@ -250,6 +250,6 @@ fun createOkHttpClient(
 private const val CHUCKER_CONTENT_MAX_LENGTH = 250000L
 private const val TIMEOUT = 30L
 
-const val BASE_URL = "https://mommy-not-home.online/stage/"
+const val BASE_URL = "https://mama-ne-vdoma.online/stage/"
 const val SERVER_CLIENT_ID =
     "661138941200-s8d83nrl4u0m9lra46v3ut7nv3qsj8pc.apps.googleusercontent.com"

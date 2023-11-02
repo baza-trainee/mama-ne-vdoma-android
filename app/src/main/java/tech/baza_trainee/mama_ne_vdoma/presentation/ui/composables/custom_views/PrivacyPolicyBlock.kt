@@ -53,7 +53,7 @@ fun PrivacyPolicyBlock(
                 modifier = Modifier
                     .padding(vertical = 8.dp)
                     .clickable {
-                    val uri = "https://mommy-not-home.online/privacy"
+                    val uri = "https://mama-ne-vdoma.online/privacy"
                     uriHandler.openUri(uri)
                 },
                 text = getTextWithUnderline(
@@ -69,7 +69,7 @@ fun PrivacyPolicyBlock(
                 modifier = Modifier
                     .padding(vertical = 8.dp)
                     .clickable {
-                    val uri = "https://mommy-not-home.online/terms"
+                    val uri = "https://mama-ne-vdoma.online/terms"
                     uriHandler.openUri(uri)
                 },
                 text = getTextWithUnderline(
@@ -85,7 +85,7 @@ fun PrivacyPolicyBlock(
                 modifier = Modifier
                     .padding(vertical = 8.dp)
                     .clickable {
-                    val uri = "https://mommy-not-home.online/refusal"
+                    val uri = "https://mama-ne-vdoma.online/refusal"
                     uriHandler.openUri(uri)
                 },
                 text = getTextWithUnderline(
