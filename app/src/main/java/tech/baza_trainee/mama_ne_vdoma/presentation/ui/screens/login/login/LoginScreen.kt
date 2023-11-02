@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.SignInClient
+import com.google.android.gms.common.api.ApiException
 import tech.baza_trainee.mama_ne_vdoma.di.SERVER_CLIENT_ID
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.LoadingIndicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.SocialLoginBlock
@@ -75,16 +76,28 @@ fun LoginUserScreen(
         var googleLogin by remember { mutableStateOf(false) }
 
         val intentSender = rememberLauncherForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) {
-            val credential = oneTapClient?.getSignInCredentialFromIntent(it.data)
-            val idToken = credential?.googleIdToken
-            val username = credential?.id.orEmpty()
-            val password = credential?.password
-            when {
-                idToken != null -> handleEvent(LoginEvent.LoginWithToken(idToken))
-                password != null -> handleEvent(LoginEvent.LoginWithPassword(username, password))
-                else -> {
-                    Toast.makeText(context, "Немає даних для авторизації", Toast.LENGTH_LONG).show()
+            try {
+                val credential = oneTapClient?.getSignInCredentialFromIntent(it.data)
+                val idToken = credential?.googleIdToken
+                val username = credential?.id.orEmpty()
+                val password = credential?.password
+                when {
+                    idToken != null -> handleEvent(LoginEvent.LoginWithToken(idToken))
+                    password != null -> handleEvent(
+                        LoginEvent.LoginWithPassword(
+                            username,
+                            password
+                        )
+                    )
+
+                    else -> {
+                        Toast.makeText(context, "Немає даних для авторизації", Toast.LENGTH_LONG)
+                            .show()
+                    }
                 }
+            } catch (exc: ApiException) {
+                Toast.makeText(context, "Немає даних для авторизації", Toast.LENGTH_LONG)
+                    .show()
             }
         }
 

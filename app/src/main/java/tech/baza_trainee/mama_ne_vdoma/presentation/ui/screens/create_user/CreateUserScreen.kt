@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.SignInClient
+import com.google.android.gms.common.api.ApiException
 import tech.baza_trainee.mama_ne_vdoma.di.SERVER_CLIENT_ID
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.LoadingIndicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.PrivacyPolicyBlock
@@ -83,9 +84,14 @@ fun CreateUserScreen(
         var googleLogin by remember { mutableStateOf(false) }
 
         val intentSender = rememberLauncherForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) {
+            try {
                 val credential = oneTapClient?.getSignInCredentialFromIntent(it.data)
                 handleEvent(UserCreateEvent.OnGoogleLogin(credential?.googleIdToken.orEmpty()))
+            } catch (exc: ApiException) {
+                Toast.makeText(context, "Немає даних для авторизації", Toast.LENGTH_LONG)
+                    .show()
             }
+        }
 
         LaunchedEffect(key1 = googleLogin) {
             if (googleLogin) {
