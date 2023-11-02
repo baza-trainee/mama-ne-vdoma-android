@@ -141,9 +141,9 @@ fun ParentCardInSearch(
                     fontFamily = redHatDisplayFontFamily
                 )
 
-                Spacer(modifier = Modifier.height(4.dp))
-
                 parent.groups.forEach {
+                    Spacer(modifier = Modifier.height(4.dp))
+
                     Row(
                         modifier = Modifier.fillMaxWidth()
                     ) {
@@ -160,42 +160,6 @@ fun ParentCardInSearch(
                             fontSize = 14.sp,
                             fontFamily = redHatDisplayFontFamily,
                             textAlign = TextAlign.End
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.height(4.dp))
-                }
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        modifier = Modifier.weight(1f),
-                        text = "Контакти",
-                        fontSize = 14.sp,
-                        fontFamily = redHatDisplayFontFamily
-                    )
-
-                    IconButton(
-                        onClick = {}
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_mail),
-                            contentDescription = "email",
-                            tint = MaterialTheme.colorScheme.primary
-                        )
-                    }
-
-                    IconButton(
-                        onClick = {}
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_phone),
-                            contentDescription = "phone",
-                            tint = MaterialTheme.colorScheme.primary
                         )
                     }
                 }
