@@ -53,10 +53,10 @@ class LocationDataSourceImpl(
             val addressList: List<Address>?
             try {
                 addressList = coder.getFromLocationName(address, 1)
-                if (addressList != null) {
+                result = if (!addressList.isNullOrEmpty()) {
                     val location: Address = addressList[0]
-                    result = LatLng(location.latitude, location.longitude)
-                }
+                    LatLng(location.latitude, location.longitude)
+                } else null
             } catch (ex: Exception) {
                 ex.printStackTrace()
             }

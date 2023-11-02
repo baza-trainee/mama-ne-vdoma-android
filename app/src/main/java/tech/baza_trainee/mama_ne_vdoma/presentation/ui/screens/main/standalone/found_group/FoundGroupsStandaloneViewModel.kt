@@ -98,6 +98,7 @@ class FoundGroupsStandaloneViewModel(
                 groupsRepository.sendJoinRequest(groupId, communicator.childId)
             }
             onSuccess {
+                communicator.childId = ""
                 _uiState.value = FoundGroupUiState.OnRequestSent
             }
             onError { error ->

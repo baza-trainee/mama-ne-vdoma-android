@@ -35,6 +35,7 @@ fun NavGraphBuilder.groupStandaloneScreensNavGraph() {
                 parametersOf(isForSearch)
             }
             ChooseChildStandaloneScreen(
+                isForSearch = isForSearch,
                 screenState = chooseChildViewModel.viewState.collectAsStateWithLifecycle(),
                 uiState = chooseChildViewModel.uiState,
                 handleEvent = { chooseChildViewModel.handleEvent(it) }

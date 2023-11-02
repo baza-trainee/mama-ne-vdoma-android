@@ -26,10 +26,10 @@ import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserAuthRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.HostScreenRoutes
-import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.MainScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.StandaloneGroupsRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.GroupSearchCommunicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.image_crop.CropImageCommunicator
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.MAIN_PAGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.SETTINGS_PAGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.BitmapHelper
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
@@ -91,7 +91,7 @@ class CreateGroupViewModel(
             is CreateGroupEvent.SetImageToCrop -> communicator.uriForCrop = event.uri
             CreateGroupEvent.GoToMain -> {
                 childCommunicator.childId = ""
-                navigator.navigate(MainScreenRoutes.Main)
+                navigator.navigate(HostScreenRoutes.Host.getDestination(MAIN_PAGE))
             }
 
             CreateGroupEvent.GetLocationFromAddress -> getLocationFromAddress()
@@ -123,6 +123,8 @@ class CreateGroupViewModel(
                             isAddressChecked = true
                         )
                     }
+                } ?: run {
+                    _uiState.value = CreateGroupUiState.AddressNotFound
                 }
             }
             onError { error ->
@@ -212,6 +214,7 @@ class CreateGroupViewModel(
                     )
                 }
                 onSuccess {
+                    childCommunicator.childId = ""
                     uploadAvatar(_viewState.value.avatar, it.id)
                     updateGroupLocation(_viewState.value.location, it.id)
                 }

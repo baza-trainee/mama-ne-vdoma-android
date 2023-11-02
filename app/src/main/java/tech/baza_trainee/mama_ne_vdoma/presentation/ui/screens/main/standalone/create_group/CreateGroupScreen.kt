@@ -85,6 +85,7 @@ fun CreateGroupScreen(
 
         var showSuccessDialog by rememberSaveable { mutableStateOf(false) }
         var showAddressDialog by rememberSaveable { mutableStateOf(false) }
+        var dialogTitle by rememberSaveable { mutableStateOf("") }
 
         when (val state = uiState.value) {
             CreateGroupUiState.Idle -> Unit
@@ -110,6 +111,13 @@ fun CreateGroupScreen(
             CreateGroupUiState.OnGroupCreated -> showSuccessDialog = true
             CreateGroupUiState.AddressNotChecked -> {
                 showAddressDialog = true
+                dialogTitle = "Ви не перевірили вказану адресу"
+                handleEvent(CreateGroupEvent.ResetUiState)
+            }
+
+            CreateGroupUiState.AddressNotFound -> {
+                showAddressDialog = true
+                dialogTitle = "Вказано неіснуючу адресу"
                 handleEvent(CreateGroupEvent.ResetUiState)
             }
         }
@@ -137,6 +145,7 @@ fun CreateGroupScreen(
                     .verticalScroll(rememberScrollState())
                     .imePadding()
                     .fillMaxSize()
+                    .padding(horizontal = 16.dp)
             ) {
                 OutlinedTextField(
                     value = screenState.value.address,
@@ -479,7 +488,7 @@ fun CreateGroupScreen(
                                     .padding(top = 16.dp)
                                     .padding(horizontal = 16.dp)
                                     .fillMaxWidth(),
-                                text = "Ви не перевірили вказану адресу",
+                                text = dialogTitle,
                                 fontSize = 14.sp,
                                 textAlign = TextAlign.Center,
                                 fontFamily = redHatDisplayFontFamily
@@ -501,10 +510,10 @@ fun CreateGroupScreen(
                         }
                     }
                 }
-
-                if (screenState.value.isLoading) LoadingIndicator()
             }
         }
+
+        if (screenState.value.isLoading) LoadingIndicator()
     }
 }
 

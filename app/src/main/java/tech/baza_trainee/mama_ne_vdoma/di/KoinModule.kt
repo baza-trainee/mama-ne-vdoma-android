@@ -12,7 +12,6 @@ import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidApplication
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
-import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -168,7 +167,6 @@ val standaloneGroupSearchModule = module {
 }
 
 val mainModule = module {
-    single(named(SINGLETON_FOR_MAIN)) { GroupSearchCommunicator() }
     single { CropImageCommunicator() }
     single { SearchResultsCommunicator() }
     single { EditProfileCommunicator() }
@@ -190,7 +188,7 @@ val mainModule = module {
     viewModel { NotificationsViewModel(get(), get(), get(), get(), get(), get(), get()) }
     viewModel { MyGroupsViewModel(get(), get(), get(), get(), get(), get(), get()) }
     viewModel {
-        CreateGroupViewModel(get(named(SINGLETON_FOR_MAIN)), get(), get(), get(), get(), get(), get(), get(), get(), get())
+        CreateGroupViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get(), get())
     }
     viewModel { SearchRequestViewModel(get(), get(), get(), get()) }
     viewModel { SearchResultsViewModel(get(), get(), get(), get()) }
@@ -251,7 +249,6 @@ fun createOkHttpClient(
 
 private const val CHUCKER_CONTENT_MAX_LENGTH = 250000L
 private const val TIMEOUT = 30L
-private const val SINGLETON_FOR_MAIN = "main_singleton"
 
 const val BASE_URL = "https://mommy-not-home.online/stage/"
 const val SERVER_CLIENT_ID =

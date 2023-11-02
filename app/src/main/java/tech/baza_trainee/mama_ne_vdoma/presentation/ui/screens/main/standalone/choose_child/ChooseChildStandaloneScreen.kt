@@ -41,6 +41,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.ButtonText
 @Composable
 fun ChooseChildStandaloneScreen(
     modifier: Modifier = Modifier,
+    isForSearch: Boolean = true,
     screenState: State<ChooseChildViewState> = mutableStateOf(ChooseChildViewState()),
     uiState: State<RequestState> = mutableStateOf(RequestState.Idle),
     handleEvent: (ChooseChildEvent) -> Unit = {}
@@ -72,7 +73,7 @@ fun ChooseChildStandaloneScreen(
 
             HeaderWithToolbar(
                 modifier = Modifier.fillMaxWidth(),
-                title = "Пошук групи",
+                title = if (isForSearch) "Пошук групи" else "Створення групи",
                 avatar = screenState.value.avatar,
                 showNotification = false,
                 onNotificationsClicked = {},
@@ -86,7 +87,7 @@ fun ChooseChildStandaloneScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp),
-                text = "Для кого шукаємо групу?",
+                text = if (isForSearch) "Для кого шукаємо групу?" else "Для кого створюємо групу?",
                 fontFamily = redHatDisplayFontFamily,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
