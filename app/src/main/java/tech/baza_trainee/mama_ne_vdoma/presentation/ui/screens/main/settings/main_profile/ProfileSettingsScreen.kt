@@ -34,7 +34,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -225,7 +225,7 @@ fun ProfileSettingsScreen(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        var showDeleteAccountAlertDialog by remember { mutableStateOf(!screenState.value.isPolicyChecked) }
+        var showDeleteAccountAlertDialog by rememberSaveable { mutableStateOf(!screenState.value.isPolicyChecked) }
 
         PrivacyPolicyBlock(
             modifier = Modifier.fillMaxWidth(),

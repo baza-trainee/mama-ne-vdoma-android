@@ -37,6 +37,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -70,7 +71,7 @@ fun ChildScheduleEditDialog(
     onRestore: (Int) -> Unit = {},
     onDismissRequest: () -> Unit = {}
 ) {
-    var currentChild by remember { mutableIntStateOf(selectedChild) }
+    var currentChild by rememberSaveable { mutableIntStateOf(selectedChild) }
 
     AlertDialog(
         onDismissRequest = onDismissRequest
@@ -195,9 +196,9 @@ fun ChildScheduleEditDialog(
                         }
 
                         else -> {
-                            var expanded by remember { mutableStateOf(false) }
-                            var searchRequest by remember { mutableStateOf("") }
-                            var searchedChildren by remember { mutableStateOf(children) }
+                            var expanded by rememberSaveable { mutableStateOf(false) }
+                            var searchRequest by rememberSaveable { mutableStateOf("") }
+                            var searchedChildren by rememberSaveable { mutableStateOf(children) }
 
                             ExposedDropdownMenuBox(
                                 modifier = Modifier.fillMaxWidth(),

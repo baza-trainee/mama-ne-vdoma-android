@@ -35,6 +35,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -64,7 +65,7 @@ fun NotificationScreen(
 
     val context = LocalContext.current
 
-    var showAcceptDialog by remember { mutableStateOf(false) }
+    var showAcceptDialog by rememberSaveable { mutableStateOf(false) }
 
     when (val state = uiState.value) {
         NotificationsUiState.Idle -> Unit
@@ -83,9 +84,9 @@ fun NotificationScreen(
         }
     }
 
-    var showCancelDialog by remember { mutableStateOf(false) }
-    var showDeclineDialog by remember { mutableStateOf(false) }
-    var dialogData by remember { mutableStateOf(Triple("", "", "")) }
+    var showCancelDialog by rememberSaveable { mutableStateOf(false) }
+    var showDeclineDialog by rememberSaveable { mutableStateOf(false) }
+    var dialogData by rememberSaveable { mutableStateOf(Triple("", "", "")) }
 
     Column {
         val tabs = listOf("Мої запити", "Вхідні запити")

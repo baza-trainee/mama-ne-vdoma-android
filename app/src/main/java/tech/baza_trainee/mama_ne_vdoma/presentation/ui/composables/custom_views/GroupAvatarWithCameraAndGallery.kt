@@ -48,12 +48,12 @@ fun GroupAvatarWithCameraAndGallery(
     onEditPhoto: () -> Unit = {},
     onDeletePhoto: () -> Unit = {}
 ) {
-    var showPickerDialog by rememberSaveable { mutableStateOf(false) }
-    var photoUri by remember { mutableStateOf(Uri.EMPTY) }
     val context = LocalContext.current
     val activity = context.findActivity()
     val permission = Manifest.permission.CAMERA
+    var photoUri by remember { mutableStateOf(Uri.EMPTY) }
     var showRationale by rememberSaveable { mutableStateOf(false) }
+    var showPickerDialog by rememberSaveable { mutableStateOf(false) }
 
     val photoPickerLauncher = rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) { isSuccessful ->
         if (isSuccessful) {

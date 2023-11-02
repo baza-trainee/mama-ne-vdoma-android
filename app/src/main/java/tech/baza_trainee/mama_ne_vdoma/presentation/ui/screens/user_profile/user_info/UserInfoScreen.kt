@@ -164,7 +164,7 @@ fun UserInfoScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            var isPhoneFocused by remember { mutableStateOf(false) }
+            var isPhoneFocused by rememberSaveable { mutableStateOf(false) }
 
             Row(
                 modifier = Modifier.fillMaxWidth(),

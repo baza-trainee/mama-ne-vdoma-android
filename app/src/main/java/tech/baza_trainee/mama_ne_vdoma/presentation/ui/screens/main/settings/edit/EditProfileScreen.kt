@@ -122,10 +122,10 @@ fun EditProfileScreen(
 
     val focusRequester = remember { FocusRequester() }
     var openBottomSheet by rememberSaveable { mutableStateOf(false) }
-    var editUserSchedule by remember { mutableStateOf(false) }
-    var editChildSchedule by remember { mutableStateOf(false) }
-    var deleteChildDialog by remember { mutableStateOf(false) }
-    var selectedChild by remember { mutableIntStateOf(0) }
+    var editUserSchedule by rememberSaveable { mutableStateOf(false) }
+    var editChildSchedule by rememberSaveable { mutableStateOf(false) }
+    var deleteChildDialog by rememberSaveable { mutableStateOf(false) }
+    var selectedChild by rememberSaveable { mutableIntStateOf(0) }
 
     Column(
         modifier = Modifier
@@ -469,7 +469,7 @@ fun EditProfileScreen(
             )
         }
 
-        var showDeleteAccountAlertDialog by remember { mutableStateOf(false) }
+        var showDeleteAccountAlertDialog by rememberSaveable { mutableStateOf(false) }
 
         Button(
             modifier = Modifier

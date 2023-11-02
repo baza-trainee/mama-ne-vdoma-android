@@ -210,8 +210,8 @@ fun CreateGroupScreen(
                     fontSize = 14.sp
                 )
 
-                var isMinAgeFocused by remember { mutableStateOf(false) }
-                var isMaxAgeFocused by remember { mutableStateOf(false) }
+                var isMinAgeFocused by rememberSaveable { mutableStateOf(false) }
+                var isMaxAgeFocused by rememberSaveable { mutableStateOf(false) }
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
