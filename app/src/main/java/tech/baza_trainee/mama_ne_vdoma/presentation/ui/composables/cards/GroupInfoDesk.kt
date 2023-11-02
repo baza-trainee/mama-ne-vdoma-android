@@ -105,7 +105,7 @@ fun GroupInfoDesk(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 if (isAdmin) {
-                    Box(
+                    Row(
                         modifier = Modifier
                             .padding(8.dp)
                             .height(28.dp)
@@ -114,8 +114,16 @@ fun GroupInfoDesk(
                                 shape = RoundedCornerShape(4.dp)
                             )
                             .padding(horizontal = 4.dp),
-                        contentAlignment = Alignment.Center
+                        horizontalArrangement = Arrangement.Start,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
+                        Icon(
+                            modifier = Modifier
+                                .width(16.dp)
+                                .height(28.dp),
+                            painter = painterResource(id = R.drawable.ic_crown),
+                            contentDescription = "admin"
+                        )
                         Text(
                             text = "Ви адміністратор групи",
                             fontSize = 14.sp,
