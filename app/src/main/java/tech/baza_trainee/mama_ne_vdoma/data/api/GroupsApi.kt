@@ -2,6 +2,7 @@ package tech.baza_trainee.mama_ne_vdoma.data.api
 
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.PATCH
 import retrofit2.http.POST
@@ -28,9 +29,7 @@ interface GroupsApi {
     ): Response<Unit>
 
     @GET("api/group/{groupId}")
-    suspend fun getGroupById(
-        @Path("groupId") groupId: String
-    ): Response<GroupDto>
+    suspend fun getGroupById(@Path("groupId") groupId: String): Response<GroupDto>
 
     @PATCH("api/group/geo/{groupId}")
     suspend fun updateGroupLocation(
@@ -68,4 +67,10 @@ interface GroupsApi {
 
     @POST("api/group/cancel-membership/{groupId}/{childId}")
     suspend fun cancelRequest(@Path("groupId") groupId: String, @Path("childId") childId: String): Response<Unit>
+
+    @DELETE("api/group/{groupId}")
+    suspend fun deleteGroup(@Path("groupId") groupId: String): Response<GroupDto>
+
+    @PATCH("api/group/admin/{groupId}/{parentId}")
+    suspend fun switchAdmin(@Path("groupId") groupId: String, @Path("parentId") parentId: String): Response<Unit>
 }

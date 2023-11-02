@@ -121,4 +121,18 @@ class GroupsRepositoryImpl(
             RequestResult.Success(Unit)
         else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage())
     }
+
+    override suspend fun deleteGroup(groupId: String): RequestResult<Unit> {
+        val result = groupsApi.deleteGroup(groupId)
+        return if (result.isSuccessful)
+            RequestResult.Success(Unit)
+        else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage())
+    }
+
+    override suspend fun switchAdmin(groupId: String, parentId: String): RequestResult<Unit> {
+        val result = groupsApi.switchAdmin(groupId, parentId)
+        return if (result.isSuccessful)
+            RequestResult.Success(Unit)
+        else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage())
+    }
 }
