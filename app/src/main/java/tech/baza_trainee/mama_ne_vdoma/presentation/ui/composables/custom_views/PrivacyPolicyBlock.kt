@@ -28,6 +28,7 @@ fun PrivacyPolicyBlock(
     onCheckedChanged: (Boolean) -> Unit = {}
 ) {
     val uriHandler = LocalUriHandler.current
+
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.Top
@@ -51,14 +52,14 @@ fun PrivacyPolicyBlock(
 
             Text(
                 modifier = Modifier
-                    .padding(vertical = 8.dp)
+                    .padding(vertical = 6.dp)
                     .clickable {
                     val uri = "https://mama-ne-vdoma.online/privacy"
                     uriHandler.openUri(uri)
                 },
                 text = getTextWithUnderline(
                     simpleText = "-   ",
-                    underlinedText = "Політикою конфіденційності;",
+                    underlinedText = "Політикою конфіденційності",
                     isBold = true
                 ),
                 fontSize = 14.sp,
@@ -67,14 +68,14 @@ fun PrivacyPolicyBlock(
 
             Text(
                 modifier = Modifier
-                    .padding(vertical = 8.dp)
+                    .padding(vertical = 6.dp)
                     .clickable {
                     val uri = "https://mama-ne-vdoma.online/terms"
                     uriHandler.openUri(uri)
                 },
                 text = getTextWithUnderline(
                     simpleText = "-   ",
-                    underlinedText = "Умовами використання мобільного застосунку “Мама-не-вдома”;",
+                    underlinedText = "Умовами використання мобільного застосунку “Мама-не-вдома”",
                     isBold = true
                 ),
                 fontSize = 14.sp,
@@ -83,7 +84,7 @@ fun PrivacyPolicyBlock(
 
             Text(
                 modifier = Modifier
-                    .padding(vertical = 8.dp)
+                    .padding(vertical = 6.dp)
                     .clickable {
                     val uri = "https://mama-ne-vdoma.online/refusal"
                     uriHandler.openUri(uri)
