@@ -91,10 +91,7 @@ class LoginViewModel(
             }
             onSuccess {
                 clearInputs()
-                if (preferencesDatastoreManager.isUserProfileFilled)
-                    navigator.navigate(HostScreenRoutes.Host.getDestination(MAIN_PAGE))
-                else
-                    navigator.navigate(UserProfileRoutes.FullProfile)
+                checkUser()
             }
             onError { error ->
                 _uiState.value = RequestState.OnError(error)
@@ -120,12 +117,7 @@ class LoginViewModel(
             execute {
                 authRepository.signupWithGoogle(token)
             }
-            onSuccess {
-                if (preferencesDatastoreManager.isUserProfileFilled)
-                    navigator.navigate(HostScreenRoutes.Host.getDestination(MAIN_PAGE))
-                else
-                    navigator.navigate(UserProfileRoutes.FullProfile)
-            }
+            onSuccess { checkUser() }
             onError { error ->
                 _uiState.value = RequestState.OnError(error)
             }
@@ -137,5 +129,12 @@ class LoginViewModel(
                 }
             }
         }
+    }
+
+    private fun checkUser() {
+        if (preferencesDatastoreManager.isUserProfileFilled)
+            navigator.navigate(HostScreenRoutes.Host.getDestination(MAIN_PAGE))
+        else
+            navigator.navigate(UserProfileRoutes.FullProfile)
     }
 }
