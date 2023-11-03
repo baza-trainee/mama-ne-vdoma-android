@@ -10,11 +10,11 @@ interface AuthRepository {
 
     suspend fun resendCode(email: String): RequestResult<Unit>
 
-    suspend fun loginUser(email: String, password: String): RequestResult<Unit>
+    suspend fun loginUser(email: String, password: String): RequestResult<String>
 
     suspend fun forgetPassword(email: String): RequestResult<Unit>
 
     suspend fun resetPassword(email: String, code: String, password: String): RequestResult<Unit>
 
-    suspend fun signupWithGoogle(code: String): RequestResult<Unit>
+    suspend fun signupWithGoogle(code: String): RequestResult<String>
 }

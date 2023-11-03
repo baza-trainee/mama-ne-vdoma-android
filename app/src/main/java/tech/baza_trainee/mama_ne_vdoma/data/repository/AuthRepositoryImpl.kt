@@ -7,13 +7,11 @@ import tech.baza_trainee.mama_ne_vdoma.data.model.RequestWithEmailDto
 import tech.baza_trainee.mama_ne_vdoma.data.model.RestorePasswordDto
 import tech.baza_trainee.mama_ne_vdoma.data.utils.asCustomResponse
 import tech.baza_trainee.mama_ne_vdoma.data.utils.getMessage
-import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatastoreManager
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.AuthRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestResult
 
 class AuthRepositoryImpl(
-    private val authApi: AuthApi,
-    private val preferencesDatastoreManager: UserPreferencesDatastoreManager
+    private val authApi: AuthApi
 ): AuthRepository {
 
     override suspend fun registerUser(email: String, password: String): RequestResult<Unit> {
@@ -41,12 +39,11 @@ class AuthRepositoryImpl(
         else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage())
     }
 
-    override suspend fun loginUser(email: String, password: String): RequestResult<Unit> {
+    override suspend fun loginUser(email: String, password: String): RequestResult<String> {
         val result = authApi.loginUser(AuthUserDto(email, password))
-        return if (result.isSuccessful) {
-            preferencesDatastoreManager.login = email
-            RequestResult.Success(Unit)
-        } else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage())
+        return if (result.isSuccessful)
+            RequestResult.Success(result.body()?.id.orEmpty())
+        else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage())
     }
 
     override suspend fun forgetPassword(email: String): RequestResult<Unit> {
@@ -63,10 +60,10 @@ class AuthRepositoryImpl(
         else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage(), result.code())
     }
 
-    override suspend fun signupWithGoogle(code: String): RequestResult<Unit> {
+    override suspend fun signupWithGoogle(code: String): RequestResult<String> {
         val result = authApi.signupWithGoogle(code)
         return if (result.isSuccessful)
-            RequestResult.Success(Unit)
+            RequestResult.Success(result.body()?.id.orEmpty())
         else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage(), result.code())
     }
 }

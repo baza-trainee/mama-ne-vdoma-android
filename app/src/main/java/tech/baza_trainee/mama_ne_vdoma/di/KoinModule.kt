@@ -110,7 +110,7 @@ val repoModule = module {
     single<GroupsApi> { createAuthorizedApi(get(), get(), get()) }
     single<UserAuthApi> { createAuthorizedApi(get(), get(), get()) }
     single<AuthApi> { createCustomApi(get()) }
-    factory<AuthRepository> { AuthRepositoryImpl(get(), get()) }
+    factory<AuthRepository> { AuthRepositoryImpl(get()) }
     factory<UserAuthRepository> { UserAuthRepositoryImpl(get()) }
     factory<UserProfileRepository> { UserProfileRepositoryImpl(get()) }
     factory<FilesRepository> { FilesRepositoryImpl(get(), get()) }
@@ -140,11 +140,11 @@ val userCreateModule = module {
     viewModel { ChildrenInfoViewModel(get(), get()) }
     viewModel { ParentScheduleViewModel(get(), get(), get(), get()) }
     viewModel { FullInfoViewModel(get(), get(), get(), get(), get()) }
-    viewModel { UserCreateViewModel(get(), get()) }
+    viewModel { UserCreateViewModel(get(), get(), get()) }
 }
 
 val verifyEmailModule = module {
-    viewModel { (isReset: Boolean, email: String, password: String) -> VerifyEmailViewModel(isReset, email, password, get(), get()) }
+    viewModel { (isReset: Boolean, email: String, password: String) -> VerifyEmailViewModel(isReset, email, password, get(), get(), get()) }
 }
 
 val loginKoinModule = module {

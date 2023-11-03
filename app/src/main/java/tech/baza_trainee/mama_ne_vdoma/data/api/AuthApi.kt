@@ -8,6 +8,7 @@ import tech.baza_trainee.mama_ne_vdoma.data.model.AuthUserDto
 import tech.baza_trainee.mama_ne_vdoma.data.model.ConfirmEmailDto
 import tech.baza_trainee.mama_ne_vdoma.data.model.RequestWithEmailDto
 import tech.baza_trainee.mama_ne_vdoma.data.model.RestorePasswordDto
+import tech.baza_trainee.mama_ne_vdoma.data.model.UserIdDto
 
 interface AuthApi {
 
@@ -21,7 +22,7 @@ interface AuthApi {
     suspend fun confirmEmail(@Body confirmation: ConfirmEmailDto): Response<Unit>
 
     @POST("api/auth/login")
-    suspend fun loginUser(@Body user: AuthUserDto): Response<Unit>
+    suspend fun loginUser(@Body user: AuthUserDto): Response<UserIdDto>
 
     @POST("api/auth/forget-password")
     suspend fun forgetPassword(@Body request: RequestWithEmailDto): Response<Unit>
@@ -30,5 +31,5 @@ interface AuthApi {
     suspend fun resetPassword(@Body request: RestorePasswordDto): Response<Unit>
 
     @POST("api/auth/google/{code}")
-    suspend fun signupWithGoogle(@Path("code") code: String): Response<Unit>
+    suspend fun signupWithGoogle(@Path("code") code: String): Response<UserIdDto>
 }

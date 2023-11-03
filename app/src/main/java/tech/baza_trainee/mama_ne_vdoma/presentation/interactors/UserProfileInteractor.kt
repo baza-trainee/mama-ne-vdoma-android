@@ -318,11 +318,14 @@ class UserProfileInteractorImpl(
     }
 
     override fun getUserInfo(onSuccess: (UserProfileEntity) -> Unit) {
-        coroutineScope.networkExecutor {
+        coroutineScope.networkExecutor<UserProfileEntity> {
             execute {
                 userAuthRepository.getUserInfo()
             }
-            onSuccess(onSuccess)
+            onSuccess {
+                preferencesDatastoreManager.email = it.email
+                onSuccess(it)
+            }
             onError(networkListener::onError)
             onLoading(networkListener::onLoading)
         }

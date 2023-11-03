@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatastoreManager
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.AuthRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.CreateUserRoute
@@ -23,7 +24,8 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onSuccess
 
 class UserCreateViewModel(
     private val navigator: ScreenNavigator,
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
+    private val preferencesDatastoreManager: UserPreferencesDatastoreManager
 ): ViewModel() {
 
     private val _viewState = MutableStateFlow(UserCreateViewState())
@@ -138,6 +140,8 @@ class UserCreateViewModel(
                 authRepository.signupWithGoogle(token)
             }
             onSuccess {
+                if (preferencesDatastoreManager.id != it)
+                    preferencesDatastoreManager.clearData()
                 navigator.navigate(Graphs.UserProfile)
             }
             onError { error ->
