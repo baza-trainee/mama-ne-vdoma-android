@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
@@ -51,28 +50,31 @@ fun ScheduleGroup(
             Text(
                 modifier = Modifier
                     .padding(horizontal = 8.dp)
-                    .width(128.dp),
+                    .weight(0.34f),
                 text = Period.WHOLE_DAY.period,
                 textAlign = TextAlign.Center,
                 fontWeight = FontWeight.Bold
             )
             Text(
                 modifier = Modifier
-                    .padding(horizontal = 8.dp),
+                    .padding(horizontal = 8.dp)
+                    .weight(0.22f),
                 text = Period.MORNING.period,
                 textAlign = TextAlign.Center,
                 fontWeight = FontWeight.Bold
             )
             Text(
                 modifier = Modifier
-                    .padding(horizontal = 8.dp),
+                    .padding(horizontal = 8.dp)
+                    .weight(0.22f),
                 text = Period.NOON.period,
                 textAlign = TextAlign.Center,
                 fontWeight = FontWeight.Bold
             )
             Text(
                 modifier = Modifier
-                    .padding(horizontal = 8.dp),
+                    .padding(horizontal = 8.dp)
+                    .weight(0.22f),
                 text = Period.AFTERNOON.period,
                 textAlign = TextAlign.Center,
                 fontWeight = FontWeight.Bold
@@ -94,7 +96,7 @@ fun ScheduleGroup(
                     modifier = Modifier
                         .padding(horizontal = 8.dp)
                         .height(48.dp)
-                        .width(128.dp)
+                        .weight(0.34f)
                         .background(
                             color = if (scheduleModel.schedule[day]?.wholeDay == true) MaterialTheme.colorScheme.primary
                             else MaterialTheme.colorScheme.surface,
@@ -112,47 +114,36 @@ fun ScheduleGroup(
                         else MaterialTheme.colorScheme.onBackground
                     )
                 }
-                Box(
-                    modifier = Modifier
-                        .padding(horizontal = 8.dp)
-                        .height(48.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Checkbox(
-                        checked = scheduleModel.schedule[day]?.morning == true,
-                        onCheckedChange = {
-                            onValueChange(day, Period.MORNING)
-                        }
-                    )
-                }
 
-                Box(
+                Checkbox(
                     modifier = Modifier
                         .padding(horizontal = 8.dp)
-                        .height(48.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Checkbox(
-                        checked = scheduleModel.schedule[day]?.noon == true,
-                        onCheckedChange = {
-                            onValueChange(day, Period.NOON)
-                        }
-                    )
-                }
+                        .weight(0.22f),
+                    checked = scheduleModel.schedule[day]?.morning == true,
+                    onCheckedChange = {
+                        onValueChange(day, Period.MORNING)
+                    }
+                )
 
-                Box(
+                Checkbox(
                     modifier = Modifier
                         .padding(horizontal = 8.dp)
-                        .height(48.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Checkbox(
-                        checked = scheduleModel.schedule[day]?.afternoon == true,
-                        onCheckedChange = {
-                            onValueChange(day, Period.AFTERNOON)
-                        }
-                    )
-                }
+                        .weight(0.22f),
+                    checked = scheduleModel.schedule[day]?.noon == true,
+                    onCheckedChange = {
+                        onValueChange(day, Period.NOON)
+                    }
+                )
+
+                Checkbox(
+                    modifier = Modifier
+                        .padding(horizontal = 8.dp)
+                        .weight(0.22f),
+                    checked = scheduleModel.schedule[day]?.afternoon == true,
+                    onCheckedChange = {
+                        onValueChange(day, Period.AFTERNOON)
+                    }
+                )
             }
         }
     }
