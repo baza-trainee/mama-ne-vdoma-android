@@ -37,8 +37,10 @@ import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.domain.model.Period
 import tech.baza_trainee.mama_ne_vdoma.domain.model.ScheduleModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ScheduleGroup
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.text_fields.OutlinedTextFieldWithError
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.GrayText
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.ButtonText
 import java.time.DayOfWeek
 
@@ -49,6 +51,7 @@ fun ParentScheduleEditDialog(
     modifier: Modifier = Modifier,
     scheduleModel: ScheduleModel = ScheduleModel(),
     note: String = "Note",
+    noteValid: ValidField = ValidField.EMPTY,
     onEditSchedule: (DayOfWeek, Period) -> Unit = { _, _ -> },
     onEditNote: (String) -> Unit = {},
     onSave: () -> Unit = {},
@@ -103,23 +106,12 @@ fun ParentScheduleEditDialog(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                OutlinedTextField(
+                OutlinedTextFieldWithError(
                     modifier = Modifier.fillMaxWidth(),
-                    value = note,
-                    label = { Text("Нотатка") },
+                    text = note,
+                    label = "Нотатка",
                     onValueChange = onEditNote,
-                    minLines = 2,
-                    maxLines = 2,
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedContainerColor = MaterialTheme.colorScheme.surface,
-                        unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-                        disabledContainerColor = MaterialTheme.colorScheme.surface,
-                        focusedBorderColor = MaterialTheme.colorScheme.primary,
-                        unfocusedBorderColor = MaterialTheme.colorScheme.surface,
-                    ),
-                    textStyle = TextStyle(
-                        fontFamily = redHatDisplayFontFamily
-                    )
+                    isError = noteValid == ValidField.INVALID
                 )
 
                 Text(

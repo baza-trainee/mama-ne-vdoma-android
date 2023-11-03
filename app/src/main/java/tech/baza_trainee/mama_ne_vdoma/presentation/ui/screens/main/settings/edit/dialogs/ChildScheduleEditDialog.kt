@@ -35,10 +35,12 @@ import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -52,9 +54,11 @@ import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.domain.model.ChildEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.Period
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ScheduleGroup
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.text_fields.OutlinedTextFieldWithError
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.GrayText
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.Purple80
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.ButtonText
 import java.time.DayOfWeek
 
@@ -65,6 +69,7 @@ fun ChildScheduleEditDialog(
     modifier: Modifier = Modifier,
     selectedChild: Int = 0,
     children: List<ChildEntity> = emptyList(),
+    childrenNotesValid: SnapshotStateMap<Int, ValidField> = mutableStateMapOf(),
     onEditSchedule: (Int, DayOfWeek, Period) -> Unit = { _, _, _ -> },
     onEditNote: (Int, String) -> Unit = {_,_ -> },
     onSave: () -> Unit = {},
@@ -270,23 +275,12 @@ fun ChildScheduleEditDialog(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                OutlinedTextField(
+                OutlinedTextFieldWithError(
                     modifier = Modifier.fillMaxWidth(),
-                    value = children[currentChild].note,
-                    label = { Text("Нотатка") },
+                    text = children[currentChild].note,
+                    label ="Нотатка",
                     onValueChange = { onEditNote(currentChild, it) },
-                    minLines = 2,
-                    maxLines = 2,
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedContainerColor = MaterialTheme.colorScheme.surface,
-                        unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-                        disabledContainerColor = MaterialTheme.colorScheme.surface,
-                        focusedBorderColor = MaterialTheme.colorScheme.primary,
-                        unfocusedBorderColor = MaterialTheme.colorScheme.surface,
-                    ),
-                    textStyle = TextStyle(
-                        fontFamily = redHatDisplayFontFamily
-                    )
+                    isError = childrenNotesValid[currentChild] == ValidField.INVALID
                 )
 
                 Text(
