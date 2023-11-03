@@ -18,6 +18,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -42,7 +43,7 @@ fun NewPasswordScreen(
 
         val context = LocalContext.current
 
-        when(val state = uiState.value) {
+        when (val state = uiState.value) {
             RequestState.Idle -> Unit
             is RequestState.OnError -> {
                 if (state.error.isNotBlank()) Toast.makeText(
@@ -96,7 +97,8 @@ fun NewPasswordScreen(
                     modifier = Modifier.fillMaxWidth(),
                     password = screenState.value.password,
                     onValueChange = { handleEvent(NewPasswordEvent.ValidatePassword(it)) },
-                    isError = screenState.value.passwordValid == ValidField.INVALID
+                    isError = screenState.value.passwordValid == ValidField.INVALID,
+                    imeAction = ImeAction.Next
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -117,7 +119,9 @@ fun NewPasswordScreen(
                     password = screenState.value.confirmPassword,
                     onValueChange = { handleEvent(NewPasswordEvent.ValidateConfirmPassword(it)) },
                     isError = screenState.value.confirmPasswordValid == ValidField.INVALID,
-                    errorText = "Паролі не співпадають"
+                    errorText = "Паролі не співпадають",
+                    imeAction = ImeAction.Done,
+                    onImeActionPerformed = { handleEvent(NewPasswordEvent.ResetPassword) }
                 )
             }
 

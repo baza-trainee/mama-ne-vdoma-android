@@ -205,7 +205,7 @@ fun EditProfileScreen(
 
         OutlinedTextFieldWithError(
             modifier = Modifier.fillMaxWidth(),
-            text = screenState.value.name,
+            value = screenState.value.name,
             label = "Вкажіть своє ім'я",
             onValueChange = { handleEvent(EditProfileEvent.ValidateUserName(it)) },
             isError = screenState.value.nameValid == ValidField.INVALID,

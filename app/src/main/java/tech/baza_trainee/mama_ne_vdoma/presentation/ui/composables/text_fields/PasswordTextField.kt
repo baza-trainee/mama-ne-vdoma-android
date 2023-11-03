@@ -1,6 +1,7 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.text_fields
 
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
@@ -19,6 +20,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -32,7 +34,9 @@ fun ShowHidePasswordTextField(
     password: String,
     onValueChange: (String) -> Unit,
     isError: Boolean = false,
-    onFocusChanged: (Boolean) -> Unit
+    onFocusChanged: (Boolean) -> Unit,
+    imeAction: ImeAction = ImeAction.Default,
+    onImeActionPerformed: () -> Unit = {}
 ) {
 
     var showPassword by remember { mutableStateOf(value = false) }
@@ -56,7 +60,13 @@ fun ShowHidePasswordTextField(
             unfocusedBorderColor = MaterialTheme.colorScheme.surface,
         ),
         visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation(),
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Password,
+            imeAction = imeAction
+        ),
+        keyboardActions = KeyboardActions(
+            onDone = { onImeActionPerformed() }
+        ),
         trailingIcon = {
             if (showPassword) {
                 IconButton(onClick = { showPassword = false }) {

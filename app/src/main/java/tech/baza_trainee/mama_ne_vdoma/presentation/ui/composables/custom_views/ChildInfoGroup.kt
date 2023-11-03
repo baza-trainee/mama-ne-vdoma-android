@@ -49,7 +49,7 @@ fun ChildInfoGroup(
 
             OutlinedTextFieldWithError(
                 modifier = Modifier.fillMaxWidth(),
-                text = screenState.value.name,
+                value = screenState.value.name,
                 label = "Ім'я дитини",
                 onValueChange = { handleEvent(ChildInfoEvent.ValidateChildName(it)) },
                 isError = screenState.value.nameValid == ValidField.INVALID,
@@ -60,7 +60,7 @@ fun ChildInfoGroup(
 
             OutlinedTextFieldWithError(
                 modifier = Modifier.fillMaxWidth(),
-                text = screenState.value.age,
+                value = screenState.value.age,
                 label = "Вік дитини",
                 onValueChange = { handleEvent(ChildInfoEvent.ValidateAge(it)) },
                 isError = screenState.value.ageValid == ValidField.INVALID,

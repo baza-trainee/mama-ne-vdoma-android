@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material3.Button
@@ -32,6 +33,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -65,54 +68,66 @@ fun LoginUserScreen(
 
         val context = LocalContext.current
 
-        when(val state = uiState.value) {
+        when (val state = uiState.value) {
             RequestState.Idle -> Unit
             is RequestState.OnError -> {
-                if (state.error.isNotBlank()) Toast.makeText(context, state.error, Toast.LENGTH_LONG).show()
+                if (state.error.isNotBlank()) Toast.makeText(
+                    context,
+                    state.error,
+                    Toast.LENGTH_LONG
+                ).show()
                 handleEvent(LoginEvent.ResetUiState)
             }
         }
 
         var googleLogin by remember { mutableStateOf(false) }
 
-        val intentSender = rememberLauncherForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) {
-            try {
-                val credential = oneTapClient?.getSignInCredentialFromIntent(it.data)
-                val idToken = credential?.googleIdToken
-                val username = credential?.id.orEmpty()
-                val password = credential?.password
-                when {
-                    idToken != null -> handleEvent(LoginEvent.LoginWithToken(idToken))
-                    password != null -> handleEvent(
-                        LoginEvent.LoginWithPassword(
-                            username,
-                            password
+        val intentSender =
+            rememberLauncherForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) {
+                try {
+                    val credential = oneTapClient?.getSignInCredentialFromIntent(it.data)
+                    val idToken = credential?.googleIdToken
+                    val username = credential?.id.orEmpty()
+                    val password = credential?.password
+                    when {
+                        idToken != null -> handleEvent(LoginEvent.LoginWithToken(idToken))
+                        password != null -> handleEvent(
+                            LoginEvent.LoginWithPassword(
+                                username,
+                                password
+                            )
                         )
-                    )
 
-                    else -> {
-                        Toast.makeText(context, "Немає даних для авторизації", Toast.LENGTH_LONG)
-                            .show()
+                        else -> {
+                            Toast.makeText(
+                                context,
+                                "Немає даних для авторизації",
+                                Toast.LENGTH_LONG
+                            )
+                                .show()
+                        }
                     }
+                } catch (exc: ApiException) {
+                    Toast.makeText(context, "Немає даних для авторизації", Toast.LENGTH_LONG)
+                        .show()
                 }
-            } catch (exc: ApiException) {
-                Toast.makeText(context, "Немає даних для авторизації", Toast.LENGTH_LONG)
-                    .show()
             }
-        }
 
         LaunchedEffect(key1 = googleLogin) {
             if (googleLogin) {
                 val signInRequest = BeginSignInRequest.builder()
-                    .setPasswordRequestOptions(BeginSignInRequest.PasswordRequestOptions.builder()
-                        .setSupported(true)
-                        .build())
+                    .setPasswordRequestOptions(
+                        BeginSignInRequest.PasswordRequestOptions.builder()
+                            .setSupported(true)
+                            .build()
+                    )
                     .setGoogleIdTokenRequestOptions(
                         BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
                             .setSupported(true)
                             .setServerClientId(SERVER_CLIENT_ID)
                             .setFilterByAuthorizedAccounts(true)
-                            .build())
+                            .build()
+                    )
                     .setAutoSelectEnabled(true)
                     .build()
 
@@ -124,7 +139,7 @@ fun LoginUserScreen(
                 )
             }
         }
-        
+
         Column(
             modifier = Modifier
                 .imePadding()
@@ -154,7 +169,7 @@ fun LoginUserScreen(
 
                 OutlinedTextFieldWithError(
                     modifier = Modifier.fillMaxWidth(),
-                    text = screenState.value.email,
+                    value = screenState.value.email,
                     label = "Введіть свій email",
                     onValueChange = { handleEvent(LoginEvent.ValidateEmail(it)) },
                     isError = screenState.value.emailValid == ValidField.INVALID,
@@ -164,7 +179,11 @@ fun LoginUserScreen(
                             imageVector = Icons.Default.Email,
                             contentDescription = null
                         )
-                    }
+                    },
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Email,
+                        imeAction = ImeAction.Next
+                    )
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -174,7 +193,9 @@ fun LoginUserScreen(
                     password = screenState.value.password,
                     onValueChange = { handleEvent(LoginEvent.ValidatePassword(it)) },
                     isError = screenState.value.passwordValid == ValidField.INVALID,
-                    errorText = "Ви ввели некоректний пароль"
+                    errorText = "Ви ввели некоректний пароль",
+                    imeAction = ImeAction.Done,
+                    onImeActionPerformed = { handleEvent(LoginEvent.LoginUser) },
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -264,7 +285,7 @@ fun LoginUserScreen(
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp),
                 textForBottomButton = getTextWithUnderline("Ще немає профілю? ", "Зареєструватись"),
-                onGoogleLogin = { googleLogin = true},
+                onGoogleLogin = { googleLogin = true },
                 onAction = { handleEvent(LoginEvent.OnCreate) }
             )
         }

@@ -57,9 +57,11 @@ fun ScheduleScreenGroup(
 
             OutlinedTextFieldWithError(
                 modifier = Modifier.fillMaxWidth(),
-                text = screenState.value.comment,
+                value = screenState.value.comment,
                 label = "Нотатка",
                 onValueChange = { onUpdateComment(it) },
+                minLines = 3,
+                maxLines = 3,
                 errorText = "Нотатка не повинна бути довше 1000 символів",
                 isError = screenState.value.commentValid == ValidField.INVALID
             )

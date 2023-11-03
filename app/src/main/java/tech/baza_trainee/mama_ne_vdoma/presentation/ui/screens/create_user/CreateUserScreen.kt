@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
@@ -33,6 +34,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -69,7 +72,7 @@ fun CreateUserScreen(
 
         val context = LocalContext.current
 
-        when(val state = uiState.value) {
+        when (val state = uiState.value) {
             RequestState.Idle -> Unit
             is RequestState.OnError -> {
                 if (state.error.isNotBlank()) Toast.makeText(
@@ -83,15 +86,16 @@ fun CreateUserScreen(
 
         var googleLogin by remember { mutableStateOf(false) }
 
-        val intentSender = rememberLauncherForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) {
-            try {
-                val credential = oneTapClient?.getSignInCredentialFromIntent(it.data)
-                handleEvent(UserCreateEvent.OnGoogleLogin(credential?.googleIdToken.orEmpty()))
-            } catch (exc: ApiException) {
-                Toast.makeText(context, "Немає даних для авторизації", Toast.LENGTH_LONG)
-                    .show()
+        val intentSender =
+            rememberLauncherForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) {
+                try {
+                    val credential = oneTapClient?.getSignInCredentialFromIntent(it.data)
+                    handleEvent(UserCreateEvent.OnGoogleLogin(credential?.googleIdToken.orEmpty()))
+                } catch (exc: ApiException) {
+                    Toast.makeText(context, "Немає даних для авторизації", Toast.LENGTH_LONG)
+                        .show()
+                }
             }
-        }
 
         LaunchedEffect(key1 = googleLogin) {
             if (googleLogin) {
@@ -144,7 +148,7 @@ fun CreateUserScreen(
 
                 OutlinedTextFieldWithError(
                     modifier = Modifier.fillMaxWidth(),
-                    text = screenState.value.email,
+                    value = screenState.value.email,
                     label = "Введіть свій email",
                     onValueChange = { handleEvent(UserCreateEvent.ValidateEmail(it)) },
                     isError = screenState.value.emailValid == ValidField.INVALID,
@@ -154,7 +158,11 @@ fun CreateUserScreen(
                             imageVector = Icons.Default.Email,
                             contentDescription = null
                         )
-                    }
+                    },
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Email,
+                        imeAction = ImeAction.Next
+                    )
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -163,7 +171,8 @@ fun CreateUserScreen(
                     modifier = Modifier.fillMaxWidth(),
                     password = screenState.value.password,
                     onValueChange = { handleEvent(UserCreateEvent.ValidatePassword(it)) },
-                    isError = screenState.value.passwordValid == ValidField.INVALID
+                    isError = screenState.value.passwordValid == ValidField.INVALID,
+                    imeAction = ImeAction.Next
                 )
 
                 Spacer(modifier = Modifier.height(2.dp))
@@ -185,7 +194,9 @@ fun CreateUserScreen(
                     password = screenState.value.confirmPassword,
                     onValueChange = { handleEvent(UserCreateEvent.ValidateConfirmPassword(it)) },
                     isError = screenState.value.confirmPasswordValid == ValidField.INVALID,
-                    errorText = "Паролі не співпадають"
+                    errorText = "Паролі не співпадають",
+                    imeAction = ImeAction.Done,
+                    onImeActionPerformed = { handleEvent(UserCreateEvent.RegisterUser) }
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))

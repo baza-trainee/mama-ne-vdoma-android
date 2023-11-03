@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Error
@@ -21,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -33,7 +35,9 @@ fun PasswordTextFieldWithError(
     password: String = "",
     onValueChange: (String) -> Unit = {},
     isError: Boolean = false,
-    errorText: String = "Пароль не відповідає вимогам"
+    errorText: String = "Пароль не відповідає вимогам",
+    imeAction: ImeAction = ImeAction.Default,
+    onImeActionPerformed: () -> Unit = {}
 ) {
     Column {
         var isPasswordFocused by remember { mutableStateOf(false) }
@@ -45,7 +49,9 @@ fun PasswordTextFieldWithError(
             password = password,
             onValueChange = { onValueChange(it) },
             isError = isError && isPasswordFocused,
-            onFocusChanged = { isPasswordFocused = it }
+            onFocusChanged = { isPasswordFocused = it },
+            imeAction = imeAction,
+            onImeActionPerformed = onImeActionPerformed
         )
         if (isError && isPasswordFocused) {
             Text(
@@ -65,13 +71,16 @@ fun PasswordTextFieldWithError(
 fun OutlinedTextFieldWithError(
     modifier: Modifier = Modifier,
     label: String = "",
-    text: String = "",
+    value: String = "",
     trailingIcon: @Composable() (() -> Unit)? = null,
     leadingIcon: @Composable() (() -> Unit)? = null,
     onValueChange: (String) -> Unit = {},
     isError: Boolean = false,
     errorText: String = "",
-    keyboardOptions: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
+    minLines: Int = 1,
+    maxLines: Int = 1,
+    keyboardOptions: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+    keyboardActions: KeyboardActions = KeyboardActions.Default
 ) {
     Column(
         verticalArrangement = Arrangement.Top
@@ -84,7 +93,7 @@ fun OutlinedTextFieldWithError(
                     isFieldFocused = it.isFocused
                 }
                 .fillMaxWidth(),
-            value = text,
+            value = value,
             label = { Text(label) },
             onValueChange = { onValueChange(it) },
             isError = isError && isFieldFocused,
@@ -108,7 +117,9 @@ fun OutlinedTextFieldWithError(
             textStyle = TextStyle(
                 fontFamily = redHatDisplayFontFamily
             ),
-            maxLines = 1
+            minLines = minLines,
+            maxLines = maxLines,
+            keyboardActions = keyboardActions
         )
         if (isError && isFieldFocused) {
             Text(

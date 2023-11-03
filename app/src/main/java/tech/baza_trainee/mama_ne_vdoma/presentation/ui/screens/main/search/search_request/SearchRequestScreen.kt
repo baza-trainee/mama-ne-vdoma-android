@@ -16,6 +16,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Error
@@ -37,6 +39,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -96,7 +100,7 @@ fun SearchRequestScreen(
 
         OutlinedTextFieldWithError(
             modifier = Modifier.fillMaxWidth(),
-            text = screenState.value.email,
+            value = screenState.value.email,
             label = "Email користувача",
             onValueChange = { handleEvent(SearchRequestEvent.ValidateEmail(it)) },
             isError = screenState.value.emailValid == ValidField.INVALID,
@@ -106,7 +110,14 @@ fun SearchRequestScreen(
                     imageVector = Icons.Default.Email,
                     contentDescription = null
                 )
-            }
+            },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Email,
+                imeAction = ImeAction.Search
+            ),
+            keyboardActions = KeyboardActions(
+                onSearch = { handleEvent(SearchRequestEvent.SearchUser) }
+            )
         )
 
         Spacer(modifier = modifier.height(32.dp))

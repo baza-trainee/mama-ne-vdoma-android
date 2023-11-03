@@ -45,7 +45,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -277,9 +276,11 @@ fun ChildScheduleEditDialog(
 
                 OutlinedTextFieldWithError(
                     modifier = Modifier.fillMaxWidth(),
-                    text = children[currentChild].note,
+                    value = children[currentChild].note,
                     label ="Нотатка",
                     onValueChange = { onEditNote(currentChild, it) },
+                    minLines = 3,
+                    maxLines = 3,
                     isError = childrenNotesValid[currentChild] == ValidField.INVALID
                 )
 

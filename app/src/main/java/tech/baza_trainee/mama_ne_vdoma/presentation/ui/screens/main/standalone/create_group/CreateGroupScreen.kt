@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -51,6 +52,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -148,7 +150,7 @@ fun CreateGroupScreen(
                     .padding(horizontal = 16.dp)
             ) {
                 OutlinedTextFieldWithError(
-                    text = screenState.value.address,
+                    value = screenState.value.address,
                     onValueChange = {
                         handleEvent(CreateGroupEvent.UpdateGroupAddress(it))
                     },
@@ -172,13 +174,20 @@ fun CreateGroupScreen(
                         }
                     },
                     isError = !screenState.value.isAddressChecked,
-                    errorText = "Адреса не перевірена"
+                    errorText = "Адреса не перевірена",
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Text,
+                        imeAction = ImeAction.Search
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onSearch = { handleEvent(CreateGroupEvent.GetLocationFromAddress) }
+                    )
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
 
                 OutlinedTextFieldWithError(
-                    text = screenState.value.name,
+                    value = screenState.value.name,
                     onValueChange = { handleEvent(CreateGroupEvent.UpdateName(it)) },
                     modifier = Modifier.fillMaxWidth(),
                     label = "Назва групи",

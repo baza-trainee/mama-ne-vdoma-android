@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
@@ -40,6 +41,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -146,11 +148,15 @@ fun UserInfoScreen(
 
             OutlinedTextFieldWithError(
                 modifier = Modifier.fillMaxWidth(),
-                text = screenState.value.name,
+                value = screenState.value.name,
                 label = "Введіть своє ім'я (нікнейм)",
                 onValueChange = { handleEvent(UserInfoEvent.ValidateUserName(it)) },
                 isError = screenState.value.nameValid == ValidField.INVALID,
-                errorText = "Ви ввели некоректнe ім'я"
+                errorText = "Ви ввели некоректнe ім'я",
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Text,
+                    imeAction = ImeAction.Next
+                )
             )
 
             Spacer(modifier = Modifier.height(4.dp))
@@ -205,7 +211,13 @@ fun UserInfoScreen(
                     label = { Text("Введіть свій номер телефону") },
                     onValueChange = { handleEvent(UserInfoEvent.ValidatePhone(it)) },
                     isError = screenState.value.phoneValid == ValidField.INVALID && isPhoneFocused,
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Phone,
+                        imeAction = ImeAction.Done
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onDone = { handleEvent(UserInfoEvent.SaveInfo) }
+                    ),
                     maxLines = 1,
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedContainerColor = MaterialTheme.colorScheme.surface,
