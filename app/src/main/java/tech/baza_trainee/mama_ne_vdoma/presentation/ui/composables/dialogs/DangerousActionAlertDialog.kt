@@ -68,7 +68,8 @@ fun DangerousActionAlertDialog(
                     .padding(horizontal = 16.dp),
                 text = text,
                 fontSize = 14.sp,
-                fontFamily = redHatDisplayFontFamily
+                fontFamily = redHatDisplayFontFamily,
+                textAlign = TextAlign.Start
             )
 
             Spacer(modifier = Modifier.height(24.dp))

@@ -202,7 +202,8 @@ fun NotificationScreen(
                             .padding(horizontal = 16.dp),
                         text = "Ви погодили запит на приєднання до групи \"${dialogData.third}\"",
                         fontSize = 14.sp,
-                        fontFamily = redHatDisplayFontFamily
+                        fontFamily = redHatDisplayFontFamily,
+                        textAlign = TextAlign.Start
                     )
 
                     Spacer(modifier = Modifier.height(24.dp))
@@ -252,7 +253,8 @@ fun NotificationScreen(
                             .padding(horizontal = 16.dp),
                         text = "Ви впевнені, що хочете відхилити запит на приєднання до групи \"${dialogData.third}\"?",
                         fontSize = 14.sp,
-                        fontFamily = redHatDisplayFontFamily
+                        fontFamily = redHatDisplayFontFamily,
+                        textAlign = TextAlign.Start
                     )
 
                     Spacer(modifier = Modifier.height(24.dp))
@@ -328,7 +330,8 @@ fun NotificationScreen(
                             .padding(horizontal = 16.dp),
                         text = "Ви впевнені, що хочете скасувати запит на приєднання до групи \"${dialogData.third}\"?",
                         fontSize = 14.sp,
-                        fontFamily = redHatDisplayFontFamily
+                        fontFamily = redHatDisplayFontFamily,
+                        textAlign = TextAlign.Start
                     )
 
                     Spacer(modifier = Modifier.height(24.dp))

@@ -603,7 +603,8 @@ fun EditProfileScreen(
                             .padding(horizontal = 16.dp),
                         text = "Ви залишаете цей екран. Всі незбережені зміни будуть втрачені",
                         fontSize = 14.sp,
-                        fontFamily = redHatDisplayFontFamily
+                        fontFamily = redHatDisplayFontFamily,
+                        textAlign = TextAlign.Start
                     )
 
                     Spacer(modifier = Modifier.height(24.dp))
@@ -686,8 +687,8 @@ fun EditProfileScreen(
                             .fillMaxWidth(),
                         text = "Інформація успішно оновлена!",
                         fontSize = 14.sp,
-                        textAlign = TextAlign.Center,
-                        fontFamily = redHatDisplayFontFamily
+                        fontFamily = redHatDisplayFontFamily,
+                        textAlign = TextAlign.Start
                     )
 
                     Text(

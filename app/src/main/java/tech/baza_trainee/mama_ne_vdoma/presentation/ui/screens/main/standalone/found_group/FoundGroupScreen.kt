@@ -225,7 +225,7 @@ fun FoundGroupScreen(
                             .fillMaxWidth(),
                         text = "Запит до групи успішно відправлений. Ми повідомимо вас, коли адміністратор групи затвердить ваш запит",
                         fontSize = 14.sp,
-                        textAlign = TextAlign.Center,
+                        textAlign = TextAlign.Start,
                         fontFamily = redHatDisplayFontFamily
                     )
 

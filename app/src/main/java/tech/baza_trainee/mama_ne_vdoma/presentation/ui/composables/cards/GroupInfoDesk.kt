@@ -493,7 +493,8 @@ fun GroupInfoDesk(
                             .padding(horizontal = 16.dp),
                         text = "Ви впевнені, що хочете передати адмінастративні права в групі \"${adminDialogData.third}\"?",
                         fontSize = 14.sp,
-                        fontFamily = redHatDisplayFontFamily
+                        fontFamily = redHatDisplayFontFamily,
+                        textAlign = TextAlign.Start
                     )
 
                     Spacer(modifier = Modifier.height(24.dp))
@@ -566,7 +567,8 @@ fun GroupInfoDesk(
                             .padding(horizontal = 16.dp),
                         text = "Ви впевнені, що хочете видалити \"${kickDialogData.third}\" з групи?",
                         fontSize = 14.sp,
-                        fontFamily = redHatDisplayFontFamily
+                        fontFamily = redHatDisplayFontFamily,
+                        textAlign = TextAlign.Start
                     )
 
                     Spacer(modifier = Modifier.height(24.dp))

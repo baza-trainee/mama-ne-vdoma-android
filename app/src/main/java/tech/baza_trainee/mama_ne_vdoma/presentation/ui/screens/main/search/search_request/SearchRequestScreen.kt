@@ -202,7 +202,8 @@ fun SearchRequestScreen(
                             .padding(horizontal = 16.dp),
                         text = "Користувача з заданими параметрами не знайдено",
                         fontSize = 14.sp,
-                        fontFamily = redHatDisplayFontFamily
+                        fontFamily = redHatDisplayFontFamily,
+                        textAlign = TextAlign.Start
                     )
 
                     Spacer(modifier = Modifier.height(24.dp))

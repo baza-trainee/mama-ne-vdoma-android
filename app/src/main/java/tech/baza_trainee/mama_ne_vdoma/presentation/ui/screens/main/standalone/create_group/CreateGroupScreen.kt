@@ -449,7 +449,7 @@ fun CreateGroupScreen(
                                     .fillMaxWidth(),
                                 text = "Ваша група успішно створена",
                                 fontSize = 14.sp,
-                                textAlign = TextAlign.Center,
+                                textAlign = TextAlign.Start,
                                 fontFamily = redHatDisplayFontFamily
                             )
 
@@ -494,7 +494,7 @@ fun CreateGroupScreen(
                                     .fillMaxWidth(),
                                 text = dialogTitle,
                                 fontSize = 14.sp,
-                                textAlign = TextAlign.Center,
+                                textAlign = TextAlign.Start,
                                 fontFamily = redHatDisplayFontFamily
                             )
 
