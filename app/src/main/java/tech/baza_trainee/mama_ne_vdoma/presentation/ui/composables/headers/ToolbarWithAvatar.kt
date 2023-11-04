@@ -97,26 +97,25 @@ fun ToolbarWithAvatar(
                 .fillMaxWidth()
                 .weight(1f)
         )
-
-        if (showNotification) {
-            Box(
+        Box(
+            modifier = Modifier
+                .fillMaxHeight()
+                .padding(16.dp)
+                .clickable {
+                    onNotificationsClicked()
+                },
+            contentAlignment = Alignment.Center
+        ) {
+            Image(
                 modifier = Modifier
-                    .fillMaxHeight()
-                    .padding(16.dp)
-                    .clickable {
-                        onNotificationsClicked()
-                    },
-                contentAlignment = Alignment.Center
-            ) {
-                Image(
-                    modifier = Modifier
-                        .height(32.dp)
-                        .width(32.dp),
-                    painter = painterResource(id = R.drawable.ic_notification),
-                    contentDescription = "notification",
-                    contentScale = ContentScale.Fit
-                )
+                    .height(32.dp)
+                    .width(32.dp),
+                painter = painterResource(id = R.drawable.ic_notification),
+                contentDescription = "notification",
+                contentScale = ContentScale.Fit
+            )
 
+            if (showNotification) {
                 Badge(
                     modifier = Modifier
                         .align(Alignment.TopEnd)
@@ -140,9 +139,11 @@ fun ToolbarWithAvatar(
                 },
             model = ImageRequest.Builder(LocalContext.current)
                 .data(avatar)
+                .placeholder(R.drawable.ic_user_no_photo)
                 .crossfade(true)
                 .build(),
-            placeholder = painterResource(id = R.drawable.no_photo),
+            placeholder = painterResource(id = R.drawable.ic_user_no_photo),
+            fallback = painterResource(id = R.drawable.ic_user_no_photo),
             contentDescription = "avatar",
             contentScale = ContentScale.FillBounds
         )

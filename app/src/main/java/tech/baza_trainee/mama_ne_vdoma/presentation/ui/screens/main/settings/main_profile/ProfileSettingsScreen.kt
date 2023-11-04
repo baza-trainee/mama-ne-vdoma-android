@@ -105,9 +105,11 @@ fun ProfileSettingsScreen(
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
                     .data(screenState.value.avatar)
+                    .placeholder(R.drawable.ic_user_no_photo)
                     .crossfade(true)
                     .build(),
-                placeholder = painterResource(id = R.drawable.no_photo),
+                placeholder = painterResource(id = R.drawable.ic_user_no_photo),
+                fallback = painterResource(id = R.drawable.ic_user_no_photo),
                 contentDescription = "avatar",
                 contentScale = ContentScale.FillBounds,
                 modifier = Modifier
