@@ -44,7 +44,7 @@ class PageNavigatorImpl: PageNavigator {
 
     override fun navigate(route: CommonRoute) {
         (route as CommonHostRoute).let {
-            if (!goBack) {
+            if (!goBack && routesQueue.peekLast() != route) {
                 routesQueue.offerLast(route)
             }
             goBack = false
