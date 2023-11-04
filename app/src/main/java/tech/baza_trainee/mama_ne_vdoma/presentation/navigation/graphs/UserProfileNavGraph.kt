@@ -9,6 +9,7 @@ import org.koin.compose.koinInject
 import org.koin.core.parameter.parametersOf
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.Graphs
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.StandaloneGroupsRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.UserProfileRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.add_child.ChildInfoViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.child_schedule.ChildScheduleViewModel
@@ -20,6 +21,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.imag
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.schedule.child_schedule.ChildScheduleScreen
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.schedule.parent_schedule.ParentScheduleScreen
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.schedule.parent_schedule.ParentScheduleViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.success.UserCreateSuccessScreen
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.user_info.UserInfoScreen
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.user_info.UserInfoViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.user_location.UserLocationScreen
@@ -98,6 +100,18 @@ fun NavGraphBuilder.userProfileGraph() {
                 screenState = childScheduleViewModel.viewState.collectAsStateWithLifecycle(),
                 uiState = childScheduleViewModel.uiState,
                 handleEvent = { childScheduleViewModel.handleScheduleEvent(it) }
+            )
+        }
+        composable(
+            route = UserProfileRoutes.UserCreateSuccess().route,
+            arguments = UserProfileRoutes.UserCreateSuccess.argumentList
+        ) { entry ->
+            val navigator: ScreenNavigator = koinInject()
+            val (name) = UserProfileRoutes.UserCreateSuccess.parseArguments(entry)
+            UserCreateSuccessScreen(
+                name = name,
+                onNext = { navigator.navigate(StandaloneGroupsRoutes.ChooseChild.getDestination(isForSearch = true)) },
+                onBack = { navigator.goBack() }
             )
         }
 //        composable(UserProfileRoutes.ChildrenInfo.route) {

@@ -12,8 +12,8 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.CreateUser
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.Graphs
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.verify_email.VerifyEmailScreen
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.verify_email.VerifyEmailViewModel
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.CreateUserScreen
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.UserCreateViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.create.UserCreateScreen
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.create.UserCreateViewModel
 
 fun NavGraphBuilder.createUserNavGraph() {
     navigation(
@@ -23,7 +23,7 @@ fun NavGraphBuilder.createUserNavGraph() {
         composable(CreateUserRoute.CreateUser.route) {
             val userCreateViewModel: UserCreateViewModel = koinNavViewModel()
             val oneTapClient: SignInClient = koinInject()
-            CreateUserScreen(
+            UserCreateScreen(
                 oneTapClient = oneTapClient,
                 screenState = userCreateViewModel.viewState.collectAsStateWithLifecycle(),
                 uiState = userCreateViewModel.uiState,

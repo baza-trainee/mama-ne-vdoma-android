@@ -1,4 +1,4 @@
-package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user
+package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.create
 
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
@@ -60,7 +60,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.beginSignIn
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.findActivity
 
 @Composable
-fun CreateUserScreen(
+fun UserCreateScreen(
     modifier: Modifier = Modifier,
     oneTapClient: SignInClient? = null,
     screenState: State<UserCreateViewState> = mutableStateOf(UserCreateViewState()),
@@ -267,6 +267,6 @@ fun CreateUserScreen(
 
 @Composable
 @Preview
-fun CreateUserPreview() {
-    CreateUserScreen()
+fun UserCreatePreview() {
+    UserCreateScreen()
 }

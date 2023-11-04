@@ -1,4 +1,4 @@
-package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user
+package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.create
 
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 

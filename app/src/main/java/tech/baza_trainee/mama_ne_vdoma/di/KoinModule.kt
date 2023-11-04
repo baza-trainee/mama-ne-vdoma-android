@@ -55,7 +55,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.child_sche
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.image_crop.CropImageCommunicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.image_crop.ImageCropViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.verify_email.VerifyEmailViewModel
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.UserCreateViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.create.UserCreateViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.login.LoginViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.new_password.NewPasswordScreenViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.restore_password.RestorePasswordScreenViewModel

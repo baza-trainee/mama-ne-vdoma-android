@@ -32,7 +32,6 @@ fun RestoreSuccessScreen(
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
-
             HeaderWithOptArrow(
                 modifier = Modifier.fillMaxWidth(),
                 title = "Пароль збережено",
