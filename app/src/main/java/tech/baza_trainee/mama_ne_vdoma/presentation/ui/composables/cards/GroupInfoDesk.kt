@@ -4,6 +4,8 @@ import android.content.Intent
 import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,9 +20,12 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Logout
+import androidx.compose.material.icons.filled.Error
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -28,6 +33,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -54,6 +60,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.LogoutButtonTextCol
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.ButtonText
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 @Preview
 fun GroupInfoDesk(
@@ -67,7 +74,12 @@ fun GroupInfoDesk(
     onDelete: (String) -> Unit = {}
 ) {
     val isAdmin = currentUserId == group.adminId
-    val isMyGroup = group.members.map { it.id }.contains(currentUserId) && !isAdmin
+    val isMyGroup = group.members.map { it.id }.contains(currentUserId)
+
+    var showAdminDialog by rememberSaveable { mutableStateOf(false) }
+    var showKickDialog by rememberSaveable { mutableStateOf(false) }
+    var adminDialogData by rememberSaveable { mutableStateOf(Triple("", "", "")) }
+    var kickDialogData by rememberSaveable { mutableStateOf(Triple("", emptyList<String>(), "")) }
 
     Column(
         modifier = Modifier
@@ -340,7 +352,10 @@ fun GroupInfoDesk(
 
                             if (isAdmin) {
                                 IconButton(
-                                    onClick = { onSwitchAdmin(group.id, it.id) }
+                                    onClick = {
+                                        adminDialogData = Triple(group.id, it.id, it.name)
+                                        showAdminDialog = true
+                                    }
                                 ) {
                                     Icon(
                                         painter = painterResource(id = R.drawable.ic_crown),
@@ -350,7 +365,10 @@ fun GroupInfoDesk(
                                 }
 
                                 IconButton(
-                                    onClick = { onKick(group.id, it.children) }
+                                    onClick = {
+                                        kickDialogData = Triple(group.id, it.children, it.name)
+                                        showKickDialog = true
+                                    }
                                 ) {
                                     Icon(
                                         imageVector = Icons.AutoMirrored.Filled.Logout,
@@ -404,7 +422,7 @@ fun GroupInfoDesk(
             }
         }
 
-        if (isMyGroup) {
+        if (isMyGroup && !isAdmin) {
             Button(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -444,6 +462,152 @@ fun GroupInfoDesk(
                     checked = group.isChecked,
                     onCheckedChange = { onSelect(group.id) }
                 )
+            }
+        }
+
+        if (showAdminDialog) {
+            AlertDialog(onDismissRequest = { showAdminDialog = false }) {
+                Column(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(MaterialTheme.colorScheme.background)
+                        .padding(vertical = 8.dp)
+                        .fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Error,
+                        contentDescription = "alert",
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Text(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp),
+                        text = "Ви впевнені, що хочете передати адмінастративні права в групі \"${adminDialogData.third}\"?",
+                        fontSize = 14.sp,
+                        fontFamily = redHatDisplayFontFamily
+                    )
+
+                    Spacer(modifier = Modifier.height(24.dp))
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp)
+                            .padding(bottom = 16.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            modifier = Modifier
+                                .weight(0.5f)
+                                .clickable(
+                                    indication = null,
+                                    interactionSource = remember { MutableInteractionSource() }
+                                ) { showAdminDialog = false },
+                            text = "Ні",
+                            fontSize = 16.sp,
+                            fontFamily = redHatDisplayFontFamily,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.Red,
+                            textAlign = TextAlign.Center
+                        )
+
+                        Text(
+                            modifier = Modifier
+                                .weight(0.5f)
+                                .clickable(
+                                    indication = null,
+                                    interactionSource = remember { MutableInteractionSource() }
+                                ) {
+                                    showAdminDialog = false
+                                    onSwitchAdmin(adminDialogData.first, adminDialogData.second)
+                                },
+                            text = "Погодити",
+                            fontSize = 16.sp,
+                            fontFamily = redHatDisplayFontFamily,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.primary,
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                }
+            }
+        }
+
+        if (showKickDialog) {
+            AlertDialog(onDismissRequest = { showKickDialog = false }) {
+                Column(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(MaterialTheme.colorScheme.background)
+                        .padding(vertical = 8.dp)
+                        .fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Error,
+                        contentDescription = "alert",
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Text(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp),
+                        text = "Ви впевнені, що хочете видалити \"${kickDialogData.third}\" з групи?",
+                        fontSize = 14.sp,
+                        fontFamily = redHatDisplayFontFamily
+                    )
+
+                    Spacer(modifier = Modifier.height(24.dp))
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp)
+                            .padding(bottom = 16.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            modifier = Modifier
+                                .weight(0.5f)
+                                .clickable(
+                                    indication = null,
+                                    interactionSource = remember { MutableInteractionSource() }
+                                ) { showKickDialog = false },
+                            text = "Ні",
+                            fontSize = 16.sp,
+                            fontFamily = redHatDisplayFontFamily,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.primary,
+                            textAlign = TextAlign.Center
+                        )
+
+                        Text(
+                            modifier = Modifier
+                                .weight(0.5f)
+                                .clickable(
+                                    indication = null,
+                                    interactionSource = remember { MutableInteractionSource() }
+                                ) {
+                                    showKickDialog = false
+                                    onKick(kickDialogData.first, kickDialogData.second)
+                                },
+                            text = "Так, видалити",
+                            fontSize = 16.sp,
+                            fontFamily = redHatDisplayFontFamily,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.Red,
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                }
             }
         }
     }

@@ -285,9 +285,7 @@ class NotificationsViewModel(
             execute {
                 groupsRepository.cancelRequest(group, child)
             }
-            onSuccess {
-                getUserInfo()
-            }
+            onSuccess { getUserInfo() }
             onError { error ->
                 _uiState.value = NotificationsUiState.OnError(error)
             }
@@ -322,9 +320,7 @@ class NotificationsViewModel(
 
     private fun getUserInfo() {
         networkExecutor<UserProfileEntity> {
-            execute {
-                userAuthRepository.getUserInfo()
-            }
+            execute { userAuthRepository.getUserInfo() }
             onSuccess { entity ->
                 getGroups(entity.id)
 

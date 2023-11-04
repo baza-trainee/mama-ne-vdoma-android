@@ -250,7 +250,7 @@ fun NotificationScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 16.dp),
-                        text = "Ви впевнені, що хочете відхилити запит на приєднання до групи \"${dialogData.third}\"",
+                        text = "Ви впевнені, що хочете відхилити запит на приєднання до групи \"${dialogData.third}\"?",
                         fontSize = 14.sp,
                         fontFamily = redHatDisplayFontFamily
                     )
