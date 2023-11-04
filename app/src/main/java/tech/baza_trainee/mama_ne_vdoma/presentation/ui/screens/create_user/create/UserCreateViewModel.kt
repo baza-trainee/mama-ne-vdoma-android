@@ -140,8 +140,11 @@ class UserCreateViewModel(
                 authRepository.signupWithGoogle(token)
             }
             onSuccess {
-                if (preferencesDatastoreManager.id != it)
+                if (preferencesDatastoreManager.id != it) {
+                    val cookies = preferencesDatastoreManager.cookies
                     preferencesDatastoreManager.clearData()
+                    preferencesDatastoreManager.cookies = cookies
+                }
                 navigator.navigate(Graphs.UserProfile)
             }
             onError { error ->

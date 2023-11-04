@@ -138,7 +138,9 @@ class LoginViewModel(
             else
                 navigator.navigate(UserProfileRoutes.FullProfile)
         } else {
+            val cookies = preferencesDatastoreManager.cookies
             preferencesDatastoreManager.clearData()
+            preferencesDatastoreManager.cookies = cookies
             navigator.navigate(UserProfileRoutes.FullProfile)
         }
     }
