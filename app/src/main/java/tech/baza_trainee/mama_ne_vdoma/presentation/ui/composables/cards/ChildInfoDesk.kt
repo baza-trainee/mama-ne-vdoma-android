@@ -28,7 +28,6 @@ import tech.baza_trainee.mama_ne_vdoma.domain.model.ChildEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.DayPeriod
 import tech.baza_trainee.mama_ne_vdoma.domain.model.Gender
 import tech.baza_trainee.mama_ne_vdoma.domain.model.Period
-import tech.baza_trainee.mama_ne_vdoma.domain.model.ScheduleModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.DayScheduleRow
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 import java.time.DayOfWeek
@@ -43,8 +42,7 @@ fun ChildInfoDesk(
         name = "Іванко",
         age = "5",
         gender = Gender.BOY,
-        schedule = ScheduleModel(
-            mutableStateMapOf(
+        schedule = mutableStateMapOf(
                 DayOfWeek.MONDAY to DayPeriod(morning = true),
                 DayOfWeek.TUESDAY to DayPeriod(wholeDay = true),
                 DayOfWeek.WEDNESDAY to DayPeriod(noon = true),
@@ -53,7 +51,6 @@ fun ChildInfoDesk(
                 DayOfWeek.SATURDAY to DayPeriod(afternoon = true),
                 DayOfWeek.SUNDAY to DayPeriod(wholeDay = true),
             )
-        )
     ),
     canEdit: Boolean = true,
     onEdit: (String) -> Unit = {},
@@ -116,10 +113,10 @@ fun ChildInfoDesk(
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        val morning = child.schedule.schedule.filter { it.value.morning }.keys
-        val noon = child.schedule.schedule.filter { it.value.noon }.keys
-        val afternoon = child.schedule.schedule.filter { it.value.afternoon }.keys
-        val wholeDay = child.schedule.schedule.filter { it.value.wholeDay }.keys
+        val morning = child.schedule.filter { it.value.morning }.keys
+        val noon = child.schedule.filter { it.value.noon }.keys
+        val afternoon = child.schedule.filter { it.value.afternoon }.keys
+        val wholeDay = child.schedule.filter { it.value.wholeDay }.keys
 
         val dayText = "Дні, коли потрібно доглянути дитину"
         val periodText = "Час, коли потрібно доглянути дитину"

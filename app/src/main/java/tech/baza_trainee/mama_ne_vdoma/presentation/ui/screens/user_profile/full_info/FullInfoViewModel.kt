@@ -10,8 +10,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import tech.baza_trainee.mama_ne_vdoma.domain.model.ScheduleModel
-import tech.baza_trainee.mama_ne_vdoma.domain.model.ifNullOrEmpty
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatastoreManager
 import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.LocationInteractor
 import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.NetworkEventsListener
@@ -109,19 +107,19 @@ class FullInfoViewModel(
         getUserInfo { entity ->
             val _isUserInfoFilled = entity.name.isNotEmpty() &&
                     entity.phone.isNotEmpty() &&
-                    !entity.schedule.schedule.isEmpty()
+                    entity.schedule.values.any { it.isFilled() }
 
             getUserAvatar(entity.avatar)
 
             _viewState.update {
                 it.copy(
                     name = entity.name,
-                    schedule = entity.schedule.ifNullOrEmpty { ScheduleModel() },
+                    schedule = entity.schedule,
                     isUserInfoFilled = _isUserInfoFilled
                 )
             }
 
-            communicator.schedule = entity.schedule.ifNullOrEmpty { ScheduleModel() }
+            communicator.schedule = entity.schedule
 
             preferencesDatastoreManager.apply {
                 id = entity.id

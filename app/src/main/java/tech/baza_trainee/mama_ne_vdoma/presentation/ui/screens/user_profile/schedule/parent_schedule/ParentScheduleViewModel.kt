@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import tech.baza_trainee.mama_ne_vdoma.domain.model.Period
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UserInfoEntity
+import tech.baza_trainee.mama_ne_vdoma.domain.model.updateSchedule
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatastoreManager
 import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.NetworkEventsListener
 import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.UserProfileInteractor
@@ -91,7 +92,7 @@ class ParentScheduleViewModel(
     private fun updateParentSchedule(dayOfWeek: DayOfWeek, dayPeriod: Period) {
         _viewState.update {
             it.copy(
-                schedule = updateSchedule(it.schedule, dayOfWeek, dayPeriod)
+                schedule = it.schedule.updateSchedule(dayOfWeek, dayPeriod)
             )
         }
     }

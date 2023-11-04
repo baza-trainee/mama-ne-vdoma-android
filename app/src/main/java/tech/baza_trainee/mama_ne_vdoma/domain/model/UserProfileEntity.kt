@@ -1,5 +1,8 @@
 package tech.baza_trainee.mama_ne_vdoma.domain.model
 
+import androidx.compose.runtime.snapshots.SnapshotStateMap
+import java.time.DayOfWeek
+
 data class UserProfileEntity(
     val id: String = "",
     val email: String = "",
@@ -9,7 +12,7 @@ data class UserProfileEntity(
     val sendingEmails: Boolean = true,
     val avatar: String = "",
     val location: LocationEntity = LocationEntity(),
-    val schedule: ScheduleModel = ScheduleModel(),
+    val schedule: SnapshotStateMap<DayOfWeek, DayPeriod> = getDefaultSchedule(),
     val groupJoinRequests: List<JoinRequestEntity> = emptyList()
 )
 

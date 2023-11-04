@@ -23,6 +23,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -31,13 +37,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import tech.baza_trainee.mama_ne_vdoma.R
-import tech.baza_trainee.mama_ne_vdoma.domain.model.Period
-import tech.baza_trainee.mama_ne_vdoma.domain.model.ScheduleModel
+import tech.baza_trainee.mama_ne_vdoma.domain.model.DayPeriod
+import tech.baza_trainee.mama_ne_vdoma.domain.model.getDefaultSchedule
+import tech.baza_trainee.mama_ne_vdoma.domain.model.updateSchedule
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ScheduleGroup
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.text_fields.OutlinedTextFieldWithError
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.GrayText
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.ButtonText
 import java.time.DayOfWeek
 
@@ -46,15 +52,21 @@ import java.time.DayOfWeek
 @Preview
 fun ParentScheduleEditDialog(
     modifier: Modifier = Modifier,
-    scheduleModel: ScheduleModel = ScheduleModel(),
+    schedule: SnapshotStateMap<DayOfWeek, DayPeriod> = getDefaultSchedule(),
     note: String = "Note",
-    noteValid: ValidField = ValidField.EMPTY,
-    onEditSchedule: (DayOfWeek, Period) -> Unit = { _, _ -> },
-    onEditNote: (String) -> Unit = {},
-    onSave: () -> Unit = {},
-    onRestore: () -> Unit = {},
+    onSave: (SnapshotStateMap<DayOfWeek, DayPeriod>, String) -> Unit = {_,_->},
     onDismissRequest: () -> Unit = {}
 ) {
+    var tempNote by rememberSaveable { mutableStateOf(note) }
+    var tempSchedule by rememberSaveable {
+        val map = mutableMapOf<DayOfWeek, DayPeriod>().also { map ->
+        DayOfWeek.values().forEach {
+            map[it] = (schedule[it] ?: DayPeriod()).copy()
+        }
+    }
+        mutableStateOf(map.toMap())
+    }
+
     AlertDialog(
         onDismissRequest = onDismissRequest
     ) {
@@ -97,20 +109,22 @@ fun ParentScheduleEditDialog(
             ) {
                 ScheduleGroup(
                     modifier = Modifier.fillMaxWidth(),
-                    scheduleModel = scheduleModel,
-                    onValueChange = onEditSchedule
+                    schedule = tempSchedule,
+                    onValueChange = { day, period ->
+                        tempSchedule = tempSchedule.updateSchedule(day, period)
+                    }
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
 
                 OutlinedTextFieldWithError(
                     modifier = Modifier.fillMaxWidth(),
-                    value = note,
+                    value = tempNote,
                     label = "Нотатка",
-                    onValueChange = onEditNote,
+                    onValueChange = { tempNote = it },
                     minLines = 3,
                     maxLines = 3,
-                    isError = noteValid == ValidField.INVALID
+                    isError = tempNote.length > 1000
                 )
 
                 Text(
@@ -137,7 +151,8 @@ fun ParentScheduleEditDialog(
                         .padding(horizontal = 8.dp)
                         .weight(0.6f),
                     onClick = {
-                        onSave()
+                        val map = mutableStateMapOf<DayOfWeek, DayPeriod>().apply { putAll(tempSchedule) }
+                        onSave(map, tempNote)
                         onDismissRequest()
                     }
                 ) {
@@ -148,10 +163,7 @@ fun ParentScheduleEditDialog(
                         .height(48.dp)
                         .padding(horizontal = 8.dp)
                         .weight(0.4f),
-                    onClick = {
-                        onRestore()
-                        onDismissRequest()
-                    },
+                    onClick = onDismissRequest,
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.background,
                         contentColor = MaterialTheme.colorScheme.primary

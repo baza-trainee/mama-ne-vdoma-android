@@ -3,8 +3,8 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.ed
 import android.graphics.Bitmap
 import android.net.Uri
 import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.model.LatLng
@@ -14,10 +14,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import tech.baza_trainee.mama_ne_vdoma.domain.model.DayPeriod
-import tech.baza_trainee.mama_ne_vdoma.domain.model.Period
-import tech.baza_trainee.mama_ne_vdoma.domain.model.ScheduleModel
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UserInfoEntity
-import tech.baza_trainee.mama_ne_vdoma.domain.model.ifNullOrEmpty
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatastoreManager
 import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.LocationInteractor
 import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.NetworkEventsListener
@@ -49,11 +46,6 @@ class EditProfileViewModel(
     private val _uiState = mutableStateOf<EditProfileUiState>(EditProfileUiState.Idle)
     val uiState: State<EditProfileUiState>
         get() = _uiState
-
-    private var backupParentSchedule: Map<DayOfWeek, DayPeriod>? = null
-    private var backupParentNote: String? = null
-    private var backupChildrenSchedule: Map<String, Map<DayOfWeek, DayPeriod>>? = null
-    private var backupChildrenNotes: Map<String, String>? = null
 
     private val childrenToRemove = mutableSetOf<String>()
 
@@ -109,67 +101,17 @@ class EditProfileViewModel(
             is EditProfileEvent.UpdateUserAddress -> updateUserAddress(event.address)
             is EditProfileEvent.ValidatePhone -> validatePhone(event.phone)
             is EditProfileEvent.ValidateUserName -> validateUserName(event.name)
-            is EditProfileEvent.EditChildNote -> updateChildNote(event.child, event.note)
-            is EditProfileEvent.EditChildSchedule -> updateChildSchedule(event.child, event.dayOfWeek, event.period)
-            is EditProfileEvent.EditParentNote -> updateParentNote(event.note)
-            is EditProfileEvent.EditParentSchedule -> updateParentSchedule(event.dayOfWeek, event.period)
-            is EditProfileEvent.RestoreChild -> restoreChildren()
-            EditProfileEvent.RestoreParentInfo -> restoreParent()
-            is EditProfileEvent.SaveChildren -> {
-                backupChildrenSchedule = null
-                backupChildrenNotes = null
+            is EditProfileEvent.SaveParentInfo -> {
+                updateParentSchedule(event.schedule)
+                updateParentNote(event.note)
             }
-            EditProfileEvent.SaveParentInfo -> {
-                backupParentNote = null
-                backupParentSchedule = null
-            }
+            is EditProfileEvent.SaveChildren ->  saveChildrenInfo(event.schedules, event.notes)
 
             EditProfileEvent.AddChild -> navigator.navigate(SettingsScreenRoutes.ChildInfo)
             EditProfileEvent.OnSaveAndBack -> saveChanges { navigator.goToPrevious() }
             EditProfileEvent.OnSaveAndAddChild -> saveChanges { navigator.navigate(SettingsScreenRoutes.ChildInfo) }
             EditProfileEvent.GoToMain -> navigator.navigate(MainScreenRoutes.Main)
         }
-    }
-
-    private fun restoreParent() {
-        val schedule = mutableStateMapOf<DayOfWeek, DayPeriod>().also { map ->
-            DayOfWeek.values().forEach {
-                map[it] = (backupParentSchedule?.get(it) ?: DayPeriod()).copy()
-            }
-        }
-
-        _viewState.update {
-            it.copy(
-                schedule = ScheduleModel(schedule),
-                note = backupParentNote.orEmpty()
-            )
-        }
-
-        backupParentSchedule = null
-        backupParentNote = null
-    }
-
-    private fun restoreChildren() {
-        val children = _viewState.value.children.map { child ->
-            val childSchedule = backupChildrenSchedule?.get(child.childId)
-            val schedule = mutableStateMapOf<DayOfWeek, DayPeriod>().also { map ->
-                DayOfWeek.values().forEach {
-                    map[it] = (childSchedule?.get(it) ?: DayPeriod()).copy()
-                }
-            }
-            val note = backupChildrenNotes?.get(child.childId).orEmpty()
-            child.copy(
-                schedule = ScheduleModel(schedule),
-                note = note
-            )
-        }.toList()
-
-        _viewState.update {
-            it.copy(children = children)
-        }
-
-        backupChildrenSchedule = null
-        backupChildrenNotes = null
     }
 
     private fun saveChanges(onFinish: () -> Unit = {}) {
@@ -216,76 +158,36 @@ class EditProfileViewModel(
         }
     }
 
-    private fun updateParentSchedule(dayOfWeek: DayOfWeek, dayPeriod: Period) {
-        if (backupParentSchedule == null)
-            backupParentSchedule = mutableStateMapOf<DayOfWeek, DayPeriod>().also { map ->
-                DayOfWeek.values().forEach {
-                    map[it] = (_viewState.value.schedule.schedule[it] ?: DayPeriod()).copy()
-                }
-            }
-
+    private fun updateParentSchedule(schedule: SnapshotStateMap<DayOfWeek, DayPeriod>) {
         _viewState.update {
             it.copy(
-                schedule = updateSchedule(it.schedule, dayOfWeek, dayPeriod)
+                schedule = schedule
             )
         }
     }
 
     private fun updateParentNote(value: String) {
-        if (backupParentNote == null)
-            backupParentNote = value
-
-        val fieldValid = if (value.length < 1000) ValidField.VALID else ValidField.INVALID
-
         _viewState.update {
             it.copy(
-                note = value,
-                noteValid = fieldValid
+                note = value
             )
         }
     }
 
-    private fun updateChildNote(childId: Int, value: String) {
-        if (backupChildrenNotes == null) {
-            backupChildrenNotes = mutableMapOf<String, String>().apply {
-                put(
-                    _viewState.value.children[childId].childId,
-                    _viewState.value.children[childId].note
+    private fun saveChildrenInfo(schedules: Map<Int, SnapshotStateMap<DayOfWeek, DayPeriod>>, notes: Map<Int, String>) {
+        val children = _viewState.value.children.toMutableList().apply {
+            forEachIndexed { index, childEntity ->
+                val newChild = childEntity.copy(
+                    schedule = schedules[index] ?: childEntity.schedule,
+                    note = notes[index] ?: childEntity.note
                 )
-            }
-        }
-        val fieldValid = if (value.length < 1000) ValidField.VALID else ValidField.INVALID
-        val children = _viewState.value.children.toMutableList().mapIndexed { index, child ->
-            if (index == childId) child.copy(note = value) else child
-        }
-        val fieldMap = _viewState.value.childrenNotesValid.apply {
-            this[childId] = fieldValid
-        }
-        _viewState.update {
-            it.copy(
-                children = children,
-                childrenNotesValid = fieldMap
-            )
-        }
-    }
-
-    private fun updateChildSchedule(childId: Int, dayOfWeek: DayOfWeek, dayPeriod: Period) {
-        if (backupChildrenSchedule == null) {
-            val childSchedule = _viewState.value.children[childId].schedule.schedule
-            backupChildrenSchedule = mutableMapOf<String, Map<DayOfWeek, DayPeriod>>().apply {
-                put(
-                    _viewState.value.children[childId].childId,
-                    mutableStateMapOf<DayOfWeek, DayPeriod>().also { map ->
-                        DayOfWeek.values().forEach {
-                            map[it] = (childSchedule[it] ?: DayPeriod()).copy()
-                        }
-                    }
-                )
+                removeAt(index)
+                add(index, newChild)
             }
         }
         _viewState.update {
             it.copy(
-                schedule = updateSchedule(it.children[childId].schedule, dayOfWeek, dayPeriod)
+                children = children
             )
         }
     }
@@ -315,7 +217,7 @@ class EditProfileViewModel(
                     code = entity.countryCode,
                     phone = entity.phone,
                     phoneValid = ValidField.VALID,
-                    schedule = entity.schedule.ifNullOrEmpty { ScheduleModel() }
+                    schedule = entity.schedule
                 )
             }
 

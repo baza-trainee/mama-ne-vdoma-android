@@ -35,7 +35,6 @@ import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -51,13 +50,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.domain.model.ChildEntity
-import tech.baza_trainee.mama_ne_vdoma.domain.model.Period
+import tech.baza_trainee.mama_ne_vdoma.domain.model.DayPeriod
+import tech.baza_trainee.mama_ne_vdoma.domain.model.updateSchedule
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ScheduleGroup
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.text_fields.OutlinedTextFieldWithError
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.GrayText
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.Purple80
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.ButtonText
 import java.time.DayOfWeek
 
@@ -68,14 +67,26 @@ fun ChildScheduleEditDialog(
     modifier: Modifier = Modifier,
     selectedChild: Int = 0,
     children: List<ChildEntity> = emptyList(),
-    childrenNotesValid: SnapshotStateMap<Int, ValidField> = mutableStateMapOf(),
-    onEditSchedule: (Int, DayOfWeek, Period) -> Unit = { _, _, _ -> },
-    onEditNote: (Int, String) -> Unit = {_,_ -> },
-    onSave: () -> Unit = {},
-    onRestore: (Int) -> Unit = {},
+    onSave: (Map<Int, SnapshotStateMap<DayOfWeek, DayPeriod>>, Map<Int, String>) -> Unit = {_,_ ->},
     onDismissRequest: () -> Unit = {}
 ) {
     var currentChild by rememberSaveable { mutableIntStateOf(selectedChild) }
+    var schedules by rememberSaveable {
+        val map = mutableMapOf<Int, SnapshotStateMap<DayOfWeek, DayPeriod>>().apply {
+            children.forEachIndexed { index, childEntity ->
+                put(index, childEntity.schedule)
+            }
+        }
+        mutableStateOf(map.toMap())
+    }
+    var notes by rememberSaveable {
+        val map = mutableMapOf<Int, String>().apply {
+            children.forEachIndexed { index, childEntity ->
+                put(index, childEntity.note)
+            }
+        }
+        mutableStateOf(map.toMap())
+    }
 
     AlertDialog(
         onDismissRequest = onDismissRequest
@@ -154,9 +165,7 @@ fun ChildScheduleEditDialog(
                                         .clickable(
                                             indication = null,
                                             interactionSource = remember { MutableInteractionSource() }
-                                        ) {
-                                            currentChild = 0
-                                        },
+                                        ) { currentChild = 0 },
                                     contentAlignment = Alignment.Center
                                 ) {
                                     Text(
@@ -185,9 +194,7 @@ fun ChildScheduleEditDialog(
                                         .clickable(
                                             indication = null,
                                             interactionSource = remember { MutableInteractionSource() }
-                                        ) {
-                                            currentChild = 1
-                                        },
+                                        ) { currentChild = 1 },
                                     contentAlignment = Alignment.Center
                                 ) {
                                     Text(
@@ -268,20 +275,31 @@ fun ChildScheduleEditDialog(
 
                 ScheduleGroup(
                     modifier = Modifier.fillMaxWidth(),
-                    scheduleModel = children[currentChild].schedule,
-                    onValueChange = { day, period -> onEditSchedule(currentChild, day, period) }
+                    schedule = schedules[currentChild].orEmpty(),
+                    onValueChange = { day, period ->
+                        schedules = schedules.toMutableMap().apply {
+                            put(
+                                currentChild,
+                                schedules[currentChild].orEmpty().updateSchedule(day, period)
+                            )
+                        }.toMap()
+                    }
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
 
                 OutlinedTextFieldWithError(
                     modifier = Modifier.fillMaxWidth(),
-                    value = children[currentChild].note,
-                    label ="Нотатка",
-                    onValueChange = { onEditNote(currentChild, it) },
+                    value = notes[currentChild].orEmpty(),
+                    label = "Нотатка",
+                    onValueChange = {
+                        notes = notes.toMutableMap().apply {
+                            put(currentChild, it)
+                        }.toMap()
+                    },
                     minLines = 3,
                     maxLines = 3,
-                    isError = childrenNotesValid[currentChild] == ValidField.INVALID
+                    isError = notes[currentChild].orEmpty().length > 1000
                 )
 
                 Text(
@@ -310,7 +328,7 @@ fun ChildScheduleEditDialog(
                         .padding(horizontal = 8.dp)
                         .weight(0.6f),
                     onClick = {
-                        onSave()
+                        onSave(schedules, notes)
                         onDismissRequest()
                     }
                 ) {
@@ -321,10 +339,7 @@ fun ChildScheduleEditDialog(
                         .height(48.dp)
                         .padding(horizontal = 8.dp)
                         .weight(0.4f),
-                    onClick = {
-                        onRestore(currentChild)
-                        onDismissRequest()
-                    },
+                    onClick = onDismissRequest,
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.background,
                         contentColor = MaterialTheme.colorScheme.primary

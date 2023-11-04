@@ -20,8 +20,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import tech.baza_trainee.mama_ne_vdoma.domain.model.DayPeriod
 import tech.baza_trainee.mama_ne_vdoma.domain.model.Period
-import tech.baza_trainee.mama_ne_vdoma.domain.model.ScheduleModel
 import java.time.DayOfWeek
 import java.time.format.TextStyle
 import java.util.Locale
@@ -30,7 +30,7 @@ import java.util.Locale
 @Preview
 fun ScheduleGroup(
     modifier: Modifier = Modifier,
-    scheduleModel: ScheduleModel = ScheduleModel(),
+    schedule: Map<DayOfWeek, DayPeriod> = mapOf(),
     onValueChange: (DayOfWeek, Period) -> Unit = { _, _ -> }
 ) {
     Column(
@@ -98,7 +98,7 @@ fun ScheduleGroup(
                         .height(48.dp)
                         .weight(0.34f)
                         .background(
-                            color = if (scheduleModel.schedule[day]?.wholeDay == true) MaterialTheme.colorScheme.primary
+                            color = if (schedule[day]?.wholeDay == true) MaterialTheme.colorScheme.primary
                             else MaterialTheme.colorScheme.surface,
                             shape = RoundedCornerShape(8.dp)
                         )
@@ -110,7 +110,7 @@ fun ScheduleGroup(
                     Text(
                         text = dayName,
                         textAlign = TextAlign.Center,
-                        color = if (scheduleModel.schedule[day]?.wholeDay == true) MaterialTheme.colorScheme.onPrimary
+                        color = if (schedule[day]?.wholeDay == true) MaterialTheme.colorScheme.onPrimary
                         else MaterialTheme.colorScheme.onBackground
                     )
                 }
@@ -119,7 +119,7 @@ fun ScheduleGroup(
                     modifier = Modifier
                         .padding(horizontal = 8.dp)
                         .weight(0.22f),
-                    checked = scheduleModel.schedule[day]?.morning == true,
+                    checked = schedule[day]?.morning == true,
                     onCheckedChange = {
                         onValueChange(day, Period.MORNING)
                     }
@@ -129,7 +129,7 @@ fun ScheduleGroup(
                     modifier = Modifier
                         .padding(horizontal = 8.dp)
                         .weight(0.22f),
-                    checked = scheduleModel.schedule[day]?.noon == true,
+                    checked = schedule[day]?.noon == true,
                     onCheckedChange = {
                         onValueChange(day, Period.NOON)
                     }
@@ -139,7 +139,7 @@ fun ScheduleGroup(
                     modifier = Modifier
                         .padding(horizontal = 8.dp)
                         .weight(0.22f),
-                    checked = scheduleModel.schedule[day]?.afternoon == true,
+                    checked = schedule[day]?.afternoon == true,
                     onCheckedChange = {
                         onValueChange(day, Period.AFTERNOON)
                     }

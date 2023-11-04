@@ -2,10 +2,13 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.standalone.
 
 import android.graphics.Bitmap
 import android.net.Uri
+import androidx.compose.runtime.snapshots.SnapshotStateMap
 import com.google.android.gms.maps.model.LatLng
-import tech.baza_trainee.mama_ne_vdoma.domain.model.ScheduleModel
+import tech.baza_trainee.mama_ne_vdoma.domain.model.DayPeriod
+import tech.baza_trainee.mama_ne_vdoma.domain.model.getDefaultSchedule
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.BitmapHelper
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
+import java.time.DayOfWeek
 
 data class CreateGroupViewState(
     val userAvatar: Uri = Uri.EMPTY,
@@ -19,7 +22,7 @@ data class CreateGroupViewState(
     val minAgeValid: ValidField = ValidField.EMPTY,
     val maxAge: String = "",
     val maxAgeValid: ValidField = ValidField.EMPTY,
-    val schedule: ScheduleModel = ScheduleModel(),
+    val schedule: SnapshotStateMap<DayOfWeek, DayPeriod> = getDefaultSchedule(),
     val avatar: Bitmap = BitmapHelper.DEFAULT_BITMAP,
     val isLoading: Boolean = false
 )

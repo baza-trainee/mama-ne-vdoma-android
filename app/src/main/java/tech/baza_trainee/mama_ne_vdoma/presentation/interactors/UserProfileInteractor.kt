@@ -2,14 +2,13 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.interactors
 
 import android.graphics.Bitmap
 import android.net.Uri
+import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.core.net.toUri
 import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
 import kotlinx.coroutines.CoroutineScope
 import tech.baza_trainee.mama_ne_vdoma.domain.model.ChildEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.DayPeriod
 import tech.baza_trainee.mama_ne_vdoma.domain.model.PatchChildEntity
-import tech.baza_trainee.mama_ne_vdoma.domain.model.Period
-import tech.baza_trainee.mama_ne_vdoma.domain.model.ScheduleModel
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UserInfoEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UserProfileEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatastoreManager
@@ -47,13 +46,7 @@ interface UserProfileInteractor {
 
     fun getChildById(childId: String, onSuccess: (ChildEntity?) -> Unit)
 
-    fun patchChild(childId: String, note: String, schedule: ScheduleModel, onSuccess: () -> Unit)
-
-    fun updateSchedule(
-        scheduleModel: ScheduleModel,
-        dayOfWeek: DayOfWeek,
-        dayPeriod: Period
-    ): ScheduleModel
+    fun patchChild(childId: String, note: String, schedule: SnapshotStateMap<DayOfWeek, DayPeriod>, onSuccess: () -> Unit)
 
     fun updateParent(user: UserInfoEntity, onSuccess: () -> Unit)
 
@@ -186,7 +179,7 @@ class UserProfileInteractorImpl(
         }
     }
 
-    override fun patchChild(childId: String, note: String, schedule: ScheduleModel, onSuccess: () -> Unit) {
+    override fun patchChild(childId: String, note: String, schedule: SnapshotStateMap<DayOfWeek, DayPeriod>, onSuccess: () -> Unit) {
         coroutineScope.networkExecutor {
             execute {
                 userProfileRepository.patchChildById(
@@ -203,94 +196,6 @@ class UserProfileInteractorImpl(
             }
             onError(networkListener::onError)
             onLoading(networkListener::onLoading)
-        }
-    }
-
-    override fun updateSchedule(scheduleModel: ScheduleModel, dayOfWeek: DayOfWeek, dayPeriod: Period): ScheduleModel {
-        return when (dayPeriod) {
-            Period.WHOLE_DAY -> {
-                scheduleModel.apply {
-                    schedule[dayOfWeek] = schedule[dayOfWeek]?.copy(
-                        wholeDay = schedule[dayOfWeek]?.wholeDay?.not() ?: false
-                    ) ?: DayPeriod()
-                    if (schedule[dayOfWeek]?.wholeDay == true) {
-                        schedule[dayOfWeek] = schedule[dayOfWeek]?.copy(
-                            morning = false,
-                            noon = false,
-                            afternoon = false
-                        ) ?: DayPeriod()
-                    }
-                }
-            }
-
-            Period.MORNING -> {
-                scheduleModel.apply {
-                    schedule[dayOfWeek] = schedule[dayOfWeek]?.copy(
-                        morning = schedule[dayOfWeek]?.morning?.not() ?: false
-                    ) ?: DayPeriod()
-                    if (schedule[dayOfWeek]?.morning == true &&
-                        schedule[dayOfWeek]?.noon == true &&
-                        schedule[dayOfWeek]?.afternoon == true
-                    ) {
-                        schedule[dayOfWeek] = schedule[dayOfWeek]?.copy(
-                            wholeDay = true,
-                            morning = false,
-                            noon = false,
-                            afternoon = false
-                        ) ?: DayPeriod()
-                    } else if (schedule[dayOfWeek]?.morning == true && schedule[dayOfWeek]?.wholeDay == true) {
-                        schedule[dayOfWeek] = schedule[dayOfWeek]?.copy(
-                            wholeDay = false
-                        ) ?: DayPeriod()
-                    }
-                }
-            }
-
-            Period.NOON -> {
-                scheduleModel.apply {
-                    schedule[dayOfWeek] = schedule[dayOfWeek]?.copy(
-                        noon = schedule[dayOfWeek]?.noon?.not() ?: false
-                    ) ?: DayPeriod()
-                    if (schedule[dayOfWeek]?.morning == true &&
-                        schedule[dayOfWeek]?.noon == true &&
-                        schedule[dayOfWeek]?.afternoon == true
-                    ) {
-                        schedule[dayOfWeek] = schedule[dayOfWeek]?.copy(
-                            wholeDay = true,
-                            morning = false,
-                            noon = false,
-                            afternoon = false
-                        ) ?: DayPeriod()
-                    } else if (schedule[dayOfWeek]?.noon == true && schedule[dayOfWeek]?.wholeDay == true) {
-                        schedule[dayOfWeek] = schedule[dayOfWeek]?.copy(
-                            wholeDay = false
-                        ) ?: DayPeriod()
-                    }
-                }
-            }
-
-            Period.AFTERNOON -> {
-                scheduleModel.apply {
-                    schedule[dayOfWeek] = schedule[dayOfWeek]?.copy(
-                        afternoon = schedule[dayOfWeek]?.afternoon?.not() ?: false
-                    ) ?: DayPeriod()
-                    if (schedule[dayOfWeek]?.morning == true &&
-                        schedule[dayOfWeek]?.noon == true &&
-                        schedule[dayOfWeek]?.afternoon == true
-                    ) {
-                        schedule[dayOfWeek] = schedule[dayOfWeek]?.copy(
-                            wholeDay = true,
-                            morning = false,
-                            noon = false,
-                            afternoon = false
-                        ) ?: DayPeriod()
-                    } else if (schedule[dayOfWeek]?.afternoon == true && schedule[dayOfWeek]?.wholeDay == true) {
-                        schedule[dayOfWeek] = schedule[dayOfWeek]?.copy(
-                            wholeDay = false
-                        ) ?: DayPeriod()
-                    }
-                }
-            }
         }
     }
 

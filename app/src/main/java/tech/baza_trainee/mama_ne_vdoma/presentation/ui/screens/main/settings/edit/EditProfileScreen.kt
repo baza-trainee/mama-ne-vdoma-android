@@ -513,46 +513,20 @@ fun EditProfileScreen(
 
         if (editUserSchedule) {
             ParentScheduleEditDialog(
-                scheduleModel = screenState.value.schedule,
+                schedule = screenState.value.schedule,
                 note = screenState.value.note,
-                onEditSchedule = { day, period ->
-                    handleEvent(
-                        EditProfileEvent.EditParentSchedule(
-                            day,
-                            period
-                        )
-                    )
-                },
-                onEditNote = { handleEvent(EditProfileEvent.EditParentNote(it)) },
-                onSave = { handleEvent(EditProfileEvent.SaveParentInfo) },
-                onRestore = { handleEvent(EditProfileEvent.RestoreParentInfo) }
-            ) { editUserSchedule = false }
+                onSave = { schedule, note -> handleEvent(EditProfileEvent.SaveParentInfo(schedule, note)) },
+                onDismissRequest = { editUserSchedule = false }
+            )
         }
 
         if (editChildSchedule) {
             ChildScheduleEditDialog(
                 selectedChild = selectedChild,
                 children = screenState.value.children,
-                onEditSchedule = { child, day, period ->
-                    handleEvent(
-                        EditProfileEvent.EditChildSchedule(
-                            child,
-                            day,
-                            period
-                        )
-                    )
-                },
-                onEditNote = { child: Int, note: String ->
-                    handleEvent(
-                        EditProfileEvent.EditChildNote(
-                            child,
-                            note
-                        )
-                    )
-                },
-                onSave = { handleEvent(EditProfileEvent.SaveChildren) },
-                onRestore = { handleEvent(EditProfileEvent.RestoreChild(it)) }
-            ) { editChildSchedule = false }
+                onSave = { schedules, notes -> handleEvent(EditProfileEvent.SaveChildren(schedules, notes)) },
+                onDismissRequest = { editChildSchedule = false }
+            )
         }
 
         if (showDeleteAccountAlertDialog) {

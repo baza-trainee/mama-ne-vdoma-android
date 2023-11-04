@@ -12,12 +12,12 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import tech.baza_trainee.mama_ne_vdoma.domain.model.ChildEntity
-import tech.baza_trainee.mama_ne_vdoma.domain.model.DayPeriod
 import tech.baza_trainee.mama_ne_vdoma.domain.model.GroupEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.Period
-import tech.baza_trainee.mama_ne_vdoma.domain.model.ScheduleModel
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UpdateGroupEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UserProfileEntity
+import tech.baza_trainee.mama_ne_vdoma.domain.model.getDefaultSchedule
+import tech.baza_trainee.mama_ne_vdoma.domain.model.updateSchedule
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatastoreManager
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.FilesRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.GroupsRepository
@@ -329,7 +329,7 @@ class CreateGroupViewModel(
                 val child = entity.find { it.childId == childCommunicator.childId }
                 _viewState.update { state ->
                     state.copy(
-                        schedule = child?.schedule ?: ScheduleModel(),
+                        schedule = child?.schedule ?: getDefaultSchedule(),
                         minAge = child?.age.orEmpty(),
                         minAgeValid = ValidField.VALID,
                         maxAge = child?.age.orEmpty(),
@@ -351,104 +351,9 @@ class CreateGroupViewModel(
     }
 
     private fun updateGroupSchedule(dayOfWeek: DayOfWeek, dayPeriod: Period) {
-        val currentSchedule = _viewState.value.schedule
-        when (dayPeriod) {
-            Period.WHOLE_DAY -> {
-                _viewState.update {
-                    it.copy(
-                        schedule = currentSchedule.apply {
-                            schedule[dayOfWeek] = schedule[dayOfWeek]?.copy(
-                                wholeDay = schedule[dayOfWeek]?.wholeDay?.not() ?: false
-                            ) ?: DayPeriod()
-                            if (schedule[dayOfWeek]?.wholeDay == true) {
-                                schedule[dayOfWeek] = schedule[dayOfWeek]?.copy(
-                                    morning = false,
-                                    noon = false,
-                                    afternoon = false
-                                ) ?: DayPeriod()
-                            }
-                        }
-                    )
-                }
-            }
-
-            Period.MORNING -> {
-                _viewState.update {
-                    it.copy(
-                        schedule = currentSchedule.apply {
-                            schedule[dayOfWeek] = schedule[dayOfWeek]?.copy(
-                                morning = schedule[dayOfWeek]?.morning?.not() ?: false
-                            ) ?: DayPeriod()
-                            if (schedule[dayOfWeek]?.morning == true &&
-                                schedule[dayOfWeek]?.noon == true &&
-                                schedule[dayOfWeek]?.afternoon == true) {
-                                schedule[dayOfWeek] = schedule[dayOfWeek]?.copy(
-                                    wholeDay = true,
-                                    morning = false,
-                                    noon = false,
-                                    afternoon = false
-                                ) ?: DayPeriod()
-                            } else if (schedule[dayOfWeek]?.morning == true && schedule[dayOfWeek]?.wholeDay == true) {
-                                schedule[dayOfWeek] = schedule[dayOfWeek]?.copy(
-                                    wholeDay = false
-                                ) ?: DayPeriod()
-                            }
-                        }
-                    )
-                }
-            }
-
-            Period.NOON -> {
-                _viewState.update {
-                    it.copy(
-                        schedule = currentSchedule.apply {
-                            schedule[dayOfWeek] = schedule[dayOfWeek]?.copy(
-                                noon = schedule[dayOfWeek]?.noon?.not() ?: false
-                            ) ?: DayPeriod()
-                            if (schedule[dayOfWeek]?.morning == true &&
-                                schedule[dayOfWeek]?.noon == true &&
-                                schedule[dayOfWeek]?.afternoon == true) {
-                                schedule[dayOfWeek] = schedule[dayOfWeek]?.copy(
-                                    wholeDay = true,
-                                    morning = false,
-                                    noon = false,
-                                    afternoon = false
-                                ) ?: DayPeriod()
-                            } else if (schedule[dayOfWeek]?.noon == true && schedule[dayOfWeek]?.wholeDay == true) {
-                                schedule[dayOfWeek] = schedule[dayOfWeek]?.copy(
-                                    wholeDay = false
-                                ) ?: DayPeriod()
-                            }
-                        }
-                    )
-                }
-            }
-
-            Period.AFTERNOON -> {
-                _viewState.update {
-                    it.copy(
-                        schedule = currentSchedule.apply {
-                            schedule[dayOfWeek] = schedule[dayOfWeek]?.copy(
-                                afternoon = schedule[dayOfWeek]?.afternoon?.not() ?: false
-                            ) ?: DayPeriod()
-                            if (schedule[dayOfWeek]?.morning == true &&
-                                schedule[dayOfWeek]?.noon == true &&
-                                schedule[dayOfWeek]?.afternoon == true) {
-                                schedule[dayOfWeek] = schedule[dayOfWeek]?.copy(
-                                    wholeDay = true,
-                                    morning = false,
-                                    noon = false,
-                                    afternoon = false
-                                ) ?: DayPeriod()
-                            } else if (schedule[dayOfWeek]?.afternoon == true && schedule[dayOfWeek]?.wholeDay == true) {
-                                schedule[dayOfWeek] = schedule[dayOfWeek]?.copy(
-                                    wholeDay = false
-                                ) ?: DayPeriod()
-                            }
-                        }
-                    )
-                }
-            }
+        val currentSchedule = _viewState.value.schedule.updateSchedule(dayOfWeek, dayPeriod)
+        _viewState.update {
+            it.copy(schedule = currentSchedule)
         }
     }
 

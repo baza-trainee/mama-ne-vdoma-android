@@ -18,6 +18,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -33,7 +34,6 @@ import coil.request.ImageRequest
 import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.domain.model.DayPeriod
 import tech.baza_trainee.mama_ne_vdoma.domain.model.Period
-import tech.baza_trainee.mama_ne_vdoma.domain.model.ScheduleModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.DayScheduleRow
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 import java.time.DayOfWeek
@@ -46,8 +46,7 @@ fun ParentInfoDesk(
     address: String = "Somewhere",
     avatar: Uri = Uri.EMPTY,
     showDeleteButton: Boolean = true,
-    schedule: ScheduleModel = ScheduleModel(
-        mutableStateMapOf(
+    schedule: SnapshotStateMap<DayOfWeek, DayPeriod> = mutableStateMapOf(
             DayOfWeek.MONDAY to DayPeriod(morning = true),
             DayOfWeek.TUESDAY to DayPeriod(wholeDay = true),
             DayOfWeek.WEDNESDAY to DayPeriod(noon = true),
@@ -55,7 +54,6 @@ fun ParentInfoDesk(
             DayOfWeek.FRIDAY to DayPeriod(noon = true, afternoon = true),
             DayOfWeek.SATURDAY to DayPeriod(afternoon = true),
             DayOfWeek.SUNDAY to DayPeriod(wholeDay = true),
-        )
     ),
     onEdit: () -> Unit = {},
     onDelete: () -> Unit = {}
@@ -140,10 +138,10 @@ fun ParentInfoDesk(
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        val morning = schedule.schedule.filter { it.value.morning }.keys
-        val noon = schedule.schedule.filter { it.value.noon }.keys
-        val afternoon = schedule.schedule.filter { it.value.afternoon }.keys
-        val wholeDay = schedule.schedule.filter { it.value.wholeDay }.keys
+        val morning = schedule.filter { it.value.morning }.keys
+        val noon = schedule.filter { it.value.noon }.keys
+        val afternoon = schedule.filter { it.value.afternoon }.keys
+        val wholeDay = schedule.filter { it.value.wholeDay }.keys
 
         val dayText = "Дні, коли ви можете доглядати за дітьми"
         val periodText = "Час, коли ви можете доглядати за дітьми"

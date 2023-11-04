@@ -326,7 +326,7 @@ fun CreateGroupScreen(
                 Spacer(modifier = Modifier.width(4.dp))
 
                 ScheduleGroup(
-                    scheduleModel = screenState.value.schedule,
+                    schedule = screenState.value.schedule,
                     onValueChange = { day, period ->
                         handleEvent(
                             CreateGroupEvent.UpdateGroupSchedule(
@@ -419,7 +419,7 @@ fun CreateGroupScreen(
                             screenState.value.minAgeValid == ValidField.VALID &&
                             screenState.value.maxAgeValid == ValidField.VALID &&
                             screenState.value.description.isNotEmpty() &&
-                            screenState.value.schedule.schedule.values.any { it.isFilled() }
+                            screenState.value.schedule.values.any { it.isFilled() }
                 ) {
                     ButtonText(
                         text = "Створити нову групу"

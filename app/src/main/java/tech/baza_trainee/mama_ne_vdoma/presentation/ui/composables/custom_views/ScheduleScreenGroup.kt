@@ -51,7 +51,7 @@ fun ScheduleScreenGroup(
         ) {
             ScheduleGroup(
                 modifier = Modifier.fillMaxWidth(),
-                scheduleModel = screenState.value.schedule,
+                schedule = screenState.value.schedule,
                 onValueChange = { day, period -> onUpdateSchedule(day, period) }
             )
 
