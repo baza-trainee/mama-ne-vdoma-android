@@ -22,6 +22,7 @@ data class UserPreferences(
     val adminJoinRequests: Int,
     val login: String,
     val authToken: String,
+    val fcmToken: String,
     val cookies: Set<String>
 )
 

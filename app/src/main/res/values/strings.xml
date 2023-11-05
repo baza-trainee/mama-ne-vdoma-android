@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Мама не вдома</string>
+    <string name="default_notification_channel_id" translatable="false">mama_ne_vdoma_notifications</string>
 </resources>

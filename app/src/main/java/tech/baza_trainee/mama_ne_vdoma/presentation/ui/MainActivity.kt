@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_WEAK
 import androidx.biometric.BiometricManager.Authenticators.DEVICE_CREDENTIAL
@@ -38,10 +37,6 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.Mama_ne_vdomaTheme
 class MainActivity : FragmentActivity() {
 
     private val viewModel: MainActivityViewModel by inject()
-
-    private val signInLauncher = registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) {
-
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -138,10 +133,4 @@ class MainActivity : FragmentActivity() {
             }
         }
     )
-
-    companion object {
-
-        private val REQ_ONE_TAP = 2  // Can be any integer unique to the Activity
-        private var showOneTapUI = true
-    }
 }

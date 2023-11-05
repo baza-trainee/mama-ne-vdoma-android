@@ -26,5 +26,6 @@ object UserPreferencesKeys {
     val KEY_ADMIN_JOIN_REQUESTS = intPreferencesKey(ADMIN_JOIN_REQUESTS)
     val KEY_ACCOUNT_LOGIN = stringPreferencesKey(ACCOUNT_LOGIN)
     val KEY_ACCOUNT_AUTH_TOKEN = stringPreferencesKey(ACCOUNT_AUTH_TOKEN)
+    val KEY_ACCOUNT_FCM_TOKEN = stringPreferencesKey(ACCOUNT_FCM_TOKEN)
     val KEY_ACCOUNT_COOKIES = stringSetPreferencesKey(ACCOUNT_COOKIES)
 }

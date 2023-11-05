@@ -123,8 +123,10 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.4.0")
 
     //Firebase crashlitics
-    implementation("com.google.firebase:firebase-crashlytics:18.5.1")
-    implementation("com.google.firebase:firebase-analytics:21.4.0")
+    implementation("com.google.firebase:firebase-crashlytics-ktx:18.5.1")
+    implementation("com.google.firebase:firebase-analytics-ktx:21.4.0")
+
+    implementation("com.google.firebase:firebase-messaging-ktx:23.3.1")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")

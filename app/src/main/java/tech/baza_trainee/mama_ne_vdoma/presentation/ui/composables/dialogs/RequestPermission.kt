@@ -143,3 +143,15 @@ class CameraPermissionTextProvider: PermissionTextProvider {
         }
     }
 }
+
+class NotificationsPermissionTextProvider: PermissionTextProvider {
+    override fun getDescription(isPermanentlyDeclined: Boolean): String {
+        return if(isPermanentlyDeclined) {
+            "Схоже, ви назавжди відхилили дозвіл на відправлення/отримання повідомлень. " +
+                    "Ви можете перейти в налаштування додатку, щоб надати його"
+        } else {
+            "Цій програмі потрібен доступ на відправлення/отримання повідомлень, щоб " +
+                    "працювати повноцінно"
+        }
+    }
+}

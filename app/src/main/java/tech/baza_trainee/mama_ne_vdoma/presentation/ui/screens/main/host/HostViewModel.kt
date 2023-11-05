@@ -1,15 +1,19 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.host
 
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.model.LatLng
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.messaging.ktx.messaging
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import tech.baza_trainee.mama_ne_vdoma.domain.model.GroupEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UserProfileEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatastoreManager
@@ -72,6 +76,12 @@ class HostViewModel(
         viewModelScope.launch {
             navigator.routesFlow.collect {
                 if (it.page != -1) switchTab(it)
+            }
+        }
+
+        viewModelScope.launch {
+            preferencesDatastoreManager.fcmToken = Firebase.messaging.token.await().also {
+                Log.d("FCM", it)
             }
         }
 

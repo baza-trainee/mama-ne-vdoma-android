@@ -16,6 +16,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesKeys.KEY_ACCOUNT_AUTH_TOKEN
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesKeys.KEY_ACCOUNT_COOKIES
+import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesKeys.KEY_ACCOUNT_FCM_TOKEN
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesKeys.KEY_ACCOUNT_LOGIN
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesKeys.KEY_ADDRESS
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesKeys.KEY_ADMIN_JOIN_REQUESTS
@@ -71,13 +72,15 @@ class UserPreferencesDatastoreManager(private val context: Context) {
             val adminJoinRequests = preferences[KEY_ADMIN_JOIN_REQUESTS] ?: 0
             val login = preferences[KEY_ACCOUNT_LOGIN].orEmpty()
             val authToken = preferences[KEY_ACCOUNT_AUTH_TOKEN].orEmpty()
+            val fcmToken = preferences[KEY_ACCOUNT_FCM_TOKEN].orEmpty()
             val cookies = preferences[KEY_ACCOUNT_COOKIES].orEmpty()
             UserPreferences(
                 id, avatar, avatarUri, name, code,
                 phone, email, address, radius,
                 latitude, longitude, sendEmail,
                 profileFilled, childrenProvided, currentChild,
-                myJoinRequests, adminJoinRequests, login, authToken, cookies
+                myJoinRequests, adminJoinRequests, login, authToken,
+                fcmToken, cookies
             )
         }
 
@@ -343,6 +346,20 @@ class UserPreferencesDatastoreManager(private val context: Context) {
             withContext(Dispatchers.Default ) {
                 userDataStore.edit {
                     it[KEY_ACCOUNT_AUTH_TOKEN] = value
+                }
+            }
+        }
+
+    var fcmToken: String
+        get() = runBlocking {
+            withContext(Dispatchers.Default) {
+                userPreferencesFlow.first().fcmToken
+            }
+        }
+        set(value) = runBlocking {
+            withContext(Dispatchers.Default ) {
+                userDataStore.edit {
+                    it[KEY_ACCOUNT_FCM_TOKEN] = value
                 }
             }
         }
