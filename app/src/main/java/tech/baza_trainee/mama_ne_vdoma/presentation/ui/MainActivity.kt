@@ -11,12 +11,15 @@ import androidx.biometric.BiometricManager.Authenticators.DEVICE_CREDENTIAL
 import androidx.biometric.BiometricPrompt
 import androidx.biometric.BiometricPrompt.PromptInfo
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.fragment.app.FragmentActivity
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
-import com.google.android.gms.auth.api.signin.GoogleSignIn
 import org.koin.android.ext.android.inject
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.graphs.createUserNavGraph
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.graphs.groupStandaloneScreensNavGraph
@@ -54,18 +57,23 @@ class MainActivity : FragmentActivity() {
 
                 val navigator: ScreenNavigator by inject()
 
-                LaunchedEffect(key1 = Unit) {
-                    viewModel.checkAuthorization()
+                var checkAuth by rememberSaveable { mutableStateOf(true) }
 
-                    viewModel.canAuthenticate.collect {
-                        if (it && checkAndAuthenticate())
-                            buildBiometricPrompt(
-                                onSuccess = {
-                                    navigator.navigate(
-                                        HostScreenRoutes.Host.getDestination(MAIN_PAGE)
-                                    )
-                                }
-                            ).authenticate(buildBiometricPromptInfo())
+                LaunchedEffect(key1 = checkAuth) {
+                    if (checkAuth) {
+                        viewModel.checkAuthorization()
+
+                        viewModel.canAuthenticate.collect {
+                            if (it && checkAndAuthenticate())
+                                buildBiometricPrompt(
+                                    onSuccess = {
+                                        checkAuth = false
+                                        navigator.navigate(
+                                            HostScreenRoutes.Host.getDestination(MAIN_PAGE)
+                                        )
+                                    }
+                                ).authenticate(buildBiometricPromptInfo())
+                        }
                     }
                 }
 
@@ -87,8 +95,6 @@ class MainActivity : FragmentActivity() {
                 }
             }
         }
-
-        val account = GoogleSignIn.getLastSignedInAccount(this)
     }
 
     private fun checkAndAuthenticate() =
