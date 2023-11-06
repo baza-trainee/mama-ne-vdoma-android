@@ -42,7 +42,7 @@ import androidx.compose.ui.unit.sp
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.android.gms.common.api.ApiException
-import tech.baza_trainee.mama_ne_vdoma.di.SERVER_CLIENT_ID
+import tech.baza_trainee.mama_ne_vdoma.BuildConfig
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.LoadingIndicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.SocialLoginBlock
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.SurfaceWithSystemBars
@@ -124,7 +124,7 @@ fun LoginUserScreen(
                     .setGoogleIdTokenRequestOptions(
                         BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
                             .setSupported(true)
-                            .setServerClientId(SERVER_CLIENT_ID)
+                            .setServerClientId(BuildConfig.ONE_TAP_SERVER_CLIENT_ID)
                             .setFilterByAuthorizedAccounts(true)
                             .build()
                     )

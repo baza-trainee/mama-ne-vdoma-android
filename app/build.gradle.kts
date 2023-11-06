@@ -31,6 +31,10 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            buildConfigField("String", "BASE_URL", "\"https://mama-ne-vdoma.online/back/\"")
+        }
+        debug {
+            buildConfigField("String", "BASE_URL", "\"https://mama-ne-vdoma.online/stage/\"")
         }
     }
     compileOptions {
@@ -124,7 +128,7 @@ dependencies {
 
     //Firebase crashlitics
     implementation("com.google.firebase:firebase-crashlytics-ktx:18.5.1")
-    implementation("com.google.firebase:firebase-analytics-ktx:21.4.0")
+    implementation("com.google.firebase:firebase-analytics-ktx:21.5.0")
 
     implementation("com.google.firebase:firebase-messaging-ktx:23.3.1")
 

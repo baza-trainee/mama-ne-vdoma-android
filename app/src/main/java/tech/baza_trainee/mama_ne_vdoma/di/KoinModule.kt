@@ -201,7 +201,7 @@ val mainModule = module {
 inline fun <reified T> createWebService(
     okHttpClient: OkHttpClient
 ): T = Retrofit.Builder()
-    .baseUrl(BASE_URL)
+    .baseUrl(BuildConfig.BASE_URL)
     .client(okHttpClient)
     .addConverterFactory(GsonConverterFactory.create(createGson()))
     .build()
@@ -249,7 +249,3 @@ fun createOkHttpClient(
 
 private const val CHUCKER_CONTENT_MAX_LENGTH = 250000L
 private const val TIMEOUT = 30L
-
-const val BASE_URL = "https://mama-ne-vdoma.online/stage/"
-const val SERVER_CLIENT_ID =
-    "661138941200-s8d83nrl4u0m9lra46v3ut7nv3qsj8pc.apps.googleusercontent.com"
