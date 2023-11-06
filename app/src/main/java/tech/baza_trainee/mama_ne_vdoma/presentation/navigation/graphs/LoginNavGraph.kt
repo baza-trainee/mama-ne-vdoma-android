@@ -36,7 +36,7 @@ fun NavGraphBuilder.loginNavGraph(
             LoginUserScreen(
                 oneTapClient = oneTapClient,
                 screenState = loginViewModel.viewState.collectAsStateWithLifecycle(),
-                uiState = loginViewModel.uiState,
+                events = loginViewModel.events,
                 handleEvent = { loginViewModel.handleLoginEvent(it) }
             )
         }

@@ -1,11 +1,12 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.login
 
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatastoreManager
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.AuthRepository
@@ -34,14 +35,12 @@ class LoginViewModel(
     private val _viewState = MutableStateFlow(LoginViewState())
     val viewState: StateFlow<LoginViewState> = _viewState.asStateFlow()
 
-    private val _uiState = mutableStateOf<RequestState>(RequestState.Idle)
-    val uiState: State<RequestState>
-        get() = _uiState
+    private val _events = Channel<RequestState>()
+    val events: Flow<RequestState> = _events.receiveAsFlow()
 
     fun handleLoginEvent(event: LoginEvent) {
         when(event) {
             LoginEvent.LoginUser -> loginWithPassword(_viewState.value.email, _viewState.value.password)
-            LoginEvent.ResetUiState -> _uiState.value = RequestState.Idle
             LoginEvent.OnBack -> {
                 clearInputs()
                 navigator.navigate(Graphs.Start)
@@ -94,7 +93,7 @@ class LoginViewModel(
                 checkUser(it)
             }
             onError { error ->
-                _uiState.value = RequestState.OnError(error)
+                _events.trySend(RequestState.OnError(error))
             }
             onLoading { isLoading ->
                 _viewState.update {
@@ -119,7 +118,7 @@ class LoginViewModel(
             }
             onSuccess { checkUser(it) }
             onError { error ->
-                _uiState.value = RequestState.OnError(error)
+                _events.trySend(RequestState.OnError(error))
             }
             onLoading { isLoading ->
                 _viewState.update {

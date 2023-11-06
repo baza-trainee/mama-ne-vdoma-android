@@ -74,6 +74,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.LoadingIndicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.UserAvatarWithCameraAndGallery
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.dialogs.DangerousActionAlertDialog
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.functions.ButtonText
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.functions.LocationPermission
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.text_fields.OutlinedTextFieldWithError
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.edit.dialogs.ChildScheduleEditDialog
@@ -82,7 +83,6 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.GrayText
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.SlateGray
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.ButtonText
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable

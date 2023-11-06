@@ -42,10 +42,13 @@ import androidx.compose.ui.unit.sp
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.android.gms.common.api.ApiException
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 import tech.baza_trainee.mama_ne_vdoma.BuildConfig
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.LoadingIndicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.SocialLoginBlock
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.SurfaceWithSystemBars
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.functions.ObserveAsEvents
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.functions.getTextWithUnderline
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.text_fields.OutlinedTextFieldWithError
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.text_fields.PasswordTextFieldWithError
@@ -60,7 +63,7 @@ fun LoginUserScreen(
     modifier: Modifier = Modifier,
     oneTapClient: SignInClient? = null,
     screenState: State<LoginViewState> = mutableStateOf(LoginViewState()),
-    uiState: State<RequestState> = mutableStateOf(RequestState.Idle),
+    events: Flow<RequestState> = flowOf(),
     handleEvent: (LoginEvent) -> Unit = { _ -> }
 ) {
     SurfaceWithSystemBars {
@@ -68,17 +71,20 @@ fun LoginUserScreen(
 
         val context = LocalContext.current
 
-        when (val state = uiState.value) {
-            RequestState.Idle -> Unit
-            is RequestState.OnError -> {
-                if (state.error.isNotBlank()) Toast.makeText(
-                    context,
-                    state.error,
-                    Toast.LENGTH_LONG
-                ).show()
-                handleEvent(LoginEvent.ResetUiState)
+        ObserveAsEvents(events) {
+            when (it) {
+                RequestState.Idle -> Unit
+                is RequestState.OnError -> {
+                    if (it.error.isNotBlank()) Toast.makeText(
+                        context,
+                        it.error,
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
             }
         }
+
+
 
         var googleLogin by remember { mutableStateOf(false) }
 
