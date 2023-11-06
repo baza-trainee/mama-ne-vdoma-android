@@ -1,11 +1,12 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.add_child
 
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import tech.baza_trainee.mama_ne_vdoma.domain.model.ChildEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.Gender
@@ -29,14 +30,12 @@ class ChildInfoViewModel(
     private val _viewState = MutableStateFlow(ChildInfoViewState())
     val viewState: StateFlow<ChildInfoViewState> = _viewState.asStateFlow()
 
-    private val _uiState = mutableStateOf<RequestState>(RequestState.Idle)
-    val uiState: State<RequestState>
-        get() = _uiState
+    private val _events = Channel<RequestState>()
+    val events: Flow<RequestState> = _events.receiveAsFlow()
 
     fun handleChildInfoEvent(event: ChildInfoEvent) {
         when(event) {
             ChildInfoEvent.SaveChild -> saveChild()
-            ChildInfoEvent.ResetUiState -> _uiState.value = RequestState.Idle
             is ChildInfoEvent.SetGender -> setGender(event.gender)
             is ChildInfoEvent.ValidateAge -> validateAge(event.age)
             is ChildInfoEvent.ValidateChildName -> validateChildName(event.name)
@@ -90,7 +89,7 @@ class ChildInfoViewModel(
                 nextRoute()
             }
             onError { error ->
-                _uiState.value = RequestState.OnError(error)
+                _events.trySend(RequestState.OnError(error))
             }
             onLoading { isLoading ->
                 _viewState.update {

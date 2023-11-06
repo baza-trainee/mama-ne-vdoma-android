@@ -84,7 +84,7 @@ fun NavGraphBuilder.userProfileGraph() {
             }
             ChildInfoScreen(
                 screenState = childInfoViewModel.viewState.collectAsStateWithLifecycle(),
-                uiState = childInfoViewModel.uiState,
+                events = childInfoViewModel.events,
                 handleEvent = { childInfoViewModel.handleChildInfoEvent(it) }
             )
         }

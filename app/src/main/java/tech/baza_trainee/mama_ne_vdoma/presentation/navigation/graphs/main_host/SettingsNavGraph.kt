@@ -73,7 +73,7 @@ fun NavGraphBuilder.settingsNavGraph() {
             }
             ChildInfoScreenInSettings(
                 screenState = childInfoViewModel.viewState.collectAsStateWithLifecycle(),
-                uiState = childInfoViewModel.uiState,
+                events = childInfoViewModel.events,
                 handleEvent = { childInfoViewModel.handleChildInfoEvent(it) }
             )
         }

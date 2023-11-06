@@ -57,6 +57,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.beginSignInGoogleOneTap
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.findActivity
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.showToast
 
 @Composable
 fun LoginUserScreen(
@@ -73,18 +74,10 @@ fun LoginUserScreen(
 
         ObserveAsEvents(events) {
             when (it) {
-                RequestState.Idle -> Unit
-                is RequestState.OnError -> {
-                    if (it.error.isNotBlank()) Toast.makeText(
-                        context,
-                        it.error,
-                        Toast.LENGTH_LONG
-                    ).show()
-                }
+                is RequestState.OnError -> context.showToast(it.error)
+                else-> Unit
             }
         }
-
-
 
         var googleLogin by remember { mutableStateOf(false) }
 

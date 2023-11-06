@@ -1,6 +1,5 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.child_info
 
-import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,18 +13,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ChildInfoGroup
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.SurfaceWithNavigationBars
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.functions.ObserveAsEvents
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.headers.HeaderWithOptArrow
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.add_child.ChildInfoEvent
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.add_child.ChildInfoViewState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.showToast
 
 @Composable
 fun ChildInfoScreen(
     modifier: Modifier = Modifier,
     screenState: State<ChildInfoViewState> = mutableStateOf(ChildInfoViewState()),
-    uiState: State<RequestState> = mutableStateOf(RequestState.Idle),
+    events: Flow<RequestState> = flowOf(),
     handleEvent: (ChildInfoEvent) -> Unit = { _ -> }
 ) {
     SurfaceWithNavigationBars {
@@ -33,15 +36,10 @@ fun ChildInfoScreen(
 
         val context = LocalContext.current
 
-        when(val state = uiState.value) {
-            RequestState.Idle -> Unit
-            is RequestState.OnError -> {
-                if (state.error.isNotBlank()) Toast.makeText(
-                    context,
-                    state.error,
-                    Toast.LENGTH_LONG
-                ).show()
-                handleEvent(ChildInfoEvent.ResetUiState)
+        ObserveAsEvents(events) {
+            when (it) {
+                RequestState.Idle -> Unit
+                is RequestState.OnError -> context.showToast(it.error)
             }
         }
 
