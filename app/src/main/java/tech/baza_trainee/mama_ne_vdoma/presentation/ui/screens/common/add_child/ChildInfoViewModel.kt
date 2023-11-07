@@ -15,6 +15,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.networkExecutor
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.validateName
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onError
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onLoading
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onSuccess
@@ -45,11 +46,8 @@ class ChildInfoViewModel(
     }
 
     private fun validateChildName(name: String) {
-        val nameValid = if (name.length in NAME_LENGTH &&
-            name.all { it.isLetter() || it.isDigit() || it == ' ' || it == '-' })
-            ValidField.VALID
-        else
-            ValidField.INVALID
+        val nameValid = if (name.validateName(NAME_LENGTH)) ValidField.VALID
+        else ValidField.INVALID
         _viewState.update {
             it.copy(
                 name = name,
