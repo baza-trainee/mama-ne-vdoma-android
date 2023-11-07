@@ -7,7 +7,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatastoreManager
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.AuthRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.Graphs
@@ -28,8 +27,7 @@ class VerifyEmailViewModel(
     private val email: String,
     private val password: String,
     private val navigator: ScreenNavigator,
-    private val authRepository: AuthRepository,
-    private val preferencesDatastoreManager: UserPreferencesDatastoreManager
+    private val authRepository: AuthRepository
 ): ViewModel() {
 
     private val _viewState = MutableStateFlow(VerifyEmailViewState())
@@ -161,7 +159,8 @@ class VerifyEmailViewModel(
     private fun resendCode() {
         networkExecutor {
             execute {
-                authRepository.resendCode(email)
+                if (isReset) authRepository.forgetPassword(email)
+                else authRepository.resendCode(email)
             }
             onError { error ->
                 _uiState.value = RequestState.OnError(error)
