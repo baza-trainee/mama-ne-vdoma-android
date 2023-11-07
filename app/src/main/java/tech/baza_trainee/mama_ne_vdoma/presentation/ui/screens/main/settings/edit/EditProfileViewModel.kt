@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import tech.baza_trainee.mama_ne_vdoma.domain.model.ChildEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.DayPeriod
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UserInfoEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatastoreManager
@@ -175,15 +176,13 @@ class EditProfileViewModel(
     }
 
     private fun saveChildrenInfo(schedules: Map<Int, SnapshotStateMap<DayOfWeek, DayPeriod>>, notes: Map<Int, String>) {
-        val children = _viewState.value.children.toMutableList().apply {
-            forEachIndexed { index, childEntity ->
-                val newChild = childEntity.copy(
-                    schedule = schedules[index] ?: childEntity.schedule,
-                    note = notes[index] ?: childEntity.note
-                )
-                removeAt(index)
-                add(index, newChild)
-            }
+        val children = mutableListOf<ChildEntity>()
+        _viewState.value.children.forEachIndexed { index, childEntity ->
+            val newChild = childEntity.copy(
+                schedule = schedules[index] ?: childEntity.schedule,
+                note = notes[index] ?: childEntity.note
+            )
+            children.add(index, newChild)
         }
         _viewState.update {
             it.copy(
