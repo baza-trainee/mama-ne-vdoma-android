@@ -100,7 +100,7 @@ class EditCredentialsViewModel(
             onSuccess {
                 profileCommunicator.apply {
                     setEmail(_viewState.value.email)
-                    setForReset(false)
+                    setForPassword(false)
                 }
                 navigator.navigate(SettingsScreenRoutes.VerifyNewEmail)
             }
@@ -123,7 +123,7 @@ class EditCredentialsViewModel(
             onSuccess {
                 profileCommunicator.apply {
                     setPassword(_viewState.value.password)
-                    setForReset(true)
+                    setForPassword(true)
                 }
                 navigator.navigate(SettingsScreenRoutes.VerifyNewEmail)
             }

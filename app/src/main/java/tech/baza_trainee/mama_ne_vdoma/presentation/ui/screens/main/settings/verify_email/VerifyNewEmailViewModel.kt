@@ -64,7 +64,7 @@ class VerifyNewEmailViewModel(
             )
         }
         if (isLastDigit) {
-            if (communicator.isForReset.value)
+            if (communicator.isForPassword.value)
                 resetPassword()
             else
                 confirmUser()
@@ -139,7 +139,10 @@ class VerifyNewEmailViewModel(
     private fun resendCode() {
         networkExecutor {
             execute {
-                userAuthRepository.changeEmailInit(communicator.email.value)
+                if (communicator.isForPassword.value)
+                    authRepository.forgetPassword(preferencesDatastoreManager.email)
+                else
+                    userAuthRepository.changeEmailInit(communicator.email.value)
             }
             onError { error ->
                 _uiState.value = VerifyEmailUiState.OnError(error)

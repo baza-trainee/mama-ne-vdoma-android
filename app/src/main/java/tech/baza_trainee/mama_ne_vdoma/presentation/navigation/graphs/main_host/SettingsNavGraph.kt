@@ -60,6 +60,7 @@ fun NavGraphBuilder.settingsNavGraph() {
             val viewModel: VerifyNewEmailViewModel = koinNavViewModel()
             VerifyNewEmailScreen(
                 screenState = viewModel.viewState.collectAsStateWithLifecycle(),
+                uiState = viewModel.uiState,
                 handleEvent = { viewModel.handleEvent(it) }
             )
         }

@@ -14,8 +14,8 @@ class EditProfileCommunicator {
     private val _password = MutableStateFlow("")
     val password: StateFlow<String> = _password.asStateFlow()
 
-    private val _isForReset = MutableStateFlow(false)
-    val isForReset: StateFlow<Boolean> = _isForReset.asStateFlow()
+    private val _isForPassword = MutableStateFlow(false)
+    val isForPassword: StateFlow<Boolean> = _isForPassword.asStateFlow()
 
     private val _profileChanged = MutableStateFlow(false)
     val profileChanged: StateFlow<Boolean> = _profileChanged.asStateFlow()
@@ -32,8 +32,8 @@ class EditProfileCommunicator {
         }
     }
 
-    fun setForReset(value: Boolean) {
-        _isForReset.update {
+    fun setForPassword(value: Boolean) {
+        _isForPassword.update {
             value
         }
     }
