@@ -1,6 +1,5 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.restore_password
 
-import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -40,6 +39,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.text_fields.O
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.showToast
 
 @Composable
 fun RestorePasswordScreen(
@@ -58,11 +58,7 @@ fun RestorePasswordScreen(
         when(val state = uiState.value) {
             RequestState.Idle -> Unit
             is RequestState.OnError -> {
-                if (state.error.isNotBlank()) Toast.makeText(
-                    context,
-                    state.error,
-                    Toast.LENGTH_LONG
-                ).show()
+                context.showToast(state.error)
                 handleEvent(RestorePasswordEvent.ResetUiState)
             }
         }

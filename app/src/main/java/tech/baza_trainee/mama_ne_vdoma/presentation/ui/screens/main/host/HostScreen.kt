@@ -1,6 +1,5 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.host
 
-import android.widget.Toast
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -29,6 +28,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.headers.Heade
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.headers.ToolbarWithAvatar
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.SETTINGS_PAGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.showToast
 
 @Composable
 fun HostScreen(
@@ -44,11 +44,7 @@ fun HostScreen(
         when (val state = uiState.value) {
             RequestState.Idle -> Unit
             is RequestState.OnError -> {
-                if (state.error.isNotBlank()) Toast.makeText(
-                    context,
-                    state.error,
-                    Toast.LENGTH_LONG
-                ).show()
+                context.showToast(state.error)
                 handleEvent(HostEvent.ResetUiState)
             }
         }

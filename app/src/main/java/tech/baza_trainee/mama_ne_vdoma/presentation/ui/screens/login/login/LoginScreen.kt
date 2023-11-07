@@ -54,6 +54,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.beginSignInGoogleOneTap
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.findActivity
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.showToast
 
 @Composable
 fun LoginUserScreen(
@@ -71,11 +72,7 @@ fun LoginUserScreen(
         when (val state = uiState.value) {
             RequestState.Idle -> Unit
             is RequestState.OnError -> {
-                if (state.error.isNotBlank()) Toast.makeText(
-                    context,
-                    state.error,
-                    Toast.LENGTH_LONG
-                ).show()
+                context.showToast(state.error)
                 handleEvent(LoginEvent.ResetUiState)
             }
         }
