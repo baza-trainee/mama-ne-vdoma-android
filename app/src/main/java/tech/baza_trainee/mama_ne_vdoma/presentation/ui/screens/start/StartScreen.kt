@@ -43,7 +43,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.findActivit
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.openAppSettings
 
 @Composable
-fun Start(
+fun StartScreen(
     modifier: Modifier = Modifier,
     onStart: () -> Unit = {},
     onLogin: () -> Unit = {}
@@ -142,5 +142,5 @@ fun Start(
 @Composable
 @Preview
 fun StartScreenPreview() {
-    Start()
+    StartScreen()
 }

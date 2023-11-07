@@ -7,7 +7,7 @@ import androidx.navigation.navigation
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.Graphs
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.StartRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.start.InfoScreen
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.start.Start
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.start.StartScreen
 
 fun NavGraphBuilder.startNavGraph(
     navHostController: NavHostController
@@ -17,7 +17,7 @@ fun NavGraphBuilder.startNavGraph(
         startDestination = StartRoutes.Start.route
     ) {
         composable(StartRoutes.Start.route) {
-            Start(
+            StartScreen(
                 onStart = { navHostController.navigate(StartRoutes.Info.route) },
                 onLogin = { navHostController.navigate(Graphs.Login.route) }
             )
