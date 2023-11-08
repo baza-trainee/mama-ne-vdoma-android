@@ -9,45 +9,8 @@ sealed class LoginRoutes(override val route: String): CommonRoute(route) {
     data object Login: LoginRoutes("login_screen")
     data object RestorePassword: LoginRoutes("restore_password_screen")
     data object RestoreSuccess: LoginRoutes("restore_success_screen")
-
-    class VerifyEmail : LoginRoutes(ROUTE) {
-
-        data class VerifyEmailArgs (
-            val email: String,
-            val password: String
-        )
-
-        companion object {
-
-            const val ROUTE = "$BASE_ROUTE_VERIFY?$EMAIL={$EMAIL},$PASSWORD={$PASSWORD}"
-
-            val argumentList: MutableList<NamedNavArgument>
-                get() = mutableListOf(
-                    navArgument(EMAIL) {
-                        type = NavType.StringType
-                    },
-                    navArgument(PASSWORD) {
-                        type = NavType.StringType
-                    }
-                )
-
-            fun parseArguments(backStackEntry: NavBackStackEntry): VerifyEmailArgs {
-                return VerifyEmailArgs(
-                    email = backStackEntry.arguments?.getString(EMAIL) ?: "",
-                    password = backStackEntry.arguments?.getString(PASSWORD) ?: ""
-                )
-            }
-
-            fun getDestination(email: String, password: String): CommonRoute {
-                return CommonRoute(
-                    "$BASE_ROUTE_VERIFY?" +
-                        "$EMAIL=$email," +
-                        "$PASSWORD=$password" +
-                        ""
-                )
-            }
-        }
-    }
+    data object VerifyEmail : LoginRoutes("email_verify_restore_screen")
+    data object  NewPassword : LoginRoutes("new_password_screen")
 
     class EmailConfirm : LoginRoutes(ROUTE) {
 
@@ -58,7 +21,7 @@ sealed class LoginRoutes(override val route: String): CommonRoute(route) {
 
         companion object {
 
-            const val ROUTE = "$BASE_ROUTE_PASSWORD?$EMAIL={$EMAIL},$PASSWORD={$PASSWORD}"
+            const val ROUTE = "$BASE_ROUTE_EMAIL?$EMAIL={$EMAIL},$PASSWORD={$PASSWORD}"
 
             val argumentList: MutableList<NamedNavArgument>
                 get() = mutableListOf(
@@ -79,43 +42,10 @@ sealed class LoginRoutes(override val route: String): CommonRoute(route) {
 
             fun getDestination(email: String, password: String): CommonRoute {
                 return CommonRoute(
-                    "$BASE_ROUTE_PASSWORD?" +
-                        "$EMAIL=$email," +
-                        "$PASSWORD=$password" +
-                        ""
-                )
-            }
-        }
-    }
-
-    class NewPassword : LoginRoutes(ROUTE) {
-
-        data class NewPassArgs (
-            val email: String
-        )
-
-        companion object {
-
-            const val ROUTE = "$BASE_ROUTE_EMAIL?$EMAIL={$EMAIL}"
-
-            val argumentList: MutableList<NamedNavArgument>
-                get() = mutableListOf(
-                    navArgument(EMAIL) {
-                        type = NavType.StringType
-                    }
-                )
-
-            fun parseArguments(backStackEntry: NavBackStackEntry): NewPassArgs {
-                return NewPassArgs(
-                    email = backStackEntry.arguments?.getString(EMAIL) ?: ""
-                )
-            }
-
-            fun getDestination(email: String): CommonRoute {
-                return CommonRoute(
                     "$BASE_ROUTE_EMAIL?" +
-                        "$EMAIL=$email" +
-                        ""
+                            "$EMAIL=$email," +
+                            "$PASSWORD=$password" +
+                            ""
                 )
             }
         }
@@ -123,8 +53,6 @@ sealed class LoginRoutes(override val route: String): CommonRoute(route) {
 
     companion object {
 
-        private const val BASE_ROUTE_VERIFY = "email_verify_restore_screen"
-        private const val BASE_ROUTE_PASSWORD = "new_password_screen"
         private const val BASE_ROUTE_EMAIL = "email_confirm_screen"
         private const val EMAIL = "email"
         private const val PASSWORD = "password"

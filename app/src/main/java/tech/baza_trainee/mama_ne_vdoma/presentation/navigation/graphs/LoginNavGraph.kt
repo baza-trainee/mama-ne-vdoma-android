@@ -8,7 +8,6 @@ import androidx.navigation.navigation
 import com.google.android.gms.auth.api.identity.SignInClient
 import org.koin.androidx.compose.navigation.koinNavViewModel
 import org.koin.compose.koinInject
-import org.koin.core.parameter.parametersOf
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.Graphs
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.LoginRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.verify_email.VerifyEmailScreen
@@ -60,14 +59,8 @@ fun NavGraphBuilder.loginNavGraph(
                 handleEvent = { restorePasswordScreenViewModel.handleRestoreEvent(it) }
             )
         }
-        composable(
-            route = LoginRoutes.VerifyEmail().route,
-            arguments = LoginRoutes.VerifyEmail.argumentList
-        ) { entry ->
-            val (email, password) = LoginRoutes.VerifyEmail.parseArguments(entry)
-            val verifyEmailViewModel: VerifyEmailViewModel = koinNavViewModel {
-                parametersOf(true, email, password)
-            }
+        composable(LoginRoutes.VerifyEmail.route) {
+            val verifyEmailViewModel: VerifyEmailViewModel = koinNavViewModel()
             VerifyEmailScreen(
                 screenState = verifyEmailViewModel.viewState.collectAsStateWithLifecycle(),
                 uiState = verifyEmailViewModel.uiState,
@@ -75,14 +68,8 @@ fun NavGraphBuilder.loginNavGraph(
                 handleEvent = { verifyEmailViewModel.handleEvent(it) }
             )
         }
-        composable(
-            route = LoginRoutes.NewPassword().route,
-            arguments = LoginRoutes.NewPassword.argumentList
-            ) { entry ->
-            val (email) = LoginRoutes.NewPassword.parseArguments(entry)
-            val newPasswordScreenViewModel: NewPasswordScreenViewModel = koinNavViewModel {
-                parametersOf(email)
-            }
+        composable(LoginRoutes.NewPassword.route) {
+            val newPasswordScreenViewModel: NewPasswordScreenViewModel = koinNavViewModel()
             NewPasswordScreen(
                 screenState = newPasswordScreenViewModel.viewState.collectAsStateWithLifecycle(),
                 uiState = newPasswordScreenViewModel.uiState,

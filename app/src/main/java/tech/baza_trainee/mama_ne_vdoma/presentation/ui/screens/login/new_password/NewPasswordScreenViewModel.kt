@@ -9,12 +9,13 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.LoginRoutes
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.verify_email.VerifyEmailCommunicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.validatePassword
 
 class NewPasswordScreenViewModel(
-    private val email: String,
+    private val communicator: VerifyEmailCommunicator,
     private val navigator: ScreenNavigator
 ): ViewModel() {
 
@@ -29,7 +30,7 @@ class NewPasswordScreenViewModel(
     fun handleNewPasswordEvent(event: NewPasswordEvent) {
         when(event) {
             NewPasswordEvent.OnBack -> navigator.navigate(LoginRoutes.Login)
-            NewPasswordEvent.ResetPassword -> navigator.navigate(LoginRoutes.EmailConfirm.getDestination(email, _viewState.value.password))
+            NewPasswordEvent.ResetPassword -> navigator.navigate(LoginRoutes.EmailConfirm.getDestination(communicator.email.value, _viewState.value.password))
             is NewPasswordEvent.ValidatePassword -> validatePassword(event.password)
             is NewPasswordEvent.ValidateConfirmPassword -> validateConfirmPassword(event.confirmPassword)
             NewPasswordEvent.ResetUiState -> _uiState.value = RequestState.Idle

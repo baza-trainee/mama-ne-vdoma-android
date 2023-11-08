@@ -12,6 +12,7 @@ import tech.baza_trainee.mama_ne_vdoma.domain.repository.AuthRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.CreateUserRoute
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.Graphs
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.verify_email.VerifyEmailCommunicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
@@ -25,7 +26,8 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onSuccess
 class UserCreateViewModel(
     private val navigator: ScreenNavigator,
     private val authRepository: AuthRepository,
-    private val preferencesDatastoreManager: UserPreferencesDatastoreManager
+    private val preferencesDatastoreManager: UserPreferencesDatastoreManager,
+    private val communicator: VerifyEmailCommunicator
 ): ViewModel() {
 
     private val _viewState = MutableStateFlow(UserCreateViewState())
@@ -119,7 +121,12 @@ class UserCreateViewModel(
                 authRepository.registerUser(_viewState.value.email, _viewState.value.password)
             }
             onSuccess {
-                navigator.navigate(CreateUserRoute.VerifyEmail.getDestination(_viewState.value.email, _viewState.value.password))
+                communicator.apply {
+                    setEmail(_viewState.value.email)
+                    setPassword(_viewState.value.password)
+                    setForPassword(false)
+                }
+                navigator.navigate(CreateUserRoute.VerifyEmail)
             }
             onError { error ->
                 _uiState.value = RequestState.OnError(error)

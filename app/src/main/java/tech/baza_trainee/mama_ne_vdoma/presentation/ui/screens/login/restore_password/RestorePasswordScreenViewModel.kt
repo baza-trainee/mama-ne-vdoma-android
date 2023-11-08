@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.update
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.AuthRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.LoginRoutes
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.verify_email.VerifyEmailCommunicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
@@ -20,6 +21,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onLoading
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onSuccess
 
 class RestorePasswordScreenViewModel(
+    private val communicator: VerifyEmailCommunicator,
     private val navigator: ScreenNavigator,
     private val authRepository: AuthRepository
 ): ViewModel() {
@@ -38,7 +40,14 @@ class RestorePasswordScreenViewModel(
             RestorePasswordEvent.ResetUiState -> _uiState.value = RequestState.Idle
 
             is RestorePasswordEvent.ValidateEmail -> validateEmail(event.email)
-            is RestorePasswordEvent.OnLogin -> navigator.navigate(LoginRoutes.VerifyEmail.getDestination(event.email, event.password))
+            is RestorePasswordEvent.OnLogin -> {
+                communicator.apply {
+                    setEmail(event.email)
+                    setPassword(event.password)
+                    setForPassword(true)
+                }
+                navigator.navigate(LoginRoutes.VerifyEmail)
+            }
         }
     }
 
@@ -60,7 +69,8 @@ class RestorePasswordScreenViewModel(
                 authRepository.forgetPassword(_viewState.value.email)
             }
             onSuccess {
-                navigator.navigate(LoginRoutes.NewPassword.getDestination(_viewState.value.email))
+                communicator.setEmail(_viewState.value.email)
+                navigator.navigate(LoginRoutes.NewPassword)
             }
             onError { error ->
                 _uiState.value = RequestState.OnError(error)

@@ -54,6 +54,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.add_child.
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.child_schedule.ChildScheduleViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.image_crop.CropImageCommunicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.image_crop.ImageCropViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.verify_email.VerifyEmailCommunicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.verify_email.VerifyEmailViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.create.UserCreateViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.login.LoginViewModel
@@ -140,21 +141,20 @@ val userCreateModule = module {
     viewModel { ChildrenInfoViewModel(get(), get()) }
     viewModel { ParentScheduleViewModel(get(), get(), get(), get()) }
     viewModel { FullInfoViewModel(get(), get(), get(), get(), get()) }
-    viewModel { UserCreateViewModel(get(), get(), get()) }
+    viewModel { UserCreateViewModel(get(), get(), get(), get()) }
 }
 
 val verifyEmailModule = module {
-    viewModel { (isReset: Boolean, email: String, password: String) -> VerifyEmailViewModel(isReset, email, password, get(), get()) }
+    single { VerifyEmailCommunicator() }
+    viewModel { VerifyEmailViewModel(get(), get(), get()) }
 }
 
 val loginKoinModule = module {
     viewModel {
         LoginViewModel(get(), get(), get())
     }
-    viewModel { (email: String) ->
-        NewPasswordScreenViewModel(email, get())
-    }
-    viewModel { RestorePasswordScreenViewModel(get(), get()) }
+    viewModel { NewPasswordScreenViewModel(get(), get()) }
+    viewModel { RestorePasswordScreenViewModel(get(), get(), get()) }
     viewModel { MainActivityViewModel(get()) }
 }
 

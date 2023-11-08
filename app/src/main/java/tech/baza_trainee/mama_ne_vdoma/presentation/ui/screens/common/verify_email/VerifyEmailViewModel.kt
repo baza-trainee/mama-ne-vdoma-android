@@ -23,9 +23,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onSuccess
 import java.net.HttpURLConnection
 
 class VerifyEmailViewModel(
-    private val isReset: Boolean = false,
-    private val email: String,
-    private val password: String,
+    private val communicator: VerifyEmailCommunicator,
     private val navigator: ScreenNavigator,
     private val authRepository: AuthRepository
 ): ViewModel() {
@@ -46,7 +44,7 @@ class VerifyEmailViewModel(
 
             VerifyEmailEvent.ResetUiState -> _uiState.value = RequestState.Idle
             VerifyEmailEvent.ResendCode -> resendCode()
-            VerifyEmailEvent.OnBack -> if (password.isNotEmpty()) navigator.goBack()
+            VerifyEmailEvent.OnBack -> if (communicator.isForPassword.value) navigator.goBack()
             else navigator.navigate(LoginRoutes.RestorePassword)
 
             else -> Unit
@@ -60,7 +58,7 @@ class VerifyEmailViewModel(
             )
         }
         if (isLastDigit) {
-            if (isReset)
+            if (communicator.isForPassword.value)
                 resetPassword()
             else
                 confirmUser()
@@ -76,7 +74,7 @@ class VerifyEmailViewModel(
                 }
             }
             execute {
-                authRepository.confirmEmail(email, otp)
+                authRepository.confirmEmail(communicator.email.value, otp)
             }
             onSuccess {
                 _viewState.update {
@@ -112,7 +110,7 @@ class VerifyEmailViewModel(
                 }
             }
             execute {
-                authRepository.resetPassword(email, otp, password)
+                authRepository.resetPassword(communicator.email.value, otp, communicator.password.value)
             }
             onSuccess {
                 navigator.navigate(LoginRoutes.RestoreSuccess)
@@ -138,7 +136,7 @@ class VerifyEmailViewModel(
     private fun loginUser() {
         networkExecutor {
             execute {
-                authRepository.loginUser(email, password)
+                authRepository.loginUser(communicator.email.value, communicator.password.value)
             }
             onSuccess {
                 navigator.navigate(Graphs.UserProfile)
@@ -159,8 +157,8 @@ class VerifyEmailViewModel(
     private fun resendCode() {
         networkExecutor {
             execute {
-                if (isReset) authRepository.forgetPassword(email)
-                else authRepository.resendCode(email)
+                if (communicator.isForPassword.value) authRepository.forgetPassword(communicator.email.value)
+                else authRepository.resendCode(communicator.email.value)
             }
             onError { error ->
                 _uiState.value = RequestState.OnError(error)
