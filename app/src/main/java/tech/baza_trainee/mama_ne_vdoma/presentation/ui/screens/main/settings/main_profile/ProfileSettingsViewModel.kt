@@ -129,6 +129,7 @@ class ProfileSettingsViewModel(
                 avatar = it.avatar,
                 countryCode = it.countryCode,
                 phone = it.phone,
+                note = it.note,
                 schedule = it.schedule,
                 sendingEmails = !_viewState.value.sendEmails
             )

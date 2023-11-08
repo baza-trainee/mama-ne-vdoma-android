@@ -9,6 +9,7 @@ data class UserProfileDto(
     val name: String? = null,
     val countryCode: String? = null,
     val phone: String? = null,
+    val note: String? = null,
     val sendingEmails: Boolean = true,
     val avatar: String? = null,
     val location: LocationDto? = null,

@@ -27,11 +27,11 @@ import tech.baza_trainee.mama_ne_vdoma.domain.model.UserProfileEntity
 import java.time.DayOfWeek
 
 fun UserInfoEntity.toDataModel() = UserInfoDto(
-    name,
-    countryCode,
-    phone,
-    sendingEmails,
-    avatar,
+    name = name,
+    countryCode = countryCode,
+    phone = phone,
+    sendingEmails = sendingEmails,
+    avatar = avatar,
     week = mutableMapOf<String, DayScheduleDto>().also { map ->
         schedule.forEach {
             map[it.key.name.lowercase()] = it.value.toDataModel()
@@ -42,14 +42,15 @@ fun UserInfoEntity.toDataModel() = UserInfoDto(
 )
 
 fun UserProfileDto.toDomainModel() = UserProfileEntity(
-    id,
-    email,
-    name.orEmpty(),
-    countryCode.orEmpty(),
-    phone.orEmpty(),
-    sendingEmails,
-    avatar.orEmpty(),
-    location.toDomainModel(),
+    id = id,
+    email =  email,
+    name = name.orEmpty(),
+    countryCode = countryCode.orEmpty(),
+    phone = phone.orEmpty(),
+    note = note.orEmpty(),
+    sendingEmails = sendingEmails,
+    avatar = avatar.orEmpty(),
+    location = location.toDomainModel(),
     schedule = mutableStateMapOf<DayOfWeek, DayPeriod>().also { map ->
             if (week != null)
                 week.forEach { entry ->
@@ -72,12 +73,12 @@ fun LocationDto?.toDomainModel() = if (this != null)
         LocationEntity()
 
 fun ChildDto.toDomainModel() = ChildEntity(
-    name,
-    age.toString(),
-    if (isMale) Gender.BOY else Gender.GIRL,
-    note.orEmpty(),
-    parentId,
-    childId,
+    name = name,
+    age = age.toString(),
+    gender = if (isMale) Gender.BOY else Gender.GIRL,
+    note = note.orEmpty(),
+    parentId = parentId,
+    childId = childId,
     schedule = mutableStateMapOf<DayOfWeek, DayPeriod>().also { map ->
             if (week != null)
                 week.forEach { entry ->

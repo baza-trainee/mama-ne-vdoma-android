@@ -7,6 +7,7 @@ data class UserProfileEntity(
     val id: String = "",
     val email: String = "",
     val name: String = "",
+    val note: String = "",
     val countryCode: String = "",
     val phone: String = "",
     val sendingEmails: Boolean = true,

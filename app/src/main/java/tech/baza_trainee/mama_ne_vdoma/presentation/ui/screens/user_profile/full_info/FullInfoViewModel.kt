@@ -6,10 +6,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.model.LatLng
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.messaging.ktx.messaging
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatastoreManager
 import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.LocationInteractor
 import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.NetworkEventsListener
@@ -39,6 +43,10 @@ class FullInfoViewModel(
         get() = _uiState
 
     init {
+        viewModelScope.launch {
+            preferencesDatastoreManager.fcmToken = Firebase.messaging.token.await()
+        }
+
         userProfileInteractor.apply {
             setUserProfileCoroutineScope(viewModelScope)
             setUserProfileNetworkListener(this@FullInfoViewModel)

@@ -134,6 +134,7 @@ class HostViewModel(
                         email = entity.email
                         code = entity.countryCode
                         phone = entity.phone
+                        note = entity.note
                         sendEmail = entity.sendingEmails
                         avatar = entity.avatar
                     }
@@ -179,6 +180,7 @@ class HostViewModel(
                 userProfileRepository.saveUserInfo(
                     UserInfoEntity(
                         name = preferencesDatastoreManager.name,
+                        note = preferencesDatastoreManager.note,
                         phone = preferencesDatastoreManager.phone,
                         countryCode = preferencesDatastoreManager.code,
                         avatar = preferencesDatastoreManager.avatar,

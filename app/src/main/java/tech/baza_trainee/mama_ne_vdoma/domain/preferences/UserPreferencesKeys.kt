@@ -28,4 +28,5 @@ object UserPreferencesKeys {
     val KEY_ACCOUNT_AUTH_TOKEN = stringPreferencesKey(ACCOUNT_AUTH_TOKEN)
     val KEY_ACCOUNT_FCM_TOKEN = stringPreferencesKey(ACCOUNT_FCM_TOKEN)
     val KEY_ACCOUNT_COOKIES = stringSetPreferencesKey(ACCOUNT_COOKIES)
+    val KEY_NOTE = stringPreferencesKey(NOTE)
 }

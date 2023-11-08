@@ -41,6 +41,7 @@ class UserInfoViewModel(
             setUserProfileCoroutineScope(viewModelScope)
             setUserProfileNetworkListener(this@UserInfoViewModel)
         }
+
         _viewState.update {
             it.copy(
                 name = preferencesDatastoreManager.name,

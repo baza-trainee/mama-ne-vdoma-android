@@ -23,7 +23,8 @@ data class UserPreferences(
     val login: String,
     val authToken: String,
     val fcmToken: String,
-    val cookies: Set<String>
+    val cookies: Set<String>,
+    val note: String
 )
 
 

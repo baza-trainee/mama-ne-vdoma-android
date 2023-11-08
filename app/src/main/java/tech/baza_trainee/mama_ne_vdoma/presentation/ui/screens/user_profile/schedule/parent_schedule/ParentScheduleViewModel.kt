@@ -45,7 +45,8 @@ class ParentScheduleViewModel(
 
         _viewState.update {
             it.copy(
-                schedule = communicator.schedule
+                schedule = communicator.schedule,
+                comment = preferencesDatastoreManager.note
             )
         }
     }

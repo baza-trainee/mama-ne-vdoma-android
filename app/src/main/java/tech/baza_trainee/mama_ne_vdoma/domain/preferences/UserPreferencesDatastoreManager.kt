@@ -31,6 +31,7 @@ import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesKeys.KE
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesKeys.KEY_LOCATION_LNG
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesKeys.KEY_MY_JOIN_REQUESTS
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesKeys.KEY_NAME
+import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesKeys.KEY_NOTE
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesKeys.KEY_PHONE_NUMBER
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesKeys.KEY_PROFILE_FILLED
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesKeys.KEY_RADIUS
@@ -59,6 +60,7 @@ class UserPreferencesDatastoreManager(private val context: Context) {
             val name = preferences[KEY_NAME].orEmpty()
             val code = preferences[KEY_COUNTRY_CODE].orEmpty()
             val phone = preferences[KEY_PHONE_NUMBER].orEmpty()
+            val note = preferences[KEY_NOTE].orEmpty()
             val email = preferences[KEY_EMAIL].orEmpty()
             val address = preferences[KEY_ADDRESS].orEmpty()
             val radius = preferences[KEY_RADIUS] ?: 0
@@ -80,7 +82,7 @@ class UserPreferencesDatastoreManager(private val context: Context) {
                 latitude, longitude, sendEmail,
                 profileFilled, childrenProvided, currentChild,
                 myJoinRequests, adminJoinRequests, login, authToken,
-                fcmToken, cookies
+                fcmToken, cookies, note
             )
         }
 
@@ -91,7 +93,7 @@ class UserPreferencesDatastoreManager(private val context: Context) {
             }
         }
         set(value) = runBlocking {
-            withContext(Dispatchers.Default ) {
+            withContext(Dispatchers.Default) {
                 userDataStore.edit {
                     it[KEY_ID] = value
                 }
@@ -105,7 +107,7 @@ class UserPreferencesDatastoreManager(private val context: Context) {
             }
         }
         set(value) = runBlocking {
-            withContext(Dispatchers.Default ) {
+            withContext(Dispatchers.Default) {
                 userDataStore.edit {
                     it[KEY_AVATAR] = value
                 }
@@ -119,7 +121,7 @@ class UserPreferencesDatastoreManager(private val context: Context) {
             }
         }
         set(value) = runBlocking {
-            withContext(Dispatchers.Default ) {
+            withContext(Dispatchers.Default) {
                 userDataStore.edit {
                     it[KEY_AVATAR_URI] = value.toString()
                 }
@@ -133,7 +135,7 @@ class UserPreferencesDatastoreManager(private val context: Context) {
             }
         }
         set(value) = runBlocking {
-            withContext(Dispatchers.Default ) {
+            withContext(Dispatchers.Default) {
                 userDataStore.edit {
                     it[KEY_NAME] = value
                 }
@@ -147,7 +149,7 @@ class UserPreferencesDatastoreManager(private val context: Context) {
             }
         }
         set(value) = runBlocking {
-            withContext(Dispatchers.Default ) {
+            withContext(Dispatchers.Default) {
                 userDataStore.edit {
                     it[KEY_COUNTRY_CODE] = value
                 }
@@ -161,7 +163,7 @@ class UserPreferencesDatastoreManager(private val context: Context) {
             }
         }
         set(value) = runBlocking {
-            withContext(Dispatchers.Default ) {
+            withContext(Dispatchers.Default) {
                 userDataStore.edit {
                     it[KEY_PHONE_NUMBER] = value
                 }
@@ -175,7 +177,7 @@ class UserPreferencesDatastoreManager(private val context: Context) {
             }
         }
         set(value) = runBlocking {
-            withContext(Dispatchers.Default ) {
+            withContext(Dispatchers.Default) {
                 userDataStore.edit {
                     it[KEY_EMAIL] = value
                 }
@@ -189,7 +191,7 @@ class UserPreferencesDatastoreManager(private val context: Context) {
             }
         }
         set(value) = runBlocking {
-            withContext(Dispatchers.Default ) {
+            withContext(Dispatchers.Default) {
                 userDataStore.edit {
                     it[KEY_ADDRESS] = value
                 }
@@ -203,7 +205,7 @@ class UserPreferencesDatastoreManager(private val context: Context) {
             }
         }
         set(value) = runBlocking {
-            withContext(Dispatchers.Default ) {
+            withContext(Dispatchers.Default) {
                 userDataStore.edit {
                     it[KEY_RADIUS] = value
                 }
@@ -217,7 +219,7 @@ class UserPreferencesDatastoreManager(private val context: Context) {
             }
         }
         set(value) = runBlocking {
-            withContext(Dispatchers.Default ) {
+            withContext(Dispatchers.Default) {
                 userDataStore.edit {
                     it[KEY_LOCATION_LAT] = value
                 }
@@ -231,7 +233,7 @@ class UserPreferencesDatastoreManager(private val context: Context) {
             }
         }
         set(value) = runBlocking {
-            withContext(Dispatchers.Default ) {
+            withContext(Dispatchers.Default) {
                 userDataStore.edit {
                     it[KEY_LOCATION_LNG] = value
                 }
@@ -245,7 +247,7 @@ class UserPreferencesDatastoreManager(private val context: Context) {
             }
         }
         set(value) = runBlocking {
-            withContext(Dispatchers.Default ) {
+            withContext(Dispatchers.Default) {
                 userDataStore.edit {
                     it[KEY_SEND_EMAIL] = value
                 }
@@ -259,7 +261,7 @@ class UserPreferencesDatastoreManager(private val context: Context) {
             }
         }
         set(value) = runBlocking {
-            withContext(Dispatchers.Default ) {
+            withContext(Dispatchers.Default) {
                 userDataStore.edit {
                     it[KEY_CHILDREN_PROVIDED] = value
                 }
@@ -273,7 +275,7 @@ class UserPreferencesDatastoreManager(private val context: Context) {
             }
         }
         set(value) = runBlocking {
-            withContext(Dispatchers.Default ) {
+            withContext(Dispatchers.Default) {
                 userDataStore.edit {
                     it[KEY_PROFILE_FILLED] = value
                 }
@@ -287,7 +289,7 @@ class UserPreferencesDatastoreManager(private val context: Context) {
             }
         }
         set(value) = runBlocking {
-            withContext(Dispatchers.Default ) {
+            withContext(Dispatchers.Default) {
                 userDataStore.edit {
                     it[KEY_CURRENT_CHILD] = value
                 }
@@ -301,7 +303,7 @@ class UserPreferencesDatastoreManager(private val context: Context) {
             }
         }
         set(value) = runBlocking {
-            withContext(Dispatchers.Default ) {
+            withContext(Dispatchers.Default) {
                 userDataStore.edit {
                     it[KEY_MY_JOIN_REQUESTS] = value
                 }
@@ -315,7 +317,7 @@ class UserPreferencesDatastoreManager(private val context: Context) {
             }
         }
         set(value) = runBlocking {
-            withContext(Dispatchers.Default ) {
+            withContext(Dispatchers.Default) {
                 userDataStore.edit {
                     it[KEY_ADMIN_JOIN_REQUESTS] = value
                 }
@@ -329,7 +331,7 @@ class UserPreferencesDatastoreManager(private val context: Context) {
             }
         }
         set(value) = runBlocking {
-            withContext(Dispatchers.Default ) {
+            withContext(Dispatchers.Default) {
                 userDataStore.edit {
                     it[KEY_ACCOUNT_LOGIN] = value
                 }
@@ -343,7 +345,7 @@ class UserPreferencesDatastoreManager(private val context: Context) {
             }
         }
         set(value) = runBlocking {
-            withContext(Dispatchers.Default ) {
+            withContext(Dispatchers.Default) {
                 userDataStore.edit {
                     it[KEY_ACCOUNT_AUTH_TOKEN] = value
                 }
@@ -357,7 +359,7 @@ class UserPreferencesDatastoreManager(private val context: Context) {
             }
         }
         set(value) = runBlocking {
-            withContext(Dispatchers.Default ) {
+            withContext(Dispatchers.Default) {
                 userDataStore.edit {
                     it[KEY_ACCOUNT_FCM_TOKEN] = value
                 }
@@ -371,9 +373,23 @@ class UserPreferencesDatastoreManager(private val context: Context) {
             }
         }
         set(value) = runBlocking {
-            withContext(Dispatchers.Default ) {
+            withContext(Dispatchers.Default) {
                 userDataStore.edit {
                     it[KEY_ACCOUNT_COOKIES] = value
+                }
+            }
+        }
+
+    var note: String
+        get() = runBlocking {
+            withContext(Dispatchers.Default) {
+                userPreferencesFlow.first().note
+            }
+        }
+        set(value) = runBlocking {
+            withContext(Dispatchers.Default) {
+                userDataStore.edit {
+                    it[KEY_NOTE] = value
                 }
             }
         }
