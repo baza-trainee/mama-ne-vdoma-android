@@ -214,9 +214,9 @@ fun SetAreaForSearchScreen(
                     text = "Далі"
                 )
             }
-
-            if (screenState.value.isLoading) LoadingIndicator()
         }
+
+        if (screenState.value.isLoading) LoadingIndicator()
     }
 }
 
