@@ -12,15 +12,20 @@ import tech.baza_trainee.mama_ne_vdoma.domain.model.ChildEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.PatchChildEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UserInfoEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UserProfileEntity
+import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatastoreManager
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestResult
 
 class UserProfileRepositoryImpl(
-    private val userProfileApi: UserProfileApi
+    private val userProfileApi: UserProfileApi,
+    private val preferencesDatastoreManager: UserPreferencesDatastoreManager
 ): UserProfileRepository {
 
     override suspend fun saveUserInfo(userInfo: UserInfoEntity): RequestResult<Unit> {
-        val result = userProfileApi.saveUserInfo(userInfo.toDataModel())
+        val _userInfo = userInfo.copy(
+            deviceId = preferencesDatastoreManager.fcmToken
+        )
+        val result = userProfileApi.saveUserInfo(_userInfo.toDataModel())
         return if (result.isSuccessful)
             RequestResult.Success(Unit)
         else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage())

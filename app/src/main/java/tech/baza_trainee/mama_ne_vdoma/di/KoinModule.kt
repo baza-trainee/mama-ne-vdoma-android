@@ -113,7 +113,7 @@ val repoModule = module {
     single<AuthApi> { createCustomApi(get()) }
     factory<AuthRepository> { AuthRepositoryImpl(get()) }
     factory<UserAuthRepository> { UserAuthRepositoryImpl(get()) }
-    factory<UserProfileRepository> { UserProfileRepositoryImpl(get()) }
+    factory<UserProfileRepository> { UserProfileRepositoryImpl(get(), get()) }
     factory<FilesRepository> { FilesRepositoryImpl(get(), get()) }
     factory<LocationDataSource> { LocationDataSourceImpl(androidApplication()) }
     factory<LocationRepository> { LocationRepositoryImpl(get()) }
@@ -146,7 +146,7 @@ val userCreateModule = module {
 
 val verifyEmailModule = module {
     single { VerifyEmailCommunicator() }
-    viewModel { VerifyEmailViewModel(get(), get(), get()) }
+    viewModel { VerifyEmailViewModel(get(), get(), get(), get()) }
 }
 
 val loginKoinModule = module {
@@ -175,6 +175,7 @@ val mainModule = module {
     viewModel { (page: Int) ->
         HostViewModel(
             page,
+            get(),
             get(),
             get(),
             get(),

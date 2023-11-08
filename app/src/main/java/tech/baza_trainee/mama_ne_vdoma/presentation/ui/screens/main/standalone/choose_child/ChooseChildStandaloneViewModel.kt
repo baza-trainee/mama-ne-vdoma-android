@@ -105,7 +105,7 @@ class ChooseChildStandaloneViewModel(
         networkExecutor<Uri> {
             execute { filesRepository.getAvatar(avatarId) }
             onSuccess { uri ->
-                preferencesDatastoreManager.avatar = uri.toString()
+                preferencesDatastoreManager.avatarUri = uri
                 _viewState.update {
                     it.copy(avatar = uri)
                 }

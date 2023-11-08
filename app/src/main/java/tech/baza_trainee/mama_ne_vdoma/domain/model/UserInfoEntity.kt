@@ -10,5 +10,6 @@ data class UserInfoEntity(
     val sendingEmails: Boolean = true,
     val avatar: String? = null,
     val schedule: SnapshotStateMap<DayOfWeek, DayPeriod> = getDefaultSchedule(),
-    val note: String = ""
+    val note: String = "",
+    val deviceId: String = ""
 )

@@ -3,10 +3,16 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.verify_em
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.messaging.ktx.messaging
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
+import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatastoreManager
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.AuthRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.Graphs
@@ -25,7 +31,8 @@ import java.net.HttpURLConnection
 class VerifyEmailViewModel(
     private val communicator: VerifyEmailCommunicator,
     private val navigator: ScreenNavigator,
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
+    private val preferencesDatastoreManager: UserPreferencesDatastoreManager
 ): ViewModel() {
 
     private val _viewState = MutableStateFlow(VerifyEmailViewState())
@@ -139,6 +146,10 @@ class VerifyEmailViewModel(
                 authRepository.loginUser(communicator.email.value, communicator.password.value)
             }
             onSuccess {
+                viewModelScope.launch {
+                    preferencesDatastoreManager.fcmToken = Firebase.messaging.token.await()
+                }
+
                 navigator.navigate(Graphs.UserProfile)
             }
             onError { error ->

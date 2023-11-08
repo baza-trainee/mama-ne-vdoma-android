@@ -37,7 +37,8 @@ fun UserInfoEntity.toDataModel() = UserInfoDto(
             map[it.key.name.lowercase()] = it.value.toDataModel()
         }
     },
-    note = note.ifEmpty { null }
+    note = note.ifEmpty { null },
+    deviceId = deviceId
 )
 
 fun UserProfileDto.toDomainModel() = UserProfileEntity(

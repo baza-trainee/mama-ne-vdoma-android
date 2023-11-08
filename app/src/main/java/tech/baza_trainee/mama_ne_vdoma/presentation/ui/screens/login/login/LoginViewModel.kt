@@ -3,10 +3,15 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.login
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.messaging.ktx.messaging
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatastoreManager
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.AuthRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
@@ -132,6 +137,10 @@ class LoginViewModel(
     }
 
     private fun checkUser(id: String) {
+        viewModelScope.launch {
+            preferencesDatastoreManager.fcmToken = Firebase.messaging.token.await()
+        }
+
         if (id == preferencesDatastoreManager.id) {
             if (preferencesDatastoreManager.isUserProfileFilled)
                 navigator.navigate(HostScreenRoutes.Host.getDestination(MAIN_PAGE))

@@ -1,26 +1,26 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.host
 
-import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.model.LatLng
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.messaging.ktx.messaging
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
+import tech.baza_trainee.mama_ne_vdoma.domain.model.DayPeriod
 import tech.baza_trainee.mama_ne_vdoma.domain.model.GroupEntity
+import tech.baza_trainee.mama_ne_vdoma.domain.model.UserInfoEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UserProfileEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatastoreManager
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.FilesRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.GroupsRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.LocationRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserAuthRepository
+import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.PageNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.CommonHostRoute
@@ -38,12 +38,14 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.networkExec
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onError
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onLoading
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onSuccess
+import java.time.DayOfWeek
 
 class HostViewModel(
     page: Int,
     private val mainNavigator: ScreenNavigator,
     private val navigator: PageNavigator,
     private val userAuthRepository: UserAuthRepository,
+    private val userProfileRepository: UserProfileRepository,
     private val filesRepository: FilesRepository,
     private val locationRepository: LocationRepository,
     private val groupsRepository: GroupsRepository,
@@ -76,12 +78,6 @@ class HostViewModel(
         viewModelScope.launch {
             navigator.routesFlow.collect {
                 if (it.page != -1) switchTab(it)
-            }
-        }
-
-        viewModelScope.launch {
-            preferencesDatastoreManager.fcmToken = Firebase.messaging.token.await().also {
-                Log.d("FCM", it)
             }
         }
 
@@ -139,7 +135,10 @@ class HostViewModel(
                         code = entity.countryCode
                         phone = entity.phone
                         sendEmail = entity.sendingEmails
+                        avatar = entity.avatar
                     }
+
+                    saveUserInfo(entity.schedule)
 
                     getGroups(entity.id)
 
@@ -160,6 +159,33 @@ class HostViewModel(
                     if (preferencesDatastoreManager.avatar.isEmpty())
                         getUserAvatar(entity.avatar)
                 }
+            }
+            onError { error ->
+                _uiState.value = RequestState.OnError(error)
+            }
+            onLoading { isLoading ->
+                _viewState.update {
+                    it.copy(
+                        isLoading = isLoading
+                    )
+                }
+            }
+        }
+    }
+
+    private fun saveUserInfo(schedule: SnapshotStateMap<DayOfWeek, DayPeriod>) {
+        networkExecutor {
+            execute {
+                userProfileRepository.saveUserInfo(
+                    UserInfoEntity(
+                        name = preferencesDatastoreManager.name,
+                        phone = preferencesDatastoreManager.phone,
+                        countryCode = preferencesDatastoreManager.code,
+                        avatar = preferencesDatastoreManager.avatar,
+                        sendingEmails = preferencesDatastoreManager.sendEmail,
+                        schedule = schedule
+                    )
+                )
             }
             onError { error ->
                 _uiState.value = RequestState.OnError(error)
@@ -218,7 +244,6 @@ class HostViewModel(
 
     private fun getUserAvatar(avatarId: String) {
         networkExecutor {
-            onSuccess { preferencesDatastoreManager.avatar = avatarId }
             execute { filesRepository.getAvatar(avatarId) }
             onSuccess { uri ->
                 preferencesDatastoreManager.avatarUri = uri
