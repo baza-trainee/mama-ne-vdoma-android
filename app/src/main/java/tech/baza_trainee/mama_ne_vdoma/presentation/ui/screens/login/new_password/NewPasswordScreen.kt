@@ -111,7 +111,7 @@ fun NewPasswordScreen(
 
                 PasswordTextFieldWithError(
                     modifier = Modifier.fillMaxWidth(),
-                    label = "Повторіть ваш пароль",
+                    label = "Повторіть свій пароль",
                     password = screenState.value.confirmPassword,
                     onValueChange = { handleEvent(NewPasswordEvent.ValidateConfirmPassword(it)) },
                     isError = screenState.value.confirmPasswordValid == ValidField.INVALID,

@@ -136,6 +136,7 @@ fun SetAreaForSearchScreen(
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp),
                 label = { Text("Введіть вашу адресу") },
+                placeholder = { Text("Адреса") },
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedContainerColor = MaterialTheme.colorScheme.surface,
                     unfocusedContainerColor = MaterialTheme.colorScheme.surface,

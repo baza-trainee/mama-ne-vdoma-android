@@ -147,6 +147,7 @@ fun UserInfoScreen(
                 modifier = Modifier.fillMaxWidth(),
                 value = screenState.value.name,
                 label = "Введіть своє ім'я (нікнейм)",
+                hint = "Ім'я (нікнейм)",
                 onValueChange = { handleEvent(UserInfoEvent.ValidateUserName(it)) },
                 isError = screenState.value.nameValid == ValidField.INVALID,
                 errorText = "Ви ввели некоректнe ім'я",
@@ -206,6 +207,7 @@ fun UserInfoScreen(
                         .weight(.75f),
                     value = screenState.value.phone,
                     label = { Text("Введіть свій номер телефону") },
+                    placeholder = { Text("Номер телефону") },
                     onValueChange = { handleEvent(UserInfoEvent.ValidatePhone(it)) },
                     isError = screenState.value.phoneValid == ValidField.INVALID && isPhoneFocused,
                     keyboardOptions = KeyboardOptions(

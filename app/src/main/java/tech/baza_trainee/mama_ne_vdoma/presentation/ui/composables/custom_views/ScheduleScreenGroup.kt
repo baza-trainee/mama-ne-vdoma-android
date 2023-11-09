@@ -58,6 +58,7 @@ fun ScheduleScreenGroup(
                 modifier = Modifier.fillMaxWidth(),
                 value = screenState.value.comment,
                 label = "Нотатка",
+                hint = "Введіть будь-які відомості, які Ви вважаєте важливими/корисними для інших користувачів",
                 onValueChange = { onUpdateComment(it) },
                 minLines = 3,
                 maxLines = 3,

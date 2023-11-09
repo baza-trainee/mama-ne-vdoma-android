@@ -32,6 +32,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFa
 fun PasswordTextFieldWithError(
     modifier: Modifier = Modifier,
     label: String = "Введіть свій пароль",
+    placeholder: String = "Пароль",
     password: String = "",
     onValueChange: (String) -> Unit = {},
     isError: Boolean = false,
@@ -45,7 +46,7 @@ fun PasswordTextFieldWithError(
         ShowHidePasswordTextField(
             modifier = Modifier.fillMaxWidth(),
             label = label,
-            placeHolder = "Пароль",
+            placeHolder = placeholder,
             password = password,
             onValueChange = { onValueChange(it) },
             isError = isError && isPasswordFocused,
@@ -70,8 +71,9 @@ fun PasswordTextFieldWithError(
 @Composable
 fun OutlinedTextFieldWithError(
     modifier: Modifier = Modifier,
-    label: String = "",
     value: String = "",
+    label: String = "",
+    hint: String = "",
     trailingIcon: @Composable() (() -> Unit)? = null,
     leadingIcon: @Composable() (() -> Unit)? = null,
     onValueChange: (String) -> Unit = {},
@@ -95,6 +97,7 @@ fun OutlinedTextFieldWithError(
                 .fillMaxWidth(),
             value = value,
             label = { Text(label) },
+            placeholder = { Text(hint) },
             onValueChange = { onValueChange(it) },
             isError = isError && isFieldFocused,
             colors = OutlinedTextFieldDefaults.colors(

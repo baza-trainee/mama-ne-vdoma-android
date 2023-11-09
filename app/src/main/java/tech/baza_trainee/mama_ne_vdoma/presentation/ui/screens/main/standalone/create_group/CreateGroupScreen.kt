@@ -61,6 +61,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import tech.baza_trainee.mama_ne_vdoma.R
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ButtonText
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.GroupAvatarWithCameraAndGallery
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.LoadingIndicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ScheduleGroup
@@ -70,7 +71,6 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.text_fields.O
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.GrayText
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ButtonText
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -156,6 +156,7 @@ fun CreateGroupScreen(
                     },
                     modifier = Modifier.fillMaxWidth(),
                     label = "Введіть Вашу адресу",
+                    hint = "Адреса",
                     trailingIcon = {
                         IconButton(
                             onClick = { handleEvent(CreateGroupEvent.GetLocationFromAddress) }
@@ -190,7 +191,8 @@ fun CreateGroupScreen(
                     value = screenState.value.name,
                     onValueChange = { handleEvent(CreateGroupEvent.UpdateName(it)) },
                     modifier = Modifier.fillMaxWidth(),
-                    label = "Назва групи",
+                    label = "Введіть назву групи",
+                    hint = "Назва групи",
                     isError = screenState.value.nameValid == ValidField.INVALID,
                     errorText = "Ви ввели некоректну назву"
                 )
@@ -233,6 +235,7 @@ fun CreateGroupScreen(
                                 isMinAgeFocused = it.isFocused
                             },
                         label = { Text("Від") },
+                        placeholder = { Text("Вік") },
                         keyboardOptions = KeyboardOptions.Default.copy(
                             keyboardType = KeyboardType.Number
                         ),
@@ -269,6 +272,7 @@ fun CreateGroupScreen(
                                 isMaxAgeFocused = it.isFocused
                             },
                         label = { Text("До") },
+                        placeholder = { Text("Вік") },
                         keyboardOptions = KeyboardOptions.Default.copy(
                             keyboardType = KeyboardType.Number
                         ),
@@ -378,23 +382,15 @@ fun CreateGroupScreen(
                     )
                 }
 
-                OutlinedTextField(
+                OutlinedTextFieldWithError(
                     modifier = Modifier.fillMaxWidth(),
                     value = screenState.value.description,
-                    label = { Text("Опис групи") },
+                    label = "Опис групи",
+                    hint = "Введіть будь-які відомості, які Ви вважаєте важливими/корисними для інших користувачів",
                     onValueChange = { handleEvent(CreateGroupEvent.UpdateDescription(it)) },
                     minLines = 2,
                     maxLines = 2,
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedContainerColor = MaterialTheme.colorScheme.surface,
-                        unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-                        disabledContainerColor = MaterialTheme.colorScheme.surface,
-                        focusedBorderColor = MaterialTheme.colorScheme.primary,
-                        unfocusedBorderColor = MaterialTheme.colorScheme.surface,
-                    ),
-                    textStyle = TextStyle(
-                        fontFamily = redHatDisplayFontFamily
-                    )
+                    isError = screenState.value.description.length > 1000
                 )
 
                 Text(

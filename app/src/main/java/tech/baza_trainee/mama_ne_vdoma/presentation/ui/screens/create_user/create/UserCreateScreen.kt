@@ -146,6 +146,7 @@ fun UserCreateScreen(
                 OutlinedTextFieldWithError(
                     modifier = Modifier.fillMaxWidth(),
                     value = screenState.value.email,
+                    hint = "Email",
                     label = "Введіть свій email",
                     onValueChange = { handleEvent(UserCreateEvent.ValidateEmail(it)) },
                     isError = screenState.value.emailValid == ValidField.INVALID,
@@ -187,7 +188,7 @@ fun UserCreateScreen(
 
                 PasswordTextFieldWithError(
                     modifier = Modifier.fillMaxWidth(),
-                    label = "Повторіть ваш пароль",
+                    label = "Повторіть свій пароль",
                     password = screenState.value.confirmPassword,
                     onValueChange = { handleEvent(UserCreateEvent.ValidateConfirmPassword(it)) },
                     isError = screenState.value.confirmPasswordValid == ValidField.INVALID,

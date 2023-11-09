@@ -126,6 +126,7 @@ fun RestorePasswordScreen(
                 OutlinedTextFieldWithError(
                     modifier = Modifier.fillMaxWidth(),
                     value = screenState.value.email,
+                    hint = "Email",
                     label = "Введіть свій email",
                     onValueChange = { handleEvent(RestorePasswordEvent.ValidateEmail(it)) },
                     isError = screenState.value.emailValid == ValidField.INVALID,

@@ -40,11 +40,11 @@ import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.domain.model.DayPeriod
 import tech.baza_trainee.mama_ne_vdoma.domain.model.getDefaultSchedule
 import tech.baza_trainee.mama_ne_vdoma.domain.model.updateSchedule
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ButtonText
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ScheduleGroup
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.text_fields.OutlinedTextFieldWithError
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.GrayText
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ButtonText
 import java.time.DayOfWeek
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -121,6 +121,7 @@ fun ParentScheduleEditDialog(
                     modifier = Modifier.fillMaxWidth(),
                     value = tempNote,
                     label = "Нотатка",
+                    hint = "Введіть будь-які відомості, які Ви вважаєте важливими/корисними для інших користувачів",
                     onValueChange = { tempNote = it },
                     minLines = 3,
                     maxLines = 3,

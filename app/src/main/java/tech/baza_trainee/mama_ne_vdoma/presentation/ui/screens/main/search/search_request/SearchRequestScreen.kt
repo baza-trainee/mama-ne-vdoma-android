@@ -45,12 +45,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ButtonText
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.LoadingIndicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.text_fields.OutlinedTextFieldWithError
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.SlateGray
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ButtonText
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -102,6 +102,7 @@ fun SearchRequestScreen(
             modifier = Modifier.fillMaxWidth(),
             value = screenState.value.email,
             label = "Email користувача",
+            hint = "Email",
             onValueChange = { handleEvent(SearchRequestEvent.ValidateEmail(it)) },
             isError = screenState.value.emailValid == ValidField.INVALID,
             errorText = "Ви ввели некоректний email",

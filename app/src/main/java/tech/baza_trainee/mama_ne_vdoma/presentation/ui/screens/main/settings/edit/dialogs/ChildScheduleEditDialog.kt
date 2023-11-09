@@ -52,12 +52,12 @@ import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.domain.model.ChildEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.DayPeriod
 import tech.baza_trainee.mama_ne_vdoma.domain.model.updateSchedule
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ButtonText
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ScheduleGroup
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.text_fields.OutlinedTextFieldWithError
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.GrayText
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.Purple80
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ButtonText
 import java.time.DayOfWeek
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -227,6 +227,7 @@ fun ChildScheduleEditDialog(
                                         .fillMaxWidth()
                                         .menuAnchor(),
                                     label = { Text("Введіть ім’я") },
+                                    placeholder = { Text("Ім’я") },
                                     colors = OutlinedTextFieldDefaults.colors(
                                         focusedContainerColor = MaterialTheme.colorScheme.surface,
                                         unfocusedContainerColor = MaterialTheme.colorScheme.surface,
@@ -292,6 +293,7 @@ fun ChildScheduleEditDialog(
                     modifier = Modifier.fillMaxWidth(),
                     value = notes[currentChild].orEmpty(),
                     label = "Нотатка",
+                    hint = "Введіть будь-які відомості, які Ви вважаєте важливими/корисними для інших користувачів",
                     onValueChange = {
                         notes = notes.toMutableMap().apply {
                             put(currentChild, it)

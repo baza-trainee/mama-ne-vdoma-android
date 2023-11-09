@@ -70,6 +70,7 @@ import com.google.maps.android.compose.MarkerState
 import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.cards.ChildInfoDesk
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.cards.ParentInfoDesk
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ButtonText
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.CustomGoogleMap
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.LoadingIndicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.UserAvatarWithCameraAndGallery
@@ -82,7 +83,6 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.GrayText
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.SlateGray
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ButtonText
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
@@ -207,6 +207,7 @@ fun EditProfileScreen(
             modifier = Modifier.fillMaxWidth(),
             value = screenState.value.name,
             label = "Вкажіть своє ім'я",
+            hint = "Ім'я",
             onValueChange = { handleEvent(EditProfileEvent.ValidateUserName(it)) },
             isError = screenState.value.nameValid == ValidField.INVALID,
             errorText = "Ви ввели некоректнe ім'я"
@@ -275,6 +276,12 @@ fun EditProfileScreen(
                     Text(
                         modifier = Modifier.basicMarquee(),
                         text = "Введіть свій номер телефону"
+                    )
+                },
+                placeholder = {
+                    Text(
+                        modifier = Modifier.basicMarquee(),
+                        text = "Номер телефону"
                     )
                 },
                 onValueChange = { handleEvent(EditProfileEvent.ValidatePhone(it)) },
@@ -368,6 +375,7 @@ fun EditProfileScreen(
             },
             modifier = Modifier.fillMaxWidth(),
             label = { Text("Введіть вашу адресу") },
+            placeholder = { Text("Адреса") },
             colors = OutlinedTextFieldDefaults.colors(
                 focusedContainerColor = MaterialTheme.colorScheme.surface,
                 unfocusedContainerColor = MaterialTheme.colorScheme.surface,

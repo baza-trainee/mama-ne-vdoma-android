@@ -50,6 +50,7 @@ fun ChildInfoGroup(
                 modifier = Modifier.fillMaxWidth(),
                 value = screenState.value.name,
                 label = "Ім'я дитини",
+                hint = "Ім'я дитини",
                 onValueChange = { handleEvent(ChildInfoEvent.ValidateChildName(it)) },
                 isError = screenState.value.nameValid == ValidField.INVALID,
                 errorText = "Ви ввели некоректнe ім'я"
@@ -61,6 +62,7 @@ fun ChildInfoGroup(
                 modifier = Modifier.fillMaxWidth(),
                 value = screenState.value.age,
                 label = "Вік дитини",
+                hint = "Вік дитини",
                 onValueChange = { handleEvent(ChildInfoEvent.ValidateAge(it)) },
                 isError = screenState.value.ageValid == ValidField.INVALID,
                 errorText = "Ви ввели некоректний вік",
