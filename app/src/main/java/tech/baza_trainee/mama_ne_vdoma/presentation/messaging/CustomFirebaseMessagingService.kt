@@ -10,7 +10,9 @@ import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP
 import android.os.Build
 import android.util.Log
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.app.NotificationCompat
+import androidx.core.graphics.drawable.toBitmapOrNull
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import kotlinx.coroutines.CoroutineScope
@@ -67,7 +69,9 @@ class CustomFirebaseMessagingService: FirebaseMessagingService() {
                 val notificationBuilder = NotificationCompat.Builder(context, channelId)
                     .setContentTitle(it.name)
                     .setContentText(getMessage(data[TYPE].orEmpty()))
-                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setSmallIcon(R.drawable.ic_notification_logo)
+                    .setColor(getColor(R.color.main_theme))
+                    .setLargeIcon(AppCompatResources.getDrawable(context, R.drawable.logo_240_240)?.toBitmapOrNull())
                     .setAutoCancel(true)
                     .setContentIntent(pendingIntent)
 
