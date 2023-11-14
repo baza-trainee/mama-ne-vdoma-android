@@ -16,6 +16,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,7 +26,6 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 
@@ -32,8 +33,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFa
 @Preview
 fun SocialLoginBlock(
     modifier: Modifier = Modifier,
-    textForBottomButton: CharSequence = "",
-    googleSignInClient: GoogleSignInClient? = null,
+    textForBottomButton: () -> CharSequence = { "" },
     onGoogleLogin: () -> Unit = {},
 //    onFBLogin: () -> Unit = {},
     onAction: () -> Unit = {},
@@ -99,7 +99,11 @@ fun SocialLoginBlock(
 //
 //        Spacer(modifier = Modifier.height(24.dp))
 
-        if (textForBottomButton is AnnotatedString)
+        val textForButton by remember {
+            mutableStateOf(textForBottomButton.invoke())
+        }
+
+        if (textForButton is AnnotatedString)
             Text(
                 modifier = Modifier
                     .clickable(
@@ -110,7 +114,7 @@ fun SocialLoginBlock(
                     }
                     .fillMaxWidth()
                     .height(48.dp),
-                text = textForBottomButton,
+                text = textForButton as AnnotatedString,
                 textAlign = TextAlign.Center,
                 fontFamily = redHatDisplayFontFamily
             )

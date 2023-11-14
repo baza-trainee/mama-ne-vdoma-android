@@ -203,6 +203,16 @@ fun LoginUserScreen(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
+                val restoreButtonText by remember {
+                    mutableStateOf(
+                        getTextWithUnderline(
+                            "",
+                            "Забули пароль?",
+                            false
+                        )
+                    )
+                }
+
                 Text(
                     modifier = Modifier
                         .wrapContentWidth()
@@ -211,7 +221,7 @@ fun LoginUserScreen(
                             indication = null,
                             interactionSource = remember { MutableInteractionSource() }
                         ) { handleEvent(LoginEvent.OnRestore) },
-                    text = getTextWithUnderline("", "Забули пароль?", false),
+                    text = restoreButtonText,
                     textAlign = TextAlign.End,
                     fontSize = 14.sp,
                     fontFamily = redHatDisplayFontFamily
@@ -287,7 +297,7 @@ fun LoginUserScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp),
-                textForBottomButton = getTextWithUnderline("Ще немає профілю? ", "Зареєструватись"),
+                textForBottomButton = { getTextWithUnderline("Ще немає профілю? ", "Зареєструватись") },
                 onGoogleLogin = { googleLogin = true },
                 onAction = { handleEvent(LoginEvent.OnCreate) }
             )

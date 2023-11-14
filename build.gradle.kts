@@ -13,3 +13,22 @@ plugins {
     kotlin("plugin.serialization") version "1.9.10"
     id ("com.google.android.libraries.mapsplatform.secrets-gradle-plugin") version "2.0.1" apply false
 }
+
+subprojects {
+    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+        kotlinOptions {
+            if (project.findProperty("myapp.enableComposeCompilerReports") == "true") {
+                freeCompilerArgs += arrayOf(
+                    "-P",
+                    "plugin:androidx.compose.compiler.plugins.kotlin:reportsDestination=" +
+                            project.buildDir.absolutePath + "/compose_metrics"
+                )
+                freeCompilerArgs += arrayOf(
+                    "-P",
+                    "plugin:androidx.compose.compiler.plugins.kotlin:metricsDestination=" +
+                            project.buildDir.absolutePath + "/compose_metrics"
+                )
+            }
+        }
+    }
+}

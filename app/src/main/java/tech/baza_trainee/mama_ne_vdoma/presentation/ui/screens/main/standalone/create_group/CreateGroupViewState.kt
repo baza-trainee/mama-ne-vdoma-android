@@ -2,6 +2,7 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.standalone.
 
 import android.graphics.Bitmap
 import android.net.Uri
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import com.google.android.gms.maps.model.LatLng
 import tech.baza_trainee.mama_ne_vdoma.domain.model.DayPeriod
@@ -11,9 +12,9 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 import java.time.DayOfWeek
 
 data class CreateGroupViewState(
-    val userAvatar: Uri = Uri.EMPTY,
+    @Stable val userAvatar: Uri = Uri.EMPTY,
     val address: String = "",
-    val location: LatLng = LatLng(0.00, 0.00),
+    @Stable val location: LatLng = LatLng(0.00, 0.00),
     val isAddressChecked: Boolean = true,
     val name: String = "",
     val nameValid: ValidField = ValidField.EMPTY,

@@ -1,6 +1,7 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.edit
 
 import android.net.Uri
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import com.google.android.gms.maps.model.LatLng
@@ -17,12 +18,12 @@ data class EditProfileViewState(
     val phoneValid: ValidField = ValidField.EMPTY,
     val code: String = "",
     val country: String = "",
-    val userAvatar: Uri = Uri.EMPTY,
+    @Stable val userAvatar: Uri = Uri.EMPTY,
     val address: String = "",
-    val currentLocation: LatLng = LatLng(0.0,0.0),
+    @Stable val currentLocation: LatLng = LatLng(0.0,0.0),
     val note: String = "",
     val schedule: SnapshotStateMap<DayOfWeek, DayPeriod> = getDefaultSchedule(),
-    val children: List<ChildEntity> = emptyList(),
+    @Stable val children: List<ChildEntity> = emptyList(),
     val childrenNotesValid: SnapshotStateMap<Int, ValidField> = mutableStateMapOf(),
     val isLoading: Boolean = false
 )

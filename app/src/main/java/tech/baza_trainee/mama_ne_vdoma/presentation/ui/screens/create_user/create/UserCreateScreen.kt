@@ -258,7 +258,7 @@ fun UserCreateScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp),
-                textForBottomButton = getTextWithUnderline("Вже є акаунт? ", "Увійти"),
+                textForBottomButton = { getTextWithUnderline("Вже є акаунт? ", "Увійти") },
                 onGoogleLogin = { googleLogin = true },
                 onAction = { handleEvent(UserCreateEvent.OnLogin) }
             )
