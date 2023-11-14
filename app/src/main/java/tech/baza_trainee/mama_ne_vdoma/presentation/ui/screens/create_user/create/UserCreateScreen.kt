@@ -42,7 +42,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.SignInClient
-import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.common.api.UnsupportedApiCallException
 import tech.baza_trainee.mama_ne_vdoma.BuildConfig
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ButtonText
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.LoadingIndicator
@@ -88,7 +88,7 @@ fun UserCreateScreen(
                 try {
                     val credential = oneTapClient?.getSignInCredentialFromIntent(it.data)
                     handleEvent(UserCreateEvent.OnGoogleLogin(credential?.googleIdToken.orEmpty()))
-                } catch (exc: ApiException) {
+                } catch (exc: Exception) {
                     Toast.makeText(context, "Немає даних для авторизації", Toast.LENGTH_LONG)
                         .show()
                 }
@@ -96,22 +96,27 @@ fun UserCreateScreen(
 
         LaunchedEffect(key1 = googleLogin) {
             if (googleLogin) {
-                val signUpRequest = BeginSignInRequest.builder()
-                    .setGoogleIdTokenRequestOptions(
-                        BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
-                            .setSupported(true)
-                            .setServerClientId(BuildConfig.ONE_TAP_SERVER_CLIENT_ID)
-                            .setFilterByAuthorizedAccounts(false)
+                try {
+                    val signUpRequest = BeginSignInRequest.builder()
+                        .setGoogleIdTokenRequestOptions(
+                            BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
+                                .setSupported(true)
+                                .setServerClientId(BuildConfig.ONE_TAP_SERVER_CLIENT_ID)
+                                .setFilterByAuthorizedAccounts(false)
+                                .build()
+                        )
+                        .build()
+
+                    val activity = context.findActivity()
+                    val result = activity.beginSignInGoogleOneTap(oneTapClient, signUpRequest)
+                    intentSender.launch(
+                        IntentSenderRequest.Builder(result.pendingIntent.intentSender)
                             .build()
                     )
-                    .build()
-
-                val activity = context.findActivity()
-                val result = activity.beginSignInGoogleOneTap(oneTapClient, signUpRequest)
-                intentSender.launch(
-                    IntentSenderRequest.Builder(result.pendingIntent.intentSender)
-                        .build()
-                )
+                } catch (exc: UnsupportedApiCallException) {
+                    Toast.makeText(context, "Авторизація неможлива", Toast.LENGTH_LONG)
+                        .show()
+                }
             }
         }
 
