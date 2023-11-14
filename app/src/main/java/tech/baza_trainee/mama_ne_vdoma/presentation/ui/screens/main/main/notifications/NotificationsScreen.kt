@@ -6,6 +6,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -26,12 +27,11 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
-import androidx.compose.material3.TabRowDefaults.SecondaryIndicator
-import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -42,15 +42,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.cards.AdminJoinRequestCard
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.cards.MyRequestCard
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.LoadingIndicator
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.functions.customTabIndicatorOffset
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
@@ -89,16 +92,36 @@ fun NotificationScreen(
     var dialogData by rememberSaveable { mutableStateOf(Triple("", "", "")) }
 
     Column {
+        val density = LocalDensity.current
         val tabs = listOf("Мої запити", "Вхідні запити")
+        val tabWidths = remember {
+            val tabWidthStateList = mutableStateListOf<Dp>()
+            repeat(tabs.size) {
+                tabWidthStateList.add(0.dp)
+            }
+            tabWidthStateList
+        }
         val pagerState = rememberPagerState(pageCount = { tabs.size })
         val scope = rememberCoroutineScope()
 
         TabRow(
+            modifier = Modifier.height(52.dp),
             selectedTabIndex = pagerState.currentPage,
             containerColor = MaterialTheme.colorScheme.background,
             contentColor = MaterialTheme.colorScheme.onBackground,
             indicator = { tabPositions ->
-                SecondaryIndicator(modifier = Modifier.tabIndicatorOffset(tabPositions[pagerState.currentPage])  )
+                Box(
+                    modifier = Modifier
+                        .customTabIndicatorOffset(
+                            currentTabPosition = tabPositions[pagerState.currentPage],
+                            tabWidth = tabWidths[pagerState.currentPage]
+                        )
+                        .height(4.dp)
+                        .background(
+                            color = MaterialTheme.colorScheme.primary,
+                            shape = RoundedCornerShape(topStart = 4.dp, topEnd = 4.dp)
+                        )
+                )
             }
         ) {
             tabs.forEachIndexed { index, text ->
@@ -112,9 +135,16 @@ fun NotificationScreen(
                     }
                 ) {
                     Text(
+                        modifier = Modifier
+                            .padding(vertical = 8.dp),
                         text = text,
                         fontSize = 14.sp,
-                        fontFamily = redHatDisplayFontFamily
+                        fontFamily = redHatDisplayFontFamily,
+                        onTextLayout = {
+                            tabWidths[index] =
+                                with(density) { it.size.width.toDp() }
+                        },
+                        textAlign = TextAlign.Center
                     )
                 }
             }
@@ -274,7 +304,12 @@ fun NotificationScreen(
                                     interactionSource = remember { MutableInteractionSource() }
                                 ) {
                                     showDeclineDialog = false
-                                    handleEvent(NotificationsEvent.DeclineUser(dialogData.first, dialogData.second))
+                                    handleEvent(
+                                        NotificationsEvent.DeclineUser(
+                                            dialogData.first,
+                                            dialogData.second
+                                        )
+                                    )
                                 },
                             text = "Відхилити",
                             fontSize = 16.sp,
@@ -292,7 +327,12 @@ fun NotificationScreen(
                                     interactionSource = remember { MutableInteractionSource() }
                                 ) {
                                     showDeclineDialog = false
-                                    handleEvent(NotificationsEvent.AcceptUser(dialogData.first, dialogData.second))
+                                    handleEvent(
+                                        NotificationsEvent.AcceptUser(
+                                            dialogData.first,
+                                            dialogData.second
+                                        )
+                                    )
                                 },
                             text = "Погодити",
                             fontSize = 16.sp,
