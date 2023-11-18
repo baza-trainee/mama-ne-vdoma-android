@@ -41,7 +41,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.SignInClient
-import com.google.android.gms.common.api.UnsupportedApiCallException
 import tech.baza_trainee.mama_ne_vdoma.BuildConfig
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.LoadingIndicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.SocialLoginBlock
@@ -135,7 +134,7 @@ fun LoginUserScreen(
                         IntentSenderRequest.Builder(result.pendingIntent.intentSender)
                             .build()
                     )
-                } catch (exc: UnsupportedApiCallException) {
+                } catch (exc: Exception) {
                     Toast.makeText(context, "Авторизація неможлива", Toast.LENGTH_LONG)
                         .show()
                 }
