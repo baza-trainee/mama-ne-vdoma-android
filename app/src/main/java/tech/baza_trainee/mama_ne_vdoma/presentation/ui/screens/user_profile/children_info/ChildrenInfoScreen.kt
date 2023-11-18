@@ -16,8 +16,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -26,16 +24,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.cards.ChildInfoDesk
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ButtonText
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.LoadingIndicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.SurfaceWithNavigationBars
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.headers.HeaderWithOptArrow
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ButtonText
 
 @Composable
 fun  ChildrenInfoScreen(
     modifier: Modifier = Modifier,
-    screenState: State<ChildrenInfoViewState> = mutableStateOf(ChildrenInfoViewState()),
+    screenState: ChildrenInfoViewState = ChildrenInfoViewState(),
     onHandleChildrenInfoEvent: (ChildrenInfoEvent) -> Unit = {},
     onNext: () -> Unit = {},
     onBack: () -> Unit = {},
@@ -63,7 +61,7 @@ fun  ChildrenInfoScreen(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 LazyColumn {
-                    items(screenState.value.children) { child ->
+                    items(screenState.children) { child ->
                         ChildInfoDesk(
                             modifier = Modifier.fillMaxWidth(),
                             child = child,
@@ -120,7 +118,7 @@ fun  ChildrenInfoScreen(
             }
         }
 
-        if (screenState.value.isLoading) LoadingIndicator()
+        if (screenState.isLoading) LoadingIndicator()
     }
 }
 

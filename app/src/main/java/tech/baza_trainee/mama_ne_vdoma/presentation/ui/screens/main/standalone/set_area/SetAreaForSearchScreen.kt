@@ -58,7 +58,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.showToast
 @Composable
 fun SetAreaForSearchScreen(
     modifier: Modifier = Modifier,
-    screenState: State<SetAreaViewState> = mutableStateOf(SetAreaViewState()),
+    screenState: SetAreaViewState = SetAreaViewState(),
     uiState: State<RequestState> = mutableStateOf(RequestState.Idle),
     handleEvent: (SetAreaEvent) -> Unit = { _ -> }
 ) {
@@ -89,7 +89,7 @@ fun SetAreaForSearchScreen(
             HeaderWithToolbar(
                 modifier = Modifier.fillMaxWidth(),
                 title = "Пошук групи",
-                avatar = screenState.value.avatar,
+                avatar = screenState.avatar,
                 showNotification = false,
                 onNotificationsClicked = {},
                 onAvatarClicked = { handleEvent(SetAreaEvent.OnAvatarClicked) },
@@ -103,20 +103,20 @@ fun SetAreaForSearchScreen(
             ) {
                 CustomGoogleMap(
                     modifier = Modifier.fillMaxWidth(),
-                    location = screenState.value.currentLocation,
+                    location = screenState.currentLocation,
                     showMyLocationButton = isPermissionGranted,
                     onMyLocationButtonClick = { handleEvent(SetAreaEvent.RequestUserLocation) },
                     onMapClick = { handleEvent(SetAreaEvent.OnMapClick(it)) }
                 ) {
                     Marker(
-                        state = MarkerState(position = screenState.value.currentLocation),
+                        state = MarkerState(position = screenState.currentLocation),
                         title = "Ви тут",
                         snippet = "поточне місцезнаходження"
                     )
 
                     Circle(
-                        center = screenState.value.currentLocation,
-                        radius = screenState.value.radius.toDouble(),
+                        center = screenState.currentLocation,
+                        radius = screenState.radius.toDouble(),
                         strokeColor = MaterialTheme.colorScheme.primary,
                         fillColor = SemiTransparent
                     )
@@ -126,7 +126,7 @@ fun SetAreaForSearchScreen(
             Spacer(modifier = Modifier.height(8.dp))
 
             OutlinedTextField(
-                value = screenState.value.address,
+                value = screenState.address,
                 onValueChange = {
                     handleEvent(
                         SetAreaEvent.UpdateUserAddress(it)
@@ -160,7 +160,7 @@ fun SetAreaForSearchScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp),
-                value = screenState.value.radius / KM,
+                value = screenState.radius / KM,
                 onValueChange = {
                     handleEvent(SetAreaEvent.SetAreaRadius(it * KM))
                 },
@@ -217,7 +217,7 @@ fun SetAreaForSearchScreen(
             }
         }
 
-        if (screenState.value.isLoading) LoadingIndicator()
+        if (screenState.isLoading) LoadingIndicator()
     }
 }
 

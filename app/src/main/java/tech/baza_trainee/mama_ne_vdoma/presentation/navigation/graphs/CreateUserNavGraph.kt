@@ -1,6 +1,5 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.navigation.graphs
 
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
@@ -9,6 +8,7 @@ import org.koin.androidx.compose.navigation.koinNavViewModel
 import org.koin.compose.koinInject
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.CreateUserRoute
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.Graphs
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.functions.asStateWithLifecycle
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.verify_email.VerifyEmailScreen
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.verify_email.VerifyEmailViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.create.UserCreateScreen
@@ -24,7 +24,7 @@ fun NavGraphBuilder.createUserNavGraph() {
             val oneTapClient: SignInClient = koinInject()
             UserCreateScreen(
                 oneTapClient = oneTapClient,
-                screenState = userCreateViewModel.viewState.collectAsStateWithLifecycle(),
+                screenState = userCreateViewModel.viewState.asStateWithLifecycle(),
                 uiState = userCreateViewModel.uiState,
                 handleEvent = { userCreateViewModel.handleUserCreateEvent(it) }
             )
@@ -32,7 +32,7 @@ fun NavGraphBuilder.createUserNavGraph() {
         composable(CreateUserRoute.VerifyEmail.route) {
             val verifyEmailViewModel: VerifyEmailViewModel = koinNavViewModel()
             VerifyEmailScreen(
-                screenState = verifyEmailViewModel.viewState.collectAsStateWithLifecycle(),
+                screenState = verifyEmailViewModel.viewState.asStateWithLifecycle(),
                 uiState = verifyEmailViewModel.uiState,
                 title = "Створити профіль",
                 handleEvent = { verifyEmailViewModel.handleEvent(it) }

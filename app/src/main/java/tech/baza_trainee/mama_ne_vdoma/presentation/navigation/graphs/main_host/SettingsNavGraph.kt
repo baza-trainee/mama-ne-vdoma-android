@@ -1,6 +1,5 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.navigation.graphs.main_host
 
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
@@ -10,6 +9,7 @@ import org.koin.core.parameter.parametersOf
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.PageNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.Graphs
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.SettingsScreenRoutes
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.functions.asStateWithLifecycle
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.add_child.ChildInfoViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.child_schedule.ChildScheduleViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.image_crop.ImageCropViewModel
@@ -33,7 +33,7 @@ fun NavGraphBuilder.settingsNavGraph() {
         composable(SettingsScreenRoutes.Settings.route) {
             val viewModel: ProfileSettingsViewModel = koinNavViewModel()
             ProfileSettingsScreen(
-                screenState = viewModel.viewState.collectAsStateWithLifecycle(),
+                screenState = viewModel.viewState.asStateWithLifecycle(),
                 uiState = viewModel.uiState,
                 handleEvent = { viewModel.handleEvent(it) }
             )
@@ -41,7 +41,7 @@ fun NavGraphBuilder.settingsNavGraph() {
         composable(SettingsScreenRoutes.EditProfile.route) {
             val viewModel: EditProfileViewModel = koinNavViewModel()
             EditProfileScreen(
-                screenState = viewModel.viewState.collectAsStateWithLifecycle(),
+                screenState = viewModel.viewState.asStateWithLifecycle(),
                 uiState = viewModel.uiState,
                 handleEvent = { viewModel.handleEvent(it) }
             )
@@ -52,14 +52,14 @@ fun NavGraphBuilder.settingsNavGraph() {
                 parametersOf(navigator)
             }
             ProfileImageCropScreen(
-                screenState = imageCropViewModel.viewState.collectAsStateWithLifecycle(),
+                screenState = imageCropViewModel.viewState.asStateWithLifecycle(),
                 handleEvent = { imageCropViewModel.handleEvent(it) }
             )
         }
         composable(SettingsScreenRoutes.VerifyNewEmail.route) {
             val viewModel: VerifyNewEmailViewModel = koinNavViewModel()
             VerifyNewEmailScreen(
-                screenState = viewModel.viewState.collectAsStateWithLifecycle(),
+                screenState = viewModel.viewState.asStateWithLifecycle(),
                 uiState = viewModel.uiState,
                 handleEvent = { viewModel.handleEvent(it) }
             )
@@ -73,7 +73,7 @@ fun NavGraphBuilder.settingsNavGraph() {
                 )
             }
             ChildInfoScreenInSettings(
-                screenState = childInfoViewModel.viewState.collectAsStateWithLifecycle(),
+                screenState = childInfoViewModel.viewState.asStateWithLifecycle(),
                 uiState = childInfoViewModel.uiState,
                 handleEvent = { childInfoViewModel.handleChildInfoEvent(it) }
             )
@@ -87,7 +87,7 @@ fun NavGraphBuilder.settingsNavGraph() {
                 )
             }
             ChildScheduleScreenInSettings(
-                screenState = childScheduleViewModel.viewState.collectAsStateWithLifecycle(),
+                screenState = childScheduleViewModel.viewState.asStateWithLifecycle(),
                 uiState = childScheduleViewModel.uiState,
                 handleEvent = { childScheduleViewModel.handleScheduleEvent(it) }
             )
@@ -95,7 +95,7 @@ fun NavGraphBuilder.settingsNavGraph() {
         composable(SettingsScreenRoutes.EditCredentials.route) {
             val viewModel: EditCredentialsViewModel = koinNavViewModel()
             EditCredentialsScreen(
-                screenState = viewModel.viewState.collectAsStateWithLifecycle(),
+                screenState = viewModel.viewState.asStateWithLifecycle(),
                 uiState = viewModel.uiState,
                 handleEvent = { viewModel.handleEvent(it) }
             )

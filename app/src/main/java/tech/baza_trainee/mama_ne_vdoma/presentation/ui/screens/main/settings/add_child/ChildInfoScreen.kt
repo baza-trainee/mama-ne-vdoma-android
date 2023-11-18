@@ -18,7 +18,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.showToast
 @Composable
 fun ChildInfoScreenInSettings(
     modifier: Modifier = Modifier,
-    screenState: State<ChildInfoViewState> = mutableStateOf(ChildInfoViewState()),
+    screenState: ChildInfoViewState = ChildInfoViewState(),
     uiState: State<RequestState> = mutableStateOf(RequestState.Idle),
     handleEvent: (ChildInfoEvent) -> Unit = { _ -> }
 ) {

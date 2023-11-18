@@ -1,6 +1,5 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.navigation.graphs
 
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
@@ -10,6 +9,7 @@ import org.koin.androidx.compose.navigation.koinNavViewModel
 import org.koin.compose.koinInject
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.Graphs
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.LoginRoutes
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.functions.asStateWithLifecycle
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.verify_email.VerifyEmailScreen
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.verify_email.VerifyEmailViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.email_confirm.EmailConfirmScreen
@@ -34,7 +34,7 @@ fun NavGraphBuilder.loginNavGraph(
             val oneTapClient: SignInClient = koinInject()
             LoginUserScreen(
                 oneTapClient = oneTapClient,
-                screenState = loginViewModel.viewState.collectAsStateWithLifecycle(),
+                screenState = loginViewModel.viewState.asStateWithLifecycle(),
                 uiState = loginViewModel.uiState,
                 handleEvent = { loginViewModel.handleLoginEvent(it) }
             )
@@ -42,7 +42,7 @@ fun NavGraphBuilder.loginNavGraph(
         composable(LoginRoutes.RestorePassword.route) { entry ->
             val restorePasswordScreenViewModel: RestorePasswordScreenViewModel = entry.sharedViewModel(navHostController)
             RestorePasswordScreen(
-                screenState = restorePasswordScreenViewModel.viewState.collectAsStateWithLifecycle(),
+                screenState = restorePasswordScreenViewModel.viewState.asStateWithLifecycle(),
                 uiState = restorePasswordScreenViewModel.uiState,
                 handleEvent = { restorePasswordScreenViewModel.handleRestoreEvent(it) }
             )
@@ -62,7 +62,7 @@ fun NavGraphBuilder.loginNavGraph(
         composable(LoginRoutes.VerifyEmail.route) {
             val verifyEmailViewModel: VerifyEmailViewModel = koinNavViewModel()
             VerifyEmailScreen(
-                screenState = verifyEmailViewModel.viewState.collectAsStateWithLifecycle(),
+                screenState = verifyEmailViewModel.viewState.asStateWithLifecycle(),
                 uiState = verifyEmailViewModel.uiState,
                 title = "Відновлення паролю",
                 handleEvent = { verifyEmailViewModel.handleEvent(it) }
@@ -71,7 +71,7 @@ fun NavGraphBuilder.loginNavGraph(
         composable(LoginRoutes.NewPassword.route) {
             val newPasswordScreenViewModel: NewPasswordScreenViewModel = koinNavViewModel()
             NewPasswordScreen(
-                screenState = newPasswordScreenViewModel.viewState.collectAsStateWithLifecycle(),
+                screenState = newPasswordScreenViewModel.viewState.asStateWithLifecycle(),
                 uiState = newPasswordScreenViewModel.uiState,
                 handleEvent = { newPasswordScreenViewModel.handleNewPasswordEvent(it) }
             )

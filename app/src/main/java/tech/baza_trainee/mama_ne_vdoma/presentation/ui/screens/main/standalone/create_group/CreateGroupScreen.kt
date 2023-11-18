@@ -76,7 +76,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 @Composable
 fun CreateGroupScreen(
     modifier: Modifier = Modifier,
-    screenState: State<CreateGroupViewState> = mutableStateOf(CreateGroupViewState()),
+    screenState: CreateGroupViewState = CreateGroupViewState(),
     uiState: State<CreateGroupUiState> = mutableStateOf(CreateGroupUiState.Idle),
     handleEvent: (CreateGroupEvent) -> Unit = {}
 ) {
@@ -133,7 +133,7 @@ fun CreateGroupScreen(
             HeaderWithToolbar(
                 modifier = Modifier.fillMaxWidth(),
                 title = "Створення нової групи",
-                avatar = screenState.value.userAvatar,
+                avatar = screenState.userAvatar,
                 showNotification = false,
                 onNotificationsClicked = {},
                 onAvatarClicked = { handleEvent(CreateGroupEvent.OnAvatarClicked) },
@@ -150,7 +150,7 @@ fun CreateGroupScreen(
                     .padding(horizontal = 16.dp)
             ) {
                 OutlinedTextFieldWithError(
-                    value = screenState.value.address,
+                    value = screenState.address,
                     onValueChange = {
                         handleEvent(CreateGroupEvent.UpdateGroupAddress(it))
                     },
@@ -161,7 +161,7 @@ fun CreateGroupScreen(
                         IconButton(
                             onClick = { handleEvent(CreateGroupEvent.GetLocationFromAddress) }
                         ) {
-                            if (screenState.value.isAddressChecked) {
+                            if (screenState.isAddressChecked) {
                                 Icon(
                                     painterResource(id = R.drawable.ic_done),
                                     contentDescription = "search_location",
@@ -174,7 +174,7 @@ fun CreateGroupScreen(
                             }
                         }
                     },
-                    isError = !screenState.value.isAddressChecked,
+                    isError = !screenState.isAddressChecked,
                     errorText = "Адреса не перевірена",
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Text,
@@ -188,12 +188,12 @@ fun CreateGroupScreen(
                 Spacer(modifier = Modifier.height(8.dp))
 
                 OutlinedTextFieldWithError(
-                    value = screenState.value.name,
+                    value = screenState.name,
                     onValueChange = { handleEvent(CreateGroupEvent.UpdateName(it)) },
                     modifier = Modifier.fillMaxWidth(),
                     label = "Введіть назву групи",
                     hint = "Назва групи",
-                    isError = screenState.value.nameValid == ValidField.INVALID,
+                    isError = screenState.nameValid == ValidField.INVALID,
                     errorText = "Ви ввели некоректну назву"
                 )
 
@@ -226,7 +226,7 @@ fun CreateGroupScreen(
                 ) {
                     val focusRequester = remember { FocusRequester() }
                     OutlinedTextField(
-                        value = screenState.value.minAge,
+                        value = screenState.minAge,
                         onValueChange = { handleEvent(CreateGroupEvent.UpdateMinAge(it)) },
                         modifier = Modifier
                             .weight(1f)
@@ -239,7 +239,7 @@ fun CreateGroupScreen(
                         keyboardOptions = KeyboardOptions.Default.copy(
                             keyboardType = KeyboardType.Number
                         ),
-                        isError = screenState.value.minAgeValid == ValidField.INVALID && isMinAgeFocused,
+                        isError = screenState.minAgeValid == ValidField.INVALID && isMinAgeFocused,
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedContainerColor = MaterialTheme.colorScheme.surface,
                             unfocusedContainerColor = MaterialTheme.colorScheme.surface,
@@ -248,7 +248,7 @@ fun CreateGroupScreen(
                             unfocusedBorderColor = MaterialTheme.colorScheme.surface,
                         ),
                         trailingIcon = {
-                            if (screenState.value.minAgeValid == ValidField.INVALID && isMinAgeFocused)
+                            if (screenState.minAgeValid == ValidField.INVALID && isMinAgeFocused)
                                 Icon(
                                     imageVector = Icons.Filled.Error,
                                     contentDescription = "error",
@@ -263,7 +263,7 @@ fun CreateGroupScreen(
 
                     Spacer(modifier = Modifier.width(32.dp))
                     OutlinedTextField(
-                        value = screenState.value.maxAge,
+                        value = screenState.maxAge,
                         onValueChange = { handleEvent(CreateGroupEvent.UpdateMaxAge(it)) },
                         modifier = Modifier
                             .weight(1f)
@@ -276,7 +276,7 @@ fun CreateGroupScreen(
                         keyboardOptions = KeyboardOptions.Default.copy(
                             keyboardType = KeyboardType.Number
                         ),
-                        isError = screenState.value.maxAgeValid == ValidField.INVALID && isMaxAgeFocused,
+                        isError = screenState.maxAgeValid == ValidField.INVALID && isMaxAgeFocused,
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedContainerColor = MaterialTheme.colorScheme.surface,
                             unfocusedContainerColor = MaterialTheme.colorScheme.surface,
@@ -285,7 +285,7 @@ fun CreateGroupScreen(
                             unfocusedBorderColor = MaterialTheme.colorScheme.surface,
                         ),
                         trailingIcon = {
-                            if (screenState.value.maxAgeValid == ValidField.INVALID && isMaxAgeFocused)
+                            if (screenState.maxAgeValid == ValidField.INVALID && isMaxAgeFocused)
                                 Icon(
                                     imageVector = Icons.Filled.Error,
                                     contentDescription = "error",
@@ -302,8 +302,8 @@ fun CreateGroupScreen(
                 val minAgeErrorText = "Не може бути менше 1 та більше за макс. вік"
                 val maxAgeErrorText = "Не може бути більше 18 та менше за мін. вік"
                 val errorText = when {
-                    screenState.value.maxAgeValid == ValidField.INVALID && isMaxAgeFocused -> maxAgeErrorText
-                    screenState.value.minAgeValid == ValidField.INVALID && isMinAgeFocused -> minAgeErrorText
+                    screenState.maxAgeValid == ValidField.INVALID && isMaxAgeFocused -> maxAgeErrorText
+                    screenState.minAgeValid == ValidField.INVALID && isMinAgeFocused -> minAgeErrorText
                     else -> ""
                 }
                 if (errorText.isNotEmpty()) {
@@ -330,7 +330,7 @@ fun CreateGroupScreen(
                 Spacer(modifier = Modifier.width(4.dp))
 
                 ScheduleGroup(
-                    schedule = screenState.value.schedule,
+                    schedule = screenState.schedule,
                     onValueChange = { day, period ->
                         handleEvent(
                             CreateGroupEvent.UpdateGroupSchedule(
@@ -365,7 +365,7 @@ fun CreateGroupScreen(
                     AsyncImage(
                         modifier = Modifier.fillMaxWidth(),
                         model = ImageRequest.Builder(LocalContext.current)
-                            .data(screenState.value.avatar)
+                            .data(screenState.avatar)
                             .crossfade(true)
                             .build(),
                         contentDescription = null,
@@ -384,13 +384,13 @@ fun CreateGroupScreen(
 
                 OutlinedTextFieldWithError(
                     modifier = Modifier.fillMaxWidth(),
-                    value = screenState.value.description,
+                    value = screenState.description,
                     label = "Опис групи",
                     hint = "Введіть будь-які відомості, які Ви вважаєте важливими/корисними для інших користувачів",
                     onValueChange = { handleEvent(CreateGroupEvent.UpdateDescription(it)) },
                     minLines = 2,
                     maxLines = 2,
-                    isError = screenState.value.description.length > 1000
+                    isError = screenState.description.length > 1000
                 )
 
                 Text(
@@ -411,11 +411,11 @@ fun CreateGroupScreen(
                     onClick = {
                         handleEvent(CreateGroupEvent.OnCreate)
                     },
-                    enabled = screenState.value.nameValid == ValidField.VALID &&
-                            screenState.value.minAgeValid == ValidField.VALID &&
-                            screenState.value.maxAgeValid == ValidField.VALID &&
-                            screenState.value.description.isNotEmpty() &&
-                            screenState.value.schedule.values.any { it.isFilled() }
+                    enabled = screenState.nameValid == ValidField.VALID &&
+                            screenState.minAgeValid == ValidField.VALID &&
+                            screenState.maxAgeValid == ValidField.VALID &&
+                            screenState.description.isNotEmpty() &&
+                            screenState.schedule.values.any { it.isFilled() }
                 ) {
                     ButtonText(
                         text = "Створити нову групу"
@@ -513,7 +513,7 @@ fun CreateGroupScreen(
             }
         }
 
-        if (screenState.value.isLoading) LoadingIndicator()
+        if (screenState.isLoading) LoadingIndicator()
     }
 }
 

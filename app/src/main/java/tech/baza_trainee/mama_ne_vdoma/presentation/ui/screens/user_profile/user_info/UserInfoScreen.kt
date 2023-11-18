@@ -64,7 +64,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.showToast
 @Composable
 fun UserInfoScreen(
     modifier: Modifier = Modifier,
-    screenState: State<UserInfoViewState> = mutableStateOf(UserInfoViewState()),
+    screenState: UserInfoViewState = UserInfoViewState(),
     uiState: State<UserInfoUiState> = mutableStateOf(UserInfoUiState.Idle),
     handleEvent: (UserInfoEvent) -> Unit = { _ -> }
 ) {
@@ -125,7 +125,7 @@ fun UserInfoScreen(
                 AsyncImage(
                     modifier = Modifier.fillMaxWidth(),
                     model = ImageRequest.Builder(LocalContext.current)
-                        .data(screenState.value.userAvatar)
+                        .data(screenState.userAvatar)
                         .crossfade(true)
                         .build(),
                     contentDescription = null,
@@ -145,11 +145,11 @@ fun UserInfoScreen(
 
             OutlinedTextFieldWithError(
                 modifier = Modifier.fillMaxWidth(),
-                value = screenState.value.name,
+                value = screenState.name,
                 label = "Введіть своє ім'я (нікнейм)",
                 hint = "Ім'я (нікнейм)",
                 onValueChange = { handleEvent(UserInfoEvent.ValidateUserName(it)) },
-                isError = screenState.value.nameValid == ValidField.INVALID,
+                isError = screenState.nameValid == ValidField.INVALID,
                 errorText = "Ви ввели некоректнe ім'я",
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Text,
@@ -180,7 +180,7 @@ fun UserInfoScreen(
                         .clickable {
                             openBottomSheet = true
                         },
-                    value = screenState.value.code,
+                    value = screenState.code,
                     label = { Text("Код") },
                     onValueChange = {},
                     enabled = false,
@@ -205,11 +205,11 @@ fun UserInfoScreen(
                             isPhoneFocused = it.isFocused
                         }
                         .weight(.75f),
-                    value = screenState.value.phone,
+                    value = screenState.phone,
                     label = { Text("Введіть свій номер телефону") },
                     placeholder = { Text("Номер телефону") },
                     onValueChange = { handleEvent(UserInfoEvent.ValidatePhone(it)) },
-                    isError = screenState.value.phoneValid == ValidField.INVALID && isPhoneFocused,
+                    isError = screenState.phoneValid == ValidField.INVALID && isPhoneFocused,
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Phone,
                         imeAction = ImeAction.Done
@@ -227,13 +227,13 @@ fun UserInfoScreen(
                         disabledBorderColor = MaterialTheme.colorScheme.surface
                     ),
                     shape = RoundedCornerShape(topEnd = 4.dp, bottomEnd = 4.dp),
-                    enabled = screenState.value.code.isNotEmpty(),
+                    enabled = screenState.code.isNotEmpty(),
                     textStyle = TextStyle(
                         fontFamily = redHatDisplayFontFamily
                     )
                 )
             }
-            if (screenState.value.phoneValid == ValidField.INVALID && isPhoneFocused) {
+            if (screenState.phoneValid == ValidField.INVALID && isPhoneFocused) {
                 Spacer(modifier = Modifier.height(4.dp))
 
                 Text(
@@ -256,9 +256,9 @@ fun UserInfoScreen(
                     .fillMaxWidth()
                     .height(48.dp),
                 onClick = { handleEvent(UserInfoEvent.SaveInfo) },
-                enabled = screenState.value.nameValid == ValidField.VALID &&
-                        screenState.value.phoneValid == ValidField.VALID &&
-                        screenState.value.code.isNotEmpty()
+                enabled = screenState.nameValid == ValidField.VALID &&
+                        screenState.phoneValid == ValidField.VALID &&
+                        screenState.code.isNotEmpty()
             ) {
                 ButtonText(
                     text = "Далі"
@@ -290,7 +290,7 @@ fun UserInfoScreen(
             }
         }
 
-        if (screenState.value.isLoading) LoadingIndicator()
+        if (screenState.isLoading) LoadingIndicator()
     }
 }
 

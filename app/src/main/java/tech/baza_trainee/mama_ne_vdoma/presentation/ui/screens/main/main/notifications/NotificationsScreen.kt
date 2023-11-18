@@ -60,7 +60,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFa
 @Composable
 fun NotificationScreen(
     modifier: Modifier = Modifier,
-    screenState: State<NotificationsViewState> = mutableStateOf(NotificationsViewState()),
+    screenState: NotificationsViewState = NotificationsViewState(),
     uiState: State<NotificationsUiState> = mutableStateOf(NotificationsUiState.Idle),
     handleEvent: (NotificationsEvent) -> Unit = {}
 ) {
@@ -166,7 +166,7 @@ fun NotificationScreen(
                             .fillMaxWidth()
                             .padding(vertical = 16.dp)
                     ) {
-                        itemsIndexed(screenState.value.myJoinRequests) { index, request ->
+                        itemsIndexed(screenState.myJoinRequests) { index, request ->
                             if (index != 0)
                                 Spacer(modifier = Modifier.height(8.dp))
 
@@ -187,7 +187,7 @@ fun NotificationScreen(
                             .fillMaxWidth()
                             .padding(vertical = 16.dp)
                     ) {
-                        itemsIndexed(screenState.value.adminJoinRequests) { index, request ->
+                        itemsIndexed(screenState.adminJoinRequests) { index, request ->
                             if (index != 0)
                                 Spacer(modifier = Modifier.height(8.dp))
 
@@ -425,7 +425,7 @@ fun NotificationScreen(
             }
         }
 
-        if (screenState.value.isLoading) LoadingIndicator()
+        if (screenState.isLoading) LoadingIndicator()
     }
 }
 

@@ -42,7 +42,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.showToast
 fun ChooseChildStandaloneScreen(
     modifier: Modifier = Modifier,
     isForSearch: Boolean = true,
-    screenState: State<ChooseChildViewState> = mutableStateOf(ChooseChildViewState()),
+    screenState: ChooseChildViewState = ChooseChildViewState(),
     uiState: State<RequestState> = mutableStateOf(RequestState.Idle),
     handleEvent: (ChooseChildEvent) -> Unit = {}
 ) {
@@ -70,7 +70,7 @@ fun ChooseChildStandaloneScreen(
             HeaderWithToolbar(
                 modifier = Modifier.fillMaxWidth(),
                 title = if (isForSearch) "Пошук групи" else "Створення групи",
-                avatar = screenState.value.avatar,
+                avatar = screenState.avatar,
                 showNotification = false,
                 onNotificationsClicked = {},
                 onAvatarClicked = { handleEvent(ChooseChildEvent.OnAvatarClicked) },
@@ -96,7 +96,7 @@ fun ChooseChildStandaloneScreen(
                     .weight(1f)
                     .padding(all = 16.dp)
             ) {
-                itemsIndexed(screenState.value.children) { index, child ->
+                itemsIndexed(screenState.children) { index, child ->
                     if (index != 0)
                         Spacer(modifier = Modifier.height(8.dp))
 
@@ -123,7 +123,7 @@ fun ChooseChildStandaloneScreen(
             }
         }
 
-        if (screenState.value.isLoading) LoadingIndicator()
+        if (screenState.isLoading) LoadingIndicator()
     }
 }
 

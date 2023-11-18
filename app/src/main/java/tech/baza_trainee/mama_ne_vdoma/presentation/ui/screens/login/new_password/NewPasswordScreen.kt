@@ -34,7 +34,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.showToast
 @Composable
 fun NewPasswordScreen(
     modifier: Modifier = Modifier,
-    screenState: State<NewPasswordViewState> = mutableStateOf(NewPasswordViewState()),
+    screenState: NewPasswordViewState = NewPasswordViewState(),
     uiState: State<RequestState> = mutableStateOf(RequestState.Idle),
     handleEvent: (NewPasswordEvent) -> Unit = { _ -> }
 ) {
@@ -91,9 +91,9 @@ fun NewPasswordScreen(
 
                 PasswordTextFieldWithError(
                     modifier = Modifier.fillMaxWidth(),
-                    password = screenState.value.password,
+                    password = screenState.password,
                     onValueChange = { handleEvent(NewPasswordEvent.ValidatePassword(it)) },
-                    isError = screenState.value.passwordValid == ValidField.INVALID,
+                    isError = screenState.passwordValid == ValidField.INVALID,
                     imeAction = ImeAction.Next
                 )
 
@@ -112,9 +112,9 @@ fun NewPasswordScreen(
                 PasswordTextFieldWithError(
                     modifier = Modifier.fillMaxWidth(),
                     label = "Повторіть свій пароль",
-                    password = screenState.value.confirmPassword,
+                    password = screenState.confirmPassword,
                     onValueChange = { handleEvent(NewPasswordEvent.ValidateConfirmPassword(it)) },
-                    isError = screenState.value.confirmPasswordValid == ValidField.INVALID,
+                    isError = screenState.confirmPasswordValid == ValidField.INVALID,
                     errorText = "Паролі не співпадають",
                     imeAction = ImeAction.Done,
                     onImeActionPerformed = { handleEvent(NewPasswordEvent.ResetPassword) }
@@ -127,8 +127,8 @@ fun NewPasswordScreen(
                     .fillMaxWidth()
                     .height(48.dp),
                 onClick = { handleEvent(NewPasswordEvent.ResetPassword) },
-                enabled = screenState.value.passwordValid == ValidField.VALID &&
-                        screenState.value.confirmPasswordValid == ValidField.VALID
+                enabled = screenState.passwordValid == ValidField.VALID &&
+                        screenState.confirmPasswordValid == ValidField.VALID
             ) {
                 ButtonText(
                     text = "Зберегти пароль"
@@ -136,7 +136,7 @@ fun NewPasswordScreen(
             }
         }
 
-        if (screenState.value.isLoading) LoadingIndicator()
+        if (screenState.isLoading) LoadingIndicator()
     }
 }
 

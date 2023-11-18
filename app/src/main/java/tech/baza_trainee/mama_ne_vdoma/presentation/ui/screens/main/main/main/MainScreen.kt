@@ -17,8 +17,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -35,7 +33,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFa
 @Composable
 fun MainScreen(
     modifier: Modifier = Modifier,
-    screenState: State<MainViewState> = mutableStateOf(MainViewState()),
+    screenState: MainViewState = MainViewState(),
     handleEvent: (MainEvent) -> Unit = {}
 ) {
     BackHandler { handleEvent(MainEvent.OnBack) }
@@ -211,7 +209,7 @@ fun MainScreen(
         Spacer(modifier = Modifier.height(16.dp))
     }
 
-    if (screenState.value.isLoading) LoadingIndicator()
+    if (screenState.isLoading) LoadingIndicator()
 }
 
 @Composable

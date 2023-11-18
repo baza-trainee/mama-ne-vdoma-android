@@ -34,7 +34,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.showToast
 fun HostScreen(
     modifier: Modifier = Modifier,
     navigator: PageNavigator,
-    screenState: State<HostViewState> = mutableStateOf(HostViewState()),
+    screenState: HostViewState = HostViewState(),
     uiState: State<RequestState> = mutableStateOf(RequestState.Idle),
     handleEvent: (HostEvent) -> Unit = {}
 ) {
@@ -56,15 +56,15 @@ fun HostScreen(
             MainNavigationItem("Налаштування", R.drawable.ic_settings)
         )
 
-        val notificationsCount = screenState.value.notifications
+        val notificationsCount = screenState.notifications
 
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             topBar = {
-                if (screenState.value.currentRoute == MainScreenRoutes.Main) {
+                if (screenState.currentRoute == MainScreenRoutes.Main) {
                     ToolbarWithAvatar(
-                        title = screenState.value.currentRoute.title,
-                        avatar = screenState.value.avatar,
+                        title = screenState.currentRoute.title,
+                        avatar = screenState.avatar,
                         showArrow = false,
                         showNotification = notificationsCount != 0,
                         notificationCount = notificationsCount,
@@ -73,8 +73,8 @@ fun HostScreen(
                     )
                 } else {
                     HeaderWithToolbar(
-                        title = screenState.value.currentRoute.title,
-                        avatar = screenState.value.avatar,
+                        title = screenState.currentRoute.title,
+                        avatar = screenState.avatar,
                         showNotification = notificationsCount != 0,
                         notificationCount = notificationsCount,
                         onNotificationsClicked = { handleEvent(HostEvent.GoToNotifications) },
@@ -85,7 +85,7 @@ fun HostScreen(
             bottomBar = {
                 MainNavigationBar(
                     items = tabContents,
-                    currentPage = screenState.value.currentRoute.page
+                    currentPage = screenState.currentRoute.page
                 ) {
                     handleEvent(HostEvent.SwitchTab(it))
                 }

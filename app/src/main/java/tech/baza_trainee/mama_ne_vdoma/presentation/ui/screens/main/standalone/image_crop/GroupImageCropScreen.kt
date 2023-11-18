@@ -8,8 +8,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
@@ -29,7 +27,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.image_crop
 @Composable
 fun GroupImageCropScreen(
     modifier: Modifier = Modifier,
-    screenState: State<ImageCropViewState> = mutableStateOf(ImageCropViewState()),
+    screenState: ImageCropViewState = ImageCropViewState(),
     handleEvent: (ImageCropEvent) -> Unit = {}
 ) {
     SurfaceWithNavigationBars {
@@ -46,7 +44,7 @@ fun GroupImageCropScreen(
             HeaderWithToolbar(
                 modifier = Modifier.fillMaxWidth(),
                 title = "Створення нової групи",
-                avatar = screenState.value.avatar,
+                avatar = screenState.avatar,
                 showNotification = false,
                 onNotificationsClicked = {},
                 onAvatarClicked = { handleEvent(ImageCropEvent.OnAvatarClicked) },
@@ -56,7 +54,7 @@ fun GroupImageCropScreen(
             Spacer(modifier = Modifier.height(4.dp))
 
             ImageCropScreen(
-                imageForCrop = screenState.value.image,
+                imageForCrop = screenState.image,
                 cropProperties = CropDefaults.properties(
                     cropOutlineProperty = CropOutlineProperty(
                         OutlineType.Rect,

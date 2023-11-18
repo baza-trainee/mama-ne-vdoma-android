@@ -56,7 +56,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.showToast
 @Composable
 fun FullInfoScreen(
     modifier: Modifier = Modifier,
-    screenState: State<FullInfoViewState> = mutableStateOf(FullInfoViewState()),
+    screenState: FullInfoViewState = FullInfoViewState(),
     uiState: State<RequestState> = mutableStateOf(RequestState.Idle),
     handleEvent: (FullInfoEvent) -> Unit = {}
 ) {
@@ -126,13 +126,13 @@ fun FullInfoScreen(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                if (screenState.value.isUserInfoFilled)
+                if (screenState.isUserInfoFilled)
                     ParentInfoDesk(
                         modifier = Modifier.fillMaxWidth(),
-                        name = screenState.value.name.ifEmpty { "Введіть Ваше ім'я" },
-                        address = screenState.value.address.ifEmpty { "Вкажіть Вашу адресу" },
-                        avatar = screenState.value.userAvatar,
-                        schedule = screenState.value.schedule,
+                        name = screenState.name.ifEmpty { "Введіть Ваше ім'я" },
+                        address = screenState.address.ifEmpty { "Вкажіть Вашу адресу" },
+                        avatar = screenState.userAvatar,
+                        schedule = screenState.schedule,
                         onEdit = { handleEvent(FullInfoEvent.EditUser) },
                         onDelete = { handleEvent(FullInfoEvent.DeleteUser) }
                     )
@@ -163,7 +163,7 @@ fun FullInfoScreen(
                     fontWeight = FontWeight.Bold
                 )
 
-                screenState.value.children.forEach { child ->
+                screenState.children.forEach { child ->
                     Spacer(modifier = Modifier.height(8.dp))
 
                     ChildInfoDesk(
@@ -180,8 +180,8 @@ fun FullInfoScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                val animateAddChildBackground = !screenState.value.isChildInfoFilled &&
-                        screenState.value.isUserInfoFilled
+                val animateAddChildBackground = !screenState.isChildInfoFilled &&
+                        screenState.isUserInfoFilled
 
                 Row(
                     modifier = Modifier
@@ -191,7 +191,7 @@ fun FullInfoScreen(
                             color = if (!animateAddChildBackground) MaterialTheme.colorScheme.background
                             else colorAnimatable.value
                         )
-                        .clickable(enabled = screenState.value.isUserInfoFilled) {
+                        .clickable(enabled = screenState.isUserInfoFilled) {
                             handleEvent(FullInfoEvent.AddChild)
                         },
                     verticalAlignment = Alignment.CenterVertically,
@@ -200,18 +200,18 @@ fun FullInfoScreen(
                     Icon(
                         painter = painterResource(id = R.drawable.ic_add),
                         contentDescription = null,
-                        tint = if (screenState.value.isChildInfoFilled) MaterialTheme.colorScheme.primary
+                        tint = if (screenState.isChildInfoFilled) MaterialTheme.colorScheme.primary
                         else SlateGray
                     )
                     Text(
-                        text = if (screenState.value.isChildInfoFilled) "Додати ще дитину"
+                        text = if (screenState.isChildInfoFilled) "Додати ще дитину"
                         else "Додати дитину",
                         fontFamily = redHatDisplayFontFamily,
                         fontSize = 20.sp,
                         modifier = Modifier
                             .padding(start = 8.dp)
                             .fillMaxWidth(1f),
-                        color = if (screenState.value.isUserInfoFilled) MaterialTheme.colorScheme.onBackground
+                        color = if (screenState.isUserInfoFilled) MaterialTheme.colorScheme.onBackground
                         else SlateGray
                     )
                 }
@@ -223,7 +223,7 @@ fun FullInfoScreen(
                     .fillMaxWidth()
                     .height(48.dp),
                 onClick = { handleEvent(FullInfoEvent.OnNext) },
-                enabled = screenState.value.isUserInfoFilled && screenState.value.isChildInfoFilled
+                enabled = screenState.isUserInfoFilled && screenState.isChildInfoFilled
             ) {
                 ButtonText(
                     text = "Підтвердити"
@@ -231,7 +231,7 @@ fun FullInfoScreen(
             }
         }
 
-        if (screenState.value.isLoading) LoadingIndicator()
+        if (screenState.isLoading) LoadingIndicator()
     }
 }
 

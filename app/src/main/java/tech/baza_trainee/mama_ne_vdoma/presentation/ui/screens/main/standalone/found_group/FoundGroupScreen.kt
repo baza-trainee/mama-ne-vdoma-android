@@ -53,7 +53,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.showToast
 @Composable
 fun FoundGroupScreen(
     modifier: Modifier = Modifier,
-    screenState: State<FoundGroupViewState> = mutableStateOf(FoundGroupViewState()),
+    screenState: FoundGroupViewState = FoundGroupViewState(),
     uiState: State<FoundGroupUiState> = mutableStateOf(FoundGroupUiState.Idle),
     handleEvent: (FoundGroupEvent) -> Unit = { _ -> }
 ) {
@@ -82,7 +82,7 @@ fun FoundGroupScreen(
             HeaderWithToolbar(
                 modifier = Modifier.fillMaxWidth(),
                 title = "Пошук групи",
-                avatar = screenState.value.avatar,
+                avatar = screenState.avatar,
                 showNotification = false,
                 onNotificationsClicked = {},
                 onAvatarClicked = { handleEvent(FoundGroupEvent.OnAvatarClicked) },
@@ -90,7 +90,7 @@ fun FoundGroupScreen(
             )
             Spacer(modifier = Modifier.height(8.dp))
 
-            if (screenState.value.groups.isNotEmpty()) {
+            if (screenState.groups.isNotEmpty()) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -128,14 +128,14 @@ fun FoundGroupScreen(
                         .weight(1f)
                         .padding(horizontal = 16.dp)
                 ) {
-                    itemsIndexed(screenState.value.groups) { index, group ->
+                    itemsIndexed(screenState.groups) { index, group ->
                         if (index != 0)
                             Spacer(modifier = Modifier.height(8.dp))
 
                         GroupInfoDesk(
                             modifier = Modifier.fillMaxWidth(),
                             group = group,
-                            currentUserId = screenState.value.currentUserId,
+                            currentUserId = screenState.currentUserId,
                             onSelect = { handleEvent(FoundGroupEvent.OnSelect(it)) }
                         )
                     }
@@ -147,13 +147,13 @@ fun FoundGroupScreen(
                         .fillMaxWidth()
                         .height(48.dp),
                     onClick = { handleEvent(FoundGroupEvent.OnJoin) },
-                    enabled = screenState.value.groups.map { it.isChecked }.contains(true)
+                    enabled = screenState.groups.map { it.isChecked }.contains(true)
                 ) {
                     ButtonText(
                         text = "Приєднатися до групи"
                     )
                 }
-            } else if (!screenState.value.isLoading) {
+            } else if (!screenState.isLoading) {
                 Text(
                     modifier = Modifier
                         .wrapContentWidth()
@@ -243,7 +243,7 @@ fun FoundGroupScreen(
             }
         }
 
-        if (screenState.value.isLoading) LoadingIndicator()
+        if (screenState.isLoading) LoadingIndicator()
     }
 }
 

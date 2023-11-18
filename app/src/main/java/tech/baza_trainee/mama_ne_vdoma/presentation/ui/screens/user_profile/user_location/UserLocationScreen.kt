@@ -46,7 +46,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.showToast
 @Composable
 fun UserLocationScreen(
     modifier: Modifier = Modifier,
-    screenState: State<UserLocationViewState> = mutableStateOf(UserLocationViewState()),
+    screenState: UserLocationViewState = UserLocationViewState(),
     uiState: State<RequestState> = mutableStateOf(RequestState.Idle),
     handleEvent: (UserLocationEvent) -> Unit = { _ -> }
 ) {
@@ -84,13 +84,13 @@ fun UserLocationScreen(
             ) {
                 CustomGoogleMap(
                     modifier = Modifier.fillMaxWidth(),
-                    location = screenState.value.currentLocation,
+                    location = screenState.currentLocation,
                     showMyLocationButton = isPermissionGranted,
                     onMyLocationButtonClick = { handleEvent(UserLocationEvent.RequestUserLocation) },
                     onMapClick = { handleEvent(UserLocationEvent.OnMapClick(it)) }
                 ) {
                     Marker(
-                        state = MarkerState(position = screenState.value.currentLocation),
+                        state = MarkerState(position = screenState.currentLocation),
                         title = "Ви тут",
                         snippet = "поточне місцезнаходження"
                     )
@@ -100,7 +100,7 @@ fun UserLocationScreen(
             Spacer(modifier = Modifier.height(8.dp))
 
             OutlinedTextField(
-                value = screenState.value.address,
+                value = screenState.address,
                 onValueChange = {
                     handleEvent(UserLocationEvent.UpdateUserAddress(it))
                 },
@@ -148,7 +148,7 @@ fun UserLocationScreen(
                 )
             }
 
-            if (screenState.value.isLoading) LoadingIndicator()
+            if (screenState.isLoading) LoadingIndicator()
         }
     }
 }

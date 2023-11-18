@@ -44,7 +44,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 @Composable
 fun EditCredentialsScreen(
     modifier: Modifier = Modifier,
-    screenState: State<EditCredentialsViewState> = mutableStateOf(EditCredentialsViewState()),
+    screenState: EditCredentialsViewState = EditCredentialsViewState(),
     uiState: State<RequestState> = mutableStateOf(RequestState.Idle),
     handleEvent: (EditCredentialsEvent) -> Unit = {}
 ) {
@@ -73,11 +73,11 @@ fun EditCredentialsScreen(
         //Login
         OutlinedTextFieldWithError(
             modifier = Modifier.fillMaxWidth(),
-            value = screenState.value.email,
+            value = screenState.email,
             hint = "Email",
             label = "Введіть свій email",
             onValueChange = { handleEvent(EditCredentialsEvent.ValidateEmail(it)) },
-            isError = screenState.value.emailValid == ValidField.INVALID,
+            isError = screenState.emailValid == ValidField.INVALID,
             errorText = "Ви ввели некоректний email",
             leadingIcon = {
                 Icon(
@@ -101,7 +101,7 @@ fun EditCredentialsScreen(
                 .fillMaxWidth()
                 .height(48.dp),
             onClick = { handleEvent(EditCredentialsEvent.VerifyEmail) },
-            enabled = screenState.value.emailValid == ValidField.VALID
+            enabled = screenState.emailValid == ValidField.VALID
         ) {
             ButtonText(
                 text = "Змінити email"
@@ -138,9 +138,9 @@ fun EditCredentialsScreen(
         //Password
         PasswordTextFieldWithError(
             modifier = Modifier.fillMaxWidth(),
-            password = screenState.value.password,
+            password = screenState.password,
             onValueChange = { handleEvent(EditCredentialsEvent.ValidatePassword(it)) },
-            isError = screenState.value.passwordValid == ValidField.INVALID,
+            isError = screenState.passwordValid == ValidField.INVALID,
             imeAction = ImeAction.Next
         )
 
@@ -159,9 +159,9 @@ fun EditCredentialsScreen(
         PasswordTextFieldWithError(
             modifier = Modifier.fillMaxWidth(),
             label = "Повторіть свій пароль",
-            password = screenState.value.confirmPassword,
+            password = screenState.confirmPassword,
             onValueChange = { handleEvent(EditCredentialsEvent.ValidateConfirmPassword(it)) },
-            isError = screenState.value.confirmPasswordValid == ValidField.INVALID,
+            isError = screenState.confirmPasswordValid == ValidField.INVALID,
             errorText = "Паролі не співпадають",
             imeAction = ImeAction.Done,
             onImeActionPerformed = { handleEvent(EditCredentialsEvent.ResetPassword) }
@@ -173,8 +173,8 @@ fun EditCredentialsScreen(
                 .fillMaxWidth()
                 .height(48.dp),
             onClick = { handleEvent(EditCredentialsEvent.ResetPassword) },
-            enabled = screenState.value.passwordValid == ValidField.VALID &&
-                    screenState.value.confirmPasswordValid == ValidField.VALID
+            enabled = screenState.passwordValid == ValidField.VALID &&
+                    screenState.confirmPasswordValid == ValidField.VALID
         ) {
             ButtonText(
                 text = "Змінити пароль"

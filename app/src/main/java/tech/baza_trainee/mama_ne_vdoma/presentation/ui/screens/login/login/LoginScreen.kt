@@ -60,7 +60,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.showToast
 fun LoginUserScreen(
     modifier: Modifier = Modifier,
     oneTapClient: SignInClient? = null,
-    screenState: State<LoginViewState> = mutableStateOf(LoginViewState()),
+    screenState: LoginViewState = LoginViewState(),
     uiState: State<RequestState> = mutableStateOf(RequestState.Idle),
     handleEvent: (LoginEvent) -> Unit = { _ -> }
 ) {
@@ -171,11 +171,11 @@ fun LoginUserScreen(
 
                 OutlinedTextFieldWithError(
                     modifier = Modifier.fillMaxWidth(),
-                    value = screenState.value.email,
+                    value = screenState.email,
                     hint = "Email",
                     label = "Введіть свій email",
                     onValueChange = { handleEvent(LoginEvent.ValidateEmail(it)) },
-                    isError = screenState.value.emailValid == ValidField.INVALID,
+                    isError = screenState.emailValid == ValidField.INVALID,
                     errorText = "Ви ввели некоректний email",
                     leadingIcon = {
                         Icon(
@@ -193,9 +193,9 @@ fun LoginUserScreen(
 
                 PasswordTextFieldWithError(
                     modifier = Modifier.fillMaxWidth(),
-                    password = screenState.value.password,
+                    password = screenState.password,
                     onValueChange = { handleEvent(LoginEvent.ValidatePassword(it)) },
-                    isError = screenState.value.passwordValid == ValidField.INVALID,
+                    isError = screenState.passwordValid == ValidField.INVALID,
                     errorText = "Ви ввели некоректний пароль",
                     imeAction = ImeAction.Done,
                     onImeActionPerformed = { handleEvent(LoginEvent.LoginUser) },
@@ -235,8 +235,8 @@ fun LoginUserScreen(
                         .fillMaxWidth()
                         .height(48.dp),
                     onClick = { handleEvent(LoginEvent.LoginUser) },
-                    enabled = screenState.value.passwordValid == ValidField.VALID &&
-                            screenState.value.emailValid == ValidField.VALID
+                    enabled = screenState.passwordValid == ValidField.VALID &&
+                            screenState.emailValid == ValidField.VALID
                 ) {
                     Text(
                         text = "Увійти",
@@ -303,7 +303,7 @@ fun LoginUserScreen(
             )
         }
 
-        if (screenState.value.isLoading) LoadingIndicator()
+        if (screenState.isLoading) LoadingIndicator()
     }
 }
 

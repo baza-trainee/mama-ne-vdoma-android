@@ -44,7 +44,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.showToast
 @Composable
 fun RestorePasswordScreen(
     modifier: Modifier = Modifier,
-    screenState: State<RestorePasswordViewState> = mutableStateOf(RestorePasswordViewState()),
+    screenState: RestorePasswordViewState = RestorePasswordViewState(),
     uiState: State<RequestState> = mutableStateOf(RequestState.Idle),
     handleEvent: (RestorePasswordEvent) -> Unit = { _ -> }
 ) {
@@ -125,11 +125,11 @@ fun RestorePasswordScreen(
 
                 OutlinedTextFieldWithError(
                     modifier = Modifier.fillMaxWidth(),
-                    value = screenState.value.email,
+                    value = screenState.email,
                     hint = "Email",
                     label = "Введіть свій email",
                     onValueChange = { handleEvent(RestorePasswordEvent.ValidateEmail(it)) },
-                    isError = screenState.value.emailValid == ValidField.INVALID,
+                    isError = screenState.emailValid == ValidField.INVALID,
                     errorText = "Ви ввели некоректний email",
                     leadingIcon = {
                         Icon(
@@ -153,7 +153,7 @@ fun RestorePasswordScreen(
                     .fillMaxWidth()
                     .height(48.dp),
                 onClick = { handleEvent(RestorePasswordEvent.SendEmail) },
-                enabled = screenState.value.emailValid == ValidField.VALID
+                enabled = screenState.emailValid == ValidField.VALID
             ) {
                 Text(
                     text = "Відправити",
@@ -163,7 +163,7 @@ fun RestorePasswordScreen(
             }
         }
 
-        if (screenState.value.isLoading) LoadingIndicator()
+        if (screenState.isLoading) LoadingIndicator()
     }
 }
 

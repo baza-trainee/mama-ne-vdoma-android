@@ -12,8 +12,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
@@ -27,7 +25,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 @Composable
 fun ChildInfoGroup(
     modifier: Modifier = Modifier,
-    screenState: State<ChildInfoViewState> = mutableStateOf(ChildInfoViewState()),
+    screenState: ChildInfoViewState = ChildInfoViewState(),
     handleEvent: (ChildInfoEvent) -> Unit = { _ -> }
 ) {
     Column(
@@ -48,11 +46,11 @@ fun ChildInfoGroup(
 
             OutlinedTextFieldWithError(
                 modifier = Modifier.fillMaxWidth(),
-                value = screenState.value.name,
+                value = screenState.name,
                 label = "Ім'я дитини",
                 hint = "Ім'я дитини",
                 onValueChange = { handleEvent(ChildInfoEvent.ValidateChildName(it)) },
-                isError = screenState.value.nameValid == ValidField.INVALID,
+                isError = screenState.nameValid == ValidField.INVALID,
                 errorText = "Ви ввели некоректнe ім'я"
             )
 
@@ -60,11 +58,11 @@ fun ChildInfoGroup(
 
             OutlinedTextFieldWithError(
                 modifier = Modifier.fillMaxWidth(),
-                value = screenState.value.age,
+                value = screenState.age,
                 label = "Вік дитини",
                 hint = "Вік дитини",
                 onValueChange = { handleEvent(ChildInfoEvent.ValidateAge(it)) },
-                isError = screenState.value.ageValid == ValidField.INVALID,
+                isError = screenState.ageValid == ValidField.INVALID,
                 errorText = "Ви ввели некоректний вік",
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
             )
@@ -79,7 +77,7 @@ fun ChildInfoGroup(
                     .padding(horizontal = 8.dp),
                 radioGroupOptions = genderOptions,
                 getText = { it.gender },
-                selected = screenState.value.gender,
+                selected = screenState.gender,
                 onSelectedChange = { handleEvent(ChildInfoEvent.SetGender(it)) }
             )
         }
@@ -94,9 +92,9 @@ fun ChildInfoGroup(
             onClick = {
                 handleEvent(ChildInfoEvent.SaveChild)
             },
-            enabled = screenState.value.nameValid == ValidField.VALID &&
-                    screenState.value.ageValid == ValidField.VALID &&
-                    screenState.value.gender != Gender.NONE
+            enabled = screenState.nameValid == ValidField.VALID &&
+                    screenState.ageValid == ValidField.VALID &&
+                    screenState.gender != Gender.NONE
         ) {
             ButtonText(
                 text = "Зареєструвати дитину"
@@ -104,5 +102,5 @@ fun ChildInfoGroup(
         }
     }
 
-    if (screenState.value.isLoading) LoadingIndicator()
+    if (screenState.isLoading) LoadingIndicator()
 }

@@ -1,8 +1,6 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.image_crop
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
@@ -20,14 +18,14 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.image_crop
 @Composable
 fun UserImageCropScreen(
     modifier: Modifier = Modifier,
-    screenState: State<ImageCropViewState> = mutableStateOf(ImageCropViewState()),
+    screenState: ImageCropViewState = ImageCropViewState(),
     handleEvent: (ImageCropEvent) -> Unit = {}
 ) {
     SurfaceWithSystemBars {
         val handleSize: Float = LocalDensity.current.run { 20.dp.toPx() }
 
         ImageCropScreen(
-            imageForCrop = screenState.value.image,
+            imageForCrop = screenState.image,
             cropProperties = CropDefaults.properties(
                 cropOutlineProperty = CropOutlineProperty(
                     OutlineType.Oval,

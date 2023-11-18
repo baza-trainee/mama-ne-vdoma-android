@@ -10,8 +10,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -26,7 +24,7 @@ import java.time.DayOfWeek
 fun ScheduleScreen(
     modifier: Modifier = Modifier,
     title: String = "Title",
-    screenState: State<ScheduleViewState> = mutableStateOf(ScheduleViewState()),
+    screenState: ScheduleViewState = ScheduleViewState(),
     onUpdateSchedule: (DayOfWeek, Period) -> Unit = { _, _ -> },
     onUpdateComment: (String) -> Unit = {},
     onNext: () -> Unit = {},

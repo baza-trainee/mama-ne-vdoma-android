@@ -13,8 +13,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -30,7 +28,7 @@ import java.time.DayOfWeek
 @Composable
 fun ScheduleScreenGroup(
     modifier: Modifier = Modifier,
-    screenState: State<ScheduleViewState> = mutableStateOf(ScheduleViewState()),
+    screenState: ScheduleViewState = ScheduleViewState(),
     onUpdateSchedule: (DayOfWeek, Period) -> Unit = { _, _ -> },
     onUpdateComment: (String) -> Unit = {},
     onNext: () -> Unit = {},
@@ -50,20 +48,20 @@ fun ScheduleScreenGroup(
         ) {
             ScheduleGroup(
                 modifier = Modifier.fillMaxWidth(),
-                schedule = screenState.value.schedule,
+                schedule = screenState.schedule,
                 onValueChange = { day, period -> onUpdateSchedule(day, period) }
             )
 
             OutlinedTextFieldWithError(
                 modifier = Modifier.fillMaxWidth(),
-                value = screenState.value.comment,
+                value = screenState.comment,
                 label = "Нотатка",
                 hint = "Введіть будь-які відомості, які Ви вважаєте важливими/корисними для інших користувачів",
                 onValueChange = { onUpdateComment(it) },
                 minLines = 3,
                 maxLines = 3,
                 errorText = "Нотатка не повинна бути довше 1000 символів",
-                isError = screenState.value.commentValid == ValidField.INVALID
+                isError = screenState.commentValid == ValidField.INVALID
             )
 
             Text(
@@ -92,5 +90,5 @@ fun ScheduleScreenGroup(
         }
     }
 
-    if (screenState.value.isLoading) LoadingIndicator()
+    if (screenState.isLoading) LoadingIndicator()
 }

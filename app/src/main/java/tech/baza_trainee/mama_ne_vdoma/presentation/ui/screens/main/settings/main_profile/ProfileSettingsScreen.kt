@@ -51,6 +51,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.cards.ChildCard
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ButtonText
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.LoadingIndicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.PrivacyPolicyBlock
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.dialogs.DangerousActionAlertDialog
@@ -58,13 +59,12 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.LogoutButtonColor
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.LogoutButtonTextColor
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ButtonText
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ProfileSettingsScreen(
     modifier: Modifier = Modifier,
-    screenState: State<ProfileSettingsViewState> = mutableStateOf(ProfileSettingsViewState()),
+    screenState: ProfileSettingsViewState = ProfileSettingsViewState(),
     uiState: State<RequestState> = mutableStateOf(RequestState.Idle),
     handleEvent: (ProfileSettingsEvent) -> Unit = {}
 ) {
@@ -104,7 +104,7 @@ fun ProfileSettingsScreen(
         ) {
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
-                    .data(screenState.value.avatar)
+                    .data(screenState.avatar)
                     .placeholder(R.drawable.ic_user_no_photo)
                     .crossfade(true)
                     .build(),
@@ -122,7 +122,7 @@ fun ProfileSettingsScreen(
 
             Text(
                 modifier = Modifier.fillMaxWidth(),
-                text = screenState.value.name,
+                text = screenState.name,
                 fontSize = 20.sp,
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.primary,
@@ -133,7 +133,7 @@ fun ProfileSettingsScreen(
 
             Text(
                 modifier = Modifier.fillMaxWidth(),
-                text = "${screenState.value.code}${screenState.value.phone}",
+                text = "${screenState.code}${screenState.phone}",
                 fontSize = 16.sp,
                 textAlign = TextAlign.Center,
                 fontFamily = redHatDisplayFontFamily
@@ -143,7 +143,7 @@ fun ProfileSettingsScreen(
 
             Text(
                 modifier = Modifier.fillMaxWidth(),
-                text = screenState.value.email,
+                text = screenState.email,
                 fontSize = 16.sp,
                 textAlign = TextAlign.Center,
                 fontFamily = redHatDisplayFontFamily
@@ -155,14 +155,14 @@ fun ProfileSettingsScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .basicMarquee(),
-                text = screenState.value.address,
+                text = screenState.address,
                 fontSize = 16.sp,
                 textAlign = TextAlign.Center,
                 fontFamily = redHatDisplayFontFamily
             )
         }
 
-        screenState.value.children.forEach {
+        screenState.children.forEach {
             Spacer(modifier = Modifier.height(8.dp))
 
             ChildCard(
@@ -192,12 +192,12 @@ fun ProfileSettingsScreen(
                 fontFamily = redHatDisplayFontFamily
             )
             Switch(
-                checked = screenState.value.sendEmails,
+                checked = screenState.sendEmails,
                 onCheckedChange = { handleEvent(ProfileSettingsEvent.ToggleEmail) }
             )
         }
 
-        if (!screenState.value.sendEmails) {
+        if (!screenState.sendEmails) {
             Spacer(modifier = Modifier.height(8.dp))
 
             Row(
@@ -227,11 +227,11 @@ fun ProfileSettingsScreen(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        var showDeleteAccountAlertDialog by rememberSaveable { mutableStateOf(!screenState.value.isPolicyChecked) }
+        var showDeleteAccountAlertDialog by rememberSaveable { mutableStateOf(!screenState.isPolicyChecked) }
 
         PrivacyPolicyBlock(
             modifier = Modifier.fillMaxWidth(),
-            isChecked = screenState.value.isPolicyChecked,
+            isChecked = screenState.isPolicyChecked,
             onCheckedChanged = {
                 showDeleteAccountAlertDialog = !it
                 handleEvent(ProfileSettingsEvent.UpdatePolicyCheck(it))
@@ -311,7 +311,7 @@ fun ProfileSettingsScreen(
         }
     }
 
-    if (screenState.value.isLoading) LoadingIndicator()
+    if (screenState.isLoading) LoadingIndicator()
 }
 
 @Composable

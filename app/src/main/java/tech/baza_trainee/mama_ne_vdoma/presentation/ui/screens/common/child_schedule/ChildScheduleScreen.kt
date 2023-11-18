@@ -14,7 +14,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 
 @Composable
 fun ChildScheduleScreen(
-    screenState: State<ScheduleViewState> = mutableStateOf(ScheduleViewState()),
+    screenState: ScheduleViewState = ScheduleViewState(),
     uiState: State<RequestState> = mutableStateOf(RequestState.Idle),
     handleEvent: (ScheduleEvent) -> Unit = {}
 ) {
@@ -37,7 +37,7 @@ fun ChildScheduleScreen(
         onBack = { handleEvent(ScheduleEvent.OnBack) }
     )
 
-    if (screenState.value.isLoading) LoadingIndicator()
+    if (screenState.isLoading) LoadingIndicator()
 }
 
 @Composable

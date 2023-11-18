@@ -21,7 +21,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 @Composable
 fun VerifyNewEmailScreen(
     modifier: Modifier = Modifier,
-    screenState: State<VerifyEmailViewState> = mutableStateOf(VerifyEmailViewState()),
+    screenState: VerifyEmailViewState = VerifyEmailViewState(),
     uiState: State<VerifyEmailUiState> = mutableStateOf(VerifyEmailUiState.Idle),
     handleEvent: (VerifyEmailEvent) -> Unit = {}
 ) {
@@ -53,8 +53,8 @@ fun VerifyNewEmailScreen(
     }
 
     VerifyEmail(
-        otp = screenState.value.otp,
-        isOtpValid = screenState.value.otpValid != ValidField.INVALID,
+        otp = screenState.otp,
+        isOtpValid = screenState.otpValid != ValidField.INVALID,
         onVerify = { otp, isFilled -> handleEvent(VerifyEmailEvent.Verify(otp, isFilled))}
     )
 
@@ -68,7 +68,7 @@ fun VerifyNewEmailScreen(
         )
     }
 
-    if (screenState.value.isLoading) LoadingIndicator()
+    if (screenState.isLoading) LoadingIndicator()
 }
 
 @Composable

@@ -32,7 +32,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.showToast
 @Composable
 fun VerifyEmailScreen(
     modifier: Modifier = Modifier,
-    screenState: State<VerifyEmailViewState> = mutableStateOf(VerifyEmailViewState()),
+    screenState: VerifyEmailViewState = VerifyEmailViewState(),
     uiState: State<RequestState> = mutableStateOf(RequestState.Idle),
     title: String = "Title",
     handleEvent: (VerifyEmailEvent) -> Unit = { _ -> }
@@ -74,8 +74,8 @@ fun VerifyEmailScreen(
             Spacer(modifier = Modifier.height(48.dp))
 
             VerifyEmail(
-                otp = screenState.value.otp,
-                isOtpValid = screenState.value.otpValid != ValidField.INVALID,
+                otp = screenState.otp,
+                isOtpValid = screenState.otpValid != ValidField.INVALID,
                 onVerify = { value, otpInputFilled ->
                     handleEvent(VerifyEmailEvent.Verify(value, otpInputFilled))
                 },
@@ -83,7 +83,7 @@ fun VerifyEmailScreen(
             )
         }
 
-        if (screenState.value.isLoading) LoadingIndicator()
+        if (screenState.isLoading) LoadingIndicator()
     }
 }
 

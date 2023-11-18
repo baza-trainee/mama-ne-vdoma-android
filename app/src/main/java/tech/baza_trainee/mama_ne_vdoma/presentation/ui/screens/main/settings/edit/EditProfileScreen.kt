@@ -88,7 +88,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 @Composable
 fun EditProfileScreen(
     modifier: Modifier = Modifier,
-    screenState: State<EditProfileViewState> = mutableStateOf(EditProfileViewState()),
+    screenState: EditProfileViewState = EditProfileViewState(),
     uiState: State<EditProfileUiState> = mutableStateOf(EditProfileUiState.Idle),
     handleEvent: (EditProfileEvent) -> Unit = { _ -> }
 ) {
@@ -164,7 +164,7 @@ fun EditProfileScreen(
                 AsyncImage(
                     modifier = Modifier.fillMaxWidth(),
                     model = ImageRequest.Builder(LocalContext.current)
-                        .data(screenState.value.userAvatar)
+                        .data(screenState.userAvatar)
                         .crossfade(true)
                         .build(),
                     contentDescription = null,
@@ -205,11 +205,11 @@ fun EditProfileScreen(
 
         OutlinedTextFieldWithError(
             modifier = Modifier.fillMaxWidth(),
-            value = screenState.value.name,
+            value = screenState.name,
             label = "Вкажіть своє ім'я",
             hint = "Ім'я",
             onValueChange = { handleEvent(EditProfileEvent.ValidateUserName(it)) },
-            isError = screenState.value.nameValid == ValidField.INVALID,
+            isError = screenState.nameValid == ValidField.INVALID,
             errorText = "Ви ввели некоректнe ім'я"
         )
 
@@ -248,7 +248,7 @@ fun EditProfileScreen(
                     .clickable {
                         openBottomSheet = true
                     },
-                value = screenState.value.code,
+                value = screenState.code,
                 label = { Text("Код") },
                 onValueChange = {},
                 enabled = false,
@@ -271,7 +271,7 @@ fun EditProfileScreen(
                         isPhoneFocused = it.isFocused
                     }
                     .weight(.75f),
-                value = screenState.value.phone,
+                value = screenState.phone,
                 label = {
                     Text(
                         modifier = Modifier.basicMarquee(),
@@ -285,7 +285,7 @@ fun EditProfileScreen(
                     )
                 },
                 onValueChange = { handleEvent(EditProfileEvent.ValidatePhone(it)) },
-                isError = screenState.value.phoneValid == ValidField.INVALID && isPhoneFocused,
+                isError = screenState.phoneValid == ValidField.INVALID && isPhoneFocused,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
                 maxLines = 1,
                 colors = OutlinedTextFieldDefaults.colors(
@@ -297,13 +297,13 @@ fun EditProfileScreen(
                     disabledBorderColor = MaterialTheme.colorScheme.surface
                 ),
                 shape = RoundedCornerShape(topEnd = 4.dp, bottomEnd = 4.dp),
-                enabled = screenState.value.code.isNotEmpty(),
+                enabled = screenState.code.isNotEmpty(),
                 textStyle = TextStyle(
                     fontFamily = redHatDisplayFontFamily
                 )
             )
         }
-        if (screenState.value.phoneValid == ValidField.INVALID && isPhoneFocused) {
+        if (screenState.phoneValid == ValidField.INVALID && isPhoneFocused) {
             Spacer(modifier = Modifier.height(4.dp))
 
             Text(
@@ -339,13 +339,13 @@ fun EditProfileScreen(
         ) {
             CustomGoogleMap(
                 modifier = Modifier.fillMaxWidth(),
-                location = screenState.value.currentLocation,
+                location = screenState.currentLocation,
                 showMyLocationButton = isPermissionGranted,
                 onMyLocationButtonClick = { handleEvent(EditProfileEvent.RequestUserLocation) },
                 onMapClick = { handleEvent(EditProfileEvent.OnMapClick(it)) }
             ) {
                 Marker(
-                    state = MarkerState(position = screenState.value.currentLocation),
+                    state = MarkerState(position = screenState.currentLocation),
                     title = "Ви тут",
                     snippet = "поточне місцезнаходження"
                 )
@@ -369,7 +369,7 @@ fun EditProfileScreen(
         Spacer(modifier = Modifier.height(8.dp))
 
         OutlinedTextField(
-            value = screenState.value.address,
+            value = screenState.address,
             onValueChange = {
                 handleEvent(EditProfileEvent.UpdateUserAddress(it))
             },
@@ -409,11 +409,11 @@ fun EditProfileScreen(
 
         ParentInfoDesk(
             modifier = Modifier.fillMaxWidth(),
-            name = screenState.value.name,
-            avatar = screenState.value.userAvatar,
+            name = screenState.name,
+            avatar = screenState.userAvatar,
             address = "",
             showDeleteButton = false,
-            schedule = screenState.value.schedule,
+            schedule = screenState.schedule,
             onEdit = { editUserSchedule = true }
         )
 
@@ -447,7 +447,7 @@ fun EditProfileScreen(
             )
         }
 
-        screenState.value.children.forEachIndexed { index, child ->
+        screenState.children.forEachIndexed { index, child ->
             if (index != 0)
                 Spacer(modifier = Modifier.height(8.dp))
 
@@ -521,8 +521,8 @@ fun EditProfileScreen(
 
         if (editUserSchedule) {
             ParentScheduleEditDialog(
-                schedule = screenState.value.schedule,
-                note = screenState.value.note,
+                schedule = screenState.schedule,
+                note = screenState.note,
                 onSave = { schedule, note -> handleEvent(EditProfileEvent.SaveParentInfo(schedule, note)) },
                 onDismissRequest = { editUserSchedule = false }
             )
@@ -531,7 +531,7 @@ fun EditProfileScreen(
         if (editChildSchedule) {
             ChildScheduleEditDialog(
                 selectedChild = selectedChild,
-                children = screenState.value.children,
+                children = screenState.children,
                 onSave = { schedules, notes -> handleEvent(EditProfileEvent.SaveChildren(schedules, notes)) },
                 onDismissRequest = { editChildSchedule = false }
             )
@@ -556,7 +556,7 @@ fun EditProfileScreen(
                 },
                 onDelete = {
                     deleteChildDialog = false
-                    handleEvent(EditProfileEvent.DeleteChild(screenState.value.children[selectedChild].childId))
+                    handleEvent(EditProfileEvent.DeleteChild(screenState.children[selectedChild].childId))
                 }
             )
         }
@@ -692,7 +692,7 @@ fun EditProfileScreen(
         }
     }
 
-    if (screenState.value.isLoading) LoadingIndicator()
+    if (screenState.isLoading) LoadingIndicator()
 }
 
 @Composable

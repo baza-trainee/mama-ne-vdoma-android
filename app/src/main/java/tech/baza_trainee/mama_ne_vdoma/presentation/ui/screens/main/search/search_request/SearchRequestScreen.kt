@@ -56,7 +56,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 @Composable
 fun SearchRequestScreen(
     modifier: Modifier = Modifier,
-    screenState: State<SearchRequestViewState> = mutableStateOf(SearchRequestViewState()),
+    screenState: SearchRequestViewState = SearchRequestViewState(),
     uiState: State<SearchRequestUiState> = mutableStateOf(SearchRequestUiState.Idle),
     handleEvent: (SearchRequestEvent) -> Unit = {}
 ) {
@@ -100,11 +100,11 @@ fun SearchRequestScreen(
 
         OutlinedTextFieldWithError(
             modifier = Modifier.fillMaxWidth(),
-            value = screenState.value.email,
+            value = screenState.email,
             label = "Email користувача",
             hint = "Email",
             onValueChange = { handleEvent(SearchRequestEvent.ValidateEmail(it)) },
-            isError = screenState.value.emailValid == ValidField.INVALID,
+            isError = screenState.emailValid == ValidField.INVALID,
             errorText = "Ви ввели некоректний email",
             leadingIcon = {
                 Icon(
@@ -131,7 +131,7 @@ fun SearchRequestScreen(
             onClick = {
                 handleEvent(SearchRequestEvent.SearchUser)
             },
-            enabled = screenState.value.emailValid == ValidField.VALID
+            enabled = screenState.emailValid == ValidField.VALID
         ) {
             ButtonText(
                 text = "Розпочати пошук"
@@ -256,7 +256,7 @@ fun SearchRequestScreen(
         }
     }
 
-    if (screenState.value.isLoading) LoadingIndicator()
+    if (screenState.isLoading) LoadingIndicator()
 }
 
 @Composable

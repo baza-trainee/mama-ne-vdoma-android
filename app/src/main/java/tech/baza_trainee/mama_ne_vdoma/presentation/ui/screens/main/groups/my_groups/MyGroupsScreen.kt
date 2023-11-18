@@ -34,7 +34,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 @Composable
 fun MyGroupsScreen(
     modifier: Modifier = Modifier,
-    screenState: State<MyGroupsViewState> = mutableStateOf(MyGroupsViewState()),
+    screenState: MyGroupsViewState = MyGroupsViewState(),
     uiState: State<RequestState> = mutableStateOf(RequestState.Idle),
     handleEvent: (MyGroupsEvent) -> Unit = {}
 ) {
@@ -90,14 +90,14 @@ fun MyGroupsScreen(
                 .fillMaxWidth()
                 .padding(vertical = 16.dp)
         ) {
-            itemsIndexed(screenState.value.groups) { index, group ->
+            itemsIndexed(screenState.groups) { index, group ->
                 if (index != 0)
                     Spacer(modifier = Modifier.height(8.dp))
 
                 GroupInfoDesk(
                     modifier = Modifier.fillMaxWidth(),
                     group = group,
-                    currentUserId = screenState.value.userId,
+                    currentUserId = screenState.userId,
                     onKick = { groupId, childrenIds ->
                         handleEvent(
                             MyGroupsEvent.OnKick(
@@ -113,7 +113,7 @@ fun MyGroupsScreen(
         }
     }
 
-    if (screenState.value.isLoading) LoadingIndicator()
+    if (screenState.isLoading) LoadingIndicator()
 }
 
 @Composable

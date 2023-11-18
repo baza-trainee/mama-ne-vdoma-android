@@ -20,14 +20,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.cards.ParentCardInSearch
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ButtonText
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.LoadingIndicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ButtonText
 
 @Composable
 fun SearchResultsScreen(
     modifier: Modifier = Modifier,
-    screenState: State<SearchResultsViewState> = mutableStateOf(SearchResultsViewState()),
+    screenState: SearchResultsViewState = SearchResultsViewState(),
     uiState: State<RequestState> = mutableStateOf(RequestState.Idle),
     handleEvent: (SearchResultsEvent) -> Unit = {}
 ) {
@@ -56,7 +56,7 @@ fun SearchResultsScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             ParentCardInSearch(
-                parent = screenState.value.parent
+                parent = screenState.parent
             )
         }
 
@@ -74,7 +74,7 @@ fun SearchResultsScreen(
             )
         }
 
-        if (screenState.value.isLoading) LoadingIndicator()
+        if (screenState.isLoading) LoadingIndicator()
     }
 }
 

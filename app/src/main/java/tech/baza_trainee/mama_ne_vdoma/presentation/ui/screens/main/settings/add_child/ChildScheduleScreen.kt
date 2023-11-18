@@ -17,7 +17,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 
 @Composable
 fun ChildScheduleScreenInSettings(
-    screenState: State<ScheduleViewState> = mutableStateOf(ScheduleViewState()),
+    screenState: ScheduleViewState = ScheduleViewState(),
     uiState: State<RequestState> = mutableStateOf(RequestState.Idle),
     handleEvent: (ScheduleEvent) -> Unit = {}
 ) {

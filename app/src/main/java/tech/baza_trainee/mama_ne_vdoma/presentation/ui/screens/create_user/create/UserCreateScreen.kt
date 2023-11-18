@@ -64,7 +64,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.showToast
 fun UserCreateScreen(
     modifier: Modifier = Modifier,
     oneTapClient: SignInClient? = null,
-    screenState: State<UserCreateViewState> = mutableStateOf(UserCreateViewState()),
+    screenState: UserCreateViewState = UserCreateViewState(),
     uiState: State<RequestState> = mutableStateOf(RequestState.Idle),
     handleEvent: (UserCreateEvent) -> Unit = { _ -> }
 ) {
@@ -150,11 +150,11 @@ fun UserCreateScreen(
 
                 OutlinedTextFieldWithError(
                     modifier = Modifier.fillMaxWidth(),
-                    value = screenState.value.email,
+                    value = screenState.email,
                     hint = "Email",
                     label = "Введіть свій email",
                     onValueChange = { handleEvent(UserCreateEvent.ValidateEmail(it)) },
-                    isError = screenState.value.emailValid == ValidField.INVALID,
+                    isError = screenState.emailValid == ValidField.INVALID,
                     errorText = "Ви ввели некоректний email",
                     leadingIcon = {
                         Icon(
@@ -172,9 +172,9 @@ fun UserCreateScreen(
 
                 PasswordTextFieldWithError(
                     modifier = Modifier.fillMaxWidth(),
-                    password = screenState.value.password,
+                    password = screenState.password,
                     onValueChange = { handleEvent(UserCreateEvent.ValidatePassword(it)) },
-                    isError = screenState.value.passwordValid == ValidField.INVALID,
+                    isError = screenState.passwordValid == ValidField.INVALID,
                     imeAction = ImeAction.Next
                 )
 
@@ -194,9 +194,9 @@ fun UserCreateScreen(
                 PasswordTextFieldWithError(
                     modifier = Modifier.fillMaxWidth(),
                     label = "Повторіть свій пароль",
-                    password = screenState.value.confirmPassword,
+                    password = screenState.confirmPassword,
                     onValueChange = { handleEvent(UserCreateEvent.ValidateConfirmPassword(it)) },
-                    isError = screenState.value.confirmPasswordValid == ValidField.INVALID,
+                    isError = screenState.confirmPasswordValid == ValidField.INVALID,
                     errorText = "Паролі не співпадають",
                     imeAction = ImeAction.Done,
                     onImeActionPerformed = { handleEvent(UserCreateEvent.RegisterUser) }
@@ -206,7 +206,7 @@ fun UserCreateScreen(
 
                 PrivacyPolicyBlock(
                     modifier = Modifier.fillMaxWidth(),
-                    isChecked = screenState.value.isPolicyChecked,
+                    isChecked = screenState.isPolicyChecked,
                     onCheckedChanged = { handleEvent(UserCreateEvent.UpdatePolicyCheck(it)) }
                 )
 
@@ -219,7 +219,7 @@ fun UserCreateScreen(
                     onClick = {
                         handleEvent(UserCreateEvent.RegisterUser)
                     },
-                    enabled = screenState.value.isAllConform
+                    enabled = screenState.isAllConform
                 ) {
                     ButtonText(
                         text = "Зареєструватись"
@@ -264,7 +264,7 @@ fun UserCreateScreen(
             )
         }
 
-        if (screenState.value.isLoading) LoadingIndicator()
+        if (screenState.isLoading) LoadingIndicator()
     }
 }
 
