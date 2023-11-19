@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
@@ -17,10 +18,9 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.showToast
 
 @Composable
 fun ChildInfoScreenInSettings(
-    modifier: Modifier = Modifier,
-    screenState: ChildInfoViewState = ChildInfoViewState(),
-    uiState: State<RequestState> = mutableStateOf(RequestState.Idle),
-    handleEvent: (ChildInfoEvent) -> Unit = { _ -> }
+    screenState: ChildInfoViewState,
+    uiState: State<RequestState>,
+    handleEvent: (ChildInfoEvent) -> Unit
 ) {
     Box(
         modifier = Modifier.fillMaxWidth()
@@ -48,5 +48,9 @@ fun ChildInfoScreenInSettings(
 @Composable
 @Preview
 fun ChildInfoPreview() {
-    ChildInfoScreenInSettings()
+    ChildInfoScreenInSettings(
+        screenState = ChildInfoViewState(),
+        uiState = remember { mutableStateOf(RequestState.Idle) },
+        handleEvent = {}
+    )
 }

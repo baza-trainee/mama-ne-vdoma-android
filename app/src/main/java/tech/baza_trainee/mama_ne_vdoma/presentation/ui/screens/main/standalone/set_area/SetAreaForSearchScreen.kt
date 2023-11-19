@@ -57,7 +57,6 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.showToast
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SetAreaForSearchScreen(
-    modifier: Modifier = Modifier,
     screenState: SetAreaViewState = SetAreaViewState(),
     uiState: State<RequestState> = mutableStateOf(RequestState.Idle),
     handleEvent: (SetAreaEvent) -> Unit = { _ -> }
@@ -224,5 +223,9 @@ fun SetAreaForSearchScreen(
 @Composable
 @Preview
 fun SetAreaForSearchScreenPreview() {
-    SetAreaForSearchScreen()
+    SetAreaForSearchScreen(
+        screenState = SetAreaViewState(),
+        uiState = remember { mutableStateOf(RequestState.Idle) },
+        handleEvent = { _ -> }
+    )
 }

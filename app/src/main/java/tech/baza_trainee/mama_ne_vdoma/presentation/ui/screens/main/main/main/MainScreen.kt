@@ -32,9 +32,8 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFa
 
 @Composable
 fun MainScreen(
-    modifier: Modifier = Modifier,
-    screenState: MainViewState = MainViewState(),
-    handleEvent: (MainEvent) -> Unit = {}
+    screenState: MainViewState,
+    handleEvent: (MainEvent) -> Unit
 ) {
     BackHandler { handleEvent(MainEvent.OnBack) }
 
@@ -215,5 +214,8 @@ fun MainScreen(
 @Composable
 @Preview
 fun MainScreenPreview() {
-    MainScreen()
+    MainScreen(
+        screenState = MainViewState(),
+        handleEvent = {}
+    )
 }

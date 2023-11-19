@@ -15,6 +15,7 @@ import androidx.compose.material3.Button
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
@@ -26,10 +27,9 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 
 @Composable
 fun SearchResultsScreen(
-    modifier: Modifier = Modifier,
-    screenState: SearchResultsViewState = SearchResultsViewState(),
-    uiState: State<RequestState> = mutableStateOf(RequestState.Idle),
-    handleEvent: (SearchResultsEvent) -> Unit = {}
+    screenState: SearchResultsViewState,
+    uiState: State<RequestState>,
+    handleEvent: (SearchResultsEvent) -> Unit
 ) {
     BackHandler { handleEvent(SearchResultsEvent.OnBack) }
 
@@ -81,5 +81,9 @@ fun SearchResultsScreen(
 @Composable
 @Preview
 fun SearchResultsScreenPreview() {
-    SearchResultsScreen()
+    SearchResultsScreen(
+        screenState = SearchResultsViewState(),
+        uiState = remember { mutableStateOf(RequestState.Idle) },
+        handleEvent = {}
+    )
 }

@@ -39,10 +39,9 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.SlateGray
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 
 @Composable
-@Preview
 fun ParentCardInSearch(
     modifier: Modifier = Modifier,
-    parent: ParentInSearchUiModel = ParentInSearchUiModel(),
+    parent: ParentInSearchUiModel
 ) {
     Column(
         modifier = Modifier
@@ -66,21 +65,23 @@ fun ParentCardInSearch(
                     .clip(CircleShape),
                 model = ImageRequest.Builder(LocalContext.current)
                     .data(parent.avatar)
+                    .placeholder(R.drawable.ic_user_no_photo)
                     .crossfade(true)
                     .build(),
-                placeholder = painterResource(id = R.drawable.no_photo),
+                placeholder = painterResource(id = R.drawable.ic_user_no_photo),
+                fallback = painterResource(id = R.drawable.ic_user_no_photo),
                 contentDescription = "avatar",
                 contentScale = ContentScale.FillBounds
             )
 
             Column(
                 modifier = Modifier
+                    .padding(horizontal = 16.dp)
                     .weight(1f)
             ) {
                 Text(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
                         .padding(bottom = 4.dp),
                     text = parent.name,
                     fontSize = 16.sp,
@@ -90,7 +91,6 @@ fun ParentCardInSearch(
                 Text(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
                         .padding(bottom = 4.dp),
                     text = parent.email,
                     fontSize = 14.sp,
@@ -166,4 +166,10 @@ fun ParentCardInSearch(
             }
         }
     }
+}
+
+@Composable
+@Preview
+fun ParentCardInSearchPreview() {
+    ParentCardInSearch(parent = ParentInSearchUiModel())
 }

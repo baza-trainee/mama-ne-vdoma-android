@@ -21,13 +21,12 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.text_fields.O
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 
 @Composable
-@Preview
 fun VerifyEmail(
     modifier: Modifier = Modifier,
-    otp: String = "",
-    isOtpValid: Boolean = false,
-    onVerify: (String, Boolean) -> Unit = {_,_->},
-    onResend: () -> Unit = {}
+    otp: String,
+    isOtpValid: Boolean,
+    onVerify: (String, Boolean) -> Unit,
+    onResend: () -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -78,4 +77,15 @@ fun VerifyEmail(
             )
         }
     }
+}
+
+@Composable
+@Preview
+fun VerifyEmailPreview() {
+    VerifyEmail(
+        otp = "",
+        isOtpValid = false,
+        onVerify = { _, _ -> },
+        onResend = {}
+    )
 }

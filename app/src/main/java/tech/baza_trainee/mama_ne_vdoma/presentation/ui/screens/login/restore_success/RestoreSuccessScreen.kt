@@ -17,15 +17,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import tech.baza_trainee.mama_ne_vdoma.R
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ButtonText
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.SurfaceWithNavigationBars
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.headers.HeaderWithOptArrow
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ButtonText
 
 @Composable
-fun RestoreSuccessScreen(
-    modifier: Modifier = Modifier,
-    goToMain: () -> Unit = {}
-) {
+fun RestoreSuccessScreen(goToMain: () -> Unit) {
     SurfaceWithNavigationBars {
         BackHandler { goToMain() }
 
@@ -69,5 +66,5 @@ fun RestoreSuccessScreen(
 @Composable
 @Preview
 fun RestoreSuccessPreview() {
-    RestoreSuccessScreen()
+    RestoreSuccessScreen(goToMain = {})
 }

@@ -87,10 +87,9 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun EditProfileScreen(
-    modifier: Modifier = Modifier,
-    screenState: EditProfileViewState = EditProfileViewState(),
-    uiState: State<EditProfileUiState> = mutableStateOf(EditProfileUiState.Idle),
-    handleEvent: (EditProfileEvent) -> Unit = { _ -> }
+    screenState: EditProfileViewState,
+    uiState: State<EditProfileUiState>,
+    handleEvent: (EditProfileEvent) -> Unit
 ) {
     var exitScreen by remember { mutableIntStateOf(-1) }
 
@@ -698,5 +697,9 @@ fun EditProfileScreen(
 @Composable
 @Preview
 fun EditProfileScreenPreview() {
-    EditProfileScreen()
+    EditProfileScreen(
+        screenState = EditProfileViewState(),
+        uiState = remember { mutableStateOf(EditProfileUiState.Idle) },
+        handleEvent = { _ -> }
+    )
 }

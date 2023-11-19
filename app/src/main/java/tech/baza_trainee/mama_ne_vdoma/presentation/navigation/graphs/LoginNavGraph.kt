@@ -54,6 +54,7 @@ fun NavGraphBuilder.loginNavGraph(
             val (email, password) = LoginRoutes.EmailConfirm.parseArguments(entry)
             val restorePasswordScreenViewModel: RestorePasswordScreenViewModel = entry.sharedViewModel(navHostController)
             EmailConfirmScreen(
+                uiState = restorePasswordScreenViewModel.uiState,
                 email = email,
                 password = password,
                 handleEvent = { restorePasswordScreenViewModel.handleRestoreEvent(it) }

@@ -45,10 +45,9 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.showToast
 
 @Composable
 fun UserLocationScreen(
-    modifier: Modifier = Modifier,
-    screenState: UserLocationViewState = UserLocationViewState(),
-    uiState: State<RequestState> = mutableStateOf(RequestState.Idle),
-    handleEvent: (UserLocationEvent) -> Unit = { _ -> }
+    screenState: UserLocationViewState,
+    uiState: State<RequestState>,
+    handleEvent: (UserLocationEvent) -> Unit
 ) {
     SurfaceWithNavigationBars {
         val context = LocalContext.current
@@ -156,5 +155,11 @@ fun UserLocationScreen(
 @Composable
 @Preview
 fun UserLocationPreview() {
-    UserLocationScreen()
+    UserLocationScreen(
+        screenState = UserLocationViewState(),
+        uiState = remember {
+            mutableStateOf(RequestState.Idle)
+        },
+        handleEvent = { _ -> }
+    )
 }

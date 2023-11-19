@@ -63,10 +63,9 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.showToast
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UserInfoScreen(
-    modifier: Modifier = Modifier,
-    screenState: UserInfoViewState = UserInfoViewState(),
-    uiState: State<UserInfoUiState> = mutableStateOf(UserInfoUiState.Idle),
-    handleEvent: (UserInfoEvent) -> Unit = { _ -> }
+    screenState: UserInfoViewState,
+    uiState: State<UserInfoUiState>,
+    handleEvent: (UserInfoEvent) -> Unit
 ) {
     SurfaceWithSystemBars(
         modifier = Modifier
@@ -297,5 +296,11 @@ fun UserInfoScreen(
 @Composable
 @Preview
 fun UserInfoPreview() {
-    UserInfoScreen()
+    UserInfoScreen(
+        screenState = UserInfoViewState(),
+        uiState = remember {
+            mutableStateOf(UserInfoUiState.Idle)
+        },
+        handleEvent = { _ -> }
+    )
 }

@@ -33,10 +33,9 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 
 @Composable
 fun MyGroupsScreen(
-    modifier: Modifier = Modifier,
-    screenState: MyGroupsViewState = MyGroupsViewState(),
-    uiState: State<RequestState> = mutableStateOf(RequestState.Idle),
-    handleEvent: (MyGroupsEvent) -> Unit = {}
+    screenState: MyGroupsViewState,
+    uiState: State<RequestState>,
+    handleEvent: (MyGroupsEvent) -> Unit
 ) {
     BackHandler { handleEvent(MyGroupsEvent.OnBack) }
 
@@ -119,5 +118,9 @@ fun MyGroupsScreen(
 @Composable
 @Preview
 fun MyGroupsScreenPreview() {
-    MyGroupsScreen()
+    MyGroupsScreen(
+        screenState = MyGroupsViewState(),
+        uiState = remember { mutableStateOf(RequestState.Idle) },
+        handleEvent = {}
+    )
 }

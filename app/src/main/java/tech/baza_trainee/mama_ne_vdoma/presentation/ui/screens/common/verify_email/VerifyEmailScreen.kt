@@ -14,6 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -31,11 +32,10 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.showToast
 
 @Composable
 fun VerifyEmailScreen(
-    modifier: Modifier = Modifier,
-    screenState: VerifyEmailViewState = VerifyEmailViewState(),
-    uiState: State<RequestState> = mutableStateOf(RequestState.Idle),
-    title: String = "Title",
-    handleEvent: (VerifyEmailEvent) -> Unit = { _ -> }
+    screenState: VerifyEmailViewState,
+    uiState: State<RequestState>,
+    title: String,
+    handleEvent: (VerifyEmailEvent) -> Unit
 ) {
     SurfaceWithSystemBars {
         val context = LocalContext.current
@@ -90,5 +90,10 @@ fun VerifyEmailScreen(
 @Composable
 @Preview
 fun CodeVerificationPreview() {
-    VerifyEmailScreen()
+    VerifyEmailScreen(
+        screenState = VerifyEmailViewState(),
+        uiState = remember { mutableStateOf(RequestState.Idle) },
+        title = "Title",
+        handleEvent = { _ -> }
+    )
 }

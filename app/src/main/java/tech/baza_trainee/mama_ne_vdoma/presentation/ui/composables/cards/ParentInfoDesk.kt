@@ -80,9 +80,11 @@ fun ParentInfoDesk(
                     .clip(CircleShape),
                 model = ImageRequest.Builder(LocalContext.current)
                     .data(avatar)
+                    .placeholder(R.drawable.ic_user_no_photo)
                     .crossfade(true)
                     .build(),
-                placeholder = painterResource(id = R.drawable.no_photo),
+                placeholder = painterResource(id = R.drawable.ic_user_no_photo),
+                fallback = painterResource(id = R.drawable.ic_user_no_photo),
                 contentDescription = null,
                 contentScale = ContentScale.FillBounds
             )

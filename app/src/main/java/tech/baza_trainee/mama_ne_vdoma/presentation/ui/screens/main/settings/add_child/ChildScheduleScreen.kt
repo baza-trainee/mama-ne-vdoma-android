@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
@@ -17,9 +18,9 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 
 @Composable
 fun ChildScheduleScreenInSettings(
-    screenState: ScheduleViewState = ScheduleViewState(),
-    uiState: State<RequestState> = mutableStateOf(RequestState.Idle),
-    handleEvent: (ScheduleEvent) -> Unit = {}
+    screenState: ScheduleViewState,
+    uiState: State<RequestState>,
+    handleEvent: (ScheduleEvent) -> Unit
 ) {
     Box(
         modifier = Modifier.fillMaxWidth()
@@ -51,5 +52,9 @@ fun ChildScheduleScreenInSettings(
 @Composable
 @Preview
 fun ChildScheduleScreenPreview() {
-    ChildScheduleScreenInSettings()
+    ChildScheduleScreenInSettings(
+        screenState = ScheduleViewState(),
+        uiState = remember { mutableStateOf(RequestState.Idle) },
+        handleEvent = {}
+    )
 }

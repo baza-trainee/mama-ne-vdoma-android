@@ -47,11 +47,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFa
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun InfoScreen(
-    modifier: Modifier = Modifier,
-    onCreate: () -> Unit = {}
-) {
-
+fun InfoScreen(onCreate: () -> Unit) {
     val scrollCoroutineScope = rememberCoroutineScope()
 
     val pageTextContent = listOf(
@@ -249,5 +245,7 @@ fun InfoScreen(
 @Composable
 @Preview
 fun InfoPreview() {
-    InfoScreen()
+    InfoScreen(
+        onCreate = {}
+    )
 }

@@ -38,7 +38,6 @@ fun ShowHidePasswordTextField(
     imeAction: ImeAction = ImeAction.Default,
     onImeActionPerformed: () -> Unit = {}
 ) {
-
     var showPassword by remember { mutableStateOf(value = false) }
 
     OutlinedTextField(

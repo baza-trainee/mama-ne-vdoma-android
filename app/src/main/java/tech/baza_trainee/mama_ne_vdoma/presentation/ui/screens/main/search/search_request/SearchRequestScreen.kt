@@ -55,7 +55,6 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchRequestScreen(
-    modifier: Modifier = Modifier,
     screenState: SearchRequestViewState = SearchRequestViewState(),
     uiState: State<SearchRequestUiState> = mutableStateOf(SearchRequestUiState.Idle),
     handleEvent: (SearchRequestEvent) -> Unit = {}
@@ -121,7 +120,7 @@ fun SearchRequestScreen(
             )
         )
 
-        Spacer(modifier = modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(32.dp))
 
         Button(
             modifier = Modifier
@@ -138,14 +137,14 @@ fun SearchRequestScreen(
             )
         }
 
-        Spacer(modifier = modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(32.dp))
 
         Row(
-            modifier = modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Box(
-                modifier = modifier
+                modifier = Modifier
                     .weight(1f)
                     .height(height = 2.dp)
                     .background(color = SlateGray)
@@ -156,14 +155,14 @@ fun SearchRequestScreen(
                 fontSize = 14.sp,
             )
             Box(
-                modifier = modifier
+                modifier = Modifier
                     .weight(1f)
                     .height(height = 2.dp)
                     .background(color = SlateGray)
             )
         }
 
-        Spacer(modifier = modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(32.dp))
 
         Button(
             modifier = Modifier
@@ -262,5 +261,9 @@ fun SearchRequestScreen(
 @Composable
 @Preview
 fun SearchRequestScreenPreview() {
-    SearchRequestScreen()
+    SearchRequestScreen(
+        screenState = SearchRequestViewState(),
+        uiState = remember { mutableStateOf(SearchRequestUiState.Idle) },
+        handleEvent = {}
+    )
 }

@@ -34,6 +34,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -63,10 +64,9 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ProfileSettingsScreen(
-    modifier: Modifier = Modifier,
-    screenState: ProfileSettingsViewState = ProfileSettingsViewState(),
-    uiState: State<RequestState> = mutableStateOf(RequestState.Idle),
-    handleEvent: (ProfileSettingsEvent) -> Unit = {}
+    screenState: ProfileSettingsViewState,
+    uiState: State<RequestState>,
+    handleEvent: (ProfileSettingsEvent) -> Unit
 ) {
     BackHandler { handleEvent(ProfileSettingsEvent.OnBack) }
 
@@ -317,5 +317,9 @@ fun ProfileSettingsScreen(
 @Composable
 @Preview
 fun ProfileSettingsScreenPreview() {
-    ProfileSettingsScreen()
+    ProfileSettingsScreen(
+        screenState = ProfileSettingsViewState(),
+        uiState = remember { mutableStateOf(RequestState.Idle) },
+        handleEvent = {}
+    )
 }

@@ -57,11 +57,10 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.showToast
 
 @Composable
 fun LoginUserScreen(
-    modifier: Modifier = Modifier,
-    oneTapClient: SignInClient? = null,
-    screenState: LoginViewState = LoginViewState(),
-    uiState: State<RequestState> = mutableStateOf(RequestState.Idle),
-    handleEvent: (LoginEvent) -> Unit = { _ -> }
+    oneTapClient: SignInClient?,
+    screenState: LoginViewState,
+    uiState: State<RequestState>,
+    handleEvent: (LoginEvent) -> Unit
 ) {
     SurfaceWithSystemBars {
         BackHandler { handleEvent(LoginEvent.OnBack) }
@@ -309,5 +308,10 @@ fun LoginUserScreen(
 @Composable
 @Preview
 fun LoginUserPreview() {
-    LoginUserScreen()
+    LoginUserScreen(
+        oneTapClient = null,
+        screenState = LoginViewState(),
+        uiState = remember { mutableStateOf(RequestState.Idle) },
+        handleEvent = { _ -> }
+    )
 }

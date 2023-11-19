@@ -75,10 +75,9 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateGroupScreen(
-    modifier: Modifier = Modifier,
-    screenState: CreateGroupViewState = CreateGroupViewState(),
-    uiState: State<CreateGroupUiState> = mutableStateOf(CreateGroupUiState.Idle),
-    handleEvent: (CreateGroupEvent) -> Unit = {}
+    screenState: CreateGroupViewState,
+    uiState: State<CreateGroupUiState>,
+    handleEvent: (CreateGroupEvent) -> Unit
 ) {
     SurfaceWithNavigationBars {
         BackHandler { handleEvent(CreateGroupEvent.OnBack) }
@@ -520,5 +519,9 @@ fun CreateGroupScreen(
 @Composable
 @Preview
 fun CreateGroupScreenPreview() {
-    CreateGroupScreen()
+    CreateGroupScreen(
+        screenState = CreateGroupViewState(),
+        uiState = remember { mutableStateOf(CreateGroupUiState.Idle) },
+        handleEvent = {}
+    )
 }

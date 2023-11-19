@@ -31,16 +31,16 @@ import com.smarttoolfactory.cropper.ImageCropper
 import com.smarttoolfactory.cropper.settings.CropDefaults
 import com.smarttoolfactory.cropper.settings.CropProperties
 import tech.baza_trainee.mama_ne_vdoma.R
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ButtonText
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.LoadingIndicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ButtonText
 
 @Composable
 fun ImageCropScreen(
     modifier: Modifier = Modifier,
-    imageForCrop: ImageBitmap = ImageBitmap(512, 512),
+    imageForCrop: ImageBitmap,
     cropProperties: CropProperties,
-    handleEvent: (ImageCropEvent) -> Unit = {}
+    handleEvent: (ImageCropEvent) -> Unit
 ) {
     var isCropping by remember { mutableStateOf(false) }
 

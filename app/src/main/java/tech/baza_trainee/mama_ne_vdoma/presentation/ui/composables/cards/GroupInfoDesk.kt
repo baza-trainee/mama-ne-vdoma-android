@@ -54,11 +54,11 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import kotlinx.coroutines.launch
 import tech.baza_trainee.mama_ne_vdoma.R
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ButtonText
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.GroupUiModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.LogoutButtonColor
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.LogoutButtonTextColor
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ButtonText
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -73,8 +73,8 @@ fun GroupInfoDesk(
     onSwitchAdmin: (String, String) -> Unit = {_,_->},
     onDelete: (String) -> Unit = {}
 ) {
-    val isAdmin = currentUserId == group.adminId
-    val isMyGroup = group.members.map { it.id }.contains(currentUserId)
+    val isAdmin = rememberSaveable { currentUserId == group.adminId }
+    val isMyGroup = rememberSaveable { group.members.map { it.id }.contains(currentUserId) }
 
     var showAdminDialog by rememberSaveable { mutableStateOf(false) }
     var showKickDialog by rememberSaveable { mutableStateOf(false) }

@@ -55,10 +55,9 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.showToast
 
 @Composable
 fun FullInfoScreen(
-    modifier: Modifier = Modifier,
-    screenState: FullInfoViewState = FullInfoViewState(),
-    uiState: State<RequestState> = mutableStateOf(RequestState.Idle),
-    handleEvent: (FullInfoEvent) -> Unit = {}
+    screenState: FullInfoViewState,
+    uiState: State<RequestState>,
+    handleEvent: (FullInfoEvent) -> Unit
 ) {
     SurfaceWithNavigationBars {
         BackHandler { handleEvent(FullInfoEvent.OnBack) }
@@ -238,5 +237,11 @@ fun FullInfoScreen(
 @Composable
 @Preview
 fun FullInfoPreview() {
-    FullInfoScreen()
+    FullInfoScreen(
+        screenState = FullInfoViewState(),
+        uiState = remember {
+            mutableStateOf(RequestState.Idle)
+        },
+        handleEvent = {}
+    )
 }

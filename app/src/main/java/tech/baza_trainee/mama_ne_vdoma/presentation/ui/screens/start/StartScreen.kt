@@ -44,14 +44,15 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.openAppSett
 
 @Composable
 fun StartScreen(
-    modifier: Modifier = Modifier,
-    onStart: () -> Unit = {},
-    onLogin: () -> Unit = {}
+    onStart: () -> Unit,
+    onLogin: () -> Unit
 ) {
     SurfaceWithSystemBars {
 
         val activity = LocalContext.current.findActivity()
-        val permission = Manifest.permission.POST_NOTIFICATIONS
+        val permission = remember {
+            Manifest.permission.POST_NOTIFICATIONS
+        }
         var showRationale by rememberSaveable { mutableStateOf(false) }
 
         val notificationsPermissionResultLauncher = rememberLauncherForActivityResult(
@@ -142,5 +143,8 @@ fun StartScreen(
 @Composable
 @Preview
 fun StartScreenPreview() {
-    StartScreen()
+    StartScreen(
+        onStart = {},
+        onLogin = {}
+    )
 }

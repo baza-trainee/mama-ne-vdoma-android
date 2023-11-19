@@ -25,6 +25,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -43,10 +44,9 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 
 @Composable
 fun EditCredentialsScreen(
-    modifier: Modifier = Modifier,
-    screenState: EditCredentialsViewState = EditCredentialsViewState(),
-    uiState: State<RequestState> = mutableStateOf(RequestState.Idle),
-    handleEvent: (EditCredentialsEvent) -> Unit = {}
+    screenState: EditCredentialsViewState,
+    uiState: State<RequestState>,
+    handleEvent: (EditCredentialsEvent) -> Unit
 ) {
     BackHandler { handleEvent(EditCredentialsEvent.OnBack) }
 
@@ -108,14 +108,14 @@ fun EditCredentialsScreen(
             )
         }
 
-        Spacer(modifier = modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(32.dp))
 
         Row(
-            modifier = modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Box(
-                modifier = modifier
+                modifier = Modifier
                     .weight(1f)
                     .height(height = 2.dp)
                     .background(color = SlateGray)
@@ -126,14 +126,14 @@ fun EditCredentialsScreen(
                 fontSize = 14.sp,
             )
             Box(
-                modifier = modifier
+                modifier = Modifier
                     .weight(1f)
                     .height(height = 2.dp)
                     .background(color = SlateGray)
             )
         }
 
-        Spacer(modifier = modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(32.dp))
 
         //Password
         PasswordTextFieldWithError(
@@ -186,5 +186,9 @@ fun EditCredentialsScreen(
 @Composable
 @Preview
 fun EditCredentialsScreenPreview() {
-    EditCredentialsScreen()
+    EditCredentialsScreen(
+        screenState = EditCredentialsViewState(),
+        uiState = remember { mutableStateOf(RequestState.Idle) },
+        handleEvent = {}
+    )
 }

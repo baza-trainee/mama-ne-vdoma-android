@@ -139,11 +139,11 @@ fun ToolbarWithAvatar(
                 },
             model = ImageRequest.Builder(LocalContext.current)
                 .data(avatar)
-                .placeholder(R.drawable.ic_user_no_photo)
+                .placeholder(R.drawable.ic_user_no_photo_inverse)
                 .crossfade(true)
                 .build(),
-            placeholder = painterResource(id = R.drawable.ic_user_no_photo),
-            fallback = painterResource(id = R.drawable.ic_user_no_photo),
+            placeholder = painterResource(id = R.drawable.ic_user_no_photo_inverse),
+            fallback = painterResource(id = R.drawable.ic_user_no_photo_inverse),
             contentDescription = "avatar",
             contentScale = ContentScale.FillBounds
         )

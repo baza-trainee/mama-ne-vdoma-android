@@ -35,11 +35,10 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.showToast
 
 @Composable
 fun EmailConfirmScreen(
-    modifier: Modifier = Modifier,
-    uiState: State<RequestState> = mutableStateOf(RequestState.Idle),
-    email: String = "",
-    password: String = "",
-    handleEvent: (RestorePasswordEvent) -> Unit = { _ -> }
+    uiState: State<RequestState>,
+    email: String,
+    password: String,
+    handleEvent: (RestorePasswordEvent) -> Unit
 ) {
     SurfaceWithNavigationBars {
         val context = LocalContext.current
@@ -105,5 +104,10 @@ fun EmailConfirmScreen(
 @Composable
 @Preview
 fun EmailConfirmPreview() {
-    EmailConfirmScreen()
+    EmailConfirmScreen(
+        uiState = remember { mutableStateOf(RequestState.Idle) },
+        email = "",
+        password = "",
+        handleEvent = { _ -> }
+    )
 }

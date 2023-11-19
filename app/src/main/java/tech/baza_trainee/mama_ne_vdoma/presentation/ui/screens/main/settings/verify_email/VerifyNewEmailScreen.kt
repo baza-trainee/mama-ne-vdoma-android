@@ -6,9 +6,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.LoadingIndicator
@@ -20,10 +20,9 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 
 @Composable
 fun VerifyNewEmailScreen(
-    modifier: Modifier = Modifier,
-    screenState: VerifyEmailViewState = VerifyEmailViewState(),
-    uiState: State<VerifyEmailUiState> = mutableStateOf(VerifyEmailUiState.Idle),
-    handleEvent: (VerifyEmailEvent) -> Unit = {}
+    screenState: VerifyEmailViewState,
+    uiState: State<VerifyEmailUiState>,
+    handleEvent: (VerifyEmailEvent) -> Unit
 ) {
     BackHandler { handleEvent(VerifyEmailEvent.OnBack) }
 
@@ -55,7 +54,8 @@ fun VerifyNewEmailScreen(
     VerifyEmail(
         otp = screenState.otp,
         isOtpValid = screenState.otpValid != ValidField.INVALID,
-        onVerify = { otp, isFilled -> handleEvent(VerifyEmailEvent.Verify(otp, isFilled))}
+        onVerify = { otp, isFilled -> handleEvent(VerifyEmailEvent.Verify(otp, isFilled)) },
+        onResend = {}
     )
 
     if (showSuccessDialog) {
@@ -74,5 +74,9 @@ fun VerifyNewEmailScreen(
 @Composable
 @Preview
 fun VerifyNewEmailScreenPreview() {
-    VerifyNewEmailScreen()
+    VerifyNewEmailScreen(
+        screenState = VerifyEmailViewState(),
+        uiState = remember { mutableStateOf(VerifyEmailUiState.Idle) },
+        handleEvent = {}
+    )
 }

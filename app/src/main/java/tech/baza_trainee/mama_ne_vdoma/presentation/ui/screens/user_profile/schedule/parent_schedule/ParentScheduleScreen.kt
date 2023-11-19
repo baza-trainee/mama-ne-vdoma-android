@@ -4,6 +4,7 @@ import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.schedule.ScheduleEvent
@@ -13,9 +14,9 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 
 @Composable
 fun ParentScheduleScreen(
-    screenState: ScheduleViewState = ScheduleViewState(),
-    uiState: State<RequestState> = mutableStateOf(RequestState.Idle),
-    handleEvent: (ScheduleEvent) -> Unit = {}
+    screenState: ScheduleViewState,
+    uiState: State<RequestState>,
+    handleEvent: (ScheduleEvent) -> Unit
 ) {
     val context = LocalContext.current
 
@@ -40,5 +41,11 @@ fun ParentScheduleScreen(
 @Composable
 @Preview
 fun ParentScheduleScreenPreview() {
-    ParentScheduleScreen()
+    ParentScheduleScreen(
+        screenState = ScheduleViewState(),
+        uiState = remember {
+            mutableStateOf(RequestState.Idle)
+        },
+        handleEvent = {}
+    )
 }

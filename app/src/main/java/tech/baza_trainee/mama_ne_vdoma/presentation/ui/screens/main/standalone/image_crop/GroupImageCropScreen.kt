@@ -26,14 +26,13 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.image_crop
 
 @Composable
 fun GroupImageCropScreen(
-    modifier: Modifier = Modifier,
-    screenState: ImageCropViewState = ImageCropViewState(),
-    handleEvent: (ImageCropEvent) -> Unit = {}
+    screenState: ImageCropViewState,
+    handleEvent: (ImageCropEvent) -> Unit
 ) {
     SurfaceWithNavigationBars {
         BackHandler { handleEvent(ImageCropEvent.OnBack) }
 
-        val handleSize: Float = LocalDensity.current.run { 20.dp.toPx() }
+        val handleSize = LocalDensity.current.run { 20.dp.toPx() }
 
         Column(
             modifier = Modifier.fillMaxSize(),
@@ -73,5 +72,8 @@ fun GroupImageCropScreen(
 @Composable
 @Preview
 fun GroupImageCropPreview() {
-    GroupImageCropScreen()
+    GroupImageCropScreen(
+        screenState = ImageCropViewState(),
+        handleEvent = {}
+    )
 }

@@ -4,6 +4,7 @@ import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.LoadingIndicator
@@ -14,9 +15,9 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 
 @Composable
 fun ChildScheduleScreen(
-    screenState: ScheduleViewState = ScheduleViewState(),
-    uiState: State<RequestState> = mutableStateOf(RequestState.Idle),
-    handleEvent: (ScheduleEvent) -> Unit = {}
+    screenState: ScheduleViewState,
+    uiState: State<RequestState>,
+    handleEvent: (ScheduleEvent) -> Unit
 ) {
     val context = LocalContext.current
 
@@ -43,5 +44,9 @@ fun ChildScheduleScreen(
 @Composable
 @Preview
 fun ChildScheduleScreenPreview() {
-    ChildScheduleScreen()
+    ChildScheduleScreen(
+        screenState = ScheduleViewState(),
+        uiState = remember { mutableStateOf(RequestState.Idle) },
+        handleEvent = {}
+    )
 }

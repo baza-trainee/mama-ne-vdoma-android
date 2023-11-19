@@ -1,7 +1,6 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.image_crop
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -17,9 +16,8 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.image_crop
 
 @Composable
 fun UserImageCropScreen(
-    modifier: Modifier = Modifier,
-    screenState: ImageCropViewState = ImageCropViewState(),
-    handleEvent: (ImageCropEvent) -> Unit = {}
+    screenState: ImageCropViewState,
+    handleEvent: (ImageCropEvent) -> Unit
 ) {
     SurfaceWithSystemBars {
         val handleSize: Float = LocalDensity.current.run { 20.dp.toPx() }
@@ -43,5 +41,8 @@ fun UserImageCropScreen(
 @Composable
 @Preview
 fun UserImageCropPreview() {
-    UserImageCropScreen()
+    UserImageCropScreen(
+        screenState = ImageCropViewState(),
+        handleEvent = {}
+    )
 }

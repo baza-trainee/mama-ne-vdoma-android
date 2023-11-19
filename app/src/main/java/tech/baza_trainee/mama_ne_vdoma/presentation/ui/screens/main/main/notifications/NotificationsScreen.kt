@@ -59,10 +59,9 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFa
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun NotificationScreen(
-    modifier: Modifier = Modifier,
-    screenState: NotificationsViewState = NotificationsViewState(),
-    uiState: State<NotificationsUiState> = mutableStateOf(NotificationsUiState.Idle),
-    handleEvent: (NotificationsEvent) -> Unit = {}
+    screenState: NotificationsViewState,
+    uiState: State<NotificationsUiState>,
+    handleEvent: (NotificationsEvent) -> Unit
 ) {
     BackHandler { handleEvent(NotificationsEvent.OnBack) }
 
@@ -432,5 +431,9 @@ fun NotificationScreen(
 @Composable
 @Preview
 fun NotificationScreenPreview() {
-    NotificationScreen()
+    NotificationScreen(
+        screenState = NotificationsViewState(),
+        uiState = remember { mutableStateOf(NotificationsUiState.Idle) },
+        handleEvent = {}
+    )
 }

@@ -61,11 +61,10 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.showToast
 
 @Composable
 fun UserCreateScreen(
-    modifier: Modifier = Modifier,
-    oneTapClient: SignInClient? = null,
-    screenState: UserCreateViewState = UserCreateViewState(),
-    uiState: State<RequestState> = mutableStateOf(RequestState.Idle),
-    handleEvent: (UserCreateEvent) -> Unit = { _ -> }
+    oneTapClient: SignInClient?,
+    screenState: UserCreateViewState,
+    uiState: State<RequestState>,
+    handleEvent: (UserCreateEvent) -> Unit
 ) {
     SurfaceWithSystemBars {
         BackHandler { handleEvent(UserCreateEvent.OnBack) }
@@ -228,11 +227,11 @@ fun UserCreateScreen(
                 Spacer(modifier = Modifier.height(32.dp))
 
                 Row(
-                    modifier = modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Box(
-                        modifier = modifier
+                        modifier = Modifier
                             .weight(1f)
                             .height(height = 2.dp)
                             .background(color = SlateGray)
@@ -243,7 +242,7 @@ fun UserCreateScreen(
                         fontSize = 14.sp,
                     )
                     Box(
-                        modifier = modifier
+                        modifier = Modifier
                             .weight(1f)
                             .height(height = 2.dp)
                             .background(color = SlateGray)
@@ -270,5 +269,10 @@ fun UserCreateScreen(
 @Composable
 @Preview
 fun UserCreatePreview() {
-    UserCreateScreen()
+    UserCreateScreen(
+        oneTapClient = null,
+        screenState = UserCreateViewState(),
+        uiState = remember { mutableStateOf(RequestState.Idle) },
+        handleEvent = { _ -> }
+    )
 }

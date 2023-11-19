@@ -52,7 +52,6 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.showToast
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FoundGroupScreen(
-    modifier: Modifier = Modifier,
     screenState: FoundGroupViewState = FoundGroupViewState(),
     uiState: State<FoundGroupUiState> = mutableStateOf(FoundGroupUiState.Idle),
     handleEvent: (FoundGroupEvent) -> Unit = { _ -> }
@@ -250,5 +249,9 @@ fun FoundGroupScreen(
 @Composable
 @Preview
 fun FoundGroupScreenPreview() {
-    FoundGroupScreen()
+    FoundGroupScreen(
+        screenState = FoundGroupViewState(),
+        uiState = remember { mutableStateOf(FoundGroupUiState.Idle) },
+        handleEvent = { _ -> }
+    )
 }

@@ -18,7 +18,6 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.image_crop
 
 @Composable
 fun ProfileImageCropScreen(
-    modifier: Modifier = Modifier,
     screenState: ImageCropViewState = ImageCropViewState(),
     handleEvent: (ImageCropEvent) -> Unit = {}
 ) {
@@ -46,5 +45,8 @@ fun ProfileImageCropScreen(
 @Composable
 @Preview
 fun ProfileImageCropPreview() {
-    ProfileImageCropScreen()
+    ProfileImageCropScreen(
+        screenState = ImageCropViewState(),
+        handleEvent = {}
+    )
 }

@@ -23,6 +23,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -43,10 +44,9 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.showToast
 
 @Composable
 fun RestorePasswordScreen(
-    modifier: Modifier = Modifier,
-    screenState: RestorePasswordViewState = RestorePasswordViewState(),
-    uiState: State<RequestState> = mutableStateOf(RequestState.Idle),
-    handleEvent: (RestorePasswordEvent) -> Unit = { _ -> }
+    screenState: RestorePasswordViewState,
+    uiState: State<RequestState>,
+    handleEvent: (RestorePasswordEvent) -> Unit
 ) {
     SurfaceWithSystemBars {
         BackHandler {
@@ -170,5 +170,9 @@ fun RestorePasswordScreen(
 @Composable
 @Preview
 fun RestorePasswordPreview() {
-    RestorePasswordScreen()
+    RestorePasswordScreen(
+        screenState = RestorePasswordViewState(),
+        uiState = remember { mutableStateOf(RequestState.Idle) },
+        handleEvent = { _ -> }
+    )
 }

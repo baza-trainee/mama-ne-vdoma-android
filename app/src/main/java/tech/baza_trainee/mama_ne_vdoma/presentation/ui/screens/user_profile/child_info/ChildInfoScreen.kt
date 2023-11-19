@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
@@ -23,7 +24,6 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.showToast
 
 @Composable
 fun ChildInfoScreen(
-    modifier: Modifier = Modifier,
     screenState: ChildInfoViewState = ChildInfoViewState(),
     uiState: State<RequestState> = mutableStateOf(RequestState.Idle),
     handleEvent: (ChildInfoEvent) -> Unit = { _ -> }
@@ -69,5 +69,11 @@ fun ChildInfoScreen(
 @Composable
 @Preview
 fun ChildInfoPreview() {
-    ChildInfoScreen()
+    ChildInfoScreen(
+        screenState = ChildInfoViewState(),
+        uiState = remember {
+            mutableStateOf(RequestState.Idle)
+        },
+        handleEvent = { _ -> }
+    )
 }

@@ -20,15 +20,14 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.headers.Heade
 import java.time.DayOfWeek
 
 @Composable
-@Preview
 fun ScheduleScreen(
     modifier: Modifier = Modifier,
-    title: String = "Title",
-    screenState: ScheduleViewState = ScheduleViewState(),
-    onUpdateSchedule: (DayOfWeek, Period) -> Unit = { _, _ -> },
-    onUpdateComment: (String) -> Unit = {},
-    onNext: () -> Unit = {},
-    onBack: () -> Unit = {}
+    title: String,
+    screenState: ScheduleViewState,
+    onUpdateSchedule: (DayOfWeek, Period) -> Unit,
+    onUpdateComment: (String) -> Unit,
+    onNext: () -> Unit,
+    onBack: () -> Unit
 ) {
     SurfaceWithNavigationBars {
         BackHandler { onBack() }
@@ -61,4 +60,18 @@ fun ScheduleScreen(
             }
         }
     }
+}
+
+@Composable
+@Preview
+fun ScheduleScreenPreview() {
+    ScheduleScreen(
+        modifier = Modifier,
+        title = "Title",
+        screenState = ScheduleViewState(),
+        onUpdateSchedule = { _, _ -> },
+        onUpdateComment = {},
+        onNext = {},
+        onBack = {}
+    )
 }

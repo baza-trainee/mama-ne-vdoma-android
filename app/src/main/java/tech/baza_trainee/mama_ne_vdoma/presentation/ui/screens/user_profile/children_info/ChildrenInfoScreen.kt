@@ -33,11 +33,11 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFa
 @Composable
 fun  ChildrenInfoScreen(
     modifier: Modifier = Modifier,
-    screenState: ChildrenInfoViewState = ChildrenInfoViewState(),
-    onHandleChildrenInfoEvent: (ChildrenInfoEvent) -> Unit = {},
-    onNext: () -> Unit = {},
-    onBack: () -> Unit = {},
-    onEdit: () -> Unit = {}
+    screenState: ChildrenInfoViewState,
+    onHandleChildrenInfoEvent: (ChildrenInfoEvent) -> Unit,
+    onNext: () -> Unit,
+    onBack: () -> Unit,
+    onEdit: () -> Unit
 ) {
     SurfaceWithNavigationBars {
         Column(
@@ -125,5 +125,11 @@ fun  ChildrenInfoScreen(
 @Composable
 @Preview
 fun ChildrenInfoPreview() {
-    ChildrenInfoScreen()
+    ChildrenInfoScreen(
+        screenState = ChildrenInfoViewState(),
+        onHandleChildrenInfoEvent = {},
+        onNext = {},
+        onBack = {},
+        onEdit = {}
+    )
 }

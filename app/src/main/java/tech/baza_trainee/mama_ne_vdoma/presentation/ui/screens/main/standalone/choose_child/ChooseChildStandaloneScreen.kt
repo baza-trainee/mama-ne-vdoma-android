@@ -40,11 +40,10 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.showToast
 
 @Composable
 fun ChooseChildStandaloneScreen(
-    modifier: Modifier = Modifier,
-    isForSearch: Boolean = true,
-    screenState: ChooseChildViewState = ChooseChildViewState(),
-    uiState: State<RequestState> = mutableStateOf(RequestState.Idle),
-    handleEvent: (ChooseChildEvent) -> Unit = {}
+    isForSearch: Boolean,
+    screenState: ChooseChildViewState,
+    uiState: State<RequestState>,
+    handleEvent: (ChooseChildEvent) -> Unit
 ) {
     SurfaceWithNavigationBars {
         BackHandler { handleEvent(ChooseChildEvent.OnBack) }
@@ -130,5 +129,10 @@ fun ChooseChildStandaloneScreen(
 @Composable
 @Preview
 fun ChooseChildScreenPreview() {
-    ChooseChildStandaloneScreen()
+    ChooseChildStandaloneScreen(
+        isForSearch = true,
+        screenState = ChooseChildViewState(),
+        uiState = remember { mutableStateOf(RequestState.Idle) },
+        handleEvent = {}
+    )
 }
