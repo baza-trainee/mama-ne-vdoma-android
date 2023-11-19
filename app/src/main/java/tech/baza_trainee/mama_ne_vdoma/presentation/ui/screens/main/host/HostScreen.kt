@@ -80,7 +80,8 @@ fun HostScreen(
                         showNotification = notificationsCount != 0,
                         notificationCount = notificationsCount,
                         onNotificationsClicked = { handleEvent(HostEvent.GoToNotifications) },
-                        onBack = { handleEvent(HostEvent.OnBackLocal) }
+                        onBack = { handleEvent(HostEvent.OnBackLocal) },
+                        onAvatarClicked = { handleEvent(HostEvent.SwitchTab(SETTINGS_PAGE)) }
                     )
                 }
             },
