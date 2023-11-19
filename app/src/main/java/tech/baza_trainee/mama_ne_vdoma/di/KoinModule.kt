@@ -1,5 +1,6 @@
 package tech.baza_trainee.mama_ne_vdoma.di
 
+import android.content.Context
 import com.chuckerteam.chucker.api.ChuckerCollector
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.google.android.gms.auth.api.identity.Identity
@@ -16,6 +17,7 @@ import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import tech.baza_trainee.mama_ne_vdoma.BuildConfig
+import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.data.api.AuthApi
 import tech.baza_trainee.mama_ne_vdoma.data.api.FilesApi
 import tech.baza_trainee.mama_ne_vdoma.data.api.GroupsApi
@@ -83,7 +85,15 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.sche
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.user_info.UserInfoViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.user_location.UserLocationViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.BitmapHelper
+import java.security.KeyStore
+import java.security.SecureRandom
+import java.security.cert.Certificate
+import java.security.cert.CertificateFactory
 import java.util.concurrent.TimeUnit
+import javax.net.ssl.SSLContext
+import javax.net.ssl.SSLSocketFactory
+import javax.net.ssl.TrustManagerFactory
+import javax.net.ssl.X509TrustManager
 
 val gsoModule = module {
     single { Identity.getSignInClient(androidContext()) }
@@ -105,7 +115,7 @@ val repoModule = module {
             else HttpLoggingInterceptor.Level.NONE
         )
     }
-    single { createOkHttpClient(get(), get(), get()) }
+    single { createOkHttpClient(androidContext(), get(), get(), get()) }
     single<UserProfileApi> { createAuthorizedApi(get(), get(), get()) }
     single<FilesApi> { createAuthorizedApi(get(), get(), get()) }
     single<GroupsApi> { createAuthorizedApi(get(), get(), get()) }
@@ -234,18 +244,42 @@ inline fun <reified T> createCustomApi(
 }
 
 fun createOkHttpClient(
+    context: Context,
     httpLoggingInterceptor: HttpLoggingInterceptor,
     loggingInterceptor: ChuckerInterceptor,
     preferencesDatastoreManager: UserPreferencesDatastoreManager
 ): OkHttpClient {
+    val (factory, manager) = createSSLSocketFactory(context)
     return OkHttpClient.Builder()
         .connectTimeout(TIMEOUT, TimeUnit.SECONDS)
         .readTimeout(TIMEOUT, TimeUnit.SECONDS)
         .writeTimeout(TIMEOUT, TimeUnit.SECONDS)
+        .sslSocketFactory(factory, manager)
         .addInterceptor(ReceivedCookiesInterceptor(preferencesDatastoreManager))
         .addInterceptor(httpLoggingInterceptor)
         .addInterceptor(loggingInterceptor)
         .build()
+}
+
+fun createSSLSocketFactory(context: Context): Pair<SSLSocketFactory, X509TrustManager> {
+    // Create a certificate for the production environment
+    var ca: Certificate?
+    context.resources.openRawResource(R.raw.certificate).use { inputStreamSSH ->
+        ca = CertificateFactory.getInstance("X.509").generateCertificate(inputStreamSSH)
+    }
+    // Create a KeyStore containing our trusted CAs
+    val keyStoreType = KeyStore.getDefaultType()
+    val keyStore = KeyStore.getInstance(keyStoreType)
+    keyStore.load(null, null)
+    keyStore.setCertificateEntry("ca", ca)
+    // Create a TrustManager that trusts the CAs in our KeyStore
+    val tmf = TrustManagerFactory
+        .getInstance(TrustManagerFactory.getDefaultAlgorithm())
+    tmf.init(keyStore)
+    // Create an SSLContext that uses our TrustManager
+    val sslContext = SSLContext.getInstance("TLSv1.2")
+    sslContext.init(null, tmf.trustManagers, SecureRandom())
+    return Pair(sslContext.socketFactory, tmf.trustManagers[0] as X509TrustManager)
 }
 
 private const val CHUCKER_CONTENT_MAX_LENGTH = 250000L
