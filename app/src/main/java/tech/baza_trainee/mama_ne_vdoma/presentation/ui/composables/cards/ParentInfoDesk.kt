@@ -18,6 +18,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,28 +34,17 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.domain.model.DayPeriod
-import tech.baza_trainee.mama_ne_vdoma.domain.model.Period
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.DayScheduleRow
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 import java.time.DayOfWeek
 
 @Composable
-@Preview
 fun ParentInfoDesk(
     modifier: Modifier = Modifier,
-    name: String = "Somebody",
-    address: String = "Somewhere",
-    avatar: Uri = Uri.EMPTY,
+    name: String,
+    address: String,
+    avatar: Uri,
     showDeleteButton: Boolean = true,
-    schedule: SnapshotStateMap<DayOfWeek, DayPeriod> = mutableStateMapOf(
-            DayOfWeek.MONDAY to DayPeriod(morning = true),
-            DayOfWeek.TUESDAY to DayPeriod(wholeDay = true),
-            DayOfWeek.WEDNESDAY to DayPeriod(noon = true),
-            DayOfWeek.THURSDAY to DayPeriod(morning = true, afternoon = true),
-            DayOfWeek.FRIDAY to DayPeriod(noon = true, afternoon = true),
-            DayOfWeek.SATURDAY to DayPeriod(afternoon = true),
-            DayOfWeek.SUNDAY to DayPeriod(wholeDay = true),
-    ),
+    schedule: SnapshotStateMap<DayOfWeek, DayPeriod>,
     onEdit: () -> Unit = {},
     onDelete: () -> Unit = {}
 ) {
@@ -140,41 +130,34 @@ fun ParentInfoDesk(
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        val morning = schedule.filter { it.value.morning }.keys
-        val noon = schedule.filter { it.value.noon }.keys
-        val afternoon = schedule.filter { it.value.afternoon }.keys
-        val wholeDay = schedule.filter { it.value.wholeDay }.keys
-
-        val dayText = "Дні, коли ви можете доглядати за дітьми"
-        val periodText = "Час, коли ви можете доглядати за дітьми"
-
-        if (morning.isNotEmpty())
-            DayScheduleRow(
-                morning,
-                Period.MORNING,
-                dayText,
-                periodText
-            )
-        if (noon.isNotEmpty())
-            DayScheduleRow(
-                noon,
-                Period.NOON,
-                dayText,
-                periodText
-            )
-        if (afternoon.isNotEmpty())
-            DayScheduleRow(
-                afternoon,
-                Period.AFTERNOON,
-                dayText,
-                periodText
-            )
-        if (wholeDay.isNotEmpty())
-            DayScheduleRow(
-                wholeDay,
-                Period.WHOLE_DAY,
-                dayText,
-                periodText
-            )
+        ScheduleInfoDesk(
+            schedule = schedule,
+            dayText = "Дні, коли ви можете доглядати за дітьми",
+            periodText = "Час, коли ви можете доглядати за дітьми"
+        )
     }
+}
+
+@Composable
+@Preview
+fun ParenInfoDeskPreview() {
+    ParentInfoDesk(
+        name = "Somebody",
+        address = "Somewhere",
+        avatar = Uri.EMPTY,
+        showDeleteButton = true,
+        schedule = remember {
+            mutableStateMapOf(
+                DayOfWeek.MONDAY to DayPeriod(morning = true),
+                DayOfWeek.TUESDAY to DayPeriod(wholeDay = true),
+                DayOfWeek.WEDNESDAY to DayPeriod(noon = true),
+                DayOfWeek.THURSDAY to DayPeriod(morning = true, afternoon = true),
+                DayOfWeek.FRIDAY to DayPeriod(noon = true, afternoon = true),
+                DayOfWeek.SATURDAY to DayPeriod(afternoon = true),
+                DayOfWeek.SUNDAY to DayPeriod(wholeDay = true),
+            )
+        },
+        onEdit = {},
+        onDelete = {}
+    )
 }

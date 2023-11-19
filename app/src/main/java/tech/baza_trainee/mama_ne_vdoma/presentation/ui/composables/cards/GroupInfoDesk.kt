@@ -119,8 +119,8 @@ fun GroupInfoDesk(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .align(Alignment.TopEnd),
-                horizontalArrangement = Arrangement.SpaceBetween,
+                    .align(Alignment.TopCenter),
+                horizontalArrangement = Arrangement.SpaceAround,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 if (isAdmin) {
@@ -413,6 +413,16 @@ fun GroupInfoDesk(
                 }
             }
 
+            Spacer(modifier = Modifier.height(16.dp))
+
+            ScheduleInfoDesk(
+                schedule = group.schedule,
+                dayText = "Дні нагляду за дітьми",
+                periodText = "Час нагляду за дітьми"
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
             if (isAdmin) {
                 Spacer(modifier = Modifier.height(16.dp))
 
@@ -432,31 +442,33 @@ fun GroupInfoDesk(
                     )
                 }
 
-                Spacer(modifier = Modifier.height(16.dp))
+                if (group.members.map { it.id }.filterNot { it == group.adminId }.isNotEmpty()) {
+                    Spacer(modifier = Modifier.height(16.dp))
 
-                Button(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(48.dp),
-                    onClick = { showAdminDialog = true },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.surface,
-                        contentColor = MaterialTheme.colorScheme.onSurface
-                    ),
-                    border = BorderStroke(
-                        width = 1.dp,
-                        color = MaterialTheme.colorScheme.primary
-                    )
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_crown),
-                        contentDescription = "make_admin",
-                        tint = MaterialTheme.colorScheme.onBackground
-                    )
-                    Spacer(modifier = Modifier.width(4.dp))
-                    ButtonText(
-                        text = "Передати права адміністратора"
-                    )
+                    Button(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(48.dp),
+                        onClick = { showAdminDialog = true },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.surface,
+                            contentColor = MaterialTheme.colorScheme.onSurface
+                        ),
+                        border = BorderStroke(
+                            width = 2.dp,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_crown),
+                            contentDescription = "make_admin",
+                            tint = MaterialTheme.colorScheme.onBackground
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        ButtonText(
+                            text = "Передати права адміністратора"
+                        )
+                    }
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))

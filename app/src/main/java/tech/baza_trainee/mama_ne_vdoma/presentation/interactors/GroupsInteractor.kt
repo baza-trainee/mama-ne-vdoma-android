@@ -156,7 +156,8 @@ class GroupsInteractorImpl(
                     adminId = it.adminId,
                     name = it.name,
                     description = it.description,
-                    ages = it.ages
+                    ages = it.ages,
+                    schedule = it.schedule
                 )
             }
         )
