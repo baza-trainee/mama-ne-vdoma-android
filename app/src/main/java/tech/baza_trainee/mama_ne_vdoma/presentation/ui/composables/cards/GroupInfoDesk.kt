@@ -2,6 +2,7 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.cards
 
 import android.content.Intent
 import android.net.Uri
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -16,10 +17,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Logout
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Error
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -49,12 +53,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import androidx.core.content.ContextCompat
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import kotlinx.coroutines.launch
 import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ButtonText
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.Rating
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.GroupUiModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.LogoutButtonColor
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.LogoutButtonTextColor
@@ -77,6 +83,7 @@ fun GroupInfoDesk(
     val isMyGroup = rememberSaveable { group.members.map { it.id }.contains(currentUserId) }
 
     var showAdminDialog by rememberSaveable { mutableStateOf(false) }
+    var showAdminConfirmationDialog by rememberSaveable { mutableStateOf(false) }
     var showKickDialog by rememberSaveable { mutableStateOf(false) }
     var adminDialogData by rememberSaveable { mutableStateOf(Triple("", "", "")) }
     var kickDialogData by rememberSaveable { mutableStateOf(Triple("", emptyList<String>(), "")) }
@@ -147,31 +154,10 @@ fun GroupInfoDesk(
 
                 Spacer(modifier = Modifier.weight(1f))
 
-                Row(
-                    modifier = Modifier
-                        .padding(8.dp)
-                        .height(28.dp)
-                        .width(64.dp)
-                        .background(
-                            color = Color.White,
-                            shape = RoundedCornerShape(4.dp)
-                        )
-                        .padding(horizontal = 4.dp),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Image(
-                        modifier = Modifier
-                            .padding(end = 4.dp),
-                        painter = painterResource(id = R.drawable.ic_star),
-                        contentDescription = "rating"
-                    )
-                    Text(
-                        text = "5.0",
-                        fontSize = 14.sp,
-                        fontFamily = redHatDisplayFontFamily
-                    )
-                }
+                Rating(
+                    modifier = Modifier.padding(all = 8.dp),
+                    rating = 5.0f
+                ) //TODO: Implement group rating
             }
         }
 
@@ -323,7 +309,7 @@ fun GroupInfoDesk(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                group.members.forEach {
+                group.members.sortedBy { it.name }.forEach {
                     if (it.id != currentUserId) {
                         Row(
                             modifier = Modifier.fillMaxWidth(),
@@ -354,35 +340,37 @@ fun GroupInfoDesk(
 
                             Spacer(modifier = Modifier.weight(1f))
 
-                            if (isAdmin) {
-                                IconButton(
-                                    onClick = {
-                                        adminDialogData = Triple(group.id, it.id, it.name)
-                                        showAdminDialog = true
-                                    }
-                                ) {
-                                    Icon(
-                                        painter = painterResource(id = R.drawable.ic_crown),
-                                        contentDescription = "make_admin",
-                                        tint = MaterialTheme.colorScheme.primary
-                                    )
-                                }
+                            Rating(rating = 5.0f) //TODO: Implement user rating
 
-                                IconButton(
-                                    onClick = {
-                                        kickDialogData = Triple(group.id, it.children, it.name)
-                                        showKickDialog = true
-                                    }
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.AutoMirrored.Filled.Logout,
-                                        contentDescription = "kick",
-                                        tint = Color.Red
-                                    )
-                                }
-                            }
+//                            if (isAdmin) {
+//                                IconButton(
+//                                    onClick = {
+//                                        adminDialogData = Triple(group.id, it.id, it.name)
+//                                        showAdminDialog = true
+//                                    }
+//                                ) {
+//                                    Icon(
+//                                        painter = painterResource(id = R.drawable.ic_crown),
+//                                        contentDescription = "make_admin",
+//                                        tint = MaterialTheme.colorScheme.primary
+//                                    )
+//                                }
+//
+//                                IconButton(
+//                                    onClick = {
+//                                        kickDialogData = Triple(group.id, it.children, it.name)
+//                                        showKickDialog = true
+//                                    }
+//                                ) {
+//                                    Icon(
+//                                        imageVector = Icons.AutoMirrored.Filled.Logout,
+//                                        contentDescription = "kick",
+//                                        tint = Color.Red
+//                                    )
+//                                }
+//                            }
 
-                            if (isMyGroup) {
+                            if (isMyGroup || isAdmin) {
                                 val context = LocalContext.current
                                 val scope = rememberCoroutineScope()
 
@@ -422,6 +410,70 @@ fun GroupInfoDesk(
 
                         Spacer(modifier = Modifier.height(4.dp))
                     }
+                }
+            }
+
+            if (isAdmin) {
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Button(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(48.dp),
+                    onClick = {  } // TODO: Implement group editing
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Edit,
+                        contentDescription = "edit_group"
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    ButtonText(
+                        text = "Редагувати групу"
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Button(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(48.dp),
+                    onClick = { showAdminDialog = true },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.surface,
+                        contentColor = MaterialTheme.colorScheme.onSurface
+                    ),
+                    border = BorderStroke(
+                        width = 1.dp,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_crown),
+                        contentDescription = "make_admin",
+                        tint = MaterialTheme.colorScheme.onBackground
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    ButtonText(
+                        text = "Передати права адміністратора"
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Button(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(48.dp),
+                    onClick = {  },  // TODO: Implement group deleting
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = LogoutButtonColor,
+                        contentColor = LogoutButtonTextColor
+                    )
+                ) {
+                    ButtonText(
+                        text = "Видалити групу"
+                    )
                 }
             }
         }
@@ -470,7 +522,78 @@ fun GroupInfoDesk(
         }
 
         if (showAdminDialog) {
-            AlertDialog(onDismissRequest = { showAdminDialog = false }) {
+            Dialog(onDismissRequest = { showAdminDialog = false }) {
+                Column(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(MaterialTheme.colorScheme.background)
+                        .padding(horizontal = 16.dp, vertical = 8.dp)
+                        .fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    var selectedId by remember { mutableStateOf("") }
+                    var selectedName by remember { mutableStateOf("") }
+
+                    Text(
+                        text = "Передати права адміністратора",
+                        fontSize = 18.sp,
+                        fontFamily = redHatDisplayFontFamily,
+                        fontWeight = FontWeight.Bold
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    LazyColumn {
+                        items(group.members.sortedBy { it.name }) { member ->
+                            if (member.id != group.adminId) {
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Text(
+                                        text = member.name,
+                                        fontSize = 14.sp,
+                                        fontFamily = redHatDisplayFontFamily
+                                    )
+
+                                    Spacer(modifier = Modifier.weight(1f))
+
+                                    Checkbox(
+                                        checked = selectedId == member.id,
+                                        onCheckedChange = {
+                                            if (it) {
+                                                selectedId = member.id
+                                                selectedName = member.name
+                                            } else {
+                                                selectedId = ""
+                                                selectedName = ""
+                                            }
+                                        }
+                                    )
+                                }
+                            }
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Button(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(48.dp),
+                        onClick = {
+                            adminDialogData = Triple(group.id, selectedId, selectedName)
+                            showAdminConfirmationDialog = true
+                        },
+                        enabled = selectedId != ""
+                    ) {
+                        ButtonText(
+                            text = "Передати права"
+                        )
+                    }
+                }
+            }
+        }
+
+        if (showAdminConfirmationDialog) {
+            AlertDialog(onDismissRequest = { showAdminConfirmationDialog = false }) {
                 Column(
                     modifier = Modifier
                         .clip(RoundedCornerShape(8.dp))
@@ -512,8 +635,8 @@ fun GroupInfoDesk(
                                 .clickable(
                                     indication = null,
                                     interactionSource = remember { MutableInteractionSource() }
-                                ) { showAdminDialog = false },
-                            text = "Ні",
+                                ) { showAdminConfirmationDialog = false },
+                            text = "Відхилити",
                             fontSize = 16.sp,
                             fontFamily = redHatDisplayFontFamily,
                             fontWeight = FontWeight.Bold,
@@ -528,10 +651,10 @@ fun GroupInfoDesk(
                                     indication = null,
                                     interactionSource = remember { MutableInteractionSource() }
                                 ) {
-                                    showAdminDialog = false
+                                    showAdminConfirmationDialog = false
                                     onSwitchAdmin(adminDialogData.first, adminDialogData.second)
                                 },
-                            text = "Погодити",
+                            text = "Так, я хочу",
                             fontSize = 16.sp,
                             fontFamily = redHatDisplayFontFamily,
                             fontWeight = FontWeight.Bold,

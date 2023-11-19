@@ -54,6 +54,7 @@ fun ChildCard(
             painter = painterResource(id = if (child.gender == Gender.BOY) R.drawable.ic_boy else R.drawable.ic_girl),
             contentDescription = null
         )
+
         Column(
             modifier = Modifier
                 .padding(horizontal = 8.dp)
@@ -67,6 +68,7 @@ fun ChildCard(
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onBackground
             )
+
             Text(
                 text = String.format("%s р.", child.age),
                 fontFamily = redHatDisplayFontFamily,
@@ -74,6 +76,7 @@ fun ChildCard(
                 color = MaterialTheme.colorScheme.onBackground
             )
         }
+
         if (!infoOnly) {
             Checkbox(
                 checked = isSelected,
