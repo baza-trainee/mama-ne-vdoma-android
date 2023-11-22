@@ -111,11 +111,15 @@ class MainActivity : FragmentActivity() {
 
             override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
                 super.onAuthenticationError(errorCode, errString)
-                Toast.makeText(
-                    applicationContext,
-                    "Невдала спроба автентифікації",
-                    Toast.LENGTH_SHORT
-                ).show()
+                if (errorCode != BiometricPrompt.ERROR_USER_CANCELED &&
+                    errorCode != BiometricPrompt.ERROR_NEGATIVE_BUTTON
+                ) {
+                    Toast.makeText(
+                        applicationContext,
+                        "Невдала спроба автентифікації",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
             }
 
             override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
