@@ -89,7 +89,10 @@ fun UserAvatarWithCameraAndGallery(
             isPermanentlyDeclined = !ActivityCompat
                 .shouldShowRequestPermissionRationale(activity, permission),
             onDismiss = { showRationale = false },
-            onGranted = { showRationale = false },
+            onGranted = {
+                showRationale = false
+                isCameraPermissionGranted = true
+            },
             onGoToAppSettingsClick = { activity.openAppSettings() })
     }
 

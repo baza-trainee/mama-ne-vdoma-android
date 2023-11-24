@@ -44,7 +44,10 @@ fun LocationPermission(
             isPermanentlyDeclined = !ActivityCompat
                 .shouldShowRequestPermissionRationale(activity, permission),
             onDismiss = { showRationale = false },
-            onGranted = { showRationale = false },
+            onGranted = {
+                showRationale = false
+                onPermissionGranted(true)
+            },
             onGoToAppSettingsClick = { activity.openAppSettings() })
     }
 }

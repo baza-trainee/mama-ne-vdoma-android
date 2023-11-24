@@ -50,9 +50,7 @@ fun StartScreen(
     SurfaceWithSystemBars {
 
         val activity = LocalContext.current.findActivity()
-        val permission = remember {
-            Manifest.permission.POST_NOTIFICATIONS
-        }
+        val permission = Manifest.permission.POST_NOTIFICATIONS
         var showRationale by rememberSaveable { mutableStateOf(false) }
 
         val notificationsPermissionResultLauncher = rememberLauncherForActivityResult(

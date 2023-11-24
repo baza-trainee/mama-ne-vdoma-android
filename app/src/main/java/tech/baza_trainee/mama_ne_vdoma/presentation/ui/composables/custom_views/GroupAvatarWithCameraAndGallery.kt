@@ -26,7 +26,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.core.app.ActivityCompat
+import androidx.core.app.ActivityCompat.shouldShowRequestPermissionRationale
 import androidx.core.content.FileProvider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -85,11 +85,14 @@ fun GroupAvatarWithCameraAndGallery(
     if (showRationale) {
         PermissionDialog(
             permissionTextProvider = CameraPermissionTextProvider(),
-            isPermanentlyDeclined = !ActivityCompat
-                .shouldShowRequestPermissionRationale(activity, permission),
+            isPermanentlyDeclined = !shouldShowRequestPermissionRationale(activity, permission),
             onDismiss = { showRationale = false },
-            onGranted = { showRationale = false },
-            onGoToAppSettingsClick = { activity.openAppSettings() })
+            onGranted = {
+                showRationale = false
+                isCameraPermissionGranted = true
+            },
+            onGoToAppSettingsClick = { activity.openAppSettings() }
+        )
     }
 
     Box(
@@ -124,7 +127,7 @@ fun GroupAvatarWithCameraAndGallery(
         contract = ActivityResultContracts.RequestPermission(),
         onResult = { isGranted ->
             if (!isGranted) {
-                if (activity.shouldShowRequestPermissionRationale(permission))
+                if (shouldShowRequestPermissionRationale(activity, permission))
                     showRationale = true
             } else isCameraPermissionGranted = true
         }
