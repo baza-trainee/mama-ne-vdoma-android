@@ -2,12 +2,14 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.sch
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import tech.baza_trainee.mama_ne_vdoma.domain.model.DayPeriod
 import tech.baza_trainee.mama_ne_vdoma.domain.model.Period
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UserInfoEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.updateSchedule
@@ -18,13 +20,13 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenN
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.UserProfileRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.schedule.ScheduleEvent
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.schedule.ScheduleViewState
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.model.UserProfileCommunicator
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.Communicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 import java.time.DayOfWeek
 
 class ParentScheduleViewModel(
-    private val communicator: UserProfileCommunicator,
+    private val communicator: Communicator<SnapshotStateMap<DayOfWeek, DayPeriod>>,
     private val navigator: ScreenNavigator,
     private val userProfileInteractor: UserProfileInteractor,
     private val preferencesDatastoreManager: UserPreferencesDatastoreManager
@@ -45,7 +47,7 @@ class ParentScheduleViewModel(
 
         _viewState.update {
             it.copy(
-                schedule = communicator.schedule,
+                schedule = communicator.dataFlow.value,
                 comment = preferencesDatastoreManager.note
             )
         }

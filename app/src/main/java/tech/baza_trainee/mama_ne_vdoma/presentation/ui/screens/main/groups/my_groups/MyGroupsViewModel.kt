@@ -9,17 +9,17 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import tech.baza_trainee.mama_ne_vdoma.domain.model.GroupEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UserProfileEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatastoreManager
-import tech.baza_trainee.mama_ne_vdoma.domain.repository.GroupsRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserAuthRepository
-import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.GroupsInteractor
 import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.NetworkEventsListener
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.PageNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.GroupsScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.StandaloneGroupsRoutes
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.GroupUiModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.Communicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.networkExecutor
@@ -29,12 +29,11 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onSuccess
 
 class MyGroupsViewModel(
     private val userAuthRepository: UserAuthRepository,
-    private val userProfileRepository: UserProfileRepository,
-    private val groupsRepository: GroupsRepository,
     private val preferencesDatastoreManager: UserPreferencesDatastoreManager,
     private val navigator: PageNavigator,
     private val mainNavigator: ScreenNavigator,
-    groupsInteractor: GroupsInteractor
+    private val groupsInteractor: GroupsInteractor,
+    private val communicator: Communicator<GroupUiModel>
 ): ViewModel(), GroupsInteractor by groupsInteractor, NetworkEventsListener {
 
     private val _viewState = MutableStateFlow(MyGroupsViewState())
@@ -78,10 +77,14 @@ class MyGroupsViewModel(
             MyGroupsEvent.ResetUiState -> _uiState.value = RequestState.Idle
             MyGroupsEvent.OnBack -> navigator.goToPrevious()
             MyGroupsEvent.CreateNewGroup -> mainNavigator.navigate(StandaloneGroupsRoutes.ChooseChild.getDestination(isForSearch = false))
-            is MyGroupsEvent.OnKick -> event.children.forEach { kickUser(event.group, it) }
             is MyGroupsEvent.OnLeave -> leaveGroup(event.group)
             is MyGroupsEvent.OnDelete -> deleteGroup(event.group)
             is MyGroupsEvent.OnSwitchAdmin -> switchAdmin(event.group, event.member)
+            is MyGroupsEvent.OnEdit -> {
+                val group = _viewState.value.groups.find { it.id == event.group } ?: GroupUiModel()
+                communicator.setData(group)
+                navigator.navigate(GroupsScreenRoutes.UpdateGroup)
+            }
         }
     }
 
@@ -114,100 +117,21 @@ class MyGroupsViewModel(
     }
 
     private fun getGroups(parent: String) {
-        networkExecutor<List<GroupEntity>> {
-            execute {
-                groupsRepository.getGroupsForParent(parent)
-            }
-            onSuccess { entities ->
-                startFetching(entities, true)
-                preferencesDatastoreManager.adminJoinRequests = entities.flatMap { it.askingJoin }.size
-            }
-            onError { error ->
-                _uiState.value = RequestState.OnError(error)
-            }
-            onLoading { isLoading ->
-                _viewState.update {
-                    it.copy(
-                        isLoading = isLoading
-                    )
-                }
-            }
+        getGroups(parent) {
+            startFetching(it, true)
+            preferencesDatastoreManager.adminJoinRequests = it.flatMap { it.askingJoin }.size
         }
     }
 
     private fun leaveGroup(groupId: String) {
-        networkExecutor {
-            execute {
-                groupsRepository.leaveGroup(groupId)
-            }
-            onSuccess { getUserInfo() }
-            onError { error ->
-                _uiState.value = RequestState.OnError(error)
-            }
-            onLoading { isLoading ->
-                _viewState.update {
-                    it.copy(
-                        isLoading = isLoading
-                    )
-                }
-            }
-        }
-    }
-
-    private fun kickUser(groupId: String, childId: String) {
-        networkExecutor {
-            execute {
-                groupsRepository.kickUser(groupId, childId)
-            }
-            onSuccess { getUserInfo() }
-            onError { error ->
-                _uiState.value = RequestState.OnError(error)
-            }
-            onLoading { isLoading ->
-                _viewState.update {
-                    it.copy(
-                        isLoading = isLoading
-                    )
-                }
-            }
-        }
+        leaveGroup(groupId) { getUserInfo() }
     }
 
     private fun deleteGroup(groupId: String) {
-        networkExecutor {
-            execute {
-                groupsRepository.deleteGroup(groupId)
-            }
-            onSuccess { getUserInfo() }
-            onError { error ->
-                _uiState.value = RequestState.OnError(error)
-            }
-            onLoading { isLoading ->
-                _viewState.update {
-                    it.copy(
-                        isLoading = isLoading
-                    )
-                }
-            }
-        }
+        deleteGroup(groupId) { getUserInfo() }
     }
 
     private fun switchAdmin(groupId: String, memberId: String) {
-        networkExecutor {
-            execute {
-                groupsRepository.switchAdmin(groupId, memberId)
-            }
-            onSuccess { getUserInfo() }
-            onError { error ->
-                _uiState.value = RequestState.OnError(error)
-            }
-            onLoading { isLoading ->
-                _viewState.update {
-                    it.copy(
-                        isLoading = isLoading
-                    )
-                }
-            }
-        }
+        switchAdmin(groupId, memberId) { getUserInfo() }
     }
 }

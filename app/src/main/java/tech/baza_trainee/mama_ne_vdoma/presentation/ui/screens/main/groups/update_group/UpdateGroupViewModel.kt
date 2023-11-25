@@ -1,80 +1,68 @@
-package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.standalone.create_group
+package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.update_group
 
 import android.graphics.Bitmap
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import tech.baza_trainee.mama_ne_vdoma.domain.model.ChildEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.Period
-import tech.baza_trainee.mama_ne_vdoma.domain.model.UserProfileEntity
-import tech.baza_trainee.mama_ne_vdoma.domain.model.getDefaultSchedule
 import tech.baza_trainee.mama_ne_vdoma.domain.model.updateSchedule
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatastoreManager
-import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserAuthRepository
-import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.GroupsInteractor
 import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.NetworkEventsListener
-import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
-import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.HostScreenRoutes
-import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.StandaloneGroupsRoutes
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.PageNavigator
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.GroupsScreenRoutes
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.MainScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.group_details.GroupDetailsEvent
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.group_details.GroupDetailsUiState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.image_crop.CropImageCommunicator
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.GroupUiModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.BitmapHelper
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.Communicator
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.MAIN_PAGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.MAX_AGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.MIN_AGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.NAME_LENGTH
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.SETTINGS_PAGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.networkExecutor
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.validateName
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onError
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onLoading
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onSuccess
 import java.time.DayOfWeek
 
-class CreateGroupViewModel(
-    private val childCommunicator: Communicator<String>,
+class UpdateGroupViewModel(
     private val communicator: CropImageCommunicator,
-    private val navigator: ScreenNavigator,
+    private val groupUpdateCommunicator: Communicator<GroupUiModel>,
+    private val navigator: PageNavigator,
     private val groupsInteractor: GroupsInteractor,
-    private val userAuthRepository: UserAuthRepository,
-    private val userProfileRepository: UserProfileRepository,
     private val bitmapHelper: BitmapHelper,
     private val preferencesDatastoreManager: UserPreferencesDatastoreManager
 ): ViewModel(), GroupsInteractor by groupsInteractor, NetworkEventsListener {
 
-
-    private val _viewState = MutableStateFlow(CreateGroupViewState())
-    val viewState: StateFlow<CreateGroupViewState> = _viewState.asStateFlow()
+    private val _viewState = MutableStateFlow(UpdateGroupViewState())
+    val viewState: StateFlow<UpdateGroupViewState> = _viewState.asStateFlow()
 
     private val _uiState = mutableStateOf<GroupDetailsUiState>(GroupDetailsUiState.Idle)
     val uiState: State<GroupDetailsUiState>
         get() = _uiState
 
-    private var avatarServerPath = ""
+    private var groupId = ""
 
     init {
         groupsInteractor.apply {
             setGroupsCoroutineScope(viewModelScope)
-            setGroupsNetworkListener(this@CreateGroupViewModel)
+            setGroupsNetworkListener(this@UpdateGroupViewModel)
         }
-
-        getUserInfo()
-        getChildren()
 
         viewModelScope.launch {
             communicator.croppedImageFlow.collect(::saveGroupAvatar)
+        }
+
+        viewModelScope.launch {
+            groupUpdateCommunicator.dataFlow.collect {
+                it?.let { setGroupForEdit(it) }
+            }
         }
 
         _viewState.update {
@@ -100,25 +88,70 @@ class CreateGroupViewModel(
         when (event) {
             GroupDetailsEvent.ResetUiState -> _uiState.value = GroupDetailsUiState.Idle
             GroupDetailsEvent.OnBack -> navigator.goBack()
-            is GroupDetailsEvent.OnSave -> createGroup()
+            GroupDetailsEvent.OnSave -> updateGroup()
             is GroupDetailsEvent.UpdateGroupSchedule -> updateGroupSchedule(event.day, event.period)
             is GroupDetailsEvent.UpdateName -> validateName(event.value)
             is GroupDetailsEvent.UpdateMaxAge -> validateMaxAge(event.value)
             is GroupDetailsEvent.UpdateMinAge -> validateMinAge(event.value)
             is GroupDetailsEvent.UpdateDescription -> updateDescription(event.value)
             GroupDetailsEvent.OnDeletePhoto -> Unit
-            GroupDetailsEvent.OnEditPhoto -> navigator.navigate(StandaloneGroupsRoutes.GroupImageCrop)
+            GroupDetailsEvent.OnEditPhoto -> navigator.navigate(GroupsScreenRoutes.UpdateGroupAvatar)
             is GroupDetailsEvent.SetImageToCrop -> communicator.uriForCrop = event.uri
-            GroupDetailsEvent.GoToMain -> {
-                childCommunicator.setData("")
-                navigator.navigate(HostScreenRoutes.Host.getDestination(MAIN_PAGE))
-            }
-
+            GroupDetailsEvent.GoToMain -> navigator.navigate(MainScreenRoutes.Main)
             GroupDetailsEvent.GetLocationFromAddress -> getLocationFromAddress()
             is GroupDetailsEvent.UpdateGroupAddress -> updateGroupAddress(event.address)
-            GroupDetailsEvent.OnAvatarClicked ->
-                navigator.navigate(HostScreenRoutes.Host.getDestination(SETTINGS_PAGE))
+            is GroupDetailsEvent.OnKick -> event.children.forEach { kickUser(it) }
             else -> Unit
+        }
+    }
+
+    private fun setGroupForEdit(group: GroupUiModel) {
+        groupId = group.id
+        val delimiterIndex = group.ages.indexOf("-")
+        _viewState.update {
+            it.copy(
+                groupDetails = it.groupDetails.copy(
+                    adminId = group.adminId,
+                    members = group.members,
+                    isAddressChecked = false,
+                    location = group.location,
+                    name = group.name,
+                    nameValid = ValidField.VALID,
+                    description = group.description,
+                    minAge = if (delimiterIndex != -1) group.ages.take(delimiterIndex) else group.ages,
+                    minAgeValid = ValidField.VALID,
+                    maxAge = if (delimiterIndex != -1) group.ages.takeLast(group.ages.length - delimiterIndex + 1) else group.ages,
+                    maxAgeValid = ValidField.VALID,
+                    schedule = group.schedule
+                )
+            )
+        }
+
+        getGroupAddress(group.location) { location ->
+            _viewState.update {
+                it.copy(
+                    groupDetails = it.groupDetails.copy(
+                        address = location,
+                        isAddressChecked = true
+                    )
+                )
+            }
+        }
+
+        viewModelScope.launch {
+            _viewState.update {
+                it.copy(
+                    groupDetails = it.groupDetails.copy(
+                        avatar = bitmapHelper.bitmapFromUri(group.avatar)
+                    )
+                )
+            }
+        }
+    }
+
+    private fun kickUser(childId: String) {
+        kickUser(groupId, childId) {
+            // do nothing
         }
     }
 
@@ -150,12 +183,6 @@ class CreateGroupViewModel(
         }
     }
 
-    private fun updateGroupLocation(location: LatLng, groupId: String) {
-        updateGroupLocation(location, groupId) {
-            //do nothing
-        }
-    }
-
     private fun saveGroupAvatar(image: Bitmap) {
         if (communicator.justCropped) {
             bitmapHelper.resizeBitmap(
@@ -177,121 +204,26 @@ class CreateGroupViewModel(
         }
     }
 
-    private fun uploadAvatar(image: Bitmap, groupId: String) {
-        uploadGroupAvatar(image) {
-            avatarServerPath = it
-            updateGroup(groupId)
-        }
-    }
-
-    private fun createGroup() {
+    private fun updateGroup() {
         if (_viewState.value.groupDetails.isAddressChecked) {
-            createGroup(
-                childCommunicator.dataFlow.value.orEmpty(),
-                _viewState.value.groupDetails.name,
-                _viewState.value.groupDetails.description
-            ) {
-                childCommunicator.setData("")
-                uploadAvatar(_viewState.value.groupDetails.avatar, it.id)
-                updateGroupLocation(_viewState.value.groupDetails.location, it.id)
-            }
-        } else _uiState.value = GroupDetailsUiState.AddressNotChecked
-    }
-
-    private fun updateGroup(groupId: String) {
-        val ages =
-            if (_viewState.value.groupDetails.minAge == _viewState.value.groupDetails.maxAge) _viewState.value.groupDetails.minAge
-            else "${_viewState.value.groupDetails.minAge}-${_viewState.value.groupDetails.maxAge}"
-        updateGroup(
-            groupId,
-            _viewState.value.groupDetails.name,
-            _viewState.value.groupDetails.description,
-            ages,
-            avatarServerPath,
-            _viewState.value.groupDetails.schedule
-        ) {
-            _uiState.value = GroupDetailsUiState.OnGroupSaved
-        }
-    }
-
-    private fun getUserInfo() {
-        networkExecutor<UserProfileEntity> {
-            execute {
-                userAuthRepository.getUserInfo()
-            }
-            onSuccess { entity ->
-                if (entity.location.coordinates.isNotEmpty()) {
-                    val location = LatLng(
-                        entity.location.coordinates[1],
-                        entity.location.coordinates[0]
-                    )
-                    getAddressFromLocation(
-                        latLng = location
-                    )
-                    _viewState.update {
-                        it.copy(
-                            groupDetails = it.groupDetails.copy(
-                                location = location
-                            )
-                        )
+            uploadGroupAvatar(_viewState.value.groupDetails.avatar) { avatarPath ->
+                updateGroupLocation(_viewState.value.groupDetails.location, groupId) {
+                    val ages =
+                        if (_viewState.value.groupDetails.minAge == _viewState.value.groupDetails.maxAge) _viewState.value.groupDetails.minAge
+                        else "${_viewState.value.groupDetails.minAge}-${_viewState.value.groupDetails.maxAge}"
+                    updateGroup(
+                        groupId,
+                        _viewState.value.groupDetails.name,
+                        _viewState.value.groupDetails.description,
+                        ages,
+                        avatarPath,
+                        _viewState.value.groupDetails.schedule
+                    ) {
+                        _uiState.value = GroupDetailsUiState.OnGroupSaved
                     }
                 }
             }
-            onError { error ->
-                _uiState.value = GroupDetailsUiState.OnError(error)
-            }
-            onLoading { isLoading ->
-                _viewState.update {
-                    it.copy(
-                        isLoading = isLoading
-                    )
-                }
-            }
-        }
-    }
-
-    private fun getAddressFromLocation(latLng: LatLng) {
-        getGroupAddress(latLng) { address ->
-            _viewState.update {
-                it.copy(
-                    groupDetails = it.groupDetails.copy(
-                        address = address
-                    )
-                )
-            }
-        }
-    }
-
-    private fun getChildren() {
-        networkExecutor<List<ChildEntity>> {
-            execute {
-                userProfileRepository.getChildren()
-            }
-            onSuccess { entity ->
-                val child = entity.find { it.childId == childCommunicator.dataFlow.value }
-                _viewState.update { state ->
-                    state.copy(
-                        groupDetails = state.groupDetails.copy(
-                            schedule = child?.schedule ?: getDefaultSchedule(),
-                            minAge = child?.age.orEmpty(),
-                            minAgeValid = ValidField.VALID,
-                            maxAge = child?.age.orEmpty(),
-                            maxAgeValid = ValidField.VALID
-                        )
-                    )
-                }
-            }
-            onError { error ->
-                _uiState.value = GroupDetailsUiState.OnError(error)
-            }
-            onLoading { isLoading ->
-                _viewState.update {
-                    it.copy(
-                        isLoading = isLoading
-                    )
-                }
-            }
-        }
+        } else _uiState.value = GroupDetailsUiState.AddressNotChecked
     }
 
     private fun updateGroupSchedule(dayOfWeek: DayOfWeek, dayPeriod: Period) {

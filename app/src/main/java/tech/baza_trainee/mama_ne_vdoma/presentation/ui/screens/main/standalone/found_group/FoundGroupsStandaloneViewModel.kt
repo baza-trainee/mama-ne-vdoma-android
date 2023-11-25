@@ -16,10 +16,10 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.GroupsInteractor
 import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.NetworkEventsListener
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.HostScreenRoutes
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.GroupSearchCommunicator
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.GROUPS_PAGE
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.SETTINGS_PAGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.GroupUiModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.Communicator
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.GROUPS_PAGE
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.SETTINGS_PAGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.networkExecutor
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onError
@@ -27,7 +27,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onLoading
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onSuccess
 
 class FoundGroupsStandaloneViewModel(
-    private val communicator: GroupSearchCommunicator,
+    private val communicator: Communicator<String>,
     private val groupsRepository: GroupsRepository,
     private val navigator: ScreenNavigator,
     private val preferencesDatastoreManager: UserPreferencesDatastoreManager,
@@ -95,10 +95,10 @@ class FoundGroupsStandaloneViewModel(
         networkExecutor {
             execute {
                 val groupId = _viewState.value.groups.find { it.isChecked }?.id.orEmpty()
-                groupsRepository.sendJoinRequest(groupId, communicator.childId)
+                groupsRepository.sendJoinRequest(groupId, communicator.dataFlow.value.orEmpty())
             }
             onSuccess {
-                communicator.childId = ""
+                communicator.setData("")
                 _uiState.value = FoundGroupUiState.OnRequestSent
             }
             onError { error ->

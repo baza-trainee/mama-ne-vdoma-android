@@ -73,8 +73,8 @@ fun GroupInfoDesk(
     modifier: Modifier = Modifier,
     group: GroupUiModel = GroupUiModel(),
     currentUserId: String = "",
+    onEdit: (String) -> Unit = {},
     onSelect: (String) -> Unit = {},
-    onKick: (String, List<String>) -> Unit = {_,_->},
     onLeave: (String) -> Unit = {},
     onSwitchAdmin: (String, String) -> Unit = {_,_->},
     onDelete: (String) -> Unit = {}
@@ -84,9 +84,7 @@ fun GroupInfoDesk(
 
     var showAdminDialog by rememberSaveable { mutableStateOf(false) }
     var showAdminConfirmationDialog by rememberSaveable { mutableStateOf(false) }
-    var showKickDialog by rememberSaveable { mutableStateOf(false) }
     var adminDialogData by rememberSaveable { mutableStateOf(Triple("", "", "")) }
-    var kickDialogData by rememberSaveable { mutableStateOf(Triple("", emptyList<String>(), "")) }
 
     Column(
         modifier = Modifier
@@ -156,7 +154,7 @@ fun GroupInfoDesk(
 
                 Rating(
                     modifier = Modifier.padding(all = 8.dp),
-                    rating = 5.0f
+                    rating = group.rating
                 ) //TODO: Implement group rating
             }
         }
@@ -292,7 +290,7 @@ fun GroupInfoDesk(
                     )
 
                     Text(
-                        text = group.location,
+                        text = group.address,
                         fontSize = 14.sp,
                         fontFamily = redHatDisplayFontFamily
                     )
@@ -340,35 +338,7 @@ fun GroupInfoDesk(
 
                             Spacer(modifier = Modifier.weight(1f))
 
-                            Rating(rating = 5.0f) //TODO: Implement user rating
-
-//                            if (isAdmin) {
-//                                IconButton(
-//                                    onClick = {
-//                                        adminDialogData = Triple(group.id, it.id, it.name)
-//                                        showAdminDialog = true
-//                                    }
-//                                ) {
-//                                    Icon(
-//                                        painter = painterResource(id = R.drawable.ic_crown),
-//                                        contentDescription = "make_admin",
-//                                        tint = MaterialTheme.colorScheme.primary
-//                                    )
-//                                }
-//
-//                                IconButton(
-//                                    onClick = {
-//                                        kickDialogData = Triple(group.id, it.children, it.name)
-//                                        showKickDialog = true
-//                                    }
-//                                ) {
-//                                    Icon(
-//                                        imageVector = Icons.AutoMirrored.Filled.Logout,
-//                                        contentDescription = "kick",
-//                                        tint = Color.Red
-//                                    )
-//                                }
-//                            }
+                            Rating(rating = it.rating)
 
                             if (isMyGroup || isAdmin) {
                                 val context = LocalContext.current
@@ -430,7 +400,7 @@ fun GroupInfoDesk(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(48.dp),
-                    onClick = {  } // TODO: Implement group editing
+                    onClick = { onEdit(group.id) }
                 ) {
                     Icon(
                         imageVector = Icons.Filled.Edit,
@@ -477,7 +447,7 @@ fun GroupInfoDesk(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(48.dp),
-                    onClick = {  },  // TODO: Implement group deleting
+                    onClick = { onDelete(group.id) },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = LogoutButtonColor,
                         contentColor = LogoutButtonTextColor
@@ -671,80 +641,6 @@ fun GroupInfoDesk(
                             fontFamily = redHatDisplayFontFamily,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.primary,
-                            textAlign = TextAlign.Center
-                        )
-                    }
-                }
-            }
-        }
-
-        if (showKickDialog) {
-            AlertDialog(onDismissRequest = { showKickDialog = false }) {
-                Column(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(8.dp))
-                        .background(MaterialTheme.colorScheme.background)
-                        .padding(vertical = 8.dp)
-                        .fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.Error,
-                        contentDescription = "alert",
-                        tint = MaterialTheme.colorScheme.primary
-                    )
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    Text(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp),
-                        text = "Ви впевнені, що хочете видалити \"${kickDialogData.third}\" з групи?",
-                        fontSize = 14.sp,
-                        fontFamily = redHatDisplayFontFamily,
-                        textAlign = TextAlign.Start
-                    )
-
-                    Spacer(modifier = Modifier.height(24.dp))
-
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp)
-                            .padding(bottom = 16.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            modifier = Modifier
-                                .weight(0.5f)
-                                .clickable(
-                                    indication = null,
-                                    interactionSource = remember { MutableInteractionSource() }
-                                ) { showKickDialog = false },
-                            text = "Ні",
-                            fontSize = 16.sp,
-                            fontFamily = redHatDisplayFontFamily,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.primary,
-                            textAlign = TextAlign.Center
-                        )
-
-                        Text(
-                            modifier = Modifier
-                                .weight(0.5f)
-                                .clickable(
-                                    indication = null,
-                                    interactionSource = remember { MutableInteractionSource() }
-                                ) {
-                                    showKickDialog = false
-                                    onKick(kickDialogData.first, kickDialogData.second)
-                                },
-                            text = "Так, видалити",
-                            fontSize = 16.sp,
-                            fontFamily = redHatDisplayFontFamily,
-                            fontWeight = FontWeight.Bold,
-                            color = Color.Red,
                             textAlign = TextAlign.Center
                         )
                     }

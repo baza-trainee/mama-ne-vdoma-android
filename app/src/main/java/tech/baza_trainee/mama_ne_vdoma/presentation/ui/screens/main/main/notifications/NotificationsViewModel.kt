@@ -232,7 +232,7 @@ class NotificationsViewModel(
 
                 if (location.first.isNotEmpty()) {
                     updateUiModel(location.first) {
-                        val newGroup = this.group.copy(id = location.first, location = location.second)
+                        val newGroup = this.group.copy(id = location.first, address = location.second)
                         copy(group = newGroup)
                     }
                 }

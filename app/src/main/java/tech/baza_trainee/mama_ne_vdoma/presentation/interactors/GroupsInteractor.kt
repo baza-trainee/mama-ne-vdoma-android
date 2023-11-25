@@ -1,6 +1,8 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.interactors
 
+import android.graphics.Bitmap
 import android.net.Uri
+import androidx.compose.runtime.snapshots.SnapshotStateMap
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -9,9 +11,12 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import tech.baza_trainee.mama_ne_vdoma.domain.model.DayPeriod
 import tech.baza_trainee.mama_ne_vdoma.domain.model.GroupEntity
+import tech.baza_trainee.mama_ne_vdoma.domain.model.UpdateGroupEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UserProfileEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.FilesRepository
+import tech.baza_trainee.mama_ne_vdoma.domain.repository.GroupsRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.LocationRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.GroupUiModel
@@ -21,6 +26,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.networkExec
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onError
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onLoading
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onSuccess
+import java.time.DayOfWeek
 
 interface GroupsInteractor {
 
@@ -31,9 +37,41 @@ interface GroupsInteractor {
     fun setGroupsNetworkListener(listener: NetworkEventsListener)
 
     fun startFetching(entities: List<GroupEntity>, isMine: Boolean = false)
+
+    fun getGroups(parent: String, onSuccess: (List<GroupEntity>) -> Unit)
+
+    fun leaveGroup(group: String, onSuccess: () -> Unit)
+
+    fun deleteGroup(group: String, onSuccess: () -> Unit)
+
+    fun kickUser(group: String, childId: String, onSuccess: () -> Unit)
+
+    fun switchAdmin(group: String, member: String, onSuccess: () -> Unit)
+    fun updateGroupLocation(location: LatLng, groupId: String, onSuccess: () -> Unit)
+    fun createGroup(
+        child: String,
+        name: String,
+        description: String,
+        onSuccess: (GroupEntity) -> Unit
+    )
+
+    fun updateGroup(
+        group: String,
+        name: String,
+        description: String,
+        ages: String,
+        avatar: String,
+        schedule: SnapshotStateMap<DayOfWeek, DayPeriod>,
+        onSuccess: () -> Unit
+    )
+
+    fun getGroupLocation(address: String, onSuccess: (LatLng?) -> Unit)
+    fun uploadGroupAvatar(image: Bitmap, onSuccess: (String) -> Unit)
+    fun getGroupAddress(latLng: LatLng, onSuccess: (String) -> Unit)
 }
 
 class GroupsInteractorImpl(
+    private val groupsRepository: GroupsRepository,
     private val userProfileRepository: UserProfileRepository,
     private val locationRepository: LocationRepository,
     private val filesRepository: FilesRepository
@@ -78,7 +116,7 @@ class GroupsInteractorImpl(
 
                 if (location.first.isNotEmpty()) {
                     updateGroup(location.first) {
-                        copy(id = location.first, location = location.second)
+                        copy(id = location.first, address = location.second)
                     }
                 }
 
@@ -157,7 +195,11 @@ class GroupsInteractorImpl(
                     name = it.name,
                     description = it.description,
                     ages = it.ages,
-                    schedule = it.schedule
+                    schedule = it.schedule,
+                    location = LatLng(
+                        it.location.coordinates[1],
+                        it.location.coordinates[0]
+                    )
                 )
             }
         )
@@ -190,6 +232,145 @@ class GroupsInteractorImpl(
         }
     }
 
+    override fun getGroups(parent: String, onSuccess: (List<GroupEntity>) -> Unit) {
+        coroutineScope.networkExecutor {
+            execute {
+                groupsRepository.getGroupsForParent(parent)
+            }
+            onSuccess(onSuccess)
+            onError(networkListener::onError)
+            onLoading(networkListener::onLoading)
+        }
+    }
+
+    override fun leaveGroup(group: String, onSuccess: () -> Unit) {
+        coroutineScope.networkExecutor {
+            execute {
+                groupsRepository.leaveGroup(group)
+            }
+            onSuccess{ onSuccess() }
+            onError(networkListener::onError)
+            onLoading(networkListener::onLoading)
+        }
+    }
+
+    override fun deleteGroup(group: String, onSuccess: () -> Unit) {
+        coroutineScope.networkExecutor {
+            execute {
+                groupsRepository.deleteGroup(group)
+            }
+            onSuccess{ onSuccess() }
+            onError(networkListener::onError)
+            onLoading(networkListener::onLoading)
+        }
+    }
+
+    override fun switchAdmin(group: String, member: String, onSuccess: () -> Unit) {
+        coroutineScope.networkExecutor {
+            execute {
+                groupsRepository.switchAdmin(group, member)
+            }
+            onSuccess{ onSuccess() }
+            onError(networkListener::onError)
+            onLoading(networkListener::onLoading)
+        }
+    }
+
+    override fun kickUser(group: String, child: String, onSuccess: () -> Unit) {
+        coroutineScope.networkExecutor {
+            execute {
+                groupsRepository.kickUser(group, child)
+            }
+            onSuccess{ onSuccess() }
+            onError(networkListener::onError)
+            onLoading(networkListener::onLoading)
+        }
+    }
+
+    override fun updateGroupLocation(location: LatLng, groupId: String, onSuccess: () -> Unit) {
+        coroutineScope.networkExecutor {
+            execute {
+                groupsRepository.updateGroupLocation(
+                    groupId,
+                    location.latitude,
+                    location.longitude
+                )
+            }
+            onSuccess{ onSuccess() }
+            onError(networkListener::onError)
+            onLoading(networkListener::onLoading)
+        }
+    }
+
+    override fun createGroup(
+        child: String,
+        name: String,
+        description: String,
+        onSuccess: (GroupEntity) -> Unit
+    ) {
+        coroutineScope.networkExecutor {
+            execute {
+                groupsRepository.createGroup(child, name, description)
+            }
+            onSuccess(onSuccess)
+            onError(networkListener::onError)
+            onLoading(networkListener::onLoading)
+        }
+    }
+
+    override fun updateGroup(
+        group: String,
+        name: String,
+        description: String,
+        ages: String,
+        avatar: String,
+        schedule: SnapshotStateMap<DayOfWeek, DayPeriod>,
+        onSuccess: () -> Unit
+    ) {
+        coroutineScope.networkExecutor {
+            execute {
+                groupsRepository.updateGroup(
+                    group,
+                    UpdateGroupEntity(
+                        name = name,
+                        desc = description,
+                        ages = ages,
+                        schedule = schedule,
+                        avatar = avatar
+                    )
+                )
+            }
+            onSuccess { onSuccess() }
+            onError(networkListener::onError)
+            onLoading(networkListener::onLoading)
+        }
+    }
+
+    override fun getGroupLocation(address: String, onSuccess:(LatLng?) -> Unit) {
+        coroutineScope.networkExecutor {
+            execute {
+                locationRepository.getLocationFromAddress(address)
+            }
+            onSuccess(onSuccess)
+            onError(networkListener::onError)
+            onLoading(networkListener::onLoading)
+        }
+    }
+
+    override fun getGroupAddress(
+        latLng: LatLng,
+        onSuccess: (String) -> Unit
+    ) {
+        coroutineScope.networkExecutor {
+            execute {
+                locationRepository.getAddressFromLocation(latLng)
+            }
+            onSuccess(onSuccess)
+            onError(networkListener::onError)
+            onLoading(networkListener::onLoading)
+        }
+    }
+
     private fun getUser(
         userId: String,
         groupId: String,
@@ -205,6 +386,17 @@ class GroupsInteractorImpl(
                 }
                 getUserAvatar(user.avatar, userId, groupId)
             }
+            onError(networkListener::onError)
+            onLoading(networkListener::onLoading)
+        }
+    }
+
+    override fun uploadGroupAvatar(image: Bitmap, onSuccess: (String) -> Unit) {
+        coroutineScope.networkExecutor {
+            execute {
+                filesRepository.saveAvatar(image)
+            }
+            onSuccess(onSuccess)
             onError(networkListener::onError)
             onLoading(networkListener::onLoading)
         }

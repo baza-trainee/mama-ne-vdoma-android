@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.net.Uri
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -11,6 +12,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import tech.baza_trainee.mama_ne_vdoma.domain.model.DayPeriod
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UserInfoEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatastoreManager
 import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.NetworkEventsListener
@@ -18,11 +20,12 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.UserProfileInter
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.UserProfileRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.image_crop.CropImageCommunicator
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.model.UserProfileCommunicator
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.Communicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
+import java.time.DayOfWeek
 
 class UserInfoViewModel(
-    private val communicator: UserProfileCommunicator,
+    private val communicator: Communicator<SnapshotStateMap<DayOfWeek, DayPeriod>>,
     private val imageCommunicator: CropImageCommunicator,
     private val navigator: ScreenNavigator,
     private val preferencesDatastoreManager: UserPreferencesDatastoreManager,
@@ -169,7 +172,7 @@ class UserInfoViewModel(
                 phone = _viewState.value.phone,
                 countryCode = _viewState.value.code,
                 avatar = preferencesDatastoreManager.avatar,
-                schedule = communicator.schedule
+                schedule = communicator.dataFlow.value
             )
         ) {
             navigator.navigate(UserProfileRoutes.UserLocation)

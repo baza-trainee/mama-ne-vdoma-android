@@ -42,7 +42,6 @@ fun MyGroupsScreen(
     val context = LocalContext.current
 
     when (val state = uiState.value) {
-        RequestState.Idle -> Unit
         is RequestState.OnError -> {
             if (state.error.isNotBlank()) Toast.makeText(
                 context,
@@ -51,6 +50,8 @@ fun MyGroupsScreen(
             ).show()
             handleEvent(MyGroupsEvent.ResetUiState)
         }
+
+        else -> Unit
     }
 
     Column(
@@ -97,16 +98,17 @@ fun MyGroupsScreen(
                     modifier = Modifier.fillMaxWidth(),
                     group = group,
                     currentUserId = screenState.userId,
-                    onKick = { groupId, childrenIds ->
+                    onEdit = {  handleEvent(MyGroupsEvent.OnEdit(it)) },
+                    onLeave = { handleEvent(MyGroupsEvent.OnLeave(it)) },
+                    onSwitchAdmin = { groupId, memberId ->
                         handleEvent(
-                            MyGroupsEvent.OnKick(
+                            MyGroupsEvent.OnSwitchAdmin(
                                 groupId,
-                                childrenIds
+                                memberId
                             )
                         )
                     },
-                    onLeave = { handleEvent(MyGroupsEvent.OnLeave(it)) },
-                    onSwitchAdmin = { groupId, memberId -> handleEvent(MyGroupsEvent.OnSwitchAdmin(groupId, memberId)) }
+                    onDelete = { handleEvent(MyGroupsEvent.OnDelete(it)) }
                 )
             }
         }

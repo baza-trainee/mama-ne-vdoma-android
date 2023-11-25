@@ -85,10 +85,8 @@ class LocationInteractorImpl(
             execute {
                 locationRepository.getLocationFromAddress(address)
             }
-            onSuccess { location ->
-                location?.let {
-                    onSuccess(location)
-                }
+            onSuccess {
+                it?.let { onSuccess(it) }
             }
             onError(networkListener::onError)
             onLoading(networkListener::onLoading)

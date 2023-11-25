@@ -30,8 +30,8 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.Navigat
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.Graphs
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.HostScreenRoutes
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.MAIN_PAGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.Mama_ne_vdomaTheme
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.MAIN_PAGE
 
 
 class MainActivity : FragmentActivity() {

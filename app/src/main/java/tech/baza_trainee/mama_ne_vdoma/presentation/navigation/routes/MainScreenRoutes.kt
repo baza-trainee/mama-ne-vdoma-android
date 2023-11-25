@@ -1,6 +1,6 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes
 
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.MAIN_PAGE
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.MAIN_PAGE
 
 sealed class MainScreenRoutes(override val route: String, override val title: String): CommonHostRoute(route, MAIN_PAGE, title) {
     data object Main: MainScreenRoutes("main_screen", title = "Головна")

@@ -4,11 +4,18 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import org.koin.androidx.compose.navigation.koinNavViewModel
+import org.koin.compose.koinInject
+import org.koin.core.parameter.parametersOf
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.PageNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.Graphs
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.GroupsScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.functions.asStateWithLifecycle
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.image_crop.ImageCropViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.image_crop.UpdateGroupAvatarScreen
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.my_groups.MyGroupsScreen
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.my_groups.MyGroupsViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.update_group.UpdateGroupScreen
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.update_group.UpdateGroupViewModel
 
 fun NavGraphBuilder.groupNavGraph() {
     navigation(
@@ -16,11 +23,29 @@ fun NavGraphBuilder.groupNavGraph() {
         startDestination = GroupsScreenRoutes.Groups.route
     ) {
         composable(GroupsScreenRoutes.Groups.route) {
-            val myGroupsViewModel: MyGroupsViewModel = koinNavViewModel()
+            val viewModel: MyGroupsViewModel = koinNavViewModel()
             MyGroupsScreen(
-                screenState = myGroupsViewModel.viewState.asStateWithLifecycle(),
-                uiState = myGroupsViewModel.uiState,
-                handleEvent = { myGroupsViewModel.handleEvent(it) }
+                screenState = viewModel.viewState.asStateWithLifecycle(),
+                uiState = viewModel.uiState,
+                handleEvent = { viewModel.handleEvent(it) }
+            )
+        }
+        composable(GroupsScreenRoutes.UpdateGroup.route) {
+            val viewModel: UpdateGroupViewModel = koinNavViewModel()
+            UpdateGroupScreen(
+                screenState = viewModel.viewState.asStateWithLifecycle(),
+                uiState = viewModel.uiState,
+                handleEvent = { viewModel.handleEvent(it) }
+            )
+        }
+        composable(GroupsScreenRoutes.UpdateGroupAvatar.route) {
+            val navigator = koinInject<PageNavigator>()
+            val viewModel: ImageCropViewModel = koinNavViewModel {
+                parametersOf(navigator)
+            }
+            UpdateGroupAvatarScreen(
+                screenState = viewModel.viewState.asStateWithLifecycle(),
+                handleEvent = { viewModel.handleEvent(it) }
             )
         }
     }

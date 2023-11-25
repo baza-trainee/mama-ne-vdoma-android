@@ -100,7 +100,7 @@ fun NotificationScreen(
             }
             tabWidthStateList
         }
-        val pagerState = rememberPagerState(pageCount = { tabs.size })
+        val pagerState = rememberPagerState(initialPage = 0, pageCount = { tabs.size })
         val scope = rememberCoroutineScope()
 
         TabRow(

@@ -13,6 +13,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidApplication
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -33,6 +34,7 @@ import tech.baza_trainee.mama_ne_vdoma.data.repository.GroupsRepositoryImpl
 import tech.baza_trainee.mama_ne_vdoma.data.repository.LocationRepositoryImpl
 import tech.baza_trainee.mama_ne_vdoma.data.repository.UserAuthRepositoryImpl
 import tech.baza_trainee.mama_ne_vdoma.data.repository.UserProfileRepositoryImpl
+import tech.baza_trainee.mama_ne_vdoma.domain.model.getDefaultSchedule
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatastoreManager
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.AuthRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.FilesRepository
@@ -51,7 +53,6 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.PageNav
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigatorImpl
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.MainActivityViewModel
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.GroupSearchCommunicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.add_child.ChildInfoViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.child_schedule.ChildScheduleViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.image_crop.CropImageCommunicator
@@ -64,9 +65,11 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.new_passwor
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.restore_password.RestorePasswordScreenViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.SearchResultsCommunicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.my_groups.MyGroupsViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.update_group.UpdateGroupViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.host.HostViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.main.main.MainViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.main.notifications.NotificationsViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.GroupUiModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.search.search_request.SearchRequestViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.search.search_results.SearchResultsViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.change_credentials.EditCredentialsViewModel
@@ -80,11 +83,11 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.standalone.f
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.standalone.set_area.SetAreaViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.children_info.ChildrenInfoViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.full_info.FullInfoViewModel
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.model.UserProfileCommunicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.schedule.parent_schedule.ParentScheduleViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.user_info.UserInfoViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.user_location.UserLocationViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.BitmapHelper
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.Communicator
 import java.security.KeyStore
 import java.security.SecureRandom
 import java.security.cert.Certificate
@@ -131,7 +134,7 @@ val repoModule = module {
 
     factory<UserProfileInteractor> { UserProfileInteractorImpl(get(), get(), get(), get(), get(), get()) }
     factory<LocationInteractor> { LocationInteractorImpl(get(), get(), get()) }
-    factory<GroupsInteractor> { GroupsInteractorImpl(get(), get(), get()) }
+    factory<GroupsInteractor> { GroupsInteractorImpl(get(), get(), get(), get()) }
 
     single<ScreenNavigator> { ScreenNavigatorImpl() }
     single { BitmapHelper(androidApplication()) }
@@ -145,12 +148,13 @@ val commonScreensModule = module {
 
 val userCreateModule = module {
     single { PhoneNumberUtil.createInstance(androidContext()) }
-    single { UserProfileCommunicator() }
-    viewModel { UserInfoViewModel(get(), get(), get(), get(), get()) }
+    val SCHEDULE = "SCHEDULE"
+    single(named(SCHEDULE)) { Communicator(getDefaultSchedule()) }
+    viewModel { UserInfoViewModel(get(named(SCHEDULE)), get(), get(), get(), get()) }
     viewModel { UserLocationViewModel(get(), get(), get()) }
     viewModel { ChildrenInfoViewModel(get(), get()) }
-    viewModel { ParentScheduleViewModel(get(), get(), get(), get()) }
-    viewModel { FullInfoViewModel(get(), get(), get(), get(), get()) }
+    viewModel { ParentScheduleViewModel(get(named(SCHEDULE)), get(), get(), get()) }
+    viewModel { FullInfoViewModel(get(named(SCHEDULE)), get(), get(), get(), get()) }
     viewModel { UserCreateViewModel(get(), get(), get(), get()) }
 }
 
@@ -169,17 +173,33 @@ val loginKoinModule = module {
 }
 
 val standaloneGroupSearchModule = module {
-    single { GroupSearchCommunicator() }
+    single(named(STRINGS)) { Communicator("") }
     viewModel { (navigator: ScreenNavigator) -> ImageCropViewModel(navigator, get(), get()) }
-    viewModel { (isForSearch: Boolean) -> ChooseChildStandaloneViewModel(isForSearch, get(), get(), get(), get(), get(), get()) }
+    viewModel { (isForSearch: Boolean) ->
+        ChooseChildStandaloneViewModel(
+            isForSearch,
+            get(named(STRINGS)),
+            get(),
+            get(),
+            get(),
+            get(),
+            get()
+        )
+    }
     viewModel { SetAreaViewModel(get(), get(), get()) }
     viewModel { FoundGroupsStandaloneViewModel(get(), get(), get(), get(), get()) }
+    viewModel {
+        CreateGroupViewModel(get(), get(named(STRINGS)), get(), get(), get(), get(), get(), get())
+    }
 }
 
 val mainModule = module {
     single { CropImageCommunicator() }
     single { SearchResultsCommunicator() }
     single { EditProfileCommunicator() }
+
+    val UPDATE_GROUP = "UPDATE_GROUP"
+    single(named(UPDATE_GROUP)) { Communicator(GroupUiModel()) }
     single<PageNavigator> { PageNavigatorImpl() }
 
     viewModel { (page: Int) ->
@@ -197,10 +217,8 @@ val mainModule = module {
     }
     viewModel { MainViewModel(get(), get()) }
     viewModel { NotificationsViewModel(get(), get(), get(), get(), get(), get(), get()) }
-    viewModel { MyGroupsViewModel(get(), get(), get(), get(), get(), get(), get()) }
-    viewModel {
-        CreateGroupViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get(), get())
-    }
+    viewModel { MyGroupsViewModel(get(), get(), get(), get(), get(), get(named(UPDATE_GROUP))) }
+    viewModel { UpdateGroupViewModel(get(), get(named(UPDATE_GROUP)), get(), get(), get(), get()) }
     viewModel { SearchRequestViewModel(get(), get(), get(), get()) }
     viewModel { SearchResultsViewModel(get(), get(), get(), get()) }
     viewModel { ProfileSettingsViewModel(get(), get(), get(), get(), get(), get()) }
@@ -284,3 +302,4 @@ fun createSSLSocketFactory(context: Context): Pair<SSLSocketFactory, X509TrustMa
 
 private const val CHUCKER_CONTENT_MAX_LENGTH = 250000L
 private const val TIMEOUT = 30L
+private const val STRINGS = "STRINGS"
