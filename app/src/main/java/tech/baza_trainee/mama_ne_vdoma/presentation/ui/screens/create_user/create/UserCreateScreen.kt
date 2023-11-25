@@ -116,6 +116,7 @@ fun UserCreateScreen(
                         .show()
                 }
             }
+            googleLogin = false
         }
 
         Column(

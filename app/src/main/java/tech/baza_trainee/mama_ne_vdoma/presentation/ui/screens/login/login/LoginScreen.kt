@@ -137,6 +137,7 @@ fun LoginUserScreen(
                     Toast.makeText(context, "Авторизація неможлива", Toast.LENGTH_LONG)
                         .show()
                 }
+                googleLogin = false
             }
         }
 
