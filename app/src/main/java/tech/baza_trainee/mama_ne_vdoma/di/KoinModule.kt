@@ -187,9 +187,9 @@ val standaloneGroupSearchModule = module {
         )
     }
     viewModel { SetAreaViewModel(get(), get(), get()) }
-    viewModel { FoundGroupsStandaloneViewModel(get(), get(), get(), get(), get()) }
+    viewModel { FoundGroupsStandaloneViewModel(get(named(STRINGS)), get(), get(), get(), get()) }
     viewModel {
-        CreateGroupViewModel(get(), get(named(STRINGS)), get(), get(), get(), get(), get(), get())
+        CreateGroupViewModel(get(named(STRINGS)), get(), get(), get(), get(), get(), get(), get())
     }
 }
 
