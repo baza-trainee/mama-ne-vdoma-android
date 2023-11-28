@@ -42,6 +42,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ButtonText
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.Rating
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.JoinRequestUiModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.LogoutButtonColor
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.LogoutButtonTextColor
@@ -173,31 +174,12 @@ fun MyRequestCard(
                         contentScale = ContentScale.FillWidth
                     )
 
-                    Row(
+                    Rating(
                         modifier = Modifier
-                            .padding(8.dp)
-                            .height(28.dp)
-                            .width(64.dp)
-                            .background(
-                                color = Color.White,
-                                shape = RoundedCornerShape(4.dp)
-                            )
-                            .align(Alignment.TopEnd),
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Image(
-                            modifier = Modifier
-                                .padding(end = 4.dp),
-                            painter = painterResource(id = R.drawable.ic_star),
-                            contentDescription = "rating"
-                        )
-                        Text(
-                            text = "5.0",
-                            fontSize = 14.sp,
-                            fontFamily = redHatDisplayFontFamily
-                        )
-                    }
+                            .align(Alignment.TopEnd)
+                            .padding(all = 8.dp),
+                        rating = request.group.rating
+                    ) //TODO: Implement group rating
                 }
 
                 Spacer(modifier = Modifier.height(8.dp))

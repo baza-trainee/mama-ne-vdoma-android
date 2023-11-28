@@ -28,7 +28,7 @@ fun Rating(
     backgroundColor: Color = Color.White
 ) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .height(28.dp)
             .width(64.dp)
             .background(
