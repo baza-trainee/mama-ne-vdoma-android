@@ -6,16 +6,18 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.model.LatLng
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import tech.baza_trainee.mama_ne_vdoma.domain.model.ChildEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.GroupEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.GroupFullInfoEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.JoinRequestEntity
+import tech.baza_trainee.mama_ne_vdoma.domain.model.MemberEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UserProfileEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatastoreManager
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.FilesRepository
@@ -27,6 +29,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.PageNav
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.GroupUiModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.JoinRequestUiModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.MemberUiModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestResult
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.networkExecutor
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onError
@@ -50,202 +53,8 @@ class NotificationsViewModel(
     val uiState: State<NotificationsUiState>
         get() = _uiState
 
-    private val groupAvatarFlow = MutableStateFlow( "" to Uri.EMPTY)
-    private val groupsFlow = MutableStateFlow(Triple("", GroupEntity(), ""))
-    private val membersFlow = MutableStateFlow("" to UserProfileEntity())
-    private val memberAvatarsFlow = MutableStateFlow(Triple("", "", Uri.EMPTY))
-    private val groupLocationsFlow = MutableStateFlow("" to "")
-
-    private val childrenFlow = MutableStateFlow(Triple("", "", GroupFullInfoEntity()))
-    private val userFlow = MutableStateFlow("" to UserProfileEntity())
-    private val userLocationsFlow = MutableStateFlow("" to "")
-
     init {
         getUserInfo()
-
-        viewModelScope.launch {
-            combine(userLocationsFlow, userFlow, childrenFlow) { location, user, child ->
-                val currentRequests = _viewState.value.adminJoinRequests.toMutableList()
-
-                fun updateUiModel(groupId: String, updateAction: JoinRequestUiModel.() -> JoinRequestUiModel) {
-                    var currentUiModel = currentRequests.find { it.group.id == groupId } ?: JoinRequestUiModel()
-                    val index = currentRequests.indexOf(currentUiModel)
-                    currentUiModel = currentUiModel.updateAction()
-                    if (index == -1)
-                        currentRequests.add(currentUiModel)
-                    else {
-                        currentRequests.removeAt(index)
-                        currentRequests.add(index, currentUiModel)
-                    }
-                }
-
-                if (location.first.isNotEmpty()) {
-                    updateUiModel(location.first) {
-                        val newGroup = group.copy(id = location.first)
-                        copy(
-                            group = newGroup,
-                            parentAddress = location.second
-                        )
-                    }
-                }
-
-                if (user.first.isNotEmpty()) {
-                    updateUiModel(user.first) {
-                        val newGroup = group.copy(id = user.first)
-                        copy(
-                            group = newGroup,
-                            parentId = user.second.id,
-                            parentName = user.second.name,
-                            parentEmail = user.second.email,
-                            parentPhone = "${user.second.countryCode}${user.second.phone}",
-                        )
-                    }
-                }
-
-                if (child.first.isNotEmpty()) {
-                    updateUiModel(child.first) {
-                        val currentChild = child.third.children.find { it.childId == child.second } ?: ChildEntity()
-                        val newGroup = group.copy(id = child.first)
-                        copy(
-                            group = newGroup,
-                            child = currentChild.copy(childId = child.second)
-                        )
-                    }
-                }
-
-                currentRequests
-            }.collect { list ->
-                _viewState.update {
-                    it.copy(
-                        adminJoinRequests = list
-                    )
-                }
-            }
-        }
-
-        viewModelScope.launch {
-            combine(groupAvatarFlow, membersFlow, groupsFlow, memberAvatarsFlow, groupLocationsFlow) { avatar, member, group, memberAvatar, location ->
-                val currentRequests = _viewState.value.myJoinRequests.toMutableList()
-
-                fun updateUiModel(groupId: String, updateAction: JoinRequestUiModel.() -> JoinRequestUiModel) {
-                    var currentUiModel = currentRequests.find { it.group.id == groupId } ?: JoinRequestUiModel()
-                    val index = currentRequests.indexOf(currentUiModel)
-                    currentUiModel = currentUiModel.updateAction()
-                    if (index == -1)
-                        currentRequests.add(currentUiModel)
-                    else {
-                        currentRequests.removeAt(index)
-                        currentRequests.add(index, currentUiModel)
-                    }
-                }
-
-                if (group.first.isNotEmpty()) {
-                    updateUiModel(group.first) {
-                        val uiModel = GroupUiModel(
-                            id = group.second.id,
-                            adminId = group.second.adminId,
-                            name = group.second.name,
-                            description = group.second.description,
-                            ages = group.second.ages
-                        )
-                        copy(
-                            group = uiModel,
-                            parentAvatar = preferencesDatastoreManager.avatarUri,
-                            parentName = preferencesDatastoreManager.name,
-                            parentId = preferencesDatastoreManager.id,
-                            child = ChildEntity(childId = group.third)
-                        )
-                    }
-                }
-
-                if (avatar.first.isNotEmpty()) {
-                    updateUiModel(avatar.first) {
-                        val newGroup = this.group.copy(
-                            id = avatar.first,
-                            avatar = avatar.second
-                        )
-
-                        copy(
-                            group = newGroup
-                        )
-                    }
-                }
-
-                if (member.first.isNotEmpty()) {
-                    updateUiModel(member.first) {
-                        var newGroup = this.group
-
-                        val currentMembers = newGroup.members.toMutableList()
-                        var currentMember = currentMembers.find { it.id == member.second.id } ?: MemberUiModel()
-                        val index = currentMembers.indexOf(currentMember)
-
-                        currentMember = currentMember.copy(
-                            id = member.second.id,
-                            name = member.second.name
-                        )
-                        currentMembers.apply {
-                            if (index == -1)
-                                add(currentMember)
-                            else {
-                                removeAt(index)
-                                add(index, currentMember)
-                            }
-                        }
-
-                        newGroup = newGroup.copy(
-                            id = member.first,
-                            members = currentMembers
-                        )
-
-                        copy(
-                            group = newGroup
-                        )
-                    }
-                }
-
-                if (memberAvatar.first.isNotEmpty()) {
-                    updateUiModel(memberAvatar.first) {
-                        var newGroup = this.group.copy()
-                        val currentMembers = newGroup.members.toMutableList()
-                        var currentMember =
-                            currentMembers.find { it.id == memberAvatar.second } ?: MemberUiModel()
-                        val index = currentMembers.indexOf(currentMember)
-                        currentMember = currentMember.copy(avatar = memberAvatar.third)
-                        currentMembers.apply {
-                            if (index == -1)
-                                add(currentMember)
-                            else {
-                                removeAt(index)
-                                add(index, currentMember)
-                            }
-                        }
-                        newGroup = newGroup.copy(
-                            id = memberAvatar.first,
-                            members = currentMembers
-                        )
-
-                        copy(
-                            group = newGroup
-                        )
-                    }
-                }
-
-                if (location.first.isNotEmpty()) {
-                    updateUiModel(location.first) {
-                        val newGroup = this.group.copy(id = location.first, address = location.second)
-                        copy(group = newGroup)
-                    }
-                }
-
-                currentRequests
-            }.collect { list ->
-                _viewState.update {
-                    it.copy(
-                        myJoinRequests = list
-                    )
-                }
-            }
-        }
     }
 
     fun handleEvent(event: NotificationsEvent) {
@@ -322,10 +131,10 @@ class NotificationsViewModel(
         networkExecutor<UserProfileEntity> {
             execute { userAuthRepository.getUserInfo() }
             onSuccess { entity ->
-                getGroups(entity.id)
+                getGroupsForParent(entity.id)
 
                 if (entity.groupJoinRequests.isNotEmpty())
-                    entity.groupJoinRequests.forEach(::getGroupById)
+                    getGroups(entity.groupJoinRequests)
                 else
                     _viewState.update {
                         it.copy(myJoinRequests = emptyList())
@@ -346,74 +155,113 @@ class NotificationsViewModel(
         }
     }
 
-    private fun getGroupById(joinRequest: JoinRequestEntity) {
-        networkExecutor<GroupEntity> {
-            execute {
-                groupsRepository.getGroupById(joinRequest.groupId)
-            }
-            onSuccess { entity ->
-                getGroupAvatar(entity.avatar, joinRequest.groupId)
-
-                if (entity.location.coordinates.isNotEmpty())
-                    getAddressFromLocation(
-                        latLng = LatLng(
-                            entity.location.coordinates[1],
-                            entity.location.coordinates[0]
-                        ),
-                        joinRequest.groupId
-                    )
-
-                entity.members.map { it.parentId }.forEach {
-                    getUser(it, joinRequest.groupId)
-                }
-
-                groupsFlow.update {
-                    Triple(joinRequest.groupId, entity, joinRequest.childId)
+    private fun getGroups(requests: List<JoinRequestEntity>) {
+        viewModelScope.launch {
+            val requestsList = requests.map { entity ->
+                async {
+                    getGroup(entity)
                 }
             }
-            onError { error ->
-                _uiState.value = NotificationsUiState.OnError(error)
-            }
-            onLoading { isLoading ->
-                _viewState.update {
+
+            val joinRequests = mutableListOf<JoinRequestUiModel>()
+
+            requestsList.awaitAll().onEach {
+                val membersList = it.group.members.map {
+                    async {
+                        getMember(it, false)
+                    }
+                }
+
+                joinRequests.add(
                     it.copy(
-                        isLoading = isLoading
+                        group = it.group.copy(members = membersList.awaitAll())
                     )
-                }
+                )
+            }
+
+            _viewState.update {
+                it.copy(
+                    myJoinRequests = joinRequests,
+                    isLoading = false
+                )
             }
         }
     }
 
-    private fun getGroups(parent: String) {
+    private suspend fun getGroup(request: JoinRequestEntity): JoinRequestUiModel {
+        _viewState.update {
+            it.copy(
+                isLoading = true
+            )
+        }
+
+        val result = groupsRepository.getGroupById(request.groupId)
+        val group = getResult(result) ?: GroupEntity()
+
+        val avatar = filesRepository.getAvatar(group.avatar)
+        val location =
+            locationRepository.getAddressFromLocation(
+                latLng = LatLng(
+                    group.location.coordinates[1],
+                    group.location.coordinates[0]
+                )
+            )
+
+        val members = group.members
+            .groupBy { it.parentId }
+            .map { (parentId, children) ->
+                MemberUiModel(id = parentId, children = children.map { it.childId }.toList())
+            }
+
+        return JoinRequestUiModel(
+            group = GroupUiModel(
+                id = group.id,
+                name = group.name,
+                ages = group.ages,
+                avatar = getResult(avatar) ?: Uri.EMPTY,
+                address = getResult(location).orEmpty(),
+                members = members
+            ),
+            child = ChildEntity(childId = request.childId)
+        )
+    }
+
+    private suspend fun getMember(user: MemberUiModel, isMine: Boolean): MemberUiModel {
+        _viewState.update {
+            it.copy(
+                isLoading = true
+            )
+        }
+
+        val result1 = userProfileRepository.getUserById(user.id)
+        val member = getResult(result1) ?: UserProfileEntity()
+
+        val result2 = filesRepository.getAvatar(member.avatar)
+        val avatar = getResult(result2) ?: Uri.EMPTY
+
+        var newUser = user.copy(
+            id = member.id,
+            name = member.name,
+            avatar = avatar
+        )
+
+        if (isMine)
+            newUser = newUser.copy(
+                phone = "${member.countryCode}${member.phone}",
+                email = member.email
+            )
+
+        return newUser
+    }
+
+    private fun getGroupsForParent(parent: String) {
         networkExecutor<List<GroupEntity>> {
             execute {
                 groupsRepository.getGroupsForParent(parent)
             }
             onSuccess { entityList ->
-                val joinRequests = mutableListOf<JoinRequestUiModel>()
                 if (entityList.flatMap { it.askingJoin }.isNotEmpty()) {
-                    entityList.onEach { group ->
-                        if (group.askingJoin.isNotEmpty())
-                            group.askingJoin.forEach { member ->
-                                getUserForJoin(member.parentId, group.id)
-                                getChild(member.childId, group.id)
-                                joinRequests.add(
-                                    JoinRequestUiModel(
-                                        group = GroupUiModel(
-                                            id = group.id,
-                                            name = group.name
-                                        ),
-                                        parentId = member.parentId
-                                    )
-                                )
-                            }
-                    }
-
-                    _viewState.update {
-                        it.copy(
-                            adminJoinRequests = joinRequests
-                        )
-                    }
+                    fetchAdminJoinRequests(entityList)
                 } else
                     _viewState.update {
                         it.copy(adminJoinRequests = emptyList())
@@ -435,139 +283,64 @@ class NotificationsViewModel(
         }
     }
 
-    private fun getUserForJoin(userId: String, groupId: String) {
-        networkExecutor<UserProfileEntity> {
-            execute {
-                userProfileRepository.getUserById(userId)
-            }
-            onSuccess { user ->
-                userFlow.update {
-                    Pair(groupId, user)
+    private fun fetchAdminJoinRequests(entityList: List<GroupEntity>) {
+        viewModelScope.launch {
+            val joinRequests = mutableListOf<List<JoinRequestUiModel>>()
+
+            entityList.map { entity ->
+                if (entity.askingJoin.isNotEmpty()) {
+                    val request = entity.askingJoin.map {
+                        async {
+                            getUserAndChild(entity.id, it)
+                        }
+                    }
+                    joinRequests.add(request.awaitAll())
                 }
             }
-            onError { error ->
-                _uiState.value = NotificationsUiState.OnError(error)
-            }
-            onLoading { isLoading ->
-                _viewState.update {
-                    it.copy(
-                        isLoading = isLoading
-                    )
-                }
+
+            _viewState.update {
+                it.copy(
+                    adminJoinRequests = joinRequests.flatten(),
+                    isLoading = false
+                )
             }
         }
     }
 
-    private fun getUser(userId: String, groupId: String) {
-        networkExecutor<UserProfileEntity> {
-            execute {
-                userProfileRepository.getUserById(userId)
-            }
-            onSuccess { user ->
-                getUserAvatar(user.avatar, groupId, user.id)
-
-                membersFlow.update {
-                    groupId to user
-                }
-            }
-            onError { error ->
-                _uiState.value = NotificationsUiState.OnError(error)
-            }
-            onLoading { isLoading ->
-                _viewState.update {
-                    it.copy(
-                        isLoading = isLoading
-                    )
-                }
-            }
+    private suspend fun getUserAndChild(groupId: String, member: MemberEntity): JoinRequestUiModel {
+        _viewState.update {
+            it.copy(
+                isLoading = true
+            )
         }
+
+        val result1 = userProfileRepository.getUserById(member.parentId)
+        val parent = getResult(result1) ?: UserProfileEntity()
+
+        val result2 = groupsRepository.getGroupFullInfo(groupId)
+        val groupEntity = (getResult(result2) ?: GroupFullInfoEntity())
+
+        return JoinRequestUiModel(
+            group = GroupUiModel(
+                id = groupEntity.group.id,
+                name = groupEntity.group.name
+            ),
+            parentId = parent.id,
+            parentName = parent.name,
+            parentEmail = parent.email,
+            parentPhone = "${parent.countryCode}${parent.phone}",
+            child = groupEntity.children.find { it.childId == member.childId } ?: ChildEntity()
+        )
     }
 
-    private fun getUserAvatar(avatarId: String, groupId: String, userId: String) {
-        networkExecutor {
-            execute { filesRepository.getAvatar(avatarId) }
-            onSuccess { uri ->
-                memberAvatarsFlow.update {
-                    Triple(groupId, userId, uri)
-                }
+    private fun <T> getResult(result: RequestResult<T>): T? {
+        return when(result) {
+            is RequestResult.Error -> {
+                _uiState.value = NotificationsUiState.OnError(result.error)
+                null
             }
-            onError { error ->
-                _uiState.value = NotificationsUiState.OnError(error)
-            }
-            onLoading { isLoading ->
-                _viewState.update {
-                    it.copy(
-                        isLoading = isLoading
-                    )
-                }
-            }
-        }
-    }
 
-    private fun getGroupAvatar(avatarId: String, groupId: String) {
-        networkExecutor {
-            execute { filesRepository.getAvatar(avatarId) }
-            onSuccess { uri ->
-                groupAvatarFlow.update {
-                    groupId to uri
-                }
-            }
-            onError { error ->
-                _uiState.value = NotificationsUiState.OnError(error)
-            }
-            onLoading { isLoading ->
-                _viewState.update {
-                    it.copy(
-                        isLoading = isLoading
-                    )
-                }
-            }
-        }
-    }
-
-    private fun getChild(childId: String, groupId: String) {
-        networkExecutor {
-            execute {
-                groupsRepository.getGroupFullInfo(groupId)
-            }
-            onSuccess { groupFullInfo ->
-                childrenFlow.update {
-                    Triple(groupId, childId, groupFullInfo)
-                }
-            }
-            onError { error ->
-                _uiState.value = NotificationsUiState.OnError(error)
-            }
-            onLoading { isLoading ->
-                _viewState.update {
-                    it.copy(
-                        isLoading = isLoading
-                    )
-                }
-            }
-        }
-    }
-
-    private fun getAddressFromLocation(latLng: LatLng, groupId: String) {
-        networkExecutor {
-            execute {
-                locationRepository.getAddressFromLocation(latLng)
-            }
-            onSuccess { address ->
-                groupLocationsFlow.update {
-                    groupId to address
-                }
-            }
-            onError { error ->
-                _uiState.value = NotificationsUiState.OnError(error)
-            }
-            onLoading { isLoading ->
-                _viewState.update {
-                    it.copy(
-                        isLoading = isLoading
-                    )
-                }
-            }
+            is RequestResult.Success -> result.result
         }
     }
 }

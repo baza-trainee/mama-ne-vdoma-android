@@ -117,9 +117,9 @@ class MyGroupsViewModel(
     }
 
     private fun getGroups(parent: String) {
-        getGroups(parent) {
-            startFetching(it, true)
-            preferencesDatastoreManager.adminJoinRequests = it.flatMap { it.askingJoin }.size
+        getGroups(parent) { entities ->
+            startFetching(entities, true)
+            preferencesDatastoreManager.adminJoinRequests = entities.flatMap { it.askingJoin }.size
         }
     }
 
