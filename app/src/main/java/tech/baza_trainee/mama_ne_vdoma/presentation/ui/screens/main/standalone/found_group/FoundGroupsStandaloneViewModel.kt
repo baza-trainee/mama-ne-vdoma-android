@@ -16,9 +16,10 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.GroupsInteractor
 import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.NetworkEventsListener
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.HostScreenRoutes
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.StandaloneGroupsRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.GroupUiModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.Communicator
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.GROUPS_PAGE
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.MAIN_PAGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.SETTINGS_PAGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.networkExecutor
@@ -84,10 +85,13 @@ class FoundGroupsStandaloneViewModel(
             FoundGroupEvent.OnJoin -> sendJoinRequest()
             is FoundGroupEvent.OnSelect -> setSelectedGroup(event.group)
             FoundGroupEvent.GoToMain ->
-                navigator.navigate(HostScreenRoutes.Host.getDestination(GROUPS_PAGE))
+                navigator.navigate(HostScreenRoutes.Host.getDestination(MAIN_PAGE))
 
             FoundGroupEvent.OnAvatarClicked ->
                 navigator.navigate(HostScreenRoutes.Host.getDestination(SETTINGS_PAGE))
+
+            FoundGroupEvent.CreateGroup ->
+                navigator.navigate(StandaloneGroupsRoutes.ChooseChild.getDestination(isForSearch = false))
         }
     }
 
@@ -95,7 +99,7 @@ class FoundGroupsStandaloneViewModel(
         networkExecutor {
             execute {
                 val groupId = _viewState.value.groups.find { it.isChecked }?.id.orEmpty()
-                groupsRepository.sendJoinRequest(groupId, communicator.dataFlow.value.orEmpty())
+                groupsRepository.sendJoinRequest(groupId, communicator.dataFlow.value)
             }
             onSuccess {
                 communicator.setData("")

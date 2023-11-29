@@ -60,6 +60,7 @@ class FullInfoViewModel(
         }
 
         getUserInfo()
+
         _viewState.update {
             it.copy(
                 isChildInfoFilled = preferencesDatastoreManager.isChildrenDataProvided,
