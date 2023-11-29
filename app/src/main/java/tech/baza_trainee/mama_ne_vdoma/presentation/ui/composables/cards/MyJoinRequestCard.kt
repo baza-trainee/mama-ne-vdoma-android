@@ -67,20 +67,33 @@ fun MyRequestCard(
     ) {
         var toggleMoreInfo by rememberSaveable { mutableStateOf(false) }
 
-        IconButton(
-            modifier = Modifier.align(Alignment.End),
-            onClick = { toggleMoreInfo = !toggleMoreInfo }
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(
-                painter = painterResource(
-                    id = if (toggleMoreInfo)
-                        R.drawable.outline_arrow_drop_up_24
-                    else
-                        R.drawable.outline_arrow_drop_down_24
-                ),
-                contentDescription = "toggle_more",
-                tint = MaterialTheme.colorScheme.primary
+            Text(
+                text = "Запит на приєднання",
+                fontSize = 16.sp,
+                fontFamily = redHatDisplayFontFamily,
+                fontWeight = FontWeight.SemiBold
             )
+
+            Spacer(modifier = Modifier.weight(1f))
+            
+            IconButton(
+                onClick = { toggleMoreInfo = !toggleMoreInfo }
+            ) {
+                Icon(
+                    painter = painterResource(
+                        id = if (toggleMoreInfo)
+                            R.drawable.outline_arrow_drop_up_24
+                        else
+                            R.drawable.outline_arrow_drop_down_24
+                    ),
+                    contentDescription = "toggle_more",
+                    tint = MaterialTheme.colorScheme.primary
+                )
+            }
         }
 
         if (!toggleMoreInfo) {
@@ -129,6 +142,8 @@ fun MyRequestCard(
                         )
                     }
                 }
+
+                Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
                     modifier = Modifier

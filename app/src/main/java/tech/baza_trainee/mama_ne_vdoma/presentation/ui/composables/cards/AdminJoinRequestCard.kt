@@ -42,11 +42,11 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import tech.baza_trainee.mama_ne_vdoma.R
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ButtonText
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.JoinRequestUiModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.LogoutButtonColor
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.LogoutButtonTextColor
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ButtonText
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -69,20 +69,33 @@ fun AdminJoinRequestCard(
     ) {
         var toggleMoreInfo by rememberSaveable { mutableStateOf(false) }
 
-        IconButton(
-            modifier = Modifier.align(Alignment.End),
-            onClick = { toggleMoreInfo = !toggleMoreInfo }
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(
-                painter = painterResource(
-                    id = if (toggleMoreInfo)
-                        R.drawable.outline_arrow_drop_up_24
-                    else
-                        R.drawable.outline_arrow_drop_down_24
-                ),
-                contentDescription = "toggle_more",
-                tint = MaterialTheme.colorScheme.primary
+            Text(
+                text = "Запит на приєднання",
+                fontSize = 16.sp,
+                fontFamily = redHatDisplayFontFamily,
+                fontWeight = FontWeight.SemiBold
             )
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            IconButton(
+                onClick = { toggleMoreInfo = !toggleMoreInfo }
+            ) {
+                Icon(
+                    painter = painterResource(
+                        id = if (toggleMoreInfo)
+                            R.drawable.outline_arrow_drop_up_24
+                        else
+                            R.drawable.outline_arrow_drop_down_24
+                    ),
+                    contentDescription = "toggle_more",
+                    tint = MaterialTheme.colorScheme.primary
+                )
+            }
         }
 
         if (!toggleMoreInfo) {
@@ -108,8 +121,7 @@ fun AdminJoinRequestCard(
                     )
 
                     Column(
-                        modifier = Modifier
-                            .weight(1f)
+                        modifier = Modifier.weight(1f)
                     ) {
                         Text(
                             modifier = Modifier
