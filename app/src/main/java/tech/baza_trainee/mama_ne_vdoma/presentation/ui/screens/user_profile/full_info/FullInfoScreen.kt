@@ -1,12 +1,6 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.full_info
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.animation.Animatable
-import androidx.compose.animation.animateColor
-import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -26,9 +20,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -47,6 +39,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.cards.ParentI
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ButtonText
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.LoadingIndicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.SurfaceWithNavigationBars
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.functions.infiniteColorAnimation
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.headers.HeaderWithOptArrow
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.SlateGray
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
@@ -72,23 +65,11 @@ fun FullInfoScreen(
             }
         }
 
-        val colorAnimatable = remember { Animatable(Color.White) }
-
-        val infiniteTransition = rememberInfiniteTransition(label = "")
-
-        val color by infiniteTransition.animateColor(
+        val color = infiniteColorAnimation(
             initialValue = Color.Yellow,
             targetValue = Color.White,
-            animationSpec = infiniteRepeatable(
-                animation = tween(durationMillis = 500),
-                repeatMode = RepeatMode.Reverse
-            ),
-            label = ""
+            duration = 1000
         )
-
-        LaunchedEffect(key1 = color) {
-            colorAnimatable.animateTo(color)
-        }
 
         Column(
             modifier = Modifier
@@ -140,7 +121,7 @@ fun FullInfoScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(64.dp)
-                            .background(colorAnimatable.value)
+                            .background(color)
                             .clickable { handleEvent(FullInfoEvent.EditUser) },
                         contentAlignment = Alignment.Center
                     ) {
@@ -188,7 +169,7 @@ fun FullInfoScreen(
                         .fillMaxWidth()
                         .background(
                             color = if (!animateAddChildBackground) MaterialTheme.colorScheme.background
-                            else colorAnimatable.value
+                            else color
                         )
                         .clickable(enabled = screenState.isUserInfoFilled) {
                             handleEvent(FullInfoEvent.AddChild)
