@@ -15,7 +15,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.NetworkEventsLis
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.HostScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.StandaloneGroupsRoutes
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.LocationUiState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.SETTINGS_PAGE
 
 class SetAreaViewModel(
@@ -27,8 +27,8 @@ class SetAreaViewModel(
     private val _viewState = MutableStateFlow(SetAreaViewState())
     val viewState: StateFlow<SetAreaViewState> = _viewState.asStateFlow()
 
-    private val _uiState = mutableStateOf<RequestState>(RequestState.Idle)
-    val uiState: State<RequestState>
+    private val _uiState = mutableStateOf<LocationUiState>(LocationUiState.Idle)
+    val uiState: State<LocationUiState>
         get() = _uiState
 
     init {
@@ -58,30 +58,34 @@ class SetAreaViewModel(
     }
 
     override fun onError(error: String) {
-        _uiState.value = RequestState.OnError(error)
+        _uiState.value = LocationUiState.OnError(error)
     }
 
     fun handleEvent(event: SetAreaEvent) {
         when(event) {
-            SetAreaEvent.ResetUiState -> _uiState.value = RequestState.Idle
+            SetAreaEvent.ResetUiState -> _uiState.value = LocationUiState.Idle
             SetAreaEvent.GetLocationFromAddress -> getLocationFromAddress()
             SetAreaEvent.RequestUserLocation -> requestCurrentLocation()
             is SetAreaEvent.UpdateUserAddress -> updateUserAddress(event.address)
             is SetAreaEvent.SetAreaRadius -> setRadius(event.radius)
             is SetAreaEvent.OnMapClick -> setLocation(event.location)
-            SetAreaEvent.SaveArea -> {
-                preferencesDatastoreManager.apply {
-                    radius = _viewState.value.radius.toInt()
-                    latitude = _viewState.value.currentLocation.latitude
-                    longitude = _viewState.value.currentLocation.longitude
-                }
-                navigator.navigate(StandaloneGroupsRoutes.GroupsFound)
-            }
+            SetAreaEvent.SaveArea -> checkFields()
 
             SetAreaEvent.OnBack -> navigator.goBack()
             SetAreaEvent.OnAvatarClicked ->
                 navigator.navigate(HostScreenRoutes.Host.getDestination(SETTINGS_PAGE))
         }
+    }
+    
+    private fun checkFields() {
+        if (_viewState.value.isAddressChecked) {
+            preferencesDatastoreManager.apply {
+                radius = _viewState.value.radius.toInt()
+                latitude = _viewState.value.currentLocation.latitude
+                longitude = _viewState.value.currentLocation.longitude
+            }
+            navigator.navigate(StandaloneGroupsRoutes.GroupsFound)
+        } else _uiState.value = LocationUiState.AddressNotChecked
     }
 
     private fun setRadius(radius: Float) {
@@ -115,19 +119,24 @@ class SetAreaViewModel(
     private fun updateUserAddress(address: String) {
         _viewState.update {
             it.copy(
-                address = address
+                address = address,
+                isAddressChecked = false
             )
         }
     }
 
     private fun getLocationFromAddress() {
         getLocationFromAddress(_viewState.value.address) { location ->
-            if (_viewState.value.currentLocation != location)
+            location?.let {
                 _viewState.update {
                     it.copy(
-                        currentLocation = location
+                        currentLocation = location,
+                            isAddressChecked = true
                     )
                 }
+            } ?: run {
+                _uiState.value = LocationUiState.AddressNotFound
+            }
         }
     }
 

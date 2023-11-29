@@ -21,6 +21,7 @@ data class EditProfileViewState(
     @Stable val userAvatar: Uri = Uri.EMPTY,
     val address: String = "",
     @Stable val currentLocation: LatLng = LatLng(0.0,0.0),
+    val isAddressChecked: Boolean = true,
     val note: String = "",
     val schedule: SnapshotStateMap<DayOfWeek, DayPeriod> = getDefaultSchedule(),
     @Stable val children: List<ChildEntity> = emptyList(),

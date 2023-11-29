@@ -25,6 +25,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenN
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.Graphs
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.MainScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.SettingsScreenRoutes
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.UpdateDetailsUiState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.image_crop.CropImageCommunicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.common.EditProfileCommunicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.BitmapHelper
@@ -44,8 +45,8 @@ class EditProfileViewModel(
     private val _viewState = MutableStateFlow(EditProfileViewState())
     val viewState: StateFlow<EditProfileViewState> = _viewState.asStateFlow()
 
-    private val _uiState = mutableStateOf<EditProfileUiState>(EditProfileUiState.Idle)
-    val uiState: State<EditProfileUiState>
+    private val _uiState = mutableStateOf<UpdateDetailsUiState>(UpdateDetailsUiState.Idle)
+    val uiState: State<UpdateDetailsUiState>
         get() = _uiState
 
     private val childrenToRemove = mutableSetOf<String>()
@@ -82,16 +83,16 @@ class EditProfileViewModel(
     }
 
     override fun onError(error: String) {
-        _uiState.value = EditProfileUiState.OnError(error)
+        _uiState.value = UpdateDetailsUiState.OnError(error)
     }
 
     fun handleEvent(event: EditProfileEvent) {
         when(event) {
             EditProfileEvent.DeleteUser -> deleteUser()
             is EditProfileEvent.DeleteChild -> deleteChild(event.id)
-            EditProfileEvent.ResetUiState -> _uiState.value = EditProfileUiState.Idle
+            EditProfileEvent.ResetUiState -> _uiState.value = UpdateDetailsUiState.Idle
             EditProfileEvent.OnBack -> navigator.goToPrevious()
-            EditProfileEvent.SaveInfo -> saveChanges { _uiState.value = EditProfileUiState.OnProfileSaved }
+            EditProfileEvent.SaveInfo -> saveChanges { _uiState.value = UpdateDetailsUiState.OnSaved }
             EditProfileEvent.GetLocationFromAddress -> getLocationFromAddress()
             EditProfileEvent.OnDeletePhoto -> deleteUserAvatar()
             EditProfileEvent.OnEditPhoto -> navigator.navigate(SettingsScreenRoutes.EditProfilePhoto)
@@ -134,21 +135,23 @@ class EditProfileViewModel(
     }
 
     private fun saveParent() {
-        updateParent(
-            UserInfoEntity(
-                name = preferencesDatastoreManager.name,
-                phone = preferencesDatastoreManager.phone,
-                countryCode = preferencesDatastoreManager.code,
-                avatar = preferencesDatastoreManager.avatar,
-                schedule = _viewState.value.schedule,
-                note = _viewState.value.note,
-                sendingEmails = preferencesDatastoreManager.sendEmail
-            )
-        ) {
-            saveUserLocation(_viewState.value.currentLocation) {
-                profileCommunicator.setProfileChanged(true)
+        if (_viewState.value.isAddressChecked) {
+            updateParent(
+                UserInfoEntity(
+                    name = preferencesDatastoreManager.name,
+                    phone = preferencesDatastoreManager.phone,
+                    countryCode = preferencesDatastoreManager.code,
+                    avatar = preferencesDatastoreManager.avatar,
+                    schedule = _viewState.value.schedule,
+                    note = _viewState.value.note,
+                    sendingEmails = preferencesDatastoreManager.sendEmail
+                )
+            ) {
+                saveUserLocation(_viewState.value.currentLocation) {
+                    profileCommunicator.setProfileChanged(true)
+                }
             }
-        }
+        } else _uiState.value = UpdateDetailsUiState.AddressNotChecked
     }
 
     private fun saveChildren() {
@@ -242,7 +245,8 @@ class EditProfileViewModel(
             preferencesDatastoreManager.address = address
             _viewState.update {
                 it.copy(
-                    address = address
+                    address = address,
+                    isAddressChecked = address.isNotEmpty()
                 )
             }
         }
@@ -261,15 +265,21 @@ class EditProfileViewModel(
     private fun getLocationFromAddress() {
         getLocationFromAddress(_viewState.value.address) { location ->
             if (_viewState.value.currentLocation != location)
-                _viewState.update {
-                    it.copy(
-                        currentLocation = location
-                    )
+                location?.let {
+                    preferencesDatastoreManager.apply {
+                        latitude = location.latitude
+                        longitude = location.longitude
+                    }
+
+                    _viewState.update {
+                        it.copy(
+                            currentLocation = location,
+                            isAddressChecked = true
+                        )
+                    }
+                } ?: run {
+                    _uiState.value = UpdateDetailsUiState.AddressNotFound
                 }
-            preferencesDatastoreManager.apply {
-                latitude = location.latitude
-                longitude = location.longitude
-            }
         }
     }
 
@@ -345,7 +355,8 @@ class EditProfileViewModel(
         preferencesDatastoreManager.address = address
         _viewState.update {
             it.copy(
-                address = address
+                address = address,
+                isAddressChecked = false
             )
         }
     }
@@ -365,7 +376,7 @@ class EditProfileViewModel(
                     communicator.setCroppedImage(null)
                 },
                 onError = {
-                    _uiState.value = EditProfileUiState.OnAvatarError
+                    _uiState.value = UpdateDetailsUiState.OnAvatarError
                 }
             )
     }

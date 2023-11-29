@@ -6,14 +6,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.ui.platform.LocalContext
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.LoadingIndicator
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.UpdateDetailsUiState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.group_details.GroupDetailsEvent
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.group_details.GroupDetailsInputScreen
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.group_details.GroupDetailsUiState
 
 @Composable
 fun UpdateGroupScreen(
     screenState: UpdateGroupViewState,
-    uiState: State<GroupDetailsUiState>,
+    uiState: State<UpdateDetailsUiState>,
     handleEvent: (GroupDetailsEvent) -> Unit
 ) {
     BackHandler { handleEvent(GroupDetailsEvent.OnBack) }
@@ -21,7 +21,7 @@ fun UpdateGroupScreen(
     val context = LocalContext.current
 
     when (val state = uiState.value) {
-        is GroupDetailsUiState.OnError -> {
+        is UpdateDetailsUiState.OnError -> {
             if (state.error.isNotBlank()) Toast.makeText(
                 context,
                 state.error,

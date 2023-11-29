@@ -18,8 +18,8 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.NetworkEventsLis
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.PageNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.GroupsScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.MainScreenRoutes
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.UpdateDetailsUiState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.group_details.GroupDetailsEvent
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.group_details.GroupDetailsUiState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.image_crop.CropImageCommunicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.GroupUiModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.BitmapHelper
@@ -43,8 +43,8 @@ class UpdateGroupViewModel(
     private val _viewState = MutableStateFlow(UpdateGroupViewState())
     val viewState: StateFlow<UpdateGroupViewState> = _viewState.asStateFlow()
 
-    private val _uiState = mutableStateOf<GroupDetailsUiState>(GroupDetailsUiState.Idle)
-    val uiState: State<GroupDetailsUiState>
+    private val _uiState = mutableStateOf<UpdateDetailsUiState>(UpdateDetailsUiState.Idle)
+    val uiState: State<UpdateDetailsUiState>
         get() = _uiState
 
     private var groupId = ""
@@ -81,12 +81,12 @@ class UpdateGroupViewModel(
     }
 
     override fun onError(error: String) {
-        _uiState.value = GroupDetailsUiState.OnError(error)
+        _uiState.value = UpdateDetailsUiState.OnError(error)
     }
 
     fun handleEvent(event: GroupDetailsEvent) {
         when (event) {
-            GroupDetailsEvent.ResetUiState -> _uiState.value = GroupDetailsUiState.Idle
+            GroupDetailsEvent.ResetUiState -> _uiState.value = UpdateDetailsUiState.Idle
             GroupDetailsEvent.OnBack -> navigator.goBack()
             GroupDetailsEvent.OnSave -> updateGroup()
             is GroupDetailsEvent.UpdateGroupSchedule -> updateGroupSchedule(event.day, event.period)
@@ -178,7 +178,7 @@ class UpdateGroupViewModel(
                     )
                 }
             } ?: run {
-                _uiState.value = GroupDetailsUiState.AddressNotFound
+                _uiState.value = UpdateDetailsUiState.AddressNotFound
             }
         }
     }
@@ -198,7 +198,7 @@ class UpdateGroupViewModel(
                     communicator.setCroppedImage(null)
                 },
                 onError = {
-                    _uiState.value = GroupDetailsUiState.OnAvatarError
+                    _uiState.value = UpdateDetailsUiState.OnAvatarError
                 }
             )
         }
@@ -219,11 +219,11 @@ class UpdateGroupViewModel(
                         avatarPath,
                         _viewState.value.groupDetails.schedule
                     ) {
-                        _uiState.value = GroupDetailsUiState.OnGroupSaved
+                        _uiState.value = UpdateDetailsUiState.OnSaved
                     }
                 }
             }
-        } else _uiState.value = GroupDetailsUiState.AddressNotChecked
+        } else _uiState.value = UpdateDetailsUiState.AddressNotChecked
     }
 
     private fun updateGroupSchedule(dayOfWeek: DayOfWeek, dayPeriod: Period) {

@@ -24,8 +24,8 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.NetworkEventsLis
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.HostScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.StandaloneGroupsRoutes
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.UpdateDetailsUiState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.group_details.GroupDetailsEvent
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.group_details.GroupDetailsUiState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.image_crop.CropImageCommunicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.BitmapHelper
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.Communicator
@@ -58,8 +58,8 @@ class CreateGroupViewModel(
     private val _viewState = MutableStateFlow(CreateGroupViewState())
     val viewState: StateFlow<CreateGroupViewState> = _viewState.asStateFlow()
 
-    private val _uiState = mutableStateOf<GroupDetailsUiState>(GroupDetailsUiState.Idle)
-    val uiState: State<GroupDetailsUiState>
+    private val _uiState = mutableStateOf<UpdateDetailsUiState>(UpdateDetailsUiState.Idle)
+    val uiState: State<UpdateDetailsUiState>
         get() = _uiState
 
     private var avatarServerPath = ""
@@ -93,12 +93,12 @@ class CreateGroupViewModel(
     }
 
     override fun onError(error: String) {
-        _uiState.value = GroupDetailsUiState.OnError(error)
+        _uiState.value = UpdateDetailsUiState.OnError(error)
     }
 
     fun handleEvent(event: GroupDetailsEvent) {
         when (event) {
-            GroupDetailsEvent.ResetUiState -> _uiState.value = GroupDetailsUiState.Idle
+            GroupDetailsEvent.ResetUiState -> _uiState.value = UpdateDetailsUiState.Idle
             GroupDetailsEvent.OnBack -> navigator.goBack()
             is GroupDetailsEvent.OnSave -> createGroup()
             is GroupDetailsEvent.UpdateGroupSchedule -> updateGroupSchedule(event.day, event.period)
@@ -145,7 +145,7 @@ class CreateGroupViewModel(
                     )
                 }
             } ?: run {
-                _uiState.value = GroupDetailsUiState.AddressNotFound
+                _uiState.value = UpdateDetailsUiState.AddressNotFound
             }
         }
     }
@@ -171,7 +171,7 @@ class CreateGroupViewModel(
                     communicator.setCroppedImage(null)
                 },
                 onError = {
-                    _uiState.value = GroupDetailsUiState.OnAvatarError
+                    _uiState.value = UpdateDetailsUiState.OnAvatarError
                 }
             )
         }
@@ -195,7 +195,7 @@ class CreateGroupViewModel(
                 uploadAvatar(_viewState.value.groupDetails.avatar, it.id)
                 updateGroupLocation(_viewState.value.groupDetails.location, it.id)
             }
-        } else _uiState.value = GroupDetailsUiState.AddressNotChecked
+        } else _uiState.value = UpdateDetailsUiState.AddressNotChecked
     }
 
     private fun updateGroup(groupId: String) {
@@ -210,7 +210,7 @@ class CreateGroupViewModel(
             avatarServerPath,
             _viewState.value.groupDetails.schedule
         ) {
-            _uiState.value = GroupDetailsUiState.OnGroupSaved
+            _uiState.value = UpdateDetailsUiState.OnSaved
         }
     }
 
@@ -238,7 +238,7 @@ class CreateGroupViewModel(
                 }
             }
             onError { error ->
-                _uiState.value = GroupDetailsUiState.OnError(error)
+                _uiState.value = UpdateDetailsUiState.OnError(error)
             }
             onLoading { isLoading ->
                 _viewState.update {
@@ -282,7 +282,7 @@ class CreateGroupViewModel(
                 }
             }
             onError { error ->
-                _uiState.value = GroupDetailsUiState.OnError(error)
+                _uiState.value = UpdateDetailsUiState.OnError(error)
             }
             onLoading { isLoading ->
                 _viewState.update {

@@ -5,5 +5,6 @@ import com.google.android.gms.maps.model.LatLng
 data class UserLocationViewState(
     val address: String = "",
     val currentLocation: LatLng = LatLng(0.0,0.0),
+    val isAddressChecked: Boolean = true,
     val isLoading: Boolean = false
 )

@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -69,7 +70,10 @@ import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ButtonText
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.GroupAvatarWithCameraAndGallery
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ScheduleGroup
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.dialogs.AddressNotCheckedDialog
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.functions.infiniteColorAnimation
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.text_fields.OutlinedTextFieldWithError
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.UpdateDetailsUiState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.MemberUiModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.GrayText
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
@@ -79,7 +83,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 @Composable
 fun GroupDetailsInputScreen(
     screenState: GroupDetailsViewState,
-    uiState: State<GroupDetailsUiState>,
+    uiState: State<UpdateDetailsUiState>,
     isForEditing: Boolean = false,
     handleEvent: (GroupDetailsEvent) -> Unit
 ) {
@@ -93,8 +97,8 @@ fun GroupDetailsInputScreen(
     var kickDialogData by rememberSaveable { mutableStateOf(Pair("", emptyList<String>())) }
 
     when (val state = uiState.value) {
-        GroupDetailsUiState.Idle -> Unit
-        is GroupDetailsUiState.OnError -> {
+        UpdateDetailsUiState.Idle -> Unit
+        is UpdateDetailsUiState.OnError -> {
             if (state.error.isNotBlank()) Toast.makeText(
                 context,
                 state.error,
@@ -104,7 +108,7 @@ fun GroupDetailsInputScreen(
             handleEvent(GroupDetailsEvent.ResetUiState)
         }
 
-        GroupDetailsUiState.OnAvatarError -> {
+        UpdateDetailsUiState.OnAvatarError -> {
             Toast.makeText(
                 context,
                 "Аватарка має розмір більше 1МБ. Будь ласка, оберіть інше фото і повторіть",
@@ -113,14 +117,14 @@ fun GroupDetailsInputScreen(
             handleEvent(GroupDetailsEvent.ResetUiState)
         }
 
-        GroupDetailsUiState.OnGroupSaved -> showSuccessDialog = true
-        GroupDetailsUiState.AddressNotChecked -> {
+        UpdateDetailsUiState.OnSaved -> showSuccessDialog = true
+        UpdateDetailsUiState.AddressNotChecked -> {
             showAddressDialog = true
             dialogTitle = "Ви не перевірили вказану адресу"
             handleEvent(GroupDetailsEvent.ResetUiState)
         }
 
-        GroupDetailsUiState.AddressNotFound -> {
+        UpdateDetailsUiState.AddressNotFound -> {
             showAddressDialog = true
             dialogTitle = "Вказано неіснуючу адресу"
             handleEvent(GroupDetailsEvent.ResetUiState)
@@ -134,6 +138,11 @@ fun GroupDetailsInputScreen(
             .fillMaxSize()
             .padding(horizontal = 16.dp)
     ) {
+        val color = infiniteColorAnimation(
+            initialValue = Color.White,
+            targetValue = Color.Red,
+            duration = 1000
+        )
         OutlinedTextFieldWithError(
             value = screenState.address,
             onValueChange = {
@@ -144,7 +153,14 @@ fun GroupDetailsInputScreen(
             hint = "Адреса",
             trailingIcon = {
                 IconButton(
-                    onClick = { handleEvent(GroupDetailsEvent.GetLocationFromAddress) }
+                    onClick = { handleEvent(GroupDetailsEvent.GetLocationFromAddress) },
+                    modifier = Modifier
+                        .padding(4.dp)
+                        .border(
+                            width = 1.dp,
+                            color = if (screenState.isAddressChecked) Color.Transparent else color,
+                            shape = RoundedCornerShape(2.dp)
+                        )
                 ) {
                     if (screenState.isAddressChecked) {
                         Icon(
@@ -619,47 +635,9 @@ fun GroupDetailsInputScreen(
     }
 
     if (showAddressDialog) {
-        AlertDialog(onDismissRequest = { showAddressDialog = false }) {
-            Column(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(8.dp))
-                    .background(MaterialTheme.colorScheme.background)
-                    .padding(16.dp)
-                    .fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.LocationOn,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary
-                )
-
-                Text(
-                    modifier = Modifier
-                        .padding(top = 16.dp)
-                        .padding(horizontal = 16.dp)
-                        .fillMaxWidth(),
-                    text = dialogTitle,
-                    fontSize = 14.sp,
-                    textAlign = TextAlign.Start,
-                    fontFamily = redHatDisplayFontFamily
-                )
-
-                Text(
-                    text = "Зрозуміло",
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center,
-                    color = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier
-                        .wrapContentWidth()
-                        .align(Alignment.End)
-                        .clickable {
-                            showAddressDialog = false
-                        }
-                        .padding(16.dp)
-                )
-            }
-        }
+        AddressNotCheckedDialog(
+            title = dialogTitle
+        ) { showAddressDialog = false }
     }
 
     if (showKickDialog) {

@@ -18,14 +18,14 @@ import androidx.compose.ui.unit.dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.LoadingIndicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.SurfaceWithNavigationBars
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.headers.HeaderWithToolbar
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.UpdateDetailsUiState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.group_details.GroupDetailsEvent
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.group_details.GroupDetailsInputScreen
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.group_details.GroupDetailsUiState
 
 @Composable
 fun CreateGroupScreen(
     screenState: CreateGroupViewState,
-    uiState: State<GroupDetailsUiState>,
+    uiState: State<UpdateDetailsUiState>,
     handleEvent: (GroupDetailsEvent) -> Unit
 ) {
     SurfaceWithNavigationBars {
@@ -65,7 +65,7 @@ fun CreateGroupScreen(
 fun CreateGroupScreenPreview() {
     CreateGroupScreen(
         screenState = CreateGroupViewState(),
-        uiState = remember { mutableStateOf(GroupDetailsUiState.Idle) },
+        uiState = remember { mutableStateOf(UpdateDetailsUiState.Idle) },
         handleEvent = {}
     )
 }

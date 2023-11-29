@@ -20,7 +20,7 @@ interface LocationInteractor {
 
     fun getAddressFromLocation(latLng: LatLng, onSuccess:(String) -> Unit)
 
-    fun getLocationFromAddress(address: String, onSuccess:(LatLng) -> Unit)
+    fun getLocationFromAddress(address: String, onSuccess:(LatLng?) -> Unit)
 
     fun requestCurrentLocation(onSuccess:(LatLng) -> Unit)
 
@@ -80,13 +80,13 @@ class LocationInteractorImpl(
         }
     }
 
-    override fun getLocationFromAddress(address: String, onSuccess:(LatLng) -> Unit) {
+    override fun getLocationFromAddress(address: String, onSuccess:(LatLng?) -> Unit) {
         coroutineScope.networkExecutor<LatLng?> {
             execute {
                 locationRepository.getLocationFromAddress(address)
             }
             onSuccess {
-                it?.let { onSuccess(it) }
+                onSuccess(it)
             }
             onError(networkListener::onError)
             onLoading(networkListener::onLoading)

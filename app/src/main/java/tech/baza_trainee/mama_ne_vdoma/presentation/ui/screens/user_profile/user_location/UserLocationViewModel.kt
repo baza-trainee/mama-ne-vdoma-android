@@ -14,7 +14,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.LocationInteract
 import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.NetworkEventsListener
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.UserProfileRoutes
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.LocationUiState
 
 class UserLocationViewModel(
     private val preferencesDatastoreManager: UserPreferencesDatastoreManager,
@@ -25,8 +25,8 @@ class UserLocationViewModel(
     private val _viewState = MutableStateFlow(UserLocationViewState())
     val viewState: StateFlow<UserLocationViewState> = _viewState.asStateFlow()
 
-    private val _uiState = mutableStateOf<RequestState>(RequestState.Idle)
-    val uiState: State<RequestState>
+    private val _uiState = mutableStateOf<LocationUiState>(LocationUiState.Idle)
+    val uiState: State<LocationUiState>
         get() = _uiState
 
     init {
@@ -52,12 +52,12 @@ class UserLocationViewModel(
     }
 
     override fun onError(error: String) {
-        _uiState.value = RequestState.OnError(error)
+        _uiState.value = LocationUiState.OnError(error)
     }
 
     fun handleUserLocationEvent(event: UserLocationEvent) {
         when(event) {
-            UserLocationEvent.ResetUiState -> _uiState.value = RequestState.Idle
+            UserLocationEvent.ResetUiState -> _uiState.value = LocationUiState.Idle
             UserLocationEvent.GetLocationFromAddress -> getLocationFromAddress()
             UserLocationEvent.RequestUserLocation -> requestCurrentLocation()
             is UserLocationEvent.UpdateUserAddress -> updateUserAddress(event.address)
@@ -76,19 +76,21 @@ class UserLocationViewModel(
     }
 
     private fun saveUserLocation() {
-        saveUserLocation(_viewState.value.currentLocation,
-            onStart = {
-                getAddressFromLocation(
-                    LatLng(
-                        _viewState.value.currentLocation.latitude,
-                        _viewState.value.currentLocation.longitude
+        if (_viewState.value.isAddressChecked) {
+            saveUserLocation(_viewState.value.currentLocation,
+                onStart = {
+                    getAddressFromLocation(
+                        LatLng(
+                            _viewState.value.currentLocation.latitude,
+                            _viewState.value.currentLocation.longitude
+                        )
                     )
-                )
-            },
-            onSuccess = {
-                navigator.navigate(UserProfileRoutes.ParentSchedule)
-            }
-        )
+                },
+                onSuccess = {
+                    navigator.navigate(UserProfileRoutes.ParentSchedule)
+                }
+            )
+        } else _uiState.value = LocationUiState.AddressNotChecked
     }
 
     private fun requestCurrentLocation() {
@@ -106,7 +108,8 @@ class UserLocationViewModel(
         preferencesDatastoreManager.address = address
         _viewState.update {
             it.copy(
-                address = address
+                address = address,
+                isAddressChecked = false
             )
         }
     }
@@ -114,10 +117,15 @@ class UserLocationViewModel(
     private fun getLocationFromAddress() {
         getLocationFromAddress(_viewState.value.address) { location ->
             if (_viewState.value.currentLocation != location)
-                _viewState.update {
-                    it.copy(
-                        currentLocation = location
-                    )
+                location?.let {
+                    _viewState.update {
+                        it.copy(
+                            currentLocation = location,
+                            isAddressChecked = true
+                        )
+                    }
+                } ?: run {
+                    _uiState.value = LocationUiState.AddressNotFound
                 }
         }
     }

@@ -1,5 +1,6 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.user_location
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -8,54 +9,74 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
+import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ButtonText
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.CustomGoogleMap
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.LoadingIndicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.SurfaceWithNavigationBars
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.dialogs.AddressNotCheckedDialog
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.functions.LocationPermission
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.functions.infiniteColorAnimation
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.headers.HeaderWithOptArrow
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.text_fields.OutlinedTextFieldWithError
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.LocationUiState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.showToast
 
 @Composable
 fun UserLocationScreen(
     screenState: UserLocationViewState,
-    uiState: State<RequestState>,
+    uiState: State<LocationUiState>,
     handleEvent: (UserLocationEvent) -> Unit
 ) {
     SurfaceWithNavigationBars {
         val context = LocalContext.current
 
+        var showAddressDialog by rememberSaveable { mutableStateOf(false) }
+        var dialogTitle by rememberSaveable { mutableStateOf("") }
+
         when (val state = uiState.value) {
-            RequestState.Idle -> Unit
-            is RequestState.OnError -> {
+            LocationUiState.Idle -> Unit
+
+            is LocationUiState.OnError -> {
                 context.showToast(state.error)
+                handleEvent(UserLocationEvent.ResetUiState)
+            }
+
+            LocationUiState.AddressNotChecked -> {
+                showAddressDialog = true
+                dialogTitle = "Ви не перевірили вказану адресу"
+                handleEvent(UserLocationEvent.ResetUiState)
+            }
+
+            LocationUiState.AddressNotFound -> {
+                showAddressDialog = true
+                dialogTitle = "Вказано неіснуючу адресу"
                 handleEvent(UserLocationEvent.ResetUiState)
             }
         }
@@ -98,7 +119,13 @@ fun UserLocationScreen(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            OutlinedTextField(
+            val color = infiniteColorAnimation(
+                initialValue = Color.White,
+                targetValue = Color.Red,
+                duration = 1000
+            )
+
+            OutlinedTextFieldWithError(
                 value = screenState.address,
                 onValueChange = {
                     handleEvent(UserLocationEvent.UpdateUserAddress(it))
@@ -106,25 +133,34 @@ fun UserLocationScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp),
-                label = { Text("Введіть вашу адресу") },
-                placeholder = { Text("Адреса") },
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedContainerColor = MaterialTheme.colorScheme.surface,
-                    unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-                    disabledContainerColor = MaterialTheme.colorScheme.surface,
-                    focusedBorderColor = MaterialTheme.colorScheme.primary,
-                    unfocusedBorderColor = MaterialTheme.colorScheme.surface,
-                ),
+                label = "Введіть Вашу адресу",
+                hint = "Адреса",
                 trailingIcon = {
                     IconButton(
-                        onClick = { handleEvent(UserLocationEvent.GetLocationFromAddress) }
+                        onClick = { handleEvent(UserLocationEvent.GetLocationFromAddress) },
+                        modifier = Modifier
+                            .padding(4.dp)
+                            .border(
+                                width = 1.dp,
+                                color = if (screenState.isAddressChecked) Color.Transparent else color,
+                                shape = RoundedCornerShape(2.dp)
+                            )
                     ) {
-                        Icon(
-                            imageVector = Icons.Filled.Search,
-                            contentDescription = "search_location"
-                        )
+                        if (screenState.isAddressChecked) {
+                            Icon(
+                                painterResource(id = R.drawable.ic_done),
+                                contentDescription = "search_location",
+                            )
+                        } else {
+                            Icon(
+                                imageVector = Icons.Filled.LocationOn,
+                                contentDescription = "search_location"
+                            )
+                        }
                     }
                 },
+                isError = !screenState.isAddressChecked,
+                errorText = "Адреса не перевірена",
                 maxLines = 2,
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Text,
@@ -146,9 +182,15 @@ fun UserLocationScreen(
                     text = "Далі"
                 )
             }
-
-            if (screenState.isLoading) LoadingIndicator()
         }
+
+        if (showAddressDialog) {
+            AddressNotCheckedDialog(
+                title = dialogTitle
+            ) { showAddressDialog = false }
+        }
+
+        if (screenState.isLoading) LoadingIndicator()
     }
 }
 
@@ -158,7 +200,7 @@ fun UserLocationPreview() {
     UserLocationScreen(
         screenState = UserLocationViewState(),
         uiState = remember {
-            mutableStateOf(RequestState.Idle)
+            mutableStateOf(LocationUiState.Idle)
         },
         handleEvent = { _ -> }
     )

@@ -3,6 +3,7 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.standalone.
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -13,15 +14,14 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
@@ -30,9 +30,11 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -46,19 +48,22 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.CustomGoogleMap
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.LoadingIndicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.SurfaceWithNavigationBars
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.dialogs.AddressNotCheckedDialog
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.functions.LocationPermission
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.functions.infiniteColorAnimation
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.headers.HeaderWithToolbar
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.text_fields.OutlinedTextFieldWithError
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.LocationUiState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.SemiTransparent
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.SliderColor
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.showToast
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SetAreaForSearchScreen(
     screenState: SetAreaViewState = SetAreaViewState(),
-    uiState: State<RequestState> = mutableStateOf(RequestState.Idle),
+    uiState: State<LocationUiState> = mutableStateOf(LocationUiState.Idle),
     handleEvent: (SetAreaEvent) -> Unit = { _ -> }
 ) {
     SurfaceWithNavigationBars {
@@ -66,10 +71,25 @@ fun SetAreaForSearchScreen(
 
         val context = LocalContext.current
 
+        var showAddressDialog by rememberSaveable { mutableStateOf(false) }
+        var dialogTitle by rememberSaveable { mutableStateOf("") }
+
         when (val state = uiState.value) {
-            RequestState.Idle -> Unit
-            is RequestState.OnError -> {
+            LocationUiState.Idle -> Unit
+            is LocationUiState.OnError -> {
                 context.showToast(state.error)
+                handleEvent(SetAreaEvent.ResetUiState)
+            }
+
+            LocationUiState.AddressNotChecked -> {
+                showAddressDialog = true
+                dialogTitle = "Ви не перевірили вказану адресу"
+                handleEvent(SetAreaEvent.ResetUiState)
+            }
+
+            LocationUiState.AddressNotFound -> {
+                showAddressDialog = true
+                dialogTitle = "Вказано неіснуючу адресу"
                 handleEvent(SetAreaEvent.ResetUiState)
             }
         }
@@ -124,7 +144,13 @@ fun SetAreaForSearchScreen(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            OutlinedTextField(
+            val color = infiniteColorAnimation(
+                initialValue = Color.White,
+                targetValue = Color.Red,
+                duration = 1000
+            )
+
+            OutlinedTextFieldWithError(
                 value = screenState.address,
                 onValueChange = {
                     handleEvent(
@@ -134,25 +160,34 @@ fun SetAreaForSearchScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp),
-                label = { Text("Введіть вашу адресу") },
-                placeholder = { Text("Адреса") },
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedContainerColor = MaterialTheme.colorScheme.surface,
-                    unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-                    disabledContainerColor = MaterialTheme.colorScheme.surface,
-                    focusedBorderColor = MaterialTheme.colorScheme.primary,
-                    unfocusedBorderColor = MaterialTheme.colorScheme.surface,
-                ),
+                label = "Введіть Вашу адресу",
+                hint = "Адреса",
                 trailingIcon = {
                     IconButton(
-                        onClick = { handleEvent(SetAreaEvent.GetLocationFromAddress) }
+                        onClick = { handleEvent(SetAreaEvent.GetLocationFromAddress) },
+                        modifier = Modifier
+                            .padding(4.dp)
+                            .border(
+                                width = 1.dp,
+                                color = if (screenState.isAddressChecked) Color.Transparent else color,
+                                shape = RoundedCornerShape(2.dp)
+                            )
                     ) {
-                        Icon(
-                            imageVector = Icons.Filled.Search,
-                            contentDescription = "search_location"
-                        )
+                        if (screenState.isAddressChecked) {
+                            Icon(
+                                painterResource(id = R.drawable.ic_done),
+                                contentDescription = "search_location",
+                            )
+                        } else {
+                            Icon(
+                                imageVector = Icons.Filled.LocationOn,
+                                contentDescription = "search_location"
+                            )
+                        }
                     }
-                }
+                },
+                isError = !screenState.isAddressChecked,
+                errorText = "Адреса не перевірена"
             )
 
             Slider(
@@ -208,12 +243,18 @@ fun SetAreaForSearchScreen(
                     .padding(horizontal = 16.dp, vertical = 16.dp)
                     .fillMaxWidth()
                     .height(48.dp),
-                onClick = { handleEvent(SetAreaEvent.SaveArea) }
+                onClick = { handleEvent(SetAreaEvent.SaveArea) },
             ) {
                 ButtonText(
                     text = "Далі"
                 )
             }
+        }
+
+        if (showAddressDialog) {
+            AddressNotCheckedDialog(
+                title = dialogTitle
+            ) { showAddressDialog = false }
         }
 
         if (screenState.isLoading) LoadingIndicator()
@@ -225,7 +266,7 @@ fun SetAreaForSearchScreen(
 fun SetAreaForSearchScreenPreview() {
     SetAreaForSearchScreen(
         screenState = SetAreaViewState(),
-        uiState = remember { mutableStateOf(RequestState.Idle) },
+        uiState = remember { mutableStateOf(LocationUiState.Idle) },
         handleEvent = { _ -> }
     )
 }

@@ -5,6 +5,7 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -25,7 +26,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Error
-import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -74,9 +75,12 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.CustomGoogleMap
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.LoadingIndicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.UserAvatarWithCameraAndGallery
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.dialogs.AddressNotCheckedDialog
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.dialogs.DangerousActionAlertDialog
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.functions.LocationPermission
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.functions.infiniteColorAnimation
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.text_fields.OutlinedTextFieldWithError
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.UpdateDetailsUiState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.edit.dialogs.ChildScheduleEditDialog
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.edit.dialogs.ParentScheduleEditDialog
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.GrayText
@@ -88,7 +92,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 @Composable
 fun EditProfileScreen(
     screenState: EditProfileViewState,
-    uiState: State<EditProfileUiState>,
+    uiState: State<UpdateDetailsUiState>,
     handleEvent: (EditProfileEvent) -> Unit
 ) {
     var exitScreen by remember { mutableIntStateOf(-1) }
@@ -96,18 +100,20 @@ fun EditProfileScreen(
     BackHandler { exitScreen = 0 }
 
     var showSuccessDialog by rememberSaveable { mutableStateOf(false) }
+    var showAddressDialog by rememberSaveable { mutableStateOf(false) }
+    var dialogTitle by rememberSaveable { mutableStateOf("") }
 
     val context = LocalContext.current
 
     when (val state = uiState.value) {
-        EditProfileUiState.Idle -> Unit
-        is EditProfileUiState.OnError -> {
+        UpdateDetailsUiState.Idle -> Unit
+        is UpdateDetailsUiState.OnError -> {
             if (state.error.isNotBlank()) Toast.makeText(context, state.error, Toast.LENGTH_LONG)
                 .show()
             handleEvent(EditProfileEvent.ResetUiState)
         }
 
-        EditProfileUiState.OnAvatarError -> {
+        UpdateDetailsUiState.OnAvatarError -> {
             Toast.makeText(
                 context,
                 "Аватарка має розмір більше 1МБ. Будь ласка, оберіть інше фото і повторіть",
@@ -116,7 +122,18 @@ fun EditProfileScreen(
             handleEvent(EditProfileEvent.ResetUiState)
         }
 
-        EditProfileUiState.OnProfileSaved -> showSuccessDialog = true
+        UpdateDetailsUiState.OnSaved -> showSuccessDialog = true
+        UpdateDetailsUiState.AddressNotChecked -> {
+            showAddressDialog = true
+            dialogTitle = "Ви не перевірили вказану адресу"
+            handleEvent(EditProfileEvent.ResetUiState)
+        }
+
+        UpdateDetailsUiState.AddressNotFound -> {
+            showAddressDialog = true
+            dialogTitle = "Вказано неіснуючу адресу"
+            handleEvent(EditProfileEvent.ResetUiState)
+        }
     }
 
     val focusRequester = remember { FocusRequester() }
@@ -367,31 +384,46 @@ fun EditProfileScreen(
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        OutlinedTextField(
+        val color = infiniteColorAnimation(
+            initialValue = Color.White,
+            targetValue = Color.Red,
+            duration = 1000
+        )
+
+        OutlinedTextFieldWithError(
             value = screenState.address,
             onValueChange = {
                 handleEvent(EditProfileEvent.UpdateUserAddress(it))
             },
             modifier = Modifier.fillMaxWidth(),
-            label = { Text("Введіть вашу адресу") },
-            placeholder = { Text("Адреса") },
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedContainerColor = MaterialTheme.colorScheme.surface,
-                unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-                disabledContainerColor = MaterialTheme.colorScheme.surface,
-                focusedBorderColor = MaterialTheme.colorScheme.primary,
-                unfocusedBorderColor = MaterialTheme.colorScheme.surface,
-            ),
+            label = "Введіть Вашу адресу",
+            hint = "Адреса",
             trailingIcon = {
                 IconButton(
-                    onClick = { handleEvent(EditProfileEvent.GetLocationFromAddress) }
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.Search,
-                        contentDescription = "search_location"
+                    onClick = { handleEvent(EditProfileEvent.GetLocationFromAddress) },
+                    modifier = Modifier
+                        .padding(4.dp)
+                        .border(
+                        width = 1.dp,
+                        color = if (screenState.isAddressChecked) Color.Transparent else color,
+                        shape = RoundedCornerShape(2.dp)
                     )
+                ) {
+                    if (screenState.isAddressChecked) {
+                        Icon(
+                            painterResource(id = R.drawable.ic_done),
+                            contentDescription = "search_location",
+                        )
+                    } else {
+                        Icon(
+                            imageVector = Icons.Filled.LocationOn,
+                            contentDescription = "search_location"
+                        )
+                    }
                 }
             },
+            isError = !screenState.isAddressChecked,
+            errorText = "Адреса не перевірена",
             maxLines = 2
         )
 
@@ -689,6 +721,12 @@ fun EditProfileScreen(
                 }
             }
         }
+
+        if (showAddressDialog) {
+            AddressNotCheckedDialog(
+                title = dialogTitle
+            ) { showAddressDialog = false }
+        }
     }
 
     if (screenState.isLoading) LoadingIndicator()
@@ -699,7 +737,7 @@ fun EditProfileScreen(
 fun EditProfileScreenPreview() {
     EditProfileScreen(
         screenState = EditProfileViewState(),
-        uiState = remember { mutableStateOf(EditProfileUiState.Idle) },
+        uiState = remember { mutableStateOf(UpdateDetailsUiState.Idle) },
         handleEvent = { _ -> }
     )
 }
