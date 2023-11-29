@@ -102,6 +102,16 @@ val gsoModule = module {
     single { Identity.getSignInClient(androidContext()) }
 }
 
+val communicatorsModule = module {
+    single(named(SCHEDULE)) { Communicator(getDefaultSchedule()) }
+    single(named(STRINGS)) { Communicator("") }
+    single { CropImageCommunicator() }
+    single { SearchResultsCommunicator() }
+    single { EditProfileCommunicator() }
+    single(named(UPDATE_GROUP)) { Communicator(GroupUiModel()) }
+    single { VerifyEmailCommunicator() }
+}
+
 val repoModule = module {
     single {
         ChuckerInterceptor.Builder(androidContext())
@@ -148,8 +158,6 @@ val commonScreensModule = module {
 
 val userCreateModule = module {
     single { PhoneNumberUtil.createInstance(androidContext()) }
-    val SCHEDULE = "SCHEDULE"
-    single(named(SCHEDULE)) { Communicator(getDefaultSchedule()) }
     viewModel { UserInfoViewModel(get(named(SCHEDULE)), get(), get(), get(), get()) }
     viewModel { UserLocationViewModel(get(), get(), get()) }
     viewModel { ChildrenInfoViewModel(get(), get()) }
@@ -159,7 +167,6 @@ val userCreateModule = module {
 }
 
 val verifyEmailModule = module {
-    single { VerifyEmailCommunicator() }
     viewModel { VerifyEmailViewModel(get(), get(), get(), get()) }
 }
 
@@ -173,7 +180,6 @@ val loginKoinModule = module {
 }
 
 val standaloneGroupSearchModule = module {
-    single(named(STRINGS)) { Communicator("") }
     viewModel { (navigator: ScreenNavigator) -> ImageCropViewModel(navigator, get(), get()) }
     viewModel { (isForSearch: Boolean) ->
         ChooseChildStandaloneViewModel(
@@ -194,12 +200,6 @@ val standaloneGroupSearchModule = module {
 }
 
 val mainModule = module {
-    single { CropImageCommunicator() }
-    single { SearchResultsCommunicator() }
-    single { EditProfileCommunicator() }
-
-    val UPDATE_GROUP = "UPDATE_GROUP"
-    single(named(UPDATE_GROUP)) { Communicator(GroupUiModel()) }
     single<PageNavigator> { PageNavigatorImpl() }
 
     viewModel { (page: Int) ->
@@ -303,3 +303,5 @@ fun createSSLSocketFactory(context: Context): Pair<SSLSocketFactory, X509TrustMa
 private const val CHUCKER_CONTENT_MAX_LENGTH = 250000L
 private const val TIMEOUT = 30L
 private const val STRINGS = "STRINGS"
+private const val SCHEDULE = "SCHEDULE"
+private const val UPDATE_GROUP = "UPDATE_GROUP"

@@ -21,7 +21,8 @@ fun initKoin(context: Context) {
                 standaloneGroupSearchModule,
                 mainModule,
                 commonScreensModule,
-                gsoModule
+                gsoModule,
+                communicatorsModule
             )
         )
     }

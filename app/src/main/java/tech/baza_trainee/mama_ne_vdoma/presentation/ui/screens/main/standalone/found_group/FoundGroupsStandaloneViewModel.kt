@@ -32,7 +32,7 @@ class FoundGroupsStandaloneViewModel(
     private val groupsRepository: GroupsRepository,
     private val navigator: ScreenNavigator,
     private val preferencesDatastoreManager: UserPreferencesDatastoreManager,
-    groupsInteractor: GroupsInteractor
+    private val groupsInteractor: GroupsInteractor
 ): ViewModel(), GroupsInteractor by groupsInteractor, NetworkEventsListener {
 
     private val _viewState = MutableStateFlow(FoundGroupViewState())
