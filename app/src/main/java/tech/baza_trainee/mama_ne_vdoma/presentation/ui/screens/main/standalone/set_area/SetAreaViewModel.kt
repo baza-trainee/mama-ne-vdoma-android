@@ -36,11 +36,13 @@ class SetAreaViewModel(
             setLocationCoroutineScope(viewModelScope)
             setLocationNetworkListener(this@SetAreaViewModel)
         }
+
         val location = LatLng(
             preferencesDatastoreManager.latitude,
             preferencesDatastoreManager.longitude
         )
         getAddressFromLocation(location)
+
         _viewState.update {
             it.copy(
                 avatar = preferencesDatastoreManager.avatarUri,
@@ -70,7 +72,6 @@ class SetAreaViewModel(
             is SetAreaEvent.SetAreaRadius -> setRadius(event.radius)
             is SetAreaEvent.OnMapClick -> setLocation(event.location)
             SetAreaEvent.SaveArea -> checkFields()
-
             SetAreaEvent.OnBack -> navigator.goBack()
             SetAreaEvent.OnAvatarClicked ->
                 navigator.navigate(HostScreenRoutes.Host.getDestination(SETTINGS_PAGE))
@@ -116,11 +117,11 @@ class SetAreaViewModel(
         }
     }
 
-    private fun updateUserAddress(address: String) {
+    private fun updateUserAddress(address: String, isChecked: Boolean = false) {
         _viewState.update {
             it.copy(
                 address = address,
-                isAddressChecked = false
+                isAddressChecked = isChecked
             )
         }
     }
@@ -131,7 +132,7 @@ class SetAreaViewModel(
                 _viewState.update {
                     it.copy(
                         currentLocation = location,
-                            isAddressChecked = true
+                        isAddressChecked = true
                     )
                 }
             } ?: run {
@@ -142,7 +143,7 @@ class SetAreaViewModel(
 
     private fun getAddressFromLocation(latLng: LatLng) {
         getAddressFromLocation(latLng) {
-            updateUserAddress(it)
+            updateUserAddress(it, true)
         }
     }
 }

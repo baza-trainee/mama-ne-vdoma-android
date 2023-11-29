@@ -115,32 +115,29 @@ fun SetAreaForSearchScreen(
                 onBack = { handleEvent(SetAreaEvent.OnBack) }
             )
 
-            Box(
+            CustomGoogleMap(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(0.7f)
+                    .weight(0.7f),
+                location = screenState.currentLocation,
+                showMyLocationButton = isPermissionGranted,
+                onMyLocationButtonClick = { handleEvent(SetAreaEvent.RequestUserLocation) },
+                onMapClick = { handleEvent(SetAreaEvent.OnMapClick(it)) }
             ) {
-                CustomGoogleMap(
-                    modifier = Modifier.fillMaxWidth(),
-                    location = screenState.currentLocation,
-                    showMyLocationButton = isPermissionGranted,
-                    onMyLocationButtonClick = { handleEvent(SetAreaEvent.RequestUserLocation) },
-                    onMapClick = { handleEvent(SetAreaEvent.OnMapClick(it)) }
-                ) {
-                    Marker(
-                        state = MarkerState(position = screenState.currentLocation),
-                        title = "Ви тут",
-                        snippet = "поточне місцезнаходження"
-                    )
+                Marker(
+                    state = MarkerState(position = screenState.currentLocation),
+                    title = "Ви тут",
+                    snippet = "поточне місцезнаходження"
+                )
 
-                    Circle(
-                        center = screenState.currentLocation,
-                        radius = screenState.radius.toDouble(),
-                        strokeColor = MaterialTheme.colorScheme.primary,
-                        fillColor = SemiTransparent
-                    )
-                }
+                Circle(
+                    center = screenState.currentLocation,
+                    radius = screenState.radius.toDouble(),
+                    strokeColor = MaterialTheme.colorScheme.primary,
+                    fillColor = SemiTransparent
+                )
             }
+
 
             Spacer(modifier = Modifier.height(8.dp))
 
@@ -190,6 +187,8 @@ fun SetAreaForSearchScreen(
                 errorText = "Адреса не перевірена"
             )
 
+            Spacer(modifier = Modifier.height(8.dp))
+
             Slider(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -234,7 +233,6 @@ fun SetAreaForSearchScreen(
                                 )
                         )
                     }
-
                 }
             )
 

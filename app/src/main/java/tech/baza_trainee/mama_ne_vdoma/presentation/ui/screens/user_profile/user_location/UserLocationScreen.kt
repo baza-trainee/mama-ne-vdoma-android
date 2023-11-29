@@ -1,7 +1,6 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.user_location
 
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -97,24 +96,20 @@ fun UserLocationScreen(
                         " щоб ви могли підібрати найближчі групи до вас"
             )
 
-            Box(
+            CustomGoogleMap(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(0.7f)
+                    .weight(0.7f),
+                location = screenState.currentLocation,
+                showMyLocationButton = isPermissionGranted,
+                onMyLocationButtonClick = { handleEvent(UserLocationEvent.RequestUserLocation) },
+                onMapClick = { handleEvent(UserLocationEvent.OnMapClick(it)) }
             ) {
-                CustomGoogleMap(
-                    modifier = Modifier.fillMaxWidth(),
-                    location = screenState.currentLocation,
-                    showMyLocationButton = isPermissionGranted,
-                    onMyLocationButtonClick = { handleEvent(UserLocationEvent.RequestUserLocation) },
-                    onMapClick = { handleEvent(UserLocationEvent.OnMapClick(it)) }
-                ) {
-                    Marker(
-                        state = MarkerState(position = screenState.currentLocation),
-                        title = "Ви тут",
-                        snippet = "поточне місцезнаходження"
-                    )
-                }
+                Marker(
+                    state = MarkerState(position = screenState.currentLocation),
+                    title = "Ви тут",
+                    snippet = "поточне місцезнаходження"
+                )
             }
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -167,7 +162,7 @@ fun UserLocationScreen(
                     imeAction = ImeAction.Search
                 ),
                 keyboardActions = KeyboardActions(
-                        onSearch = { handleEvent(UserLocationEvent.GetLocationFromAddress) }
+                    onSearch = { handleEvent(UserLocationEvent.GetLocationFromAddress) }
                 )
             )
 

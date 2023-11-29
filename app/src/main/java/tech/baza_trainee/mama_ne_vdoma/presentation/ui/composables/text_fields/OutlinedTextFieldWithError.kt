@@ -90,7 +90,7 @@ fun OutlinedTextFieldWithError(
         var isFieldFocused by remember { mutableStateOf(false) }
 
         OutlinedTextField(
-            modifier = Modifier
+            modifier = modifier
                 .onFocusChanged {
                     isFieldFocused = it.isFocused
                 }
@@ -128,7 +128,7 @@ fun OutlinedTextFieldWithError(
             Text(
                 text = errorText,
                 color = Color.Red,
-                modifier = Modifier.padding(top = 4.dp),
+                modifier = modifier.padding(top = 4.dp),
                 style = TextStyle(
                     fontFamily = redHatDisplayFontFamily
                 ),

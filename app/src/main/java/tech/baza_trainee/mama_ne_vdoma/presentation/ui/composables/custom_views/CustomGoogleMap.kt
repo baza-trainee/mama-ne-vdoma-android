@@ -59,7 +59,7 @@ fun CustomGoogleMap(
     val properties by remember { mutableStateOf(MapProperties(isMyLocationEnabled = showMyLocationButton)) }
 
     GoogleMap(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         cameraPositionState = cameraPositionState,
         uiSettings = uiSettings,
         properties = properties,

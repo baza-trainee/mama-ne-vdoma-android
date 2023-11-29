@@ -348,24 +348,20 @@ fun EditProfileScreen(
         var isPermissionGranted by remember { mutableStateOf(false) }
         LocationPermission { isPermissionGranted = it }
 
-        Box(
+        CustomGoogleMap(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(160.dp)
+                .height(160.dp),
+            location = screenState.currentLocation,
+            showMyLocationButton = isPermissionGranted,
+            onMyLocationButtonClick = { handleEvent(EditProfileEvent.RequestUserLocation) },
+            onMapClick = { handleEvent(EditProfileEvent.OnMapClick(it)) }
         ) {
-            CustomGoogleMap(
-                modifier = Modifier.fillMaxWidth(),
-                location = screenState.currentLocation,
-                showMyLocationButton = isPermissionGranted,
-                onMyLocationButtonClick = { handleEvent(EditProfileEvent.RequestUserLocation) },
-                onMapClick = { handleEvent(EditProfileEvent.OnMapClick(it)) }
-            ) {
-                Marker(
-                    state = MarkerState(position = screenState.currentLocation),
-                    title = "Ви тут",
-                    snippet = "поточне місцезнаходження"
-                )
-            }
+            Marker(
+                state = MarkerState(position = screenState.currentLocation),
+                title = "Ви тут",
+                snippet = "поточне місцезнаходження"
+            )
         }
 
         Spacer(modifier = Modifier.height(4.dp))
@@ -404,10 +400,10 @@ fun EditProfileScreen(
                     modifier = Modifier
                         .padding(4.dp)
                         .border(
-                        width = 1.dp,
-                        color = if (screenState.isAddressChecked) Color.Transparent else color,
-                        shape = RoundedCornerShape(2.dp)
-                    )
+                            width = 1.dp,
+                            color = if (screenState.isAddressChecked) Color.Transparent else color,
+                            shape = RoundedCornerShape(2.dp)
+                        )
                 ) {
                     if (screenState.isAddressChecked) {
                         Icon(
@@ -554,7 +550,14 @@ fun EditProfileScreen(
             ParentScheduleEditDialog(
                 schedule = screenState.schedule,
                 note = screenState.note,
-                onSave = { schedule, note -> handleEvent(EditProfileEvent.SaveParentInfo(schedule, note)) },
+                onSave = { schedule, note ->
+                    handleEvent(
+                        EditProfileEvent.SaveParentInfo(
+                            schedule,
+                            note
+                        )
+                    )
+                },
                 onDismissRequest = { editUserSchedule = false }
             )
         }
@@ -563,7 +566,14 @@ fun EditProfileScreen(
             ChildScheduleEditDialog(
                 selectedChild = selectedChild,
                 children = screenState.children,
-                onSave = { schedules, notes -> handleEvent(EditProfileEvent.SaveChildren(schedules, notes)) },
+                onSave = { schedules, notes ->
+                    handleEvent(
+                        EditProfileEvent.SaveChildren(
+                            schedules,
+                            notes
+                        )
+                    )
+                },
                 onDismissRequest = { editChildSchedule = false }
             )
         }
@@ -738,6 +748,6 @@ fun EditProfileScreenPreview() {
     EditProfileScreen(
         screenState = EditProfileViewState(),
         uiState = remember { mutableStateOf(UpdateDetailsUiState.Idle) },
-        handleEvent = { _ -> }
+        handleEvent = {}
     )
 }
