@@ -79,13 +79,7 @@ class NotificationsViewModel(
             onError { error ->
                 _uiState.value = NotificationsUiState.OnError(error)
             }
-            onLoading { isLoading ->
-                _viewState.update {
-                    it.copy(
-                        isLoading = isLoading
-                    )
-                }
-            }
+            onLoading(::setProgress)
         }
     }
 
@@ -98,13 +92,7 @@ class NotificationsViewModel(
             onError { error ->
                 _uiState.value = NotificationsUiState.OnError(error)
             }
-            onLoading { isLoading ->
-                _viewState.update {
-                    it.copy(
-                        isLoading = isLoading
-                    )
-                }
-            }
+            onLoading(::setProgress)
         }
     }
 
@@ -117,13 +105,7 @@ class NotificationsViewModel(
             onError { error ->
                 _uiState.value = NotificationsUiState.OnError(error)
             }
-            onLoading { isLoading ->
-                _viewState.update {
-                    it.copy(
-                        isLoading = isLoading
-                    )
-                }
-            }
+            onLoading(::setProgress)
         }
     }
 
@@ -145,18 +127,14 @@ class NotificationsViewModel(
             onError { error ->
                 _uiState.value = NotificationsUiState.OnError(error)
             }
-            onLoading { isLoading ->
-                _viewState.update {
-                    it.copy(
-                        isLoading = isLoading
-                    )
-                }
-            }
+            onLoading(::setProgress)
         }
     }
 
     private fun getGroups(requests: List<JoinRequestEntity>) {
         viewModelScope.launch {
+            setProgress(true)
+
             val requestsList = requests.map { entity ->
                 async {
                     getGroup(entity)
@@ -189,11 +167,7 @@ class NotificationsViewModel(
     }
 
     private suspend fun getGroup(request: JoinRequestEntity): JoinRequestUiModel {
-        _viewState.update {
-            it.copy(
-                isLoading = true
-            )
-        }
+        setProgress(true)
 
         val result = groupsRepository.getGroupById(request.groupId)
         val group = getResult(result) ?: GroupEntity()
@@ -227,11 +201,7 @@ class NotificationsViewModel(
     }
 
     private suspend fun getMember(user: MemberUiModel, isMine: Boolean): MemberUiModel {
-        _viewState.update {
-            it.copy(
-                isLoading = true
-            )
-        }
+        setProgress(true)
 
         val result1 = userProfileRepository.getUserById(user.id)
         val member = getResult(result1) ?: UserProfileEntity()
@@ -273,18 +243,14 @@ class NotificationsViewModel(
             onError { error ->
                 _uiState.value = NotificationsUiState.OnError(error)
             }
-            onLoading { isLoading ->
-                _viewState.update {
-                    it.copy(
-                        isLoading = isLoading
-                    )
-                }
-            }
+            onLoading(::setProgress)
         }
     }
 
     private fun fetchAdminJoinRequests(entityList: List<GroupEntity>) {
         viewModelScope.launch {
+            setProgress(true)
+
             val joinRequests = mutableListOf<List<JoinRequestUiModel>>()
 
             entityList.map { entity ->
@@ -308,17 +274,24 @@ class NotificationsViewModel(
     }
 
     private suspend fun getUserAndChild(groupId: String, member: MemberEntity): JoinRequestUiModel {
-        _viewState.update {
-            it.copy(
-                isLoading = true
-            )
-        }
+        setProgress(true)
 
         val result1 = userProfileRepository.getUserById(member.parentId)
         val parent = getResult(result1) ?: UserProfileEntity()
 
         val result2 = groupsRepository.getGroupFullInfo(groupId)
-        val groupEntity = (getResult(result2) ?: GroupFullInfoEntity())
+        val groupEntity = getResult(result2) ?: GroupFullInfoEntity()
+
+        val result3 = filesRepository.getAvatar(parent.avatar)
+        val avatar = getResult(result3) ?: Uri.EMPTY
+
+        val result4 = locationRepository.getAddressFromLocation(
+            latLng = LatLng(
+                parent.location.coordinates[1],
+                parent.location.coordinates[0]
+            )
+        )
+        val address = getResult(result4).orEmpty()
 
         return JoinRequestUiModel(
             group = GroupUiModel(
@@ -329,6 +302,8 @@ class NotificationsViewModel(
             parentName = parent.name,
             parentEmail = parent.email,
             parentPhone = "${parent.countryCode}${parent.phone}",
+            parentAvatar = avatar,
+            parentAddress = address,
             child = groupEntity.children.find { it.childId == member.childId } ?: ChildEntity()
         )
     }
@@ -341,6 +316,14 @@ class NotificationsViewModel(
             }
 
             is RequestResult.Success -> result.result
+        }
+    }
+
+    private fun setProgress(isLoading: Boolean) {
+        _viewState.update {
+            it.copy(
+                isLoading = isLoading
+            )
         }
     }
 }

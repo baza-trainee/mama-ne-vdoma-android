@@ -99,6 +99,8 @@ class GroupsInteractorImpl(
 
     override fun startFetching(entities: List<GroupEntity>, isMine: Boolean) {
         coroutineScope.launch {
+            networkListener.onLoading(true)
+
             val groupsList = entities.map { entity ->
                 async {
                     getAvatarsAndAddresses(entity)
