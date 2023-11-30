@@ -230,15 +230,15 @@ class NotificationsViewModel(
                 groupsRepository.getGroupsForParent(parent)
             }
             onSuccess { entityList ->
-                if (entityList.flatMap { it.askingJoin }.isNotEmpty()) {
-                    fetchAdminJoinRequests(entityList)
+                val myGroups = entityList.filter { it.adminId == parent }
+                if (myGroups.flatMap { it.askingJoin }.isNotEmpty()) {
+                    fetchAdminJoinRequests(myGroups)
                 } else
                     _viewState.update {
                         it.copy(adminJoinRequests = emptyList())
                     }
 
-                preferencesDatastoreManager.adminJoinRequests =
-                    entityList.flatMap { it.askingJoin }.size
+                preferencesDatastoreManager.adminJoinRequests = myGroups.flatMap { it.askingJoin }.size
             }
             onError { error ->
                 _uiState.value = NotificationsUiState.OnError(error)
