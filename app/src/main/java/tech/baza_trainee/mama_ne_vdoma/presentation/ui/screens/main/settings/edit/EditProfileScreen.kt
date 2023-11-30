@@ -226,6 +226,7 @@ fun EditProfileScreen(
             hint = "Ім'я",
             onValueChange = { handleEvent(EditProfileEvent.ValidateUserName(it)) },
             isError = screenState.nameValid == ValidField.INVALID,
+            isHighlighted = screenState.nameValid == ValidField.EMPTY,
             errorText = "Ви ввели некоректнe ім'я"
         )
 
@@ -258,6 +259,15 @@ fun EditProfileScreen(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
+
+            val isCodeHighlighted = screenState.code.isEmpty()
+
+            val color = infiniteColorAnimation(
+                initialValue = Color.White,
+                targetValue = Color.Red,
+                duration = 1000
+            )
+
             OutlinedTextField(
                 modifier = Modifier
                     .weight(.25f)
@@ -273,12 +283,14 @@ fun EditProfileScreen(
                     focusedContainerColor = SlateGray,
                     unfocusedContainerColor = SlateGray,
                     disabledContainerColor = SlateGray,
-                    focusedBorderColor = MaterialTheme.colorScheme.surface,
-                    unfocusedBorderColor = MaterialTheme.colorScheme.surface,
+                    focusedBorderColor = if (isCodeHighlighted) color else MaterialTheme.colorScheme.surface,
+                    unfocusedBorderColor = if (isCodeHighlighted) color else MaterialTheme.colorScheme.surface,
                     disabledBorderColor = MaterialTheme.colorScheme.primary
                 ),
                 shape = RoundedCornerShape(topStart = 4.dp, bottomStart = 4.dp)
             )
+
+            val isPhoneHighlighted = screenState.phoneValid == ValidField.EMPTY
 
             OutlinedTextField(
                 modifier = Modifier
@@ -308,8 +320,8 @@ fun EditProfileScreen(
                     focusedContainerColor = MaterialTheme.colorScheme.surface,
                     unfocusedContainerColor = MaterialTheme.colorScheme.surface,
                     disabledContainerColor = MaterialTheme.colorScheme.surface,
-                    focusedBorderColor = MaterialTheme.colorScheme.primary,
-                    unfocusedBorderColor = MaterialTheme.colorScheme.surface,
+                    focusedBorderColor = if (isPhoneHighlighted) color else MaterialTheme.colorScheme.primary,
+                    unfocusedBorderColor = if (isPhoneHighlighted) color else MaterialTheme.colorScheme.surface,
                     disabledBorderColor = MaterialTheme.colorScheme.surface
                 ),
                 shape = RoundedCornerShape(topEnd = 4.dp, bottomEnd = 4.dp),
@@ -401,7 +413,7 @@ fun EditProfileScreen(
                         .padding(4.dp)
                         .border(
                             width = 1.dp,
-                            color = if (screenState.isAddressChecked) Color.Transparent else color,
+                            color = if (screenState.isAddressChecked || screenState.address.isEmpty()) Color.Transparent else color,
                             shape = RoundedCornerShape(2.dp)
                         )
                 ) {
@@ -410,7 +422,7 @@ fun EditProfileScreen(
                             painterResource(id = R.drawable.ic_done),
                             contentDescription = "search_location",
                         )
-                    } else {
+                    } else if (screenState.address.isNotEmpty()) {
                         Icon(
                             imageVector = Icons.Filled.LocationOn,
                             contentDescription = "search_location"
@@ -418,7 +430,8 @@ fun EditProfileScreen(
                     }
                 }
             },
-            isError = !screenState.isAddressChecked,
+            isError = !screenState.isAddressChecked && screenState.address.isNotEmpty(),
+            isHighlighted = screenState.address.isEmpty(),
             errorText = "Адреса не перевірена",
             maxLines = 2
         )
@@ -470,7 +483,7 @@ fun EditProfileScreen(
                 fontSize = 14.sp,
                 textDecoration = TextDecoration.Underline,
                 textAlign = TextAlign.End,
-                color = MaterialTheme.colorScheme.primary
+                color = if (screenState.children.isEmpty()) color else MaterialTheme.colorScheme.primary
             )
         }
 

@@ -215,10 +215,10 @@ class EditProfileViewModel(
             _viewState.update {
                 it.copy(
                     name = entity.name,
-                    nameValid = ValidField.VALID,
+                    nameValid = if (entity.name.isNotEmpty()) ValidField.VALID else ValidField.EMPTY,
                     code = entity.countryCode,
                     phone = entity.phone,
-                    phoneValid = ValidField.VALID,
+                    phoneValid = if (entity.phone.isNotEmpty()) ValidField.VALID else ValidField.VALID,
                     schedule = entity.schedule
                 )
             }

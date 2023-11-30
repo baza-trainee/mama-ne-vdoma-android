@@ -26,6 +26,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.functions.infiniteColorAnimation
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 
 @Composable
@@ -78,6 +79,7 @@ fun OutlinedTextFieldWithError(
     leadingIcon: @Composable() (() -> Unit)? = null,
     onValueChange: (String) -> Unit = {},
     isError: Boolean = false,
+    isHighlighted: Boolean = false,
     errorText: String = "",
     minLines: Int = 1,
     maxLines: Int = 1,
@@ -88,6 +90,12 @@ fun OutlinedTextFieldWithError(
         verticalArrangement = Arrangement.Top
     ) {
         var isFieldFocused by remember { mutableStateOf(false) }
+
+        val color = infiniteColorAnimation(
+            initialValue = Color.White,
+            targetValue = Color.Red,
+            duration = 1000
+        )
 
         OutlinedTextField(
             modifier = modifier
@@ -104,8 +112,8 @@ fun OutlinedTextFieldWithError(
                 focusedContainerColor = MaterialTheme.colorScheme.surface,
                 unfocusedContainerColor = MaterialTheme.colorScheme.surface,
                 disabledContainerColor = MaterialTheme.colorScheme.surface,
-                focusedBorderColor = MaterialTheme.colorScheme.primary,
-                unfocusedBorderColor = MaterialTheme.colorScheme.surface,
+                focusedBorderColor = if (isHighlighted) color else MaterialTheme.colorScheme.primary,
+                unfocusedBorderColor = if (isHighlighted) color else MaterialTheme.colorScheme.surface,
             ),
             leadingIcon = leadingIcon,
             trailingIcon = trailingIcon ?: {

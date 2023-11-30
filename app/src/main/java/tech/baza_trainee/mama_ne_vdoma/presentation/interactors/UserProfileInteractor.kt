@@ -132,9 +132,11 @@ class UserProfileInteractorImpl(
     }
 
     override fun validatePhone(phone: String, country: String, onSuccess: (ValidField) -> Unit) {
-        val phoneValid = try {
+        val phoneValid = if (phone.isEmpty()) ValidField.EMPTY
+        else try {
             val fullNumber = preferencesDatastoreManager.code + phone
             val phoneNumber = phoneNumberUtil.parse(fullNumber, country)
+
             if (phoneNumberUtil.isPossibleNumber(phoneNumber)) ValidField.VALID
             else ValidField.INVALID
         } catch (e: Exception) {
@@ -145,7 +147,8 @@ class UserProfileInteractorImpl(
     }
 
     override fun validateName(name: String, onSuccess: (ValidField) -> Unit) {
-        val nameValid = if (name.validateName(NAME_LENGTH)) ValidField.VALID
+        val nameValid = if (name.isEmpty()) ValidField.EMPTY
+        else if (name.validateName(NAME_LENGTH)) ValidField.VALID
         else ValidField.INVALID
 
         preferencesDatastoreManager.name = name

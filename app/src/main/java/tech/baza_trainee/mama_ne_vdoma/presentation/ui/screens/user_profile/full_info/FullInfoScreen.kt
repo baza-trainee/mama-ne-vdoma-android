@@ -2,6 +2,7 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.ful
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
@@ -65,12 +67,6 @@ fun FullInfoScreen(
             }
         }
 
-        val color = infiniteColorAnimation(
-            initialValue = Color.Yellow,
-            targetValue = Color.White,
-            duration = 1000
-        )
-
         Column(
             modifier = Modifier
                 .imePadding()
@@ -106,6 +102,12 @@ fun FullInfoScreen(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
+                val color = infiniteColorAnimation(
+                    initialValue = Color.White,
+                    targetValue = Color.Red,
+                    duration = 1000
+                )
+
                 if (screenState.isUserInfoFilled)
                     ParentInfoDesk(
                         modifier = Modifier.fillMaxWidth(),
@@ -121,7 +123,11 @@ fun FullInfoScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(64.dp)
-                            .background(color)
+                            .border(
+                                color = color,
+                                shape = RoundedCornerShape(2.dp),
+                                width = 1.dp
+                            )
                             .clickable { handleEvent(FullInfoEvent.EditUser) },
                         contentAlignment = Alignment.Center
                     ) {
