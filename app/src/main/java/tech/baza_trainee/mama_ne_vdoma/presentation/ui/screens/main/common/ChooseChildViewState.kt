@@ -7,5 +7,6 @@ import tech.baza_trainee.mama_ne_vdoma.domain.model.ChildEntity
 data class ChooseChildViewState(
     @Stable val children: List<ChildEntity> = emptyList(),
     @Stable val avatar: Uri = Uri.EMPTY,
+    val notifications: Int = 0,
     val isLoading: Boolean = false
 )

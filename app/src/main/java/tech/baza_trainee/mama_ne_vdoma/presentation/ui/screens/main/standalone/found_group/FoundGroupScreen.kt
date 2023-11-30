@@ -82,8 +82,9 @@ fun FoundGroupScreen(
                 modifier = Modifier.fillMaxWidth(),
                 title = "Пошук групи",
                 avatar = screenState.avatar,
-                showNotification = false,
-                onNotificationsClicked = {},
+                showNotification = true,
+                notificationCount = screenState.notifications,
+                onNotificationsClicked = { handleEvent(FoundGroupEvent.GoToNotifications) },
                 onAvatarClicked = { handleEvent(FoundGroupEvent.OnAvatarClicked) },
                 onBack = { handleEvent(FoundGroupEvent.OnBack) }
             )

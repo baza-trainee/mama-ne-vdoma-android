@@ -20,6 +20,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.Standalone
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.ChooseChildEvent
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.ChooseChildViewState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.Communicator
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.NOTIFICATIONS_PAGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.SETTINGS_PAGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
@@ -64,6 +65,9 @@ class ChooseChildStandaloneViewModel(
 
             ChooseChildEvent.OnAvatarClicked ->
                 navigator.navigate(HostScreenRoutes.Host.getDestination(SETTINGS_PAGE))
+
+            ChooseChildEvent.GoToNotifications ->
+                navigator.navigate(HostScreenRoutes.Host.getDestination(NOTIFICATIONS_PAGE))
         }
     }
 

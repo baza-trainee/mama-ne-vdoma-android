@@ -7,6 +7,7 @@ sealed interface FoundGroupEvent {
     data object GoToMain: FoundGroupEvent
     data object CreateGroup: FoundGroupEvent
     data object OnAvatarClicked: FoundGroupEvent
+    data object GoToNotifications : FoundGroupEvent
 
     data class OnSelect(val group: String): FoundGroupEvent
 }

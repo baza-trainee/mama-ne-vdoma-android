@@ -109,8 +109,9 @@ fun SetAreaForSearchScreen(
                 modifier = Modifier.fillMaxWidth(),
                 title = "Пошук групи",
                 avatar = screenState.avatar,
-                showNotification = false,
-                onNotificationsClicked = {},
+                showNotification = true,
+                notificationCount = screenState.notifications,
+                onNotificationsClicked = { handleEvent(SetAreaEvent.GoToNotifications) },
                 onAvatarClicked = { handleEvent(SetAreaEvent.OnAvatarClicked) },
                 onBack = { handleEvent(SetAreaEvent.OnBack) }
             )

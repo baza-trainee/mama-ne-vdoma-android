@@ -119,6 +119,7 @@ class FullInfoViewModel(
         getUserInfo { entity ->
             val _isUserInfoFilled = entity.name.isNotEmpty() &&
                     entity.phone.isNotEmpty() &&
+                    entity.location.coordinates.isNotEmpty() && entity.location.coordinates.none { it == 0.00 } &&
                     entity.schedule.values.any { it.isFilled() }
 
             getUserAvatar(entity.avatar)

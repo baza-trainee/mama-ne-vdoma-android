@@ -44,17 +44,23 @@ class LoginViewModel(
         get() = _uiState
 
     fun handleLoginEvent(event: LoginEvent) {
-        when(event) {
-            LoginEvent.LoginUser -> loginWithPassword(_viewState.value.email, _viewState.value.password)
+        when (event) {
+            LoginEvent.LoginUser -> loginWithPassword(
+                _viewState.value.email,
+                _viewState.value.password
+            )
+
             LoginEvent.ResetUiState -> _uiState.value = RequestState.Idle
             LoginEvent.OnBack -> {
                 clearInputs()
                 navigator.navigate(Graphs.Start)
             }
+
             LoginEvent.OnCreate -> {
                 clearInputs()
                 navigator.navigate(Graphs.CreateUser)
             }
+
             LoginEvent.OnRestore -> {
                 clearInputs()
                 navigator.navigate(LoginRoutes.RestorePassword)
@@ -141,12 +147,9 @@ class LoginViewModel(
             preferencesDatastoreManager.fcmToken = Firebase.messaging.token.await()
         }
 
-        if (id == preferencesDatastoreManager.id) {
-            if (preferencesDatastoreManager.isUserProfileFilled)
-                navigator.navigate(HostScreenRoutes.Host.getDestination(MAIN_PAGE))
-            else
-                navigator.navigate(UserProfileRoutes.FullProfile)
-        } else {
+        if (id == preferencesDatastoreManager.id)
+            navigator.navigate(HostScreenRoutes.Host.getDestination(MAIN_PAGE))
+        else {
             val cookies = preferencesDatastoreManager.cookies
             preferencesDatastoreManager.clearData()
             preferencesDatastoreManager.cookies = cookies

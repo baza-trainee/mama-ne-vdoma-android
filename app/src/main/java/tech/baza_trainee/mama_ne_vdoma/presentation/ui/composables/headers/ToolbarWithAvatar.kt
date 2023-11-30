@@ -97,25 +97,26 @@ fun ToolbarWithAvatar(
                 .fillMaxWidth()
                 .weight(1f)
         )
-        Box(
-            modifier = Modifier
-                .fillMaxHeight()
-                .padding(16.dp)
-                .clickable {
-                    onNotificationsClicked()
-                },
-            contentAlignment = Alignment.Center
-        ) {
-            Image(
-                modifier = Modifier
-                    .height(32.dp)
-                    .width(32.dp),
-                painter = painterResource(id = R.drawable.ic_notification),
-                contentDescription = "notification",
-                contentScale = ContentScale.Fit
-            )
 
-            if (showNotification) {
+
+        if (showNotification) {
+            Box(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .padding(16.dp)
+                    .clickable {
+                        onNotificationsClicked()
+                    },
+                contentAlignment = Alignment.Center
+            ) {
+                Image(
+                    modifier = Modifier
+                        .height(32.dp)
+                        .width(32.dp),
+                    painter = painterResource(id = R.drawable.ic_notification),
+                    contentDescription = "notification",
+                    contentScale = ContentScale.Fit
+                )
                 Badge(
                     modifier = Modifier
                         .align(Alignment.TopEnd)

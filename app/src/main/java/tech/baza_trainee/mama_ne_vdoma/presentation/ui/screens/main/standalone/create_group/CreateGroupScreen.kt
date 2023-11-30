@@ -41,8 +41,9 @@ fun CreateGroupScreen(
                 modifier = Modifier.fillMaxWidth(),
                 title = "Створення нової групи",
                 avatar = screenState.groupDetails.userAvatar,
-                showNotification = false,
-                onNotificationsClicked = {},
+                showNotification = true,
+                notificationCount = screenState.notifications,
+                onNotificationsClicked = { handleEvent(GroupDetailsEvent.GoToNotifications) },
                 onAvatarClicked = { handleEvent(GroupDetailsEvent.OnAvatarClicked) },
                 onBack = { handleEvent(GroupDetailsEvent.OnBack) }
             )

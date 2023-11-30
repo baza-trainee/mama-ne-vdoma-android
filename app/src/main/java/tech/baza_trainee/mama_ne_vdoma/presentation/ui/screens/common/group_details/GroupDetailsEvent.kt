@@ -20,5 +20,6 @@ sealed interface GroupDetailsEvent {
     data object OnDeletePhoto: GroupDetailsEvent
     data object GoToMain: GroupDetailsEvent
     data object OnAvatarClicked : GroupDetailsEvent
+    data object GoToNotifications : GroupDetailsEvent
     data class OnKick(val children: List<String>): GroupDetailsEvent
 }

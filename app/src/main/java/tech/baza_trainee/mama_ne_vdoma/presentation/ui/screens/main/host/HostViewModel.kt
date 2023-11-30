@@ -30,6 +30,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.MainScreen
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.SearchScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.SettingsScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.GROUPS_PAGE
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.NOTIFICATIONS_PAGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.SEARCH_PAGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.SETTINGS_PAGE
@@ -125,7 +126,12 @@ class HostViewModel(
                 userAuthRepository.getUserInfo()
             }
             onSuccess { entity ->
-                if (entity.name.isEmpty() || entity.location.coordinates.isEmpty())
+                val _isUserInfoFilled = entity.name.isNotEmpty() &&
+                        entity.phone.isNotEmpty() &&
+                        entity.location.coordinates.isNotEmpty() && entity.location.coordinates.none { it == 0.00 } &&
+                        entity.schedule.values.any { it.isFilled() }
+
+                if (!_isUserInfoFilled)
                     navigator.navigate(SettingsScreenRoutes.EditProfile)
                 else {
                     preferencesDatastoreManager.apply {
@@ -273,6 +279,7 @@ class HostViewModel(
             GROUPS_PAGE -> GroupsScreenRoutes.Groups
             SEARCH_PAGE -> SearchScreenRoutes.SearchUser
             SETTINGS_PAGE -> SettingsScreenRoutes.Settings
+            NOTIFICATIONS_PAGE -> MainScreenRoutes.Notifications
             else -> MainScreenRoutes.Main
         }
     }

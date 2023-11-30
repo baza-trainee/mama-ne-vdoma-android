@@ -33,6 +33,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.MAIN_PAGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.MAX_AGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.MIN_AGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.NAME_LENGTH
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.NOTIFICATIONS_PAGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.SETTINGS_PAGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
@@ -77,6 +78,17 @@ class CreateGroupViewModel(
             communicator.croppedImageFlow.collect(::saveGroupAvatar)
         }
 
+        viewModelScope.launch {
+            preferencesDatastoreManager.userPreferencesFlow.collect { pref ->
+                _viewState.update {
+                    it.copy(
+                        groupDetails = it.groupDetails.copy(userAvatar =  pref.avatarUri),
+                        notifications = pref.myJoinRequests + pref.adminJoinRequests
+                    )
+                }
+            }
+        }
+
         _viewState.update {
             it.copy(
                 groupDetails = it.groupDetails.copy(userAvatar = preferencesDatastoreManager.avatarUri)
@@ -116,8 +128,13 @@ class CreateGroupViewModel(
 
             GroupDetailsEvent.GetLocationFromAddress -> getLocationFromAddress()
             is GroupDetailsEvent.UpdateGroupAddress -> updateGroupAddress(event.address)
+
             GroupDetailsEvent.OnAvatarClicked ->
                 navigator.navigate(HostScreenRoutes.Host.getDestination(SETTINGS_PAGE))
+
+            GroupDetailsEvent.GoToNotifications ->
+                navigator.navigate(HostScreenRoutes.Host.getDestination(NOTIFICATIONS_PAGE))
+
             else -> Unit
         }
     }

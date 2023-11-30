@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatastoreManager
 import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.LocationInteractor
 import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.NetworkEventsListener
@@ -16,6 +17,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenN
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.HostScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.StandaloneGroupsRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.LocationUiState
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.NOTIFICATIONS_PAGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.SETTINGS_PAGE
 
 class SetAreaViewModel(
@@ -37,15 +39,25 @@ class SetAreaViewModel(
             setLocationNetworkListener(this@SetAreaViewModel)
         }
 
+        viewModelScope.launch {
+            preferencesDatastoreManager.userPreferencesFlow.collect { pref ->
+                _viewState.update {
+                    it.copy(
+                        avatar = pref.avatarUri,
+                        notifications = pref.myJoinRequests + pref.adminJoinRequests
+                    )
+                }
+            }
+        }
+
         val location = LatLng(
             preferencesDatastoreManager.latitude,
             preferencesDatastoreManager.longitude
         )
-        getAddressFromLocation(location)
 
+        getAddressFromLocation(location)
         _viewState.update {
             it.copy(
-                avatar = preferencesDatastoreManager.avatarUri,
                 currentLocation = location
             )
         }
@@ -75,6 +87,9 @@ class SetAreaViewModel(
             SetAreaEvent.OnBack -> navigator.goBack()
             SetAreaEvent.OnAvatarClicked ->
                 navigator.navigate(HostScreenRoutes.Host.getDestination(SETTINGS_PAGE))
+
+            SetAreaEvent.GoToNotifications ->
+                navigator.navigate(HostScreenRoutes.Host.getDestination(NOTIFICATIONS_PAGE))
         }
     }
     

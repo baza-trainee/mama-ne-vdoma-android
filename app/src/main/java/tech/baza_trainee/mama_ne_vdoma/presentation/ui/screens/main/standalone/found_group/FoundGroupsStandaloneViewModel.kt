@@ -20,6 +20,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.Standalone
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.GroupUiModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.Communicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.MAIN_PAGE
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.NOTIFICATIONS_PAGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.SETTINGS_PAGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.networkExecutor
@@ -50,11 +51,16 @@ class FoundGroupsStandaloneViewModel(
 
         findGroupsByLocation()
 
-        _viewState.update {
-            it.copy(
-                avatar = preferencesDatastoreManager.avatarUri,
-                currentUserId = preferencesDatastoreManager.id,
-            )
+        viewModelScope.launch {
+            preferencesDatastoreManager.userPreferencesFlow.collect { pref ->
+                _viewState.update {
+                    it.copy(
+                        avatar = pref.avatarUri,
+                        currentUserId = pref.id,
+                        notifications = pref.myJoinRequests + pref.adminJoinRequests
+                    )
+                }
+            }
         }
 
         viewModelScope.launch {
@@ -89,6 +95,9 @@ class FoundGroupsStandaloneViewModel(
 
             FoundGroupEvent.OnAvatarClicked ->
                 navigator.navigate(HostScreenRoutes.Host.getDestination(SETTINGS_PAGE))
+
+            FoundGroupEvent.GoToNotifications ->
+                navigator.navigate(HostScreenRoutes.Host.getDestination(NOTIFICATIONS_PAGE))
 
             FoundGroupEvent.CreateGroup ->
                 navigator.navigate(StandaloneGroupsRoutes.ChooseChild.getDestination(isForSearch = false))

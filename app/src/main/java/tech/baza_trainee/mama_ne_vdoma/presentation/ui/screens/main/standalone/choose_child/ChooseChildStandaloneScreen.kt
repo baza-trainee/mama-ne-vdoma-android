@@ -70,8 +70,9 @@ fun ChooseChildStandaloneScreen(
                 modifier = Modifier.fillMaxWidth(),
                 title = if (isForSearch) "Пошук групи" else "Створення групи",
                 avatar = screenState.avatar,
-                showNotification = false,
-                onNotificationsClicked = {},
+                showNotification = true,
+                notificationCount = screenState.notifications,
+                onNotificationsClicked = { handleEvent(ChooseChildEvent.GoToNotifications) },
                 onAvatarClicked = { handleEvent(ChooseChildEvent.OnAvatarClicked) },
                 onBack = { handleEvent(ChooseChildEvent.OnBack) }
             )
