@@ -24,11 +24,11 @@ import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.PageNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.CommonHostRoute
-import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.Graphs
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.GroupsScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.MainScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.SearchScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.SettingsScreenRoutes
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.EDIT_PROFILE_PAGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.GROUPS_PAGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.NOTIFICATIONS_PAGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
@@ -94,7 +94,7 @@ class HostViewModel(
 
     fun handleEvent(event: HostEvent) {
         when (event) {
-            HostEvent.OnBack -> mainNavigator.navigate(Graphs.Login)
+            HostEvent.OnBack -> mainNavigator.minimize()
             is HostEvent.SwitchTab -> {
                 val route = getRouteFromPage(event.index)
                 switchTab(route)
@@ -103,7 +103,7 @@ class HostViewModel(
             HostEvent.ResetUiState -> _uiState.value = RequestState.Idle
             HostEvent.OnBackLocal -> {
                 when (navigator.getCurrentRoute()) {
-                    MainScreenRoutes.Main.route -> mainNavigator.navigate(Graphs.Login)
+                    MainScreenRoutes.Main.route -> mainNavigator.minimize()
                     else -> navigator.goToPrevious()
                 }
             }
@@ -143,6 +143,7 @@ class HostViewModel(
                         note = entity.note
                         sendEmail = entity.sendingEmails
                         avatar = entity.avatar
+                        isUserProfileFilled = true
                     }
 
                     saveUserInfo(entity.schedule)
@@ -279,6 +280,7 @@ class HostViewModel(
             GROUPS_PAGE -> GroupsScreenRoutes.Groups
             SEARCH_PAGE -> SearchScreenRoutes.SearchUser
             SETTINGS_PAGE -> SettingsScreenRoutes.Settings
+            EDIT_PROFILE_PAGE -> SettingsScreenRoutes.EditProfile
             NOTIFICATIONS_PAGE -> MainScreenRoutes.Notifications
             else -> MainScreenRoutes.Main
         }

@@ -6,7 +6,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.PageNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
-import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.Graphs
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.GroupsScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.MainScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.SearchScreenRoutes
@@ -23,7 +22,7 @@ class MainViewModel(
     fun handleEvent(event: MainEvent) {
         when(event) {
             MainEvent.Search -> navigator.navigate(SearchScreenRoutes.SearchUser)
-            MainEvent.OnBack -> mainNavigator.navigate(Graphs.Login)
+            MainEvent.OnBack -> mainNavigator.minimize()
             MainEvent.Account -> navigator.navigate(SettingsScreenRoutes.Settings)
             MainEvent.Groups -> navigator.navigate(GroupsScreenRoutes.Groups)
             MainEvent.Notifications -> navigator.navigate(MainScreenRoutes.Notifications)

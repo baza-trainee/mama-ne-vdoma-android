@@ -18,7 +18,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenN
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.Graphs
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.HostScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.LoginRoutes
-import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.UserProfileRoutes
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.EDIT_PROFILE_PAGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.MAIN_PAGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
@@ -153,7 +153,7 @@ class LoginViewModel(
             val cookies = preferencesDatastoreManager.cookies
             preferencesDatastoreManager.clearData()
             preferencesDatastoreManager.cookies = cookies
-            navigator.navigate(UserProfileRoutes.FullProfile)
+            navigator.navigate(HostScreenRoutes.Host.getDestination(EDIT_PROFILE_PAGE))
         }
     }
 }

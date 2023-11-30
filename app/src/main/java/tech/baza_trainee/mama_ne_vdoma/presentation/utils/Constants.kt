@@ -4,6 +4,7 @@ const val MAIN_PAGE = 0
 const val GROUPS_PAGE = 1
 const val SEARCH_PAGE = 2
 const val SETTINGS_PAGE = 3
+const val EDIT_PROFILE_PAGE = 98
 const val NOTIFICATIONS_PAGE = 99
 
 val NAME_LENGTH = 6..18

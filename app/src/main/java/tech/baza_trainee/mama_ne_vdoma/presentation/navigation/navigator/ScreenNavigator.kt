@@ -12,6 +12,8 @@ interface ScreenNavigator {
     fun goBack()
 
     fun navigate(route: CommonRoute)
+
+    fun minimize()
 }
 
 class ScreenNavigatorImpl: ScreenNavigator {
@@ -27,5 +29,9 @@ class ScreenNavigatorImpl: ScreenNavigator {
 
     override fun navigate(route: CommonRoute) {
         navigationChannel.trySend(NavigationIntent.NavigateTo(route))
+    }
+
+    override fun minimize() {
+        navigationChannel.trySend(NavigationIntent.Minimize)
     }
 }

@@ -60,6 +60,8 @@ class PageNavigatorImpl: PageNavigator {
         }
     }
 
+    override fun minimize() = Unit
+
     override fun goToPrevious() {
         goBack = true
         routesQueue.pollLast()

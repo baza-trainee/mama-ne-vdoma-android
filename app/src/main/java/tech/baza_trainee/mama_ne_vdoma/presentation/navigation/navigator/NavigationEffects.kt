@@ -26,6 +26,8 @@ fun NavigationEffects(
                 is NavigationIntent.NavigateTo -> {
                     navHostController.navigate(intent.route.route)
                 }
+
+                NavigationIntent.Minimize -> activity.moveTaskToBack(true)
             }
         }
     }
