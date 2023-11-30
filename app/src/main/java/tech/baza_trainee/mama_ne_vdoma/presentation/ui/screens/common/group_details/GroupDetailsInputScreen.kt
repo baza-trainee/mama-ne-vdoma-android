@@ -208,163 +208,166 @@ fun GroupDetailsInputScreen(
             lineHeight = 14.sp
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
+        if (isForEditing) {
 
-        var expanded by rememberSaveable { mutableStateOf(false) }
+            Spacer(modifier = Modifier.height(8.dp))
 
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(
-                    color = MaterialTheme.colorScheme.surface,
-                    shape = RoundedCornerShape(4.dp)
-                )
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Start
+            var expanded by rememberSaveable { mutableStateOf(false) }
+
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(
+                        color = MaterialTheme.colorScheme.surface,
+                        shape = RoundedCornerShape(4.dp)
+                    )
             ) {
-                val admin = remember {
-                    screenState.members.find { it.id == screenState.adminId } ?: MemberUiModel()
-                }
-
-                AsyncImage(
-                    modifier = Modifier
-                        .padding(end = 8.dp)
-                        .height(40.dp)
-                        .width(40.dp)
-                        .clip(CircleShape),
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data(admin.avatar)
-                        .placeholder(R.drawable.ic_user_no_photo)
-                        .crossfade(true)
-                        .build(),
-                    placeholder = painterResource(id = R.drawable.ic_user_no_photo),
-                    fallback = painterResource(id = R.drawable.ic_user_no_photo),
-                    contentDescription = "member",
-                    contentScale = ContentScale.Fit
-                )
-
-                Column {
-                    Text(
-                        text = admin.name,
-                        fontSize = 16.sp,
-                        fontFamily = redHatDisplayFontFamily
-                    )
-                    Text(
-                        text = "Адміністратор групи",
-                        fontSize = 14.sp,
-                        fontFamily = redHatDisplayFontFamily
-                    )
-                }
-
-                Spacer(modifier = Modifier.weight(1f))
-
-                IconButton(
-                    onClick = { expanded = !expanded }
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Start
                 ) {
-                    Icon(
-                        painter = painterResource(
-                            id = if (expanded)
-                                R.drawable.outline_arrow_drop_up_24
-                            else
-                                R.drawable.outline_arrow_drop_down_24
-                        ),
-                        contentDescription = "toggle_more",
-                        tint = MaterialTheme.colorScheme.primary
+                    val admin = remember {
+                        screenState.members.find { it.id == screenState.adminId } ?: MemberUiModel()
+                    }
+
+                    AsyncImage(
+                        modifier = Modifier
+                            .padding(end = 8.dp)
+                            .height(40.dp)
+                            .width(40.dp)
+                            .clip(CircleShape),
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(admin.avatar)
+                            .placeholder(R.drawable.ic_user_no_photo)
+                            .crossfade(true)
+                            .build(),
+                        placeholder = painterResource(id = R.drawable.ic_user_no_photo),
+                        fallback = painterResource(id = R.drawable.ic_user_no_photo),
+                        contentDescription = "member",
+                        contentScale = ContentScale.Fit
                     )
+
+                    Column {
+                        Text(
+                            text = admin.name,
+                            fontSize = 16.sp,
+                            fontFamily = redHatDisplayFontFamily
+                        )
+                        Text(
+                            text = "Адміністратор групи",
+                            fontSize = 14.sp,
+                            fontFamily = redHatDisplayFontFamily
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.weight(1f))
+
+                    IconButton(
+                        onClick = { expanded = !expanded }
+                    ) {
+                        Icon(
+                            painter = painterResource(
+                                id = if (expanded)
+                                    R.drawable.outline_arrow_drop_up_24
+                                else
+                                    R.drawable.outline_arrow_drop_down_24
+                            ),
+                            contentDescription = "toggle_more",
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                    }
                 }
-            }
 
-            Spacer(modifier = Modifier.height(4.dp))
+                Spacer(modifier = Modifier.height(4.dp))
 
-            if (expanded) {
-                screenState.members.sortedBy { it.name }.forEach {
-                    if (it.id != screenState.adminId) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.Start
-                        ) {
-                            IconButton(
-                                onClick = {
-                                    kickDialogData = it.name to it.children
-                                    showKickDialog = true
-                                }
+                if (expanded) {
+                    screenState.members.sortedBy { it.name }.forEach {
+                        if (it.id != screenState.adminId) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Start
                             ) {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.ic_kick_member),
-                                    contentDescription = "kick_user",
-                                    tint = MaterialTheme.colorScheme.primary
-                                )
-                            }
-
-                            AsyncImage(
-                                modifier = Modifier
-                                    .padding(end = 8.dp)
-                                    .height(24.dp)
-                                    .width(24.dp)
-                                    .clip(CircleShape),
-                                model = ImageRequest.Builder(LocalContext.current)
-                                    .data(it.avatar)
-                                    .placeholder(R.drawable.ic_user_no_photo)
-                                    .crossfade(true)
-                                    .build(),
-                                placeholder = painterResource(id = R.drawable.ic_user_no_photo),
-                                fallback = painterResource(id = R.drawable.ic_user_no_photo),
-                                contentDescription = "member",
-                                contentScale = ContentScale.Fit
-                            )
-
-                            Text(
-                                text = it.name,
-                                fontSize = 14.sp,
-                                fontFamily = redHatDisplayFontFamily
-                            )
-
-                            Spacer(modifier = Modifier.weight(1f))
-
-                            val scope = rememberCoroutineScope()
-
-                            IconButton(
-                                onClick = {
-                                    scope.launch {
-                                        val intent =
-                                            Intent(
-                                                Intent.ACTION_SENDTO,
-                                                Uri.parse("mailto:${it.email}")
-                                            )
-                                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                                        ContextCompat.startActivity(context, intent, null)
+                                IconButton(
+                                    onClick = {
+                                        kickDialogData = it.name to it.children
+                                        showKickDialog = true
                                     }
+                                ) {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.ic_kick_member),
+                                        contentDescription = "kick_user",
+                                        tint = MaterialTheme.colorScheme.primary
+                                    )
                                 }
-                            ) {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.ic_mail),
-                                    contentDescription = "email",
-                                    tint = MaterialTheme.colorScheme.primary
-                                )
-                            }
 
-                            IconButton(
-                                onClick = {
-                                    scope.launch {
-                                        val intent =
-                                            Intent(
-                                                Intent.ACTION_DIAL,
-                                                Uri.parse("tel:${it.phone}")
-                                            )
-                                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                                        ContextCompat.startActivity(context, intent, null)
-                                    }
-                                }
-                            ) {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.ic_phone),
-                                    contentDescription = "phone",
-                                    tint = MaterialTheme.colorScheme.primary
+                                AsyncImage(
+                                    modifier = Modifier
+                                        .padding(end = 8.dp)
+                                        .height(24.dp)
+                                        .width(24.dp)
+                                        .clip(CircleShape),
+                                    model = ImageRequest.Builder(LocalContext.current)
+                                        .data(it.avatar)
+                                        .placeholder(R.drawable.ic_user_no_photo)
+                                        .crossfade(true)
+                                        .build(),
+                                    placeholder = painterResource(id = R.drawable.ic_user_no_photo),
+                                    fallback = painterResource(id = R.drawable.ic_user_no_photo),
+                                    contentDescription = "member",
+                                    contentScale = ContentScale.Fit
                                 )
+
+                                Text(
+                                    text = it.name,
+                                    fontSize = 14.sp,
+                                    fontFamily = redHatDisplayFontFamily
+                                )
+
+                                Spacer(modifier = Modifier.weight(1f))
+
+                                val scope = rememberCoroutineScope()
+
+                                IconButton(
+                                    onClick = {
+                                        scope.launch {
+                                            val intent =
+                                                Intent(
+                                                    Intent.ACTION_SENDTO,
+                                                    Uri.parse("mailto:${it.email}")
+                                                )
+                                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                            ContextCompat.startActivity(context, intent, null)
+                                        }
+                                    }
+                                ) {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.ic_mail),
+                                        contentDescription = "email",
+                                        tint = MaterialTheme.colorScheme.primary
+                                    )
+                                }
+
+                                IconButton(
+                                    onClick = {
+                                        scope.launch {
+                                            val intent =
+                                                Intent(
+                                                    Intent.ACTION_DIAL,
+                                                    Uri.parse("tel:${it.phone}")
+                                                )
+                                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                            ContextCompat.startActivity(context, intent, null)
+                                        }
+                                    }
+                                ) {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.ic_phone),
+                                        contentDescription = "phone",
+                                        tint = MaterialTheme.colorScheme.primary
+                                    )
+                                }
                             }
                         }
                     }

@@ -69,7 +69,7 @@ interface GroupsApi {
     suspend fun cancelRequest(@Path("groupId") groupId: String, @Path("childId") childId: String): Response<Unit>
 
     @DELETE("api/group/{groupId}")
-    suspend fun deleteGroup(@Path("groupId") groupId: String): Response<GroupDto>
+    suspend fun deleteGroup(@Path("groupId") groupId: String): Response<Unit>
 
     @PATCH("api/group/admin/{groupId}/{parentId}")
     suspend fun switchAdmin(@Path("groupId") groupId: String, @Path("parentId") parentId: String): Response<Unit>
