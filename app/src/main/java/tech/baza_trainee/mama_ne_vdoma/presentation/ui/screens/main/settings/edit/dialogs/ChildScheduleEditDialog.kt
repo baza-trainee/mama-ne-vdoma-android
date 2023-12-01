@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -48,6 +49,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.Dimension
 import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.domain.model.ChildEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.DayPeriod
@@ -91,17 +94,24 @@ fun ChildScheduleEditDialog(
     Dialog(
         onDismissRequest = onDismissRequest
     ) {
-        Column(
+        ConstraintLayout(
             modifier = Modifier
+                .fillMaxHeight(0.9f)
                 .clip(RoundedCornerShape(8.dp))
                 .background(MaterialTheme.colorScheme.background)
                 .padding(vertical = 8.dp)
                 .fillMaxWidth()
         ) {
+
+            val (title, content, buttons) = createRefs()
+
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(1f),
+                    .constrainAs(title) {
+                        top.linkTo(parent.top)
+                        height = Dimension.wrapContent
+                    },
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
@@ -125,10 +135,14 @@ fun ChildScheduleEditDialog(
                 }
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
-
             Column(
-                modifier = Modifier.verticalScroll(rememberScrollState()),
+                modifier = Modifier
+                    .verticalScroll(rememberScrollState())
+                    .constrainAs(content) {
+                        top.linkTo(title.bottom, 8.dp)
+                        bottom.linkTo(buttons.top, 8.dp)
+                        height = Dimension.fillToConstraints
+                    },
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 if (children.isNotEmpty()) {
@@ -154,6 +168,12 @@ fun ChildScheduleEditDialog(
                                     modifier = Modifier
                                         .weight(1f)
                                         .fillMaxSize()
+                                        .clip(
+                                            shape = RoundedCornerShape(
+                                                topStart = 100.dp,
+                                                bottomStart = 100.dp
+                                            )
+                                        )
                                         .background(
                                             color = if (currentChild == 0) Purple80 else MaterialTheme.colorScheme.background,
                                             shape = RoundedCornerShape(
@@ -183,6 +203,12 @@ fun ChildScheduleEditDialog(
                                     modifier = Modifier
                                         .weight(1f)
                                         .fillMaxSize()
+                                        .clip(
+                                            shape = RoundedCornerShape(
+                                                topEnd = 100.dp,
+                                                bottomEnd = 100.dp
+                                            )
+                                        )
                                         .background(
                                             color = if (currentChild == 1) Purple80 else MaterialTheme.colorScheme.background,
                                             shape = RoundedCornerShape(
@@ -315,12 +341,13 @@ fun ChildScheduleEditDialog(
                 )
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
-
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(1f),
+                    .constrainAs(buttons) {
+                        bottom.linkTo(parent.bottom)
+                        height = Dimension.wrapContent
+                    },
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceAround
             ) {
