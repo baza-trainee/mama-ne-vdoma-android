@@ -5,5 +5,6 @@ sealed interface HostEvent {
     data object OnBackLocal: HostEvent
     data object GoToNotifications : HostEvent
     data object ResetUiState : HostEvent
+    data object OnCheckSession : HostEvent
     data class SwitchTab(val index: Int): HostEvent
 }

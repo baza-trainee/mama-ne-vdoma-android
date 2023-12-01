@@ -5,13 +5,18 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import tech.baza_trainee.mama_ne_vdoma.R
@@ -31,6 +36,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.headers.Heade
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.headers.ToolbarWithAvatar
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.SETTINGS_PAGE
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.findActivity
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.showToast
 
 @Composable
@@ -42,6 +48,23 @@ fun HostScreen(
 ) {
     SurfaceWithNavigationBars {
         val context = LocalContext.current
+
+        val lifecycleOwner by remember { mutableStateOf(context.findActivity() as LifecycleOwner) }
+        DisposableEffect(lifecycleOwner) {
+            val observer = LifecycleEventObserver { _, event ->
+                when (event) {
+                    Lifecycle.Event.ON_START -> handleEvent(HostEvent.OnCheckSession)
+
+                    else -> Unit
+                }
+            }
+
+            lifecycleOwner.lifecycle.addObserver(observer)
+
+            onDispose {
+                lifecycleOwner.lifecycle.removeObserver(observer)
+            }
+        }
 
         when (val state = uiState.value) {
             RequestState.Idle -> Unit

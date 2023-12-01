@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -25,6 +26,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.PageNav
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.CommonHostRoute
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.GroupsScreenRoutes
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.LoginRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.MainScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.SearchScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.SettingsScreenRoutes
@@ -37,8 +39,10 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.SETTINGS_PAGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.networkExecutor
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onError
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onErrorWithCode
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onLoading
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onSuccess
+import java.net.HttpURLConnection
 import java.time.DayOfWeek
 
 class HostViewModel(
@@ -50,7 +54,8 @@ class HostViewModel(
     private val filesRepository: FilesRepository,
     private val locationRepository: LocationRepository,
     private val groupsRepository: GroupsRepository,
-    private val preferencesDatastoreManager: UserPreferencesDatastoreManager
+    private val preferencesDatastoreManager: UserPreferencesDatastoreManager,
+    private val oneTapClient: SignInClient
 ): ViewModel() {
 
     val screenNavigator get() = navigator
@@ -109,6 +114,21 @@ class HostViewModel(
             }
 
             HostEvent.GoToNotifications -> navigator.navigate(MainScreenRoutes.Notifications)
+            HostEvent.OnCheckSession -> checkSession()
+        }
+    }
+
+    private fun checkSession() {
+        viewModelScope.networkExecutor {
+            execute {
+                userAuthRepository.getUserInfo()
+            }
+            onErrorWithCode { _, code ->
+                if (code == HttpURLConnection.HTTP_UNAUTHORIZED) {
+                    oneTapClient.signOut()
+                    mainNavigator.navigate(LoginRoutes.Login)
+                }
+            }
         }
     }
 
