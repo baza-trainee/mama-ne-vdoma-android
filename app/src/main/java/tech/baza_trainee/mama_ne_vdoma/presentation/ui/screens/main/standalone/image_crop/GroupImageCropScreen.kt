@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -18,7 +19,7 @@ import com.smarttoolfactory.cropper.model.RectCropShape
 import com.smarttoolfactory.cropper.model.aspectRatios
 import com.smarttoolfactory.cropper.settings.CropDefaults
 import com.smarttoolfactory.cropper.settings.CropOutlineProperty
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.SurfaceWithNavigationBars
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ScaffoldWithNavigationBars
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.headers.HeaderWithToolbar
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.image_crop.ImageCropEvent
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.image_crop.ImageCropScreen
@@ -29,17 +30,8 @@ fun GroupImageCropScreen(
     screenState: ImageCropViewState,
     handleEvent: (ImageCropEvent) -> Unit
 ) {
-    SurfaceWithNavigationBars {
-        BackHandler { handleEvent(ImageCropEvent.OnBack) }
-
-        val handleSize = LocalDensity.current.run { 20.dp.toPx() }
-
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Top
-        ) {
-
+    ScaffoldWithNavigationBars(
+        topBar = {
             HeaderWithToolbar(
                 modifier = Modifier.fillMaxWidth(),
                 title = "Створення нової групи",
@@ -49,7 +41,20 @@ fun GroupImageCropScreen(
                 onAvatarClicked = { handleEvent(ImageCropEvent.OnAvatarClicked) },
                 onBack = { handleEvent(ImageCropEvent.OnBack) }
             )
+        }
+    ) { paddingValues ->
 
+        BackHandler { handleEvent(ImageCropEvent.OnBack) }
+
+        val handleSize = LocalDensity.current.run { 20.dp.toPx() }
+
+        Column(
+            modifier = Modifier
+                .padding(paddingValues)
+                .fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Top
+        ) {
             Spacer(modifier = Modifier.height(4.dp))
 
             ImageCropScreen(

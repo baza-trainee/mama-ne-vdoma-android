@@ -67,9 +67,7 @@ fun UserInfoScreen(
     uiState: State<UserInfoUiState>,
     handleEvent: (UserInfoEvent) -> Unit
 ) {
-    SurfaceWithSystemBars(
-        modifier = Modifier
-    ) {
+    SurfaceWithSystemBars {
         BackHandler { handleEvent(UserInfoEvent.OnBack) }
 
         val context = LocalContext.current

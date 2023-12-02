@@ -34,7 +34,7 @@ fun ScheduleScreenGroup(
     onNext: () -> Unit = {},
 ) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .imePadding()
             .verticalScroll(rememberScrollState()),

@@ -40,7 +40,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.cards.ChildIn
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.cards.ParentInfoDesk
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ButtonText
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.LoadingIndicator
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.SurfaceWithNavigationBars
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ScaffoldWithNavigationBars
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.functions.infiniteColorAnimation
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.headers.HeaderWithOptArrow
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.SlateGray
@@ -54,12 +54,21 @@ fun FullInfoScreen(
     uiState: State<RequestState>,
     handleEvent: (FullInfoEvent) -> Unit
 ) {
-    SurfaceWithNavigationBars {
+    ScaffoldWithNavigationBars(
+        topBar = {
+            HeaderWithOptArrow(
+                modifier = Modifier.fillMaxWidth(),
+                title = "Дані Вашого профілю",
+                onBack = { handleEvent(FullInfoEvent.OnBack) }
+            )
+        }
+    ) { paddingValues ->
+
         BackHandler { handleEvent(FullInfoEvent.OnBack) }
 
         val context = LocalContext.current
 
-        when(val state = uiState.value) {
+        when (val state = uiState.value) {
             RequestState.Idle -> Unit
             is RequestState.OnError -> {
                 context.showToast(state.error)
@@ -69,143 +78,132 @@ fun FullInfoScreen(
 
         Column(
             modifier = Modifier
+                .padding(paddingValues)
                 .imePadding()
-                .fillMaxSize(),
+                .fillMaxSize()
+                .padding(horizontal = 16.dp)
+                .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceBetween
+            verticalArrangement = Arrangement.Top
         ) {
-            HeaderWithOptArrow(
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Text(
                 modifier = Modifier.fillMaxWidth(),
-                title = "Дані Вашого профілю",
-                onBack = { handleEvent(FullInfoEvent.OnBack) }
+                text = "Ви:",
+                fontFamily = redHatDisplayFontFamily,
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold
             )
 
-            val scrollState = rememberScrollState()
+            Spacer(modifier = Modifier.height(8.dp))
 
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
-                    .padding(horizontal = 16.dp)
-                    .verticalScroll(scrollState),
-                verticalArrangement = Arrangement.Top
-            ) {
-                Spacer(modifier = Modifier.height(16.dp))
+            val color = infiniteColorAnimation(
+                initialValue = Color.White,
+                targetValue = Color.Red,
+                duration = 1000
+            )
 
-                Text(
+            if (screenState.isUserInfoFilled)
+                ParentInfoDesk(
                     modifier = Modifier.fillMaxWidth(),
-                    text = "Ви:",
-                    fontFamily = redHatDisplayFontFamily,
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold
+                    name = screenState.name.ifEmpty { "Введіть Ваше ім'я" },
+                    address = screenState.address.ifEmpty { "Вкажіть Вашу адресу" },
+                    avatar = screenState.userAvatar,
+                    schedule = screenState.schedule,
+                    onEdit = { handleEvent(FullInfoEvent.EditUser) },
+                    onDelete = { handleEvent(FullInfoEvent.DeleteUser) }
                 )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                val color = infiniteColorAnimation(
-                    initialValue = Color.White,
-                    targetValue = Color.Red,
-                    duration = 1000
-                )
-
-                if (screenState.isUserInfoFilled)
-                    ParentInfoDesk(
-                        modifier = Modifier.fillMaxWidth(),
-                        name = screenState.name.ifEmpty { "Введіть Ваше ім'я" },
-                        address = screenState.address.ifEmpty { "Вкажіть Вашу адресу" },
-                        avatar = screenState.userAvatar,
-                        schedule = screenState.schedule,
-                        onEdit = { handleEvent(FullInfoEvent.EditUser) },
-                        onDelete = { handleEvent(FullInfoEvent.DeleteUser) }
-                    )
-                else
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(64.dp)
-                            .border(
-                                color = color,
-                                shape = RoundedCornerShape(2.dp),
-                                width = 1.dp
-                            )
-                            .clickable { handleEvent(FullInfoEvent.EditUser) },
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = "Натисніть тут, щоб заповнити Ваш профіль",
-                            fontFamily = redHatDisplayFontFamily,
-                            fontSize = 20.sp,
-                            textAlign = TextAlign.Center
-                        )
-                    }
-
-                Spacer(modifier = Modifier.height(32.dp))
-
-                Text(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = "Діти:",
-                    fontFamily = redHatDisplayFontFamily,
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold
-                )
-
-                screenState.children.forEach { child ->
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    ChildInfoDesk(
-                        modifier = Modifier.fillMaxWidth(),
-                        child = child,
-                        onEdit = {
-                            handleEvent(FullInfoEvent.EditChild(it))
-                        },
-                        onDelete = {
-                            handleEvent(FullInfoEvent.DeleteChild(it))
-                        }
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                val animateAddChildBackground = !screenState.isChildInfoFilled &&
-                        screenState.isUserInfoFilled
-
-                Row(
+            else
+                Box(
                     modifier = Modifier
-                        .height(32.dp)
                         .fillMaxWidth()
-                        .background(
-                            color = if (!animateAddChildBackground) MaterialTheme.colorScheme.background
-                            else color
+                        .height(64.dp)
+                        .border(
+                            color = color,
+                            shape = RoundedCornerShape(2.dp),
+                            width = 1.dp
                         )
-                        .clickable(enabled = screenState.isUserInfoFilled) {
-                            handleEvent(FullInfoEvent.AddChild)
-                        },
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Start
+                        .clickable { handleEvent(FullInfoEvent.EditUser) },
+                    contentAlignment = Alignment.Center
                 ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_add),
-                        contentDescription = null,
-                        tint = if (screenState.isChildInfoFilled) MaterialTheme.colorScheme.primary
-                        else SlateGray
-                    )
                     Text(
-                        text = if (screenState.isChildInfoFilled) "Додати ще дитину"
-                        else "Додати дитину",
+                        text = "Натисніть тут, щоб заповнити Ваш профіль",
                         fontFamily = redHatDisplayFontFamily,
                         fontSize = 20.sp,
-                        modifier = Modifier
-                            .padding(start = 8.dp)
-                            .fillMaxWidth(1f),
-                        color = if (screenState.isUserInfoFilled) MaterialTheme.colorScheme.onBackground
-                        else SlateGray
+                        textAlign = TextAlign.Center
                     )
                 }
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                text = "Діти:",
+                fontFamily = redHatDisplayFontFamily,
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold
+            )
+
+            screenState.children.forEach { child ->
+                Spacer(modifier = Modifier.height(8.dp))
+
+                ChildInfoDesk(
+                    modifier = Modifier.fillMaxWidth(),
+                    child = child,
+                    onEdit = {
+                        handleEvent(FullInfoEvent.EditChild(it))
+                    },
+                    onDelete = {
+                        handleEvent(FullInfoEvent.DeleteChild(it))
+                    }
+                )
             }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            val animateAddChildBackground = !screenState.isChildInfoFilled &&
+                    screenState.isUserInfoFilled
+
+            Row(
+                modifier = Modifier
+                    .height(32.dp)
+                    .fillMaxWidth()
+                    .background(
+                        color = if (!animateAddChildBackground) MaterialTheme.colorScheme.background
+                        else color
+                    )
+                    .clickable(enabled = screenState.isUserInfoFilled) {
+                        handleEvent(FullInfoEvent.AddChild)
+                    },
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Start
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_add),
+                    contentDescription = null,
+                    tint = if (screenState.isChildInfoFilled) MaterialTheme.colorScheme.primary
+                    else SlateGray
+                )
+                Text(
+                    text = if (screenState.isChildInfoFilled) "Додати ще дитину"
+                    else "Додати дитину",
+                    fontFamily = redHatDisplayFontFamily,
+                    fontSize = 20.sp,
+                    modifier = Modifier
+                        .padding(start = 8.dp)
+                        .fillMaxWidth(1f),
+                    color = if (screenState.isUserInfoFilled) MaterialTheme.colorScheme.onBackground
+                    else SlateGray
+                )
+            }
+
+            Spacer(modifier = Modifier.weight(1f))
 
             Button(
                 modifier = Modifier
-                    .padding(horizontal = 16.dp, vertical = 16.dp)
+                    .padding(vertical = 16.dp)
                     .fillMaxWidth()
                     .height(48.dp),
                 onClick = { handleEvent(FullInfoEvent.OnNext) },
@@ -215,9 +213,9 @@ fun FullInfoScreen(
                     text = "Підтвердити"
                 )
             }
-        }
 
-        if (screenState.isLoading) LoadingIndicator()
+            if (screenState.isLoading) LoadingIndicator()
+        }
     }
 }
 

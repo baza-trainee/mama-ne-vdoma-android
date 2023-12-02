@@ -1,7 +1,6 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.headers
 
 import android.net.Uri
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -21,7 +20,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 @Preview
 fun HeaderWithToolbar(

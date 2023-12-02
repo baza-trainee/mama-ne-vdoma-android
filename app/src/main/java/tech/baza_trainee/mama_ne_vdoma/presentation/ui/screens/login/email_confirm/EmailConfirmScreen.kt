@@ -25,7 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ButtonText
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.SurfaceWithNavigationBars
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ScaffoldWithNavigationBars
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.functions.getTextWithUnderline
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.headers.HeaderWithOptArrow
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.restore_password.RestorePasswordEvent
@@ -40,7 +40,18 @@ fun EmailConfirmScreen(
     password: String,
     handleEvent: (RestorePasswordEvent) -> Unit
 ) {
-    SurfaceWithNavigationBars {
+    ScaffoldWithNavigationBars(
+        topBar = {
+            HeaderWithOptArrow(
+                modifier = Modifier.fillMaxWidth(),
+                title = "Лист був відправлений",
+                info = "Перевірте свою пошту $email, " +
+                        "щоб отримати подальші інструкції з " +
+                        "відновлення паролю"
+            )
+        }
+    ) { paddingValues ->
+
         val context = LocalContext.current
 
         when (val state = uiState.value) {
@@ -52,16 +63,10 @@ fun EmailConfirmScreen(
         }
 
         Column(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .padding(paddingValues)
+                .fillMaxSize()
         ) {
-            HeaderWithOptArrow(
-                modifier = Modifier.fillMaxWidth(),
-                title = "Лист був відправлений",
-                info = "Перевірте свою пошту $email, " +
-                        "щоб отримати подальші інструкції з " +
-                        "відновлення паролю"
-            )
-
             Image(
                 modifier = Modifier
                     .fillMaxWidth()

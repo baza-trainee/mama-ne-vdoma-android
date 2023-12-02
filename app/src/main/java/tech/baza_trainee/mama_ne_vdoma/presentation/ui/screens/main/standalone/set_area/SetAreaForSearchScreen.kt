@@ -47,7 +47,7 @@ import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ButtonText
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.CustomGoogleMap
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.LoadingIndicator
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.SurfaceWithNavigationBars
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ScaffoldWithNavigationBars
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.dialogs.AddressNotCheckedDialog
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.functions.LocationPermission
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.functions.infiniteColorAnimation
@@ -66,7 +66,21 @@ fun SetAreaForSearchScreen(
     uiState: State<LocationUiState> = mutableStateOf(LocationUiState.Idle),
     handleEvent: (SetAreaEvent) -> Unit = { _ -> }
 ) {
-    SurfaceWithNavigationBars {
+    ScaffoldWithNavigationBars(
+        topBar = {
+            HeaderWithToolbar(
+                modifier = Modifier.fillMaxWidth(),
+                title = "Пошук групи",
+                avatar = screenState.avatar,
+                showNotification = true,
+                notificationCount = screenState.notifications,
+                onNotificationsClicked = { handleEvent(SetAreaEvent.GoToNotifications) },
+                onAvatarClicked = { handleEvent(SetAreaEvent.OnAvatarClicked) },
+                onBack = { handleEvent(SetAreaEvent.OnBack) }
+            )
+        }
+    ) { paddingValues ->
+
         BackHandler { handleEvent(SetAreaEvent.OnBack) }
 
         val context = LocalContext.current
@@ -101,21 +115,11 @@ fun SetAreaForSearchScreen(
 
         Column(
             modifier = Modifier
+                .padding(paddingValues)
                 .fillMaxSize()
                 .imePadding(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            HeaderWithToolbar(
-                modifier = Modifier.fillMaxWidth(),
-                title = "Пошук групи",
-                avatar = screenState.avatar,
-                showNotification = true,
-                notificationCount = screenState.notifications,
-                onNotificationsClicked = { handleEvent(SetAreaEvent.GoToNotifications) },
-                onAvatarClicked = { handleEvent(SetAreaEvent.OnAvatarClicked) },
-                onBack = { handleEvent(SetAreaEvent.OnBack) }
-            )
-
             CustomGoogleMap(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -138,7 +142,6 @@ fun SetAreaForSearchScreen(
                     fillColor = SemiTransparent
                 )
             }
-
 
             Spacer(modifier = Modifier.height(8.dp))
 

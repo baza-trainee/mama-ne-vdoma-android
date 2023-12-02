@@ -15,7 +15,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ButtonText
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.SurfaceWithNavigationBars
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ScaffoldWithNavigationBars
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.headers.HeaderWithOptArrow
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 
@@ -25,24 +25,28 @@ fun UserCreateSuccessScreen(
     onNext: () -> Unit = {},
     onBack: () -> Unit = {}
 ) {
-    SurfaceWithNavigationBars {
-        BackHandler { onBack() }
-
-        Column(
-            modifier = Modifier.fillMaxSize()
-        ) {
+    ScaffoldWithNavigationBars(
+        topBar = {
             HeaderWithOptArrow(
                 modifier = Modifier.fillMaxWidth(),
                 title = "Реєстрація пройшла успішно",
                 onBack = onBack
             )
+        }
+    ) { paddingValues ->
 
+        BackHandler { onBack() }
+
+        Column(
+            modifier = Modifier
+                .padding(paddingValues)
+                .fillMaxSize()
+                .padding(horizontal = 16.dp)
+        ) {
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
+                modifier = Modifier.fillMaxWidth(),
                 text = "Вітаємо, $name!",
                 fontSize = 20.sp,
                 fontFamily = redHatDisplayFontFamily,
@@ -52,9 +56,7 @@ fun UserCreateSuccessScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
+                modifier = Modifier.fillMaxWidth(),
                 text = "Давайте знайдемо для вас найкращу групу.",
                 fontSize = 14.sp,
                 fontFamily = redHatDisplayFontFamily,
@@ -64,9 +66,7 @@ fun UserCreateSuccessScreen(
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
+                modifier = Modifier.fillMaxWidth(),
                 text = "Щоб зробити це ми задамо вам декілька запитань. Це займе лише кілька хвилин.",
                 fontSize = 11.sp,
                 fontFamily = redHatDisplayFontFamily,
@@ -77,7 +77,7 @@ fun UserCreateSuccessScreen(
 
             Button(
                 modifier = Modifier
-                    .padding(horizontal = 16.dp, vertical = 16.dp)
+                    .padding(vertical = 16.dp)
                     .fillMaxWidth()
                     .height(48.dp),
                 onClick = onNext

@@ -29,7 +29,7 @@ fun ChildInfoGroup(
     handleEvent: (ChildInfoEvent) -> Unit = { _ -> }
 ) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .imePadding(),
         horizontalAlignment = Alignment.CenterHorizontally,

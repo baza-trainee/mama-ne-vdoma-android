@@ -38,7 +38,7 @@ import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ButtonText
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.CustomGoogleMap
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.LoadingIndicator
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.SurfaceWithNavigationBars
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ScaffoldWithNavigationBars
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.dialogs.AddressNotCheckedDialog
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.functions.LocationPermission
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.functions.infiniteColorAnimation
@@ -53,7 +53,16 @@ fun UserLocationScreen(
     uiState: State<LocationUiState>,
     handleEvent: (UserLocationEvent) -> Unit
 ) {
-    SurfaceWithNavigationBars {
+    ScaffoldWithNavigationBars(
+        topBar = {
+            HeaderWithOptArrow(
+                modifier = Modifier.fillMaxWidth(),
+                title = "Ваше місцезнаходження",
+                info = "Будь ласка, оберіть ваше місцерозташування," +
+                        " щоб ви могли підібрати найближчі групи до вас"
+            )
+        }
+    ) { paddingValues ->
         val context = LocalContext.current
 
         var showAddressDialog by rememberSaveable { mutableStateOf(false) }
@@ -85,17 +94,11 @@ fun UserLocationScreen(
 
         Column(
             modifier = Modifier
+                .padding(paddingValues)
                 .imePadding()
                 .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            HeaderWithOptArrow(
-                modifier = Modifier.fillMaxWidth(),
-                title = "Ваше місцезнаходження",
-                info = "Будь ласка, оберіть ваше місцерозташування," +
-                        " щоб ви могли підібрати найближчі групи до вас"
-            )
-
             CustomGoogleMap(
                 modifier = Modifier
                     .fillMaxWidth()

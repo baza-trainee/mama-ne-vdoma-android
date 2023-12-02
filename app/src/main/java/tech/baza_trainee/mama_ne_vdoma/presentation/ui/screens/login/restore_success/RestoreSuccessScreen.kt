@@ -18,17 +18,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ButtonText
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.SurfaceWithNavigationBars
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ScaffoldWithNavigationBars
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.headers.HeaderWithOptArrow
 
 @Composable
 fun RestoreSuccessScreen(goToMain: () -> Unit) {
-    SurfaceWithNavigationBars {
-        BackHandler { goToMain() }
-
-        Column(
-            modifier = Modifier.fillMaxSize()
-        ) {
+    ScaffoldWithNavigationBars(
+        topBar = {
             HeaderWithOptArrow(
                 modifier = Modifier.fillMaxWidth(),
                 title = "Пароль збережено",
@@ -36,7 +32,16 @@ fun RestoreSuccessScreen(goToMain: () -> Unit) {
                         "Будь ласка, використовуйте цей новий пароль " +
                         "при вході в додаток"
             )
+        }
+    ) { paddingValues ->
 
+        BackHandler { goToMain() }
+
+        Column(
+            modifier = Modifier
+                .padding(paddingValues)
+                .fillMaxSize()
+        ) {
             Image(
                 modifier = Modifier
                     .fillMaxWidth()

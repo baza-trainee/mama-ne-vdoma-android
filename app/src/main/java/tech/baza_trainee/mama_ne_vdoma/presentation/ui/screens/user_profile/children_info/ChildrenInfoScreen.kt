@@ -26,7 +26,7 @@ import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.cards.ChildInfoDesk
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ButtonText
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.LoadingIndicator
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.SurfaceWithNavigationBars
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ScaffoldWithNavigationBars
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.headers.HeaderWithOptArrow
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 
@@ -39,75 +39,75 @@ fun  ChildrenInfoScreen(
     onBack: () -> Unit,
     onEdit: () -> Unit
 ) {
-    SurfaceWithNavigationBars {
-        Column(
-            modifier = Modifier
-                .imePadding()
-                .fillMaxWidth()
-        ) {
+    ScaffoldWithNavigationBars(
+        topBar = {
             HeaderWithOptArrow(
                 modifier = Modifier.fillMaxWidth(),
                 title = "Анкета дитини",
                 onBack = onBack
             )
-            
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                horizontalAlignment = Alignment.Start,
-                verticalArrangement = Arrangement.Top
-            ) {
-                Spacer(modifier = Modifier.height(16.dp))
+        }
+    ) { paddingValues ->
 
-                LazyColumn {
-                    items(screenState.children) { child ->
-                        ChildInfoDesk(
-                            modifier = Modifier.fillMaxWidth(),
-                            child = child,
-                            onEdit = {
-                                onHandleChildrenInfoEvent(ChildrenInfoEvent.SetChild(it))
-                                onEdit()
-                            },
-                            onDelete = {
-                                onHandleChildrenInfoEvent(ChildrenInfoEvent.DeleteChild(it))
-                            }
-                        )
-                        Spacer(modifier = Modifier.height(16.dp))
-                    }
-                }
+        Column(
+            modifier = Modifier
+                .padding(paddingValues)
+                .imePadding()
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
+            horizontalAlignment = Alignment.Start,
+            verticalArrangement = Arrangement.Top
+        ) {
 
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable {
-                            onHandleChildrenInfoEvent(ChildrenInfoEvent.ResetChild)
+            Spacer(modifier = Modifier.height(16.dp))
+
+            LazyColumn {
+                items(screenState.children) { child ->
+                    ChildInfoDesk(
+                        modifier = Modifier.fillMaxWidth(),
+                        child = child,
+                        onEdit = {
+                            onHandleChildrenInfoEvent(ChildrenInfoEvent.SetChild(it))
                             onEdit()
                         },
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Start
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_add),
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.primary
+                        onDelete = {
+                            onHandleChildrenInfoEvent(ChildrenInfoEvent.DeleteChild(it))
+                        }
                     )
-                    Text(
-                        text = "Додати ще дитину",
-                        fontFamily = redHatDisplayFontFamily,
-                        fontSize = 20.sp,
-                        modifier = Modifier
-                            .padding(start = 8.dp)
-                            .fillMaxWidth(1f)
-                    )
+                    Spacer(modifier = Modifier.height(16.dp))
                 }
+            }
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable {
+                        onHandleChildrenInfoEvent(ChildrenInfoEvent.ResetChild)
+                        onEdit()
+                    },
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Start
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_add),
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary
+                )
+                Text(
+                    text = "Додати ще дитину",
+                    fontFamily = redHatDisplayFontFamily,
+                    fontSize = 20.sp,
+                    modifier = Modifier
+                        .padding(start = 8.dp)
+                        .fillMaxWidth(1f)
+                )
             }
 
             Spacer(modifier = Modifier.weight(1f))
 
             Button(
                 modifier = Modifier
-                    .padding(horizontal = 16.dp, vertical = 16.dp)
+                    .padding(vertical = 16.dp)
                     .fillMaxWidth()
                     .height(48.dp),
                 onClick = onNext
@@ -116,9 +116,9 @@ fun  ChildrenInfoScreen(
                     text = "Далі"
                 )
             }
-        }
 
-        if (screenState.isLoading) LoadingIndicator()
+            if (screenState.isLoading) LoadingIndicator()
+        }
     }
 }
 

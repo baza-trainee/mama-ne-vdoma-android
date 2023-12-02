@@ -44,7 +44,7 @@ import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.cards.GroupInfoDesk
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ButtonText
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.LoadingIndicator
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.SurfaceWithNavigationBars
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ScaffoldWithNavigationBars
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.headers.HeaderWithToolbar
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.showToast
@@ -56,7 +56,21 @@ fun FoundGroupScreen(
     uiState: State<FoundGroupUiState> = mutableStateOf(FoundGroupUiState.Idle),
     handleEvent: (FoundGroupEvent) -> Unit = { _ -> }
 ) {
-    SurfaceWithNavigationBars {
+    ScaffoldWithNavigationBars(
+        topBar = {
+            HeaderWithToolbar(
+                modifier = Modifier.fillMaxWidth(),
+                title = "Пошук групи",
+                avatar = screenState.avatar,
+                showNotification = true,
+                notificationCount = screenState.notifications,
+                onNotificationsClicked = { handleEvent(FoundGroupEvent.GoToNotifications) },
+                onAvatarClicked = { handleEvent(FoundGroupEvent.OnAvatarClicked) },
+                onBack = { handleEvent(FoundGroupEvent.OnBack) }
+            )
+        }
+    ) { paddingValues ->
+
         BackHandler { handleEvent(FoundGroupEvent.OnBack) }
 
         val context = LocalContext.current
@@ -74,32 +88,23 @@ fun FoundGroupScreen(
         }
 
         Column(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .padding(paddingValues)
+                .fillMaxSize()
+                .padding(horizontal = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
-            HeaderWithToolbar(
-                modifier = Modifier.fillMaxWidth(),
-                title = "Пошук групи",
-                avatar = screenState.avatar,
-                showNotification = true,
-                notificationCount = screenState.notifications,
-                onNotificationsClicked = { handleEvent(FoundGroupEvent.GoToNotifications) },
-                onAvatarClicked = { handleEvent(FoundGroupEvent.OnAvatarClicked) },
-                onBack = { handleEvent(FoundGroupEvent.OnBack) }
-            )
+
             Spacer(modifier = Modifier.height(8.dp))
 
             if (screenState.groups.isNotEmpty()) {
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
+                    modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        modifier = Modifier
-                            .weight(1f),
+                        modifier = Modifier.weight(1f),
                         text = "Рекомендовані групи",
                         fontFamily = redHatDisplayFontFamily,
                         fontSize = 16.sp
@@ -126,7 +131,6 @@ fun FoundGroupScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .weight(1f)
-                        .padding(horizontal = 16.dp)
                 ) {
                     itemsIndexed(screenState.groups) { index, group ->
                         if (index != 0)
@@ -143,7 +147,7 @@ fun FoundGroupScreen(
 
                 Button(
                     modifier = Modifier
-                        .padding(all = 16.dp)
+                        .padding(vertical = 16.dp)
                         .fillMaxWidth()
                         .height(48.dp),
                     onClick = { handleEvent(FoundGroupEvent.OnJoin) },
@@ -157,7 +161,6 @@ fun FoundGroupScreen(
                 Text(
                     modifier = Modifier
                         .wrapContentWidth()
-                        .padding(horizontal = 16.dp)
                         .align(alignment = Alignment.End)
                         .clickable(
                             indication = null,
@@ -174,9 +177,7 @@ fun FoundGroupScreen(
                 Spacer(modifier = Modifier.height(32.dp))
 
                 Text(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
+                    modifier = Modifier.fillMaxWidth(),
                     text = "На жаль, групи за даною локацією не знайдені. Ви можете бути першою і створити нову групу",
                     fontFamily = redHatDisplayFontFamily,
                     fontSize = 14.sp
@@ -186,7 +187,7 @@ fun FoundGroupScreen(
 
                 Button(
                     modifier = Modifier
-                        .padding(all = 16.dp)
+                        .padding(vertical = 16.dp)
                         .fillMaxWidth()
                         .height(48.dp),
                     onClick = { handleEvent(FoundGroupEvent.GoToMain) }

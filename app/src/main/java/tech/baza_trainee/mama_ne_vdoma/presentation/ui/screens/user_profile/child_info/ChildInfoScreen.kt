@@ -1,8 +1,6 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.child_info
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
@@ -15,7 +13,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ChildInfoGroup
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.SurfaceWithNavigationBars
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ScaffoldWithNavigationBars
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.headers.HeaderWithOptArrow
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.add_child.ChildInfoEvent
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.add_child.ChildInfoViewState
@@ -28,12 +26,21 @@ fun ChildInfoScreen(
     uiState: State<RequestState> = mutableStateOf(RequestState.Idle),
     handleEvent: (ChildInfoEvent) -> Unit = { _ -> }
 ) {
-    SurfaceWithNavigationBars {
+    ScaffoldWithNavigationBars(
+        topBar = {
+            HeaderWithOptArrow(
+                modifier = Modifier.fillMaxWidth(),
+                title = "Розкажіть про свою дитину",
+                onBack = { handleEvent(ChildInfoEvent.OnBack) }
+            )
+        }
+    ) { paddingValues ->
+
         BackHandler { handleEvent(ChildInfoEvent.OnBack) }
 
         val context = LocalContext.current
 
-        when(val state = uiState.value) {
+        when (val state = uiState.value) {
             RequestState.Idle -> Unit
             is RequestState.OnError -> {
                 context.showToast(state.error)
@@ -41,28 +48,15 @@ fun ChildInfoScreen(
             }
         }
 
-        Column(
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            HeaderWithOptArrow(
-                modifier = Modifier.fillMaxWidth(),
-                title = "Розкажіть про свою дитину",
-                onBack = { handleEvent(ChildInfoEvent.OnBack) }
-            )
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .imePadding()
-                    .padding(horizontal = 16.dp)
-                    .weight(1f)
-            ) {
-                ChildInfoGroup(
-                    modifier = Modifier.fillMaxWidth(),
-                    screenState = screenState,
-                    handleEvent = handleEvent
-                )
-            }
-        }
+        ChildInfoGroup(
+            modifier = Modifier
+                .padding(paddingValues)
+                .fillMaxWidth()
+                .imePadding()
+                .padding(horizontal = 16.dp),
+            screenState = screenState,
+            handleEvent = handleEvent
+        )
     }
 }
 

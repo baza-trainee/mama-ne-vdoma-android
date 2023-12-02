@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -30,7 +31,7 @@ import tech.baza_trainee.mama_ne_vdoma.domain.model.ChildEntity
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.cards.ChildCard
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ButtonText
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.LoadingIndicator
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.SurfaceWithNavigationBars
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ScaffoldWithNavigationBars
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.headers.HeaderWithToolbar
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.ChooseChildEvent
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.ChooseChildViewState
@@ -45,7 +46,20 @@ fun ChooseChildStandaloneScreen(
     uiState: State<RequestState>,
     handleEvent: (ChooseChildEvent) -> Unit
 ) {
-    SurfaceWithNavigationBars {
+    ScaffoldWithNavigationBars(
+        topBar = {
+            HeaderWithToolbar(
+                modifier = Modifier.fillMaxWidth(),
+                title = if (isForSearch) "Пошук групи" else "Створення групи",
+                avatar = screenState.avatar,
+                showNotification = true,
+                notificationCount = screenState.notifications,
+                onNotificationsClicked = { handleEvent(ChooseChildEvent.GoToNotifications) },
+                onAvatarClicked = { handleEvent(ChooseChildEvent.OnAvatarClicked) },
+                onBack = { handleEvent(ChooseChildEvent.OnBack) }
+            )
+        }
+    ) { paddingValues ->
         BackHandler { handleEvent(ChooseChildEvent.OnBack) }
 
         val context = LocalContext.current
@@ -61,28 +75,19 @@ fun ChooseChildStandaloneScreen(
         var selectedChild: ChildEntity? by remember { mutableStateOf(null) }
 
         Column(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .padding(paddingValues)
+                .fillMaxSize()
+                .imePadding()
+                .padding(horizontal = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
 
-            HeaderWithToolbar(
-                modifier = Modifier.fillMaxWidth(),
-                title = if (isForSearch) "Пошук групи" else "Створення групи",
-                avatar = screenState.avatar,
-                showNotification = true,
-                notificationCount = screenState.notifications,
-                onNotificationsClicked = { handleEvent(ChooseChildEvent.GoToNotifications) },
-                onAvatarClicked = { handleEvent(ChooseChildEvent.OnAvatarClicked) },
-                onBack = { handleEvent(ChooseChildEvent.OnBack) }
-            )
-
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
+                modifier = Modifier.fillMaxWidth(),
                 text = if (isForSearch) "Для кого шукаємо групу?" else "Для кого створюємо групу?",
                 fontFamily = redHatDisplayFontFamily,
                 fontSize = 18.sp,
@@ -94,7 +99,7 @@ fun ChooseChildStandaloneScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f)
-                    .padding(all = 16.dp)
+                    .padding(vertical = 16.dp)
             ) {
                 itemsIndexed(screenState.children) { index, child ->
                     if (index != 0)
@@ -111,7 +116,7 @@ fun ChooseChildStandaloneScreen(
 
             Button(
                 modifier = Modifier
-                    .padding(horizontal = 16.dp, vertical = 16.dp)
+                    .padding(vertical = 16.dp)
                     .fillMaxWidth()
                     .height(48.dp),
                 onClick = { handleEvent(ChooseChildEvent.OnChooseChild(selectedChild?.childId.orEmpty())) },
