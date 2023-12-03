@@ -285,13 +285,15 @@ class NotificationsViewModel(
         val result3 = filesRepository.getAvatar(parent.avatar)
         val avatar = getResult(result3) ?: Uri.EMPTY
 
-        val result4 = locationRepository.getAddressFromLocation(
-            latLng = LatLng(
-                parent.location.coordinates[1],
-                parent.location.coordinates[0]
+        val address = if (parent.location.coordinates.isNotEmpty()) {
+            val result4 = locationRepository.getAddressFromLocation(
+                latLng = LatLng(
+                    parent.location.coordinates[1],
+                    parent.location.coordinates[0]
+                )
             )
-        )
-        val address = getResult(result4).orEmpty()
+            getResult(result4).orEmpty()
+        } else ""
 
         return JoinRequestUiModel(
             group = GroupUiModel(
