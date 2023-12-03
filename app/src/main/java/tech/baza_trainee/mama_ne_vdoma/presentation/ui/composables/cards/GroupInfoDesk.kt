@@ -79,8 +79,8 @@ fun GroupInfoDesk(
     onSwitchAdmin: (String, String) -> Unit = {_,_->},
     onDelete: (String) -> Unit = {}
 ) {
-    val isAdmin = rememberSaveable { currentUserId == group.adminId }
-    val isMyGroup = rememberSaveable { group.members.map { it.id }.contains(currentUserId) }
+    val isAdmin  = currentUserId == group.adminId
+    val isMyGroup = group.members.map { it.id }.contains(currentUserId)
 
     var showAdminDialog by rememberSaveable { mutableStateOf(false) }
     var showAdminConfirmationDialog by rememberSaveable { mutableStateOf(false) }
@@ -596,7 +596,7 @@ fun GroupInfoDesk(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 16.dp),
-                        text = "Ви впевнені, що хочете передати адмінастративні права в групі \"${adminDialogData.third}\"?",
+                        text = "Ви впевнені, що хочете передати адміністративні права в групі \"${adminDialogData.third}\"?",
                         fontSize = 14.sp,
                         fontFamily = redHatDisplayFontFamily,
                         textAlign = TextAlign.Start
@@ -634,6 +634,7 @@ fun GroupInfoDesk(
                                     interactionSource = remember { MutableInteractionSource() }
                                 ) {
                                     showAdminConfirmationDialog = false
+                                    showAdminDialog = false
                                     onSwitchAdmin(adminDialogData.first, adminDialogData.second)
                                 },
                             text = "Так, я хочу",

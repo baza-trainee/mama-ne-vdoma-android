@@ -587,7 +587,7 @@ fun GroupDetailsInputScreen(
                     screenState.schedule.values.any { it.isFilled() }
         ) {
             ButtonText(
-                text = if (isForEditing) "Зберігти зміни" else "Створити нову групу"
+                text = if (isForEditing) "Зберегти зміни" else "Створити нову групу"
             )
         }
     }
