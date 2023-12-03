@@ -103,20 +103,28 @@ fun ToolbarWithAvatar(
             Box(
                 modifier = Modifier
                     .fillMaxHeight()
-                    .padding(16.dp)
-                    .clickable {
-                        onNotificationsClicked()
-                    },
+                    .padding(8.dp),
                 contentAlignment = Alignment.Center
             ) {
-                Image(
+                Box(
                     modifier = Modifier
-                        .height(32.dp)
-                        .width(32.dp),
-                    painter = painterResource(id = R.drawable.ic_notification),
-                    contentDescription = "notification",
-                    contentScale = ContentScale.Fit
-                )
+                        .height(40.dp)
+                        .width(40.dp)
+                        .clip(CircleShape)
+                        .clickable {
+                            onNotificationsClicked()
+                        },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Image(
+                        modifier = Modifier
+                            .height(32.dp)
+                            .width(32.dp),
+                        painter = painterResource(id = R.drawable.ic_notification),
+                        contentDescription = "notification",
+                        contentScale = ContentScale.Fit
+                    )
+                }
                 Badge(
                     modifier = Modifier
                         .align(Alignment.TopEnd)
@@ -132,8 +140,8 @@ fun ToolbarWithAvatar(
         AsyncImage(
             modifier = Modifier
                 .padding(end = 8.dp)
-                .height(32.dp)
-                .width(32.dp)
+                .height(40.dp)
+                .width(40.dp)
                 .clip(CircleShape)
                 .clickable {
                     onAvatarClicked()
