@@ -61,7 +61,7 @@ class UpdateGroupViewModel(
 
         viewModelScope.launch {
             groupUpdateCommunicator.dataFlow.collect {
-                it?.let { setGroupForEdit(it) }
+                setGroupForEdit(it)
             }
         }
 
@@ -118,9 +118,9 @@ class UpdateGroupViewModel(
                     name = group.name,
                     nameValid = ValidField.VALID,
                     description = group.description,
-                    minAge = if (delimiterIndex != -1) group.ages.take(delimiterIndex) else group.ages,
+                    minAge = if (delimiterIndex != -1) group.ages.substring(0, delimiterIndex) else group.ages,
                     minAgeValid = ValidField.VALID,
-                    maxAge = if (delimiterIndex != -1) group.ages.takeLast(group.ages.length - delimiterIndex + 1) else group.ages,
+                    maxAge = if (delimiterIndex != -1) group.ages.substring(delimiterIndex + 1) else group.ages,
                     maxAgeValid = ValidField.VALID,
                     schedule = group.schedule
                 )
