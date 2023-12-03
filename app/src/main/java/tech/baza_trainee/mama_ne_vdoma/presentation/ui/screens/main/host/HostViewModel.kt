@@ -1,5 +1,6 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.host
 
+import android.net.Uri
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.snapshots.SnapshotStateMap
@@ -184,7 +185,7 @@ class HostViewModel(
                     }
                     preferencesDatastoreManager.myJoinRequests = entity.groupJoinRequests.size
 
-                    if (preferencesDatastoreManager.avatar.isEmpty())
+                    if (preferencesDatastoreManager.avatarUri == Uri.EMPTY)
                         getUserAvatar(entity.avatar)
                 }
             }

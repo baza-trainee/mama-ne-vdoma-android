@@ -236,6 +236,14 @@ class EditProfileViewModel(
                 }
             }
 
+            if (preferencesDatastoreManager.avatarUri == Uri.EMPTY)
+                getUserAvatar(entity.avatar) { uri ->
+                    preferencesDatastoreManager.avatarUri = uri
+                    _viewState.update {
+                        it.copy(userAvatar = uri)
+                    }
+                }
+
             getChildren()
         }
     }
