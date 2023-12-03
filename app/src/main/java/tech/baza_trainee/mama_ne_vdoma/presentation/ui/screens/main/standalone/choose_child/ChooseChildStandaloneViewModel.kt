@@ -1,18 +1,15 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.standalone.choose_child
 
-import android.net.Uri
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import tech.baza_trainee.mama_ne_vdoma.domain.model.ChildEntity
-import tech.baza_trainee.mama_ne_vdoma.domain.model.UserProfileEntity
+import kotlinx.coroutines.launch
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatastoreManager
-import tech.baza_trainee.mama_ne_vdoma.domain.repository.FilesRepository
-import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserAuthRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.HostScreenRoutes
@@ -32,9 +29,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onSuccess
 class ChooseChildStandaloneViewModel(
     private val isForSearch: Boolean,
     private val communicator: Communicator<String>,
-    private val userAuthRepository: UserAuthRepository,
     private val userProfileRepository: UserProfileRepository,
-    private val filesRepository: FilesRepository,
     private val navigator: ScreenNavigator,
     private val preferencesDatastoreManager: UserPreferencesDatastoreManager
 ): ViewModel() {
@@ -47,7 +42,17 @@ class ChooseChildStandaloneViewModel(
         get() = _uiState
 
     init {
-        getUserInfo()
+        viewModelScope.launch {
+            preferencesDatastoreManager.userPreferencesFlow.collect { pref ->
+                _viewState.update {
+                    it.copy(
+                        avatar = pref.avatarUri,
+                        notifications = pref.myJoinRequests + pref.adminJoinRequests
+                    )
+                }
+            }
+        }
+
         getChildren()
     }
 
@@ -71,64 +76,9 @@ class ChooseChildStandaloneViewModel(
         }
     }
 
-    private fun getUserInfo() {
-        networkExecutor<UserProfileEntity> {
-            execute {
-                userAuthRepository.getUserInfo()
-            }
-            onSuccess { entity ->
-                preferencesDatastoreManager.apply {
-                    id = entity.id
-                    name = entity.name
-                    email = entity.email
-                }
-
-                if (entity.location.coordinates.isNotEmpty()) {
-                    preferencesDatastoreManager.apply {
-                        latitude = entity.location.coordinates[1]
-                        longitude = entity.location.coordinates[0]
-                    }
-                }
-
-                getUserAvatar(entity.avatar)
-            }
-            onError { error ->
-                _uiState.value = RequestState.OnError(error)
-            }
-            onLoading { isLoading ->
-                _viewState.update {
-                    it.copy(
-                        isLoading = isLoading
-                    )
-                }
-            }
-        }
-    }
-
-    private fun getUserAvatar(avatarId: String) {
-        networkExecutor<Uri> {
-            execute { filesRepository.getAvatar(avatarId) }
-            onSuccess { uri ->
-                preferencesDatastoreManager.avatarUri = uri
-                _viewState.update {
-                    it.copy(avatar = uri)
-                }
-            }
-            onError { error ->
-                _uiState.value = RequestState.OnError(error)
-            }
-            onLoading { isLoading ->
-                _viewState.update {
-                    it.copy(
-                        isLoading = isLoading
-                    )
-                }
-            }
-        }
-    }
 
     private fun getChildren() {
-        networkExecutor<List<ChildEntity>> {
+        networkExecutor {
             execute {
                 userProfileRepository.getChildren()
             }

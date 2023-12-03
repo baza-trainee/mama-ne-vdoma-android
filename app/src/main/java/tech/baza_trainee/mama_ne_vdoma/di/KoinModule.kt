@@ -187,8 +187,6 @@ val standaloneGroupSearchModule = module {
             get(named(STRINGS)),
             get(),
             get(),
-            get(),
-            get(),
             get()
         )
     }
