@@ -50,7 +50,7 @@ fun EditCredentialsSuccessDialog(
             )
 
             Text(
-                text = "На головну",
+                text = "На сторінку логіну",
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.primary,
