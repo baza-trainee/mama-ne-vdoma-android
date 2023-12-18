@@ -91,7 +91,7 @@ fun HostScreen(
                         title = screenState.currentRoute.title,
                         avatar = screenState.avatar,
                         showArrow = false,
-                        showNotification = notificationsCount != 0,
+                        showNotification = true,
                         notificationCount = notificationsCount,
                         onNotificationsClicked = { handleEvent(HostEvent.GoToNotifications) },
                         onAvatarClicked = { handleEvent(HostEvent.SwitchTab(SETTINGS_PAGE)) }

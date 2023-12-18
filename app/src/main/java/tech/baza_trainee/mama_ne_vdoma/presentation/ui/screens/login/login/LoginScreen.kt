@@ -15,7 +15,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material3.Button
@@ -144,107 +146,103 @@ fun LoginUserScreen(
         Column(
             modifier = Modifier
                 .imePadding()
+                .verticalScroll(rememberScrollState())
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp),
-            verticalArrangement = Arrangement.SpaceBetween,
+            verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Column(
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                text = "Увійти у свій профіль",
+                fontSize = 20.sp,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onBackground,
+                fontFamily = redHatDisplayFontFamily
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            OutlinedTextFieldWithError(
                 modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.Top,
-                horizontalAlignment = Alignment.CenterHorizontally
+                value = screenState.email,
+                hint = "Email",
+                label = "Введіть свій email",
+                onValueChange = { handleEvent(LoginEvent.ValidateEmail(it)) },
+                isError = screenState.emailValid == ValidField.INVALID,
+                errorText = "Ви ввели некоректний email",
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Default.Email,
+                        contentDescription = null
+                    )
+                },
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Email,
+                    imeAction = ImeAction.Next
+                )
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            PasswordTextFieldWithError(
+                modifier = Modifier.fillMaxWidth(),
+                password = screenState.password,
+                onValueChange = { handleEvent(LoginEvent.ValidatePassword(it)) },
+                isError = screenState.passwordValid == ValidField.INVALID,
+                errorText = "Ви ввели некоректний пароль",
+                imeAction = ImeAction.Done,
+                onImeActionPerformed = { handleEvent(LoginEvent.LoginUser) },
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            val restoreButtonText by remember {
+                mutableStateOf(
+                    getTextWithUnderline(
+                        "",
+                        "Забули пароль?",
+                        false
+                    )
+                )
+            }
+
+            Text(
+                modifier = Modifier
+                    .wrapContentWidth()
+                    .align(alignment = Alignment.End)
+                    .clickable(
+                        indication = null,
+                        interactionSource = remember { MutableInteractionSource() }
+                    ) { handleEvent(LoginEvent.OnRestore) },
+                text = restoreButtonText,
+                textAlign = TextAlign.End,
+                fontSize = 14.sp,
+                fontFamily = redHatDisplayFontFamily
+            )
+
+            Spacer(modifier = Modifier.height(48.dp))
+
+            Button(
+                modifier = Modifier
+                    .padding(vertical = 16.dp)
+                    .fillMaxWidth()
+                    .height(48.dp),
+                onClick = { handleEvent(LoginEvent.LoginUser) },
+                enabled = screenState.passwordValid == ValidField.VALID &&
+                        screenState.emailValid == ValidField.VALID
             ) {
-                Spacer(modifier = Modifier.height(16.dp))
-
                 Text(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    text = "Увійти у свій профіль",
-                    fontSize = 20.sp,
-                    textAlign = TextAlign.Center,
-                    color = MaterialTheme.colorScheme.onBackground,
-                    fontFamily = redHatDisplayFontFamily
+                    text = "Увійти",
+                    fontFamily = redHatDisplayFontFamily,
+                    fontWeight = FontWeight.Bold
                 )
+            }
 
-                Spacer(modifier = Modifier.height(24.dp))
-
-                OutlinedTextFieldWithError(
-                    modifier = Modifier.fillMaxWidth(),
-                    value = screenState.email,
-                    hint = "Email",
-                    label = "Введіть свій email",
-                    onValueChange = { handleEvent(LoginEvent.ValidateEmail(it)) },
-                    isError = screenState.emailValid == ValidField.INVALID,
-                    errorText = "Ви ввели некоректний email",
-                    leadingIcon = {
-                        Icon(
-                            imageVector = Icons.Default.Email,
-                            contentDescription = null
-                        )
-                    },
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Email,
-                        imeAction = ImeAction.Next
-                    )
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                PasswordTextFieldWithError(
-                    modifier = Modifier.fillMaxWidth(),
-                    password = screenState.password,
-                    onValueChange = { handleEvent(LoginEvent.ValidatePassword(it)) },
-                    isError = screenState.passwordValid == ValidField.INVALID,
-                    errorText = "Ви ввели некоректний пароль",
-                    imeAction = ImeAction.Done,
-                    onImeActionPerformed = { handleEvent(LoginEvent.LoginUser) },
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                val restoreButtonText by remember {
-                    mutableStateOf(
-                        getTextWithUnderline(
-                            "",
-                            "Забули пароль?",
-                            false
-                        )
-                    )
-                }
-
-                Text(
-                    modifier = Modifier
-                        .wrapContentWidth()
-                        .align(alignment = Alignment.End)
-                        .clickable(
-                            indication = null,
-                            interactionSource = remember { MutableInteractionSource() }
-                        ) { handleEvent(LoginEvent.OnRestore) },
-                    text = restoreButtonText,
-                    textAlign = TextAlign.End,
-                    fontSize = 14.sp,
-                    fontFamily = redHatDisplayFontFamily
-                )
-
-                Spacer(modifier = Modifier.height(48.dp))
-
-                Button(
-                    modifier = Modifier
-                        .padding(vertical = 16.dp)
-                        .fillMaxWidth()
-                        .height(48.dp),
-                    onClick = { handleEvent(LoginEvent.LoginUser) },
-                    enabled = screenState.passwordValid == ValidField.VALID &&
-                            screenState.emailValid == ValidField.VALID
-                ) {
-                    Text(
-                        text = "Увійти",
-                        fontFamily = redHatDisplayFontFamily,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(32.dp))
 
 //                ConstraintLayout(
 //                    modifier = Modifier.fillMaxWidth()
@@ -289,8 +287,7 @@ fun LoginUserScreen(
 //                    )
 //                }
 
-                Spacer(modifier = Modifier.height(32.dp))
-            }
+            Spacer(modifier = Modifier.weight(1f))
 
             SocialLoginBlock(
                 modifier = Modifier

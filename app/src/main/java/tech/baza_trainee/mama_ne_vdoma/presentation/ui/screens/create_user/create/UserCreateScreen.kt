@@ -5,11 +5,8 @@ import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -51,7 +48,6 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.functions.getTextWithUnderline
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.text_fields.OutlinedTextFieldWithError
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.text_fields.PasswordTextFieldWithError
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.SlateGray
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
@@ -125,133 +121,127 @@ fun UserCreateScreen(
                 .imePadding()
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp),
-            verticalArrangement = Arrangement.SpaceBetween,
+            verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Column(
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                text = "Створити профіль",
+                fontSize = 20.sp,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onBackground,
+                fontFamily = redHatDisplayFontFamily
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            OutlinedTextFieldWithError(
                 modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.Top,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Text(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    text = "Створити профіль",
-                    fontSize = 20.sp,
-                    textAlign = TextAlign.Center,
-                    color = MaterialTheme.colorScheme.onBackground,
-                    fontFamily = redHatDisplayFontFamily
-                )
-
-                Spacer(modifier = Modifier.height(24.dp))
-
-                OutlinedTextFieldWithError(
-                    modifier = Modifier.fillMaxWidth(),
-                    value = screenState.email,
-                    hint = "Email",
-                    label = "Введіть свій email",
-                    onValueChange = { handleEvent(UserCreateEvent.ValidateEmail(it)) },
-                    isError = screenState.emailValid == ValidField.INVALID,
-                    errorText = "Ви ввели некоректний email",
-                    leadingIcon = {
-                        Icon(
-                            imageVector = Icons.Default.Email,
-                            contentDescription = null
-                        )
-                    },
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Email,
-                        imeAction = ImeAction.Next
+                value = screenState.email,
+                hint = "Email",
+                label = "Введіть свій email",
+                onValueChange = { handleEvent(UserCreateEvent.ValidateEmail(it)) },
+                isError = screenState.emailValid == ValidField.INVALID,
+                errorText = "Ви ввели некоректний email",
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Default.Email,
+                        contentDescription = null
                     )
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                PasswordTextFieldWithError(
-                    modifier = Modifier.fillMaxWidth(),
-                    password = screenState.password,
-                    onValueChange = { handleEvent(UserCreateEvent.ValidatePassword(it)) },
-                    isError = screenState.passwordValid == ValidField.INVALID,
+                },
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Email,
                     imeAction = ImeAction.Next
                 )
+            )
 
-                Spacer(modifier = Modifier.height(2.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
-                Text(
-                    modifier = Modifier.fillMaxWidth(),
-                    text =
-                    "Ваш пароль повинен складатись з 6-24 символів і обов’язково містити великі та малі латинські букви, цифри, спеціальні знаки",
-                    fontSize = 14.sp,
-                    fontFamily = redHatDisplayFontFamily,
-                    lineHeight = 18.sp
+            PasswordTextFieldWithError(
+                modifier = Modifier.fillMaxWidth(),
+                password = screenState.password,
+                onValueChange = { handleEvent(UserCreateEvent.ValidatePassword(it)) },
+                isError = screenState.passwordValid == ValidField.INVALID,
+                imeAction = ImeAction.Next
+            )
+
+            Spacer(modifier = Modifier.height(2.dp))
+
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                text =
+                "Ваш пароль повинен складатись з 6-24 символів і обов’язково містити великі та малі латинські букви, цифри, спеціальні знаки",
+                fontSize = 14.sp,
+                fontFamily = redHatDisplayFontFamily,
+                lineHeight = 18.sp
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            PasswordTextFieldWithError(
+                modifier = Modifier.fillMaxWidth(),
+                label = "Повторіть свій пароль",
+                password = screenState.confirmPassword,
+                onValueChange = { handleEvent(UserCreateEvent.ValidateConfirmPassword(it)) },
+                isError = screenState.confirmPasswordValid == ValidField.INVALID,
+                errorText = "Паролі не співпадають",
+                imeAction = ImeAction.Done,
+                onImeActionPerformed = { handleEvent(UserCreateEvent.RegisterUser) }
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            PrivacyPolicyBlock(
+                modifier = Modifier.fillMaxWidth(),
+                isChecked = screenState.isPolicyChecked,
+                onCheckedChanged = { handleEvent(UserCreateEvent.UpdatePolicyCheck(it)) }
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            Button(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp),
+                onClick = {
+                    handleEvent(UserCreateEvent.RegisterUser)
+                },
+                enabled = screenState.isAllConform
+            ) {
+                ButtonText(
+                    text = "Зареєструватись"
                 )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                PasswordTextFieldWithError(
-                    modifier = Modifier.fillMaxWidth(),
-                    label = "Повторіть свій пароль",
-                    password = screenState.confirmPassword,
-                    onValueChange = { handleEvent(UserCreateEvent.ValidateConfirmPassword(it)) },
-                    isError = screenState.confirmPasswordValid == ValidField.INVALID,
-                    errorText = "Паролі не співпадають",
-                    imeAction = ImeAction.Done,
-                    onImeActionPerformed = { handleEvent(UserCreateEvent.RegisterUser) }
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                PrivacyPolicyBlock(
-                    modifier = Modifier.fillMaxWidth(),
-                    isChecked = screenState.isPolicyChecked,
-                    onCheckedChanged = { handleEvent(UserCreateEvent.UpdatePolicyCheck(it)) }
-                )
-
-                Spacer(modifier = Modifier.height(24.dp))
-
-                Button(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(48.dp),
-                    onClick = {
-                        handleEvent(UserCreateEvent.RegisterUser)
-                    },
-                    enabled = screenState.isAllConform
-                ) {
-                    ButtonText(
-                        text = "Зареєструватись"
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(32.dp))
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .weight(1f)
-                            .height(height = 2.dp)
-                            .background(color = SlateGray)
-                    )
-                    Text(
-                        modifier = Modifier.padding(horizontal = 4.dp),
-                        text = "чи",
-                        fontSize = 14.sp,
-                    )
-                    Box(
-                        modifier = Modifier
-                            .weight(1f)
-                            .height(height = 2.dp)
-                            .background(color = SlateGray)
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(32.dp))
             }
+
+            Spacer(modifier = Modifier.height(32.dp))
+//
+//            Row(
+//                modifier = Modifier.fillMaxWidth(),
+//                verticalAlignment = Alignment.CenterVertically
+//            ) {
+//                Box(
+//                    modifier = Modifier
+//                        .weight(1f)
+//                        .height(height = 2.dp)
+//                        .background(color = SlateGray)
+//                )
+//                Text(
+//                    modifier = Modifier.padding(horizontal = 4.dp),
+//                    text = "чи",
+//                    fontSize = 14.sp,
+//                )
+//                Box(
+//                    modifier = Modifier
+//                        .weight(1f)
+//                        .height(height = 2.dp)
+//                        .background(color = SlateGray)
+//                )
+//            }
+
+            Spacer(modifier = Modifier.weight(1f))
 
             SocialLoginBlock(
                 modifier = Modifier
