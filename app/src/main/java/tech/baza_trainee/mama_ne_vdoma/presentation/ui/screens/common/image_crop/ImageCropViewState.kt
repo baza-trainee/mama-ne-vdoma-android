@@ -6,7 +6,8 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.BitmapHelper
 
+@Stable
 data class ImageCropViewState(
-    @Stable val avatar: Uri = Uri.EMPTY,
-    @Stable val image: ImageBitmap = BitmapHelper.DEFAULT_BITMAP.asImageBitmap()
+    val avatar: Uri = Uri.EMPTY,
+    val image: ImageBitmap = BitmapHelper.DEFAULT_BITMAP.asImageBitmap()
 )

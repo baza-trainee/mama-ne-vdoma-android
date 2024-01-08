@@ -4,9 +4,10 @@ import android.net.Uri
 import androidx.compose.runtime.Stable
 import tech.baza_trainee.mama_ne_vdoma.domain.model.ChildEntity
 
+@Stable
 data class ChooseChildViewState(
-    @Stable val children: List<ChildEntity> = emptyList(),
-    @Stable val avatar: Uri = Uri.EMPTY,
+    val children: List<ChildEntity> = emptyList(),
+    val avatar: Uri = Uri.EMPTY,
     val notifications: Int = 0,
     val isLoading: Boolean = false
 )

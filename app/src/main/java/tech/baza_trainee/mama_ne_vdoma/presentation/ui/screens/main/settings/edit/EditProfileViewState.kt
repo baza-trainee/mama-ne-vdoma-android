@@ -11,6 +11,7 @@ import tech.baza_trainee.mama_ne_vdoma.domain.model.getDefaultSchedule
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 import java.time.DayOfWeek
 
+@Stable
 data class EditProfileViewState(
     val name: String = "",
     val nameValid: ValidField = ValidField.EMPTY,
@@ -18,13 +19,13 @@ data class EditProfileViewState(
     val phoneValid: ValidField = ValidField.EMPTY,
     val code: String = "",
     val country: String = "",
-    @Stable val userAvatar: Uri = Uri.EMPTY,
+    val userAvatar: Uri = Uri.EMPTY,
     val address: String = "",
-    @Stable val currentLocation: LatLng = LatLng(0.0,0.0),
+    val currentLocation: LatLng = LatLng(0.0,0.0),
     val isAddressChecked: Boolean = true,
     val note: String = "",
     val schedule: SnapshotStateMap<DayOfWeek, DayPeriod> = getDefaultSchedule(),
-    @Stable val children: List<ChildEntity> = emptyList(),
+    val children: List<ChildEntity> = emptyList(),
     val childrenNotesValid: SnapshotStateMap<Int, ValidField> = mutableStateMapOf(),
     val isLoading: Boolean = false
 )

@@ -8,6 +8,7 @@ import tech.baza_trainee.mama_ne_vdoma.domain.model.DayPeriod
 import tech.baza_trainee.mama_ne_vdoma.domain.model.getDefaultSchedule
 import java.time.DayOfWeek
 
+@Stable
 data class GroupUiModel(
     val id: String = "",
     val adminId: String = "",
@@ -15,14 +16,15 @@ data class GroupUiModel(
     val description: String = "",
     val ages: String = "",
     val rating: Float = 5.0f,
-    @Stable val avatar: Uri = Uri.EMPTY,
+    val avatar: Uri = Uri.EMPTY,
     val address: String = "",
     val location: LatLng = LatLng(0.00, 0.00),
-    @Stable val members: List<MemberUiModel> = emptyList(),
+    val members: List<MemberUiModel> = emptyList(),
     val isChecked: Boolean = false,
     val schedule: SnapshotStateMap<DayOfWeek, DayPeriod> = getDefaultSchedule()
 )
 
+@Stable
 data class MemberUiModel(
     val id: String = "",
     val name: String = "",
@@ -30,5 +32,5 @@ data class MemberUiModel(
     val phone: String = "",
     val avatar: Uri = Uri.EMPTY,
     val rating: Float = 5.0f,
-    @Stable val children: List<String> = emptyList()
+    val children: List<String> = emptyList()
 )

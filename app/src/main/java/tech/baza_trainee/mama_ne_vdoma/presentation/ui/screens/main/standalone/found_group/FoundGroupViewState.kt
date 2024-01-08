@@ -4,10 +4,11 @@ import android.net.Uri
 import androidx.compose.runtime.Stable
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.GroupUiModel
 
+@Stable
 data class FoundGroupViewState(
-    @Stable val avatar: Uri = Uri.EMPTY,
+    val avatar: Uri = Uri.EMPTY,
     val currentUserId: String = "",
-    @Stable val groups: List<GroupUiModel> = emptyList(),
+    val groups: List<GroupUiModel> = emptyList(),
     val notifications: Int = 0,
     val isLoading: Boolean = false
 )

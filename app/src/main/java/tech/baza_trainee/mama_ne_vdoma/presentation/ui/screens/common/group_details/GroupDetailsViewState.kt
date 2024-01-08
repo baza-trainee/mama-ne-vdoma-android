@@ -12,12 +12,13 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.BitmapHelper
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 import java.time.DayOfWeek
 
+@Stable
 data class GroupDetailsViewState(
-    @Stable val members: List<MemberUiModel> = emptyList(),
-    @Stable val userAvatar: Uri = Uri.EMPTY,
+    val members: List<MemberUiModel> = emptyList(),
+    val userAvatar: Uri = Uri.EMPTY,
     val adminId: String = "",
     val address: String = "",
-    @Stable val location: LatLng = LatLng(0.00, 0.00),
+    val location: LatLng = LatLng(0.00, 0.00),
     val isAddressChecked: Boolean = true,
     val name: String = "",
     val nameValid: ValidField = ValidField.EMPTY,

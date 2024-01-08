@@ -4,6 +4,7 @@ import android.net.Uri
 import androidx.compose.runtime.Stable
 import tech.baza_trainee.mama_ne_vdoma.domain.model.ChildEntity
 
+@Stable
 data class JoinRequestUiModel(
     val group: GroupUiModel = GroupUiModel(),
     val parentId: String = "",
@@ -11,6 +12,6 @@ data class JoinRequestUiModel(
     val parentName: String = "",
     val parentPhone: String = "",
     val parentAddress: String = "",
-    @Stable val parentAvatar: Uri = Uri.EMPTY,
+    val parentAvatar: Uri = Uri.EMPTY,
     val child: ChildEntity = ChildEntity()
 )

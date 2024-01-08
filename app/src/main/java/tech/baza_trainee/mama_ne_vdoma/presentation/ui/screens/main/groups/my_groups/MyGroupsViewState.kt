@@ -3,8 +3,9 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.my_g
 import androidx.compose.runtime.Stable
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.GroupUiModel
 
+@Stable
 data class MyGroupsViewState(
     val userId: String = "",
-    @Stable val groups: List<GroupUiModel> = emptyList(),
+    val groups: List<GroupUiModel> = emptyList(),
     val isLoading: Boolean = false
 )

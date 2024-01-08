@@ -4,10 +4,11 @@ import android.net.Uri
 import androidx.compose.runtime.Stable
 import com.google.android.gms.maps.model.LatLng
 
+@Stable
 data class SetAreaViewState(
     val avatar: Uri = Uri.EMPTY,
     val address: String = "",
-    @Stable val currentLocation: LatLng = LatLng(0.0,0.0),
+    val currentLocation: LatLng = LatLng(0.0,0.0),
     val isAddressChecked: Boolean = true,
     val radius: Float = 1000f,
     val notifications: Int = 0,
