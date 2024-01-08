@@ -8,6 +8,7 @@ import tech.baza_trainee.mama_ne_vdoma.data.model.GroupFullInfoDto
 import tech.baza_trainee.mama_ne_vdoma.data.model.JoinRequestDto
 import tech.baza_trainee.mama_ne_vdoma.data.model.LocationDto
 import tech.baza_trainee.mama_ne_vdoma.data.model.MemberDto
+import tech.baza_trainee.mama_ne_vdoma.data.model.NotificationDto
 import tech.baza_trainee.mama_ne_vdoma.data.model.UpdateGroupDto
 import tech.baza_trainee.mama_ne_vdoma.data.model.UserInfoDto
 import tech.baza_trainee.mama_ne_vdoma.data.model.UserProfileDto
@@ -20,6 +21,7 @@ import tech.baza_trainee.mama_ne_vdoma.domain.model.GroupFullInfoEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.JoinRequestEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.LocationEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.MemberEntity
+import tech.baza_trainee.mama_ne_vdoma.domain.model.NotificationEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.PatchChildEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UpdateGroupEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UserInfoEntity
@@ -58,14 +60,17 @@ fun UserProfileDto.toDomainModel() = UserProfileEntity(
                     map[key] = entry.value.toDomainModel()
                 }
             else
-                DayOfWeek.values().forEach {
+                DayOfWeek.entries.forEach {
                     map[it] = DayPeriod()
                 }
         },
-    groupJoinRequests = groupJoinRequests.map { it.toDomainModel() }
+    groupJoinRequests = groupJoinRequests.map { it.toDomainModel() },
+    notifications = notifications.map { it.toDomainModel() }
 )
 
 fun JoinRequestDto.toDomainModel() = JoinRequestEntity(groupId, childId)
+
+fun NotificationDto.toDomainModel() = NotificationEntity(groupId, type)
 
 fun LocationDto?.toDomainModel() = if (this != null)
         LocationEntity(type, coordinates)
@@ -86,7 +91,7 @@ fun ChildDto.toDomainModel() = ChildEntity(
                     map[key] = entry.value.toDomainModel()
                 }
             else
-                DayOfWeek.values().forEach {
+                DayOfWeek.entries.forEach {
                     map[it] = DayPeriod()
                 }
         }
@@ -145,7 +150,7 @@ fun GroupDto.toDomainModel() = GroupEntity(
                     map[key] = entry.value.toDomainModel()
                 }
             else
-                DayOfWeek.values().forEach {
+                DayOfWeek.entries.forEach {
                     map[it] = DayPeriod()
                 }
         }

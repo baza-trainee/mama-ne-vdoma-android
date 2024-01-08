@@ -6,6 +6,10 @@ sealed interface NotificationsEvent {
     data class CancelRequest(val group: String, val child: String): NotificationsEvent
 
     data object ResetUiState: NotificationsEvent
-
     data object OnBack: NotificationsEvent
+    data object GoToMain: NotificationsEvent
+    data object SearchGroup: NotificationsEvent
+    data object MyGroups: NotificationsEvent
+    data object GoToAdminRequests: NotificationsEvent
+    data object ClearNotifications: NotificationsEvent
 }

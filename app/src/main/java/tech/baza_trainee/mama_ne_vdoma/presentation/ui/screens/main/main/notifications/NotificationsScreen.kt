@@ -29,12 +29,13 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -49,11 +50,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import kotlinx.coroutines.launch
+import tech.baza_trainee.mama_ne_vdoma.domain.model.MessageType
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.cards.AdminJoinRequestCard
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.cards.MyRequestCard
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.LoadingIndicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.functions.customTabIndicatorOffset
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.main.notifications.items.AcceptedItem
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.main.notifications.items.AdminItem
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.main.notifications.items.JoinedItem
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.main.notifications.items.KickedItem
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.main.notifications.items.RejectedItem
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
@@ -68,6 +74,10 @@ fun NotificationScreen(
     val context = LocalContext.current
 
     var showAcceptDialog by rememberSaveable { mutableStateOf(false) }
+
+    val tabs = listOf("Мої запити", "Вхідні запити", "Сповіщення")
+    val pagerState = rememberPagerState(initialPage = 0, pageCount = { tabs.size })
+    var currentPage by rememberSaveable { mutableIntStateOf(0) }
 
     when (val state = uiState.value) {
         NotificationsUiState.Idle -> Unit
@@ -84,6 +94,12 @@ fun NotificationScreen(
             showAcceptDialog = true
             handleEvent(NotificationsEvent.ResetUiState)
         }
+
+        is NotificationsUiState.GoToPage -> currentPage = state.page
+    }
+
+    LaunchedEffect(key1 = currentPage) {
+        pagerState.animateScrollToPage(currentPage)
     }
 
     var showCancelDialog by rememberSaveable { mutableStateOf(false) }
@@ -92,7 +108,6 @@ fun NotificationScreen(
 
     Column {
         val density = LocalDensity.current
-        val tabs = listOf("Мої запити", "Вхідні запити")
         val tabWidths = remember {
             val tabWidthStateList = mutableStateListOf<Dp>()
             repeat(tabs.size) {
@@ -100,8 +115,6 @@ fun NotificationScreen(
             }
             tabWidthStateList
         }
-        val pagerState = rememberPagerState(initialPage = 0, pageCount = { tabs.size })
-        val scope = rememberCoroutineScope()
 
         TabRow(
             modifier = Modifier.height(52.dp),
@@ -127,11 +140,7 @@ fun NotificationScreen(
                 Tab(
                     modifier = Modifier.padding(4.dp),
                     selected = pagerState.currentPage == index,
-                    onClick = {
-                        scope.launch {
-                            pagerState.animateScrollToPage(index)
-                        }
-                    }
+                    onClick = { currentPage = index }
                 ) {
                     Text(
                         modifier = Modifier
@@ -203,6 +212,43 @@ fun NotificationScreen(
                             )
                         }
                     }
+                }
+
+                2 -> {
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 16.dp)
+                    ) {
+                        itemsIndexed(screenState.notifications) { index, notification ->
+                            if (index != 0)
+                                Spacer(modifier = Modifier.height(8.dp))
+
+                            when(val type = notification.type) {
+                                MessageType.JOIN.type -> JoinedItem(group = notification.group, handleEvent)
+                                MessageType.ACCEPT.type -> AcceptedItem(group = notification.group, handleEvent)
+                                MessageType.REJECT.type -> RejectedItem(group = notification.group, handleEvent)
+                                MessageType.KICK.type -> KickedItem(group = notification.group, handleEvent)
+                                MessageType.MAKE_ADMIN.type -> AdminItem(group = notification.group, handleEvent)
+                                else -> throw IllegalArgumentException("Unknown message type: $type")
+                            }
+                        }
+                    }
+
+                    Text(
+                        modifier = Modifier
+                            .padding(horizontal = 8.dp)
+                            .clickable {
+                                handleEvent(NotificationsEvent.ClearNotifications)
+                            }
+                            .align(Alignment.End),
+                        text = "Видалити всі сповіщення",
+                        fontSize = 16.sp,
+                        fontFamily = redHatDisplayFontFamily,
+                        fontWeight = FontWeight.Bold,
+                        color =  Color.Red,
+                        textAlign = TextAlign.Center
+                    )
                 }
             }
         }

@@ -14,10 +14,16 @@ data class UserProfileEntity(
     val avatar: String = "",
     val location: LocationEntity = LocationEntity(),
     val schedule: SnapshotStateMap<DayOfWeek, DayPeriod> = getDefaultSchedule(),
-    val groupJoinRequests: List<JoinRequestEntity> = emptyList()
+    val groupJoinRequests: List<JoinRequestEntity> = emptyList(),
+    val notifications: List<NotificationEntity> = emptyList()
 )
 
 data class JoinRequestEntity(
     val groupId: String = "",
     val childId: String = ""
+)
+
+data class NotificationEntity(
+    val groupId: String = "",
+    val type: String = ""
 )

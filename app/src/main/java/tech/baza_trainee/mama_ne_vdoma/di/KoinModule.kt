@@ -215,7 +215,7 @@ val mainModule = module {
         )
     }
     viewModel { MainViewModel(get(), get()) }
-    viewModel { NotificationsViewModel(get(), get(), get(), get(), get(), get(), get()) }
+    viewModel { NotificationsViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
     viewModel { MyGroupsViewModel(get(), get(), get(), get(), get(), get(named(UPDATE_GROUP))) }
     viewModel { UpdateGroupViewModel(get(), get(named(UPDATE_GROUP)), get(), get(), get(), get()) }
     viewModel { SearchRequestViewModel(get(), get(), get(), get()) }

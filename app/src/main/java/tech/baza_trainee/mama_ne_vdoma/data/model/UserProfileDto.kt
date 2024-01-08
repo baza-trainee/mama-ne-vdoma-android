@@ -14,7 +14,8 @@ data class UserProfileDto(
     val avatar: String? = null,
     val location: LocationDto? = null,
     val week: Map<String, DayScheduleDto>? = null,
-    val groupJoinRequests: List<JoinRequestDto> = emptyList()
+    val groupJoinRequests: List<JoinRequestDto> = emptyList(),
+    val notifications: List<NotificationDto> = emptyList()
 )
 
 data class UserProfileResponse(
@@ -24,4 +25,9 @@ data class UserProfileResponse(
 data class JoinRequestDto(
     val groupId: String = "",
     val childId: String = ""
+)
+
+data class NotificationDto(
+    val groupId: String = "",
+    val type: String = ""
 )

@@ -18,6 +18,7 @@ import tech.baza_trainee.mama_ne_vdoma.domain.model.GroupEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.GroupFullInfoEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.JoinRequestEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.MemberEntity
+import tech.baza_trainee.mama_ne_vdoma.domain.model.NotificationEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UserProfileEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatastoreManager
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.FilesRepository
@@ -26,9 +27,14 @@ import tech.baza_trainee.mama_ne_vdoma.domain.repository.LocationRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserAuthRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.PageNavigator
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.GroupsScreenRoutes
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.MainScreenRoutes
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.StandaloneGroupsRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.GroupUiModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.JoinRequestUiModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.MemberUiModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.NotificationsUiModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestResult
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.networkExecutor
@@ -43,6 +49,7 @@ class NotificationsViewModel(
     private val groupsRepository: GroupsRepository,
     private val locationRepository: LocationRepository,
     private val navigator: PageNavigator,
+    private val mainNavigator: ScreenNavigator,
     private val preferencesDatastoreManager: UserPreferencesDatastoreManager
 ): ViewModel() {
 
@@ -64,6 +71,11 @@ class NotificationsViewModel(
             is NotificationsEvent.AcceptUser -> acceptJoinRequest(event.group, event.child)
             is NotificationsEvent.DeclineUser -> declineJoinRequest(event.group, event.child)
             is NotificationsEvent.CancelRequest -> cancelRequest(event.group, event.child)
+            NotificationsEvent.ClearNotifications -> clearNotifications()
+            NotificationsEvent.GoToAdminRequests -> _uiState.value = NotificationsUiState.GoToPage(1)
+            NotificationsEvent.GoToMain -> navigator.navigate(MainScreenRoutes.Main)
+            NotificationsEvent.MyGroups -> navigator.navigate(GroupsScreenRoutes.Groups)
+            NotificationsEvent.SearchGroup -> mainNavigator.navigate(StandaloneGroupsRoutes.ChooseChild.getDestination(isForSearch = true))
         }
     }
 
@@ -116,7 +128,14 @@ class NotificationsViewModel(
                 getGroupsForParent(entity.id)
 
                 if (entity.groupJoinRequests.isNotEmpty())
-                    getGroups(entity.groupJoinRequests)
+                    getGroupsForJoin(entity.groupJoinRequests)
+                else
+                    _viewState.update {
+                        it.copy(myJoinRequests = emptyList())
+                    }
+
+                if (entity.notifications.isNotEmpty())
+                    getGroupsForNotifications(entity.notifications)
                 else
                     _viewState.update {
                         it.copy(myJoinRequests = emptyList())
@@ -131,7 +150,7 @@ class NotificationsViewModel(
         }
     }
 
-    private fun getGroups(requests: List<JoinRequestEntity>) {
+    private fun getGroupsForJoin(requests: List<JoinRequestEntity>) {
         viewModelScope.launch {
             setProgress(true)
 
@@ -308,6 +327,57 @@ class NotificationsViewModel(
             parentAddress = address,
             child = groupEntity.children.find { it.childId == member.childId } ?: ChildEntity()
         )
+    }
+
+    private fun getGroupsForNotifications(notifications: List<NotificationEntity>) {
+        viewModelScope.launch {
+            setProgress(true)
+
+            val requestsList = notifications.map { entity ->
+                async {
+                    getGroupForNotification(entity)
+                }
+            }
+
+            val notificationsUi = mutableListOf<NotificationsUiModel>()
+
+            requestsList.awaitAll().onEach { uiModel ->
+                notificationsUi.add(
+                    NotificationsUiModel(
+                        group = uiModel,
+                        type = notifications.find { it.groupId == uiModel.id }?.type.orEmpty()
+                    )
+                )
+            }
+
+            _viewState.update {
+                it.copy(
+                    notifications = notificationsUi,
+                    isLoading = false
+                )
+            }
+        }
+    }
+
+    private suspend fun getGroupForNotification(request: NotificationEntity): GroupUiModel {
+        setProgress(true)
+
+        val result = groupsRepository.getGroupById(request.groupId)
+        val group = getResult(result) ?: GroupEntity()
+
+        return GroupUiModel(
+            id = group.id,
+            name = group.name
+        )
+    }
+
+    private fun clearNotifications() {
+        networkExecutor {
+            execute { userProfileRepository.deleteUserNotifications() }
+            onSuccess { getUserInfo() }
+            onError { _uiState.value = NotificationsUiState.OnError(it) }
+            onLoading(::setProgress)
+        }
     }
 
     private fun <T> getResult(result: RequestResult<T>): T? {

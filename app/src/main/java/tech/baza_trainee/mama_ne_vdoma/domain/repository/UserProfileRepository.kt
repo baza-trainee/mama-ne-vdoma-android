@@ -29,4 +29,6 @@ interface UserProfileRepository {
     suspend fun deleteChildById(childId: String): RequestResult<Unit>
 
     suspend fun deleteUserAvatar(): RequestResult<Unit>
+
+    suspend fun deleteUserNotifications(): RequestResult<Unit>
 }

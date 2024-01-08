@@ -100,4 +100,11 @@ class UserProfileRepositoryImpl(
             RequestResult.Success(Unit)
         else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage())
     }
+
+    override suspend fun deleteUserNotifications(): RequestResult<Unit> {
+        val result = userProfileApi.deleteUserNotifications()
+        return if (result.isSuccessful)
+            RequestResult.Success(Unit)
+        else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage())
+    }
 }

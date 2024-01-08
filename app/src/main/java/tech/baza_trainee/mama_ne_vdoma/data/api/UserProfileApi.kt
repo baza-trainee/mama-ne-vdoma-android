@@ -53,4 +53,7 @@ interface UserProfileApi {
 
     @DELETE("api/parent/photo")
     suspend fun deleteUserAvatar(): Response<Unit>
+
+    @DELETE("api/notifications")
+    suspend fun deleteUserNotifications(): Response<Unit>
 }
