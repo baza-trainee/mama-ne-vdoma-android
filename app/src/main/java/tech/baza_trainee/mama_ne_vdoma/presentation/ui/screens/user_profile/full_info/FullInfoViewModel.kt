@@ -47,7 +47,9 @@ class FullInfoViewModel(
 
     init {
         viewModelScope.launch {
-            preferencesDatastoreManager.fcmToken = Firebase.messaging.token.await()
+            val token = Firebase.messaging.token.await()
+            if (token.isNotEmpty())
+                preferencesDatastoreManager.fcmToken = token
         }
 
         userProfileInteractor.apply {

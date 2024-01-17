@@ -22,9 +22,11 @@ class UserProfileRepositoryImpl(
 ): UserProfileRepository {
 
     override suspend fun saveUserInfo(userInfo: UserInfoEntity): RequestResult<Unit> {
-        val _userInfo = userInfo.copy(
-            deviceId = preferencesDatastoreManager.fcmToken
-        )
+        val _userInfo = if (preferencesDatastoreManager.fcmToken.isNotEmpty())
+            userInfo.copy(deviceId = preferencesDatastoreManager.fcmToken)
+        else
+            userInfo
+
         val result = userProfileApi.saveUserInfo(_userInfo.toDataModel())
         return if (result.isSuccessful)
             RequestResult.Success(Unit)
