@@ -6,8 +6,7 @@ import tech.baza_trainee.mama_ne_vdoma.data.mapper.toDomainModel
 import tech.baza_trainee.mama_ne_vdoma.data.model.InitChildDto
 import tech.baza_trainee.mama_ne_vdoma.data.model.LocationPatchDto
 import tech.baza_trainee.mama_ne_vdoma.data.model.UserSearchRequest
-import tech.baza_trainee.mama_ne_vdoma.data.utils.asCustomResponse
-import tech.baza_trainee.mama_ne_vdoma.data.utils.getMessage
+import tech.baza_trainee.mama_ne_vdoma.data.utils.getRequestResult
 import tech.baza_trainee.mama_ne_vdoma.domain.model.ChildEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.PatchChildEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UserInfoEntity
@@ -27,86 +26,47 @@ class UserProfileRepositoryImpl(
         else
             userInfo
 
-        val result = userProfileApi.saveUserInfo(_userInfo.toDataModel())
-        return if (result.isSuccessful)
-            RequestResult.Success(Unit)
-        else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage())
+        return userProfileApi.saveUserInfo(_userInfo.toDataModel()).getRequestResult()
     }
 
-    override suspend fun saveUserLocation(latitude: Double, longitude: Double): RequestResult<Unit> {
-        val result = userProfileApi.saveUserLocation(LocationPatchDto(latitude, longitude))
-        return if (result.isSuccessful)
-            RequestResult.Success(Unit)
-        else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage())
+    override suspend fun saveUserLocation(latitude: Double, longitude: Double) =
+        userProfileApi.saveUserLocation(LocationPatchDto(latitude, longitude)).getRequestResult()
+
+    override suspend fun deleteUser() = userProfileApi.deleteUser().getRequestResult()
+
+    override suspend fun getUserById(userId: String) =
+        userProfileApi.getUserById(userId).getRequestResult {
+            it?.user?.toDomainModel() ?: UserProfileEntity()
+        }
+
+    override suspend fun getUserByEmail(email: String) =
+        userProfileApi.getUserById(UserSearchRequest(email)).getRequestResult {
+            it?.user?.toDomainModel() ?: UserProfileEntity()
+        }
+
+    override suspend fun saveChild(name: String, age: Int, isMale: Boolean) =
+        userProfileApi.saveChild(InitChildDto(name, age, isMale)).getRequestResult {
+            it?.toDomainModel()
+        }
+
+    override suspend fun getChildren() = userProfileApi.getChildren().getRequestResult { list ->
+        list?.map { it.toDomainModel() }?.toList().orEmpty()
     }
 
-    override suspend fun deleteUser(): RequestResult<Unit> {
-        val result = userProfileApi.deleteUser()
-        return if (result.isSuccessful)
-            RequestResult.Success(Unit)
-        else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage())
-    }
+    override suspend fun getChildById(childId: String) =
+        userProfileApi.getChildById(childId).getRequestResult {
+            it?.toDomainModel() ?: ChildEntity()
+        }
 
-    override suspend fun getUserById(userId: String): RequestResult<UserProfileEntity> {
-        val result = userProfileApi.getUserById(userId)
-        return if (result.isSuccessful)
-            RequestResult.Success(result.body()?.user?.toDomainModel() ?: UserProfileEntity())
-        else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage())
-    }
+    override suspend fun patchChildById(childId: String, data: PatchChildEntity) =
+        userProfileApi.patchChildById(childId, data.toDataModel()).getRequestResult {
+            it?.toDomainModel()
+        }
 
-    override suspend fun getUserByEmail(email: String): RequestResult<UserProfileEntity> {
-        val result = userProfileApi.getUserById(UserSearchRequest(email))
-        return if (result.isSuccessful)
-            RequestResult.Success(result.body()?.user?.toDomainModel() ?: UserProfileEntity())
-        else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage(), result.code())
-    }
+    override suspend fun deleteChildById(childId: String) =
+        userProfileApi.deleteChildById(childId).getRequestResult()
 
-    override suspend fun saveChild(name: String, age: Int, isMale: Boolean): RequestResult<ChildEntity?> {
-        val result = userProfileApi.saveChild(InitChildDto(name, age, isMale))
-        return if (result.isSuccessful)
-            RequestResult.Success(result.body()?.toDomainModel())
-        else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage())
-    }
+    override suspend fun deleteUserAvatar() = userProfileApi.deleteUserAvatar().getRequestResult()
 
-    override suspend fun getChildren(): RequestResult<List<ChildEntity>> {
-        val result = userProfileApi.getChildren()
-        return if (result.isSuccessful)
-            RequestResult.Success(result.body()?.map { it.toDomainModel() }?.toList().orEmpty())
-        else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage())
-    }
-
-    override suspend fun getChildById(childId: String): RequestResult<ChildEntity> {
-        val result = userProfileApi.getChildById(childId)
-        return if (result.isSuccessful)
-            RequestResult.Success(result.body()?.toDomainModel() ?: ChildEntity())
-        else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage())
-    }
-
-    override suspend fun patchChildById(childId: String, data: PatchChildEntity): RequestResult<ChildEntity?> {
-        val result = userProfileApi.patchChildById(childId, data.toDataModel())
-        return if (result.isSuccessful)
-            RequestResult.Success(result.body()?.toDomainModel())
-        else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage())
-    }
-
-    override suspend fun deleteChildById(childId: String): RequestResult<Unit> {
-        val result = userProfileApi.deleteChildById(childId)
-        return if (result.isSuccessful)
-            RequestResult.Success(Unit)
-        else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage())
-    }
-
-    override suspend fun deleteUserAvatar(): RequestResult<Unit> {
-        val result = userProfileApi.deleteUserAvatar()
-        return if (result.isSuccessful)
-            RequestResult.Success(Unit)
-        else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage())
-    }
-
-    override suspend fun deleteUserNotifications(): RequestResult<Unit> {
-        val result = userProfileApi.deleteUserNotifications()
-        return if (result.isSuccessful)
-            RequestResult.Success(Unit)
-        else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage())
-    }
+    override suspend fun deleteUserNotifications() = userProfileApi.deleteUserNotifications().getRequestResult()
 }

@@ -5,65 +5,35 @@ import tech.baza_trainee.mama_ne_vdoma.data.model.AuthUserDto
 import tech.baza_trainee.mama_ne_vdoma.data.model.ConfirmEmailDto
 import tech.baza_trainee.mama_ne_vdoma.data.model.RequestWithEmailDto
 import tech.baza_trainee.mama_ne_vdoma.data.model.RestorePasswordDto
-import tech.baza_trainee.mama_ne_vdoma.data.utils.asCustomResponse
-import tech.baza_trainee.mama_ne_vdoma.data.utils.getMessage
+import tech.baza_trainee.mama_ne_vdoma.data.utils.getRequestResult
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.AuthRepository
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestResult
 
 class AuthRepositoryImpl(
     private val authApi: AuthApi
 ): AuthRepository {
 
-    override suspend fun registerUser(email: String, password: String): RequestResult<Unit> {
-        val result = authApi.registerUser(
-            AuthUserDto(email, password)
-        )
-        return if (result.isSuccessful)
-            RequestResult.Success(Unit)
-        else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage())
-    }
+    override suspend fun registerUser(email: String, password: String) =
+        authApi.registerUser(AuthUserDto(email, password)).getRequestResult()
 
-    override suspend fun confirmEmail(email: String, code: String): RequestResult<Unit> {
-        val result = authApi.confirmEmail(
-            ConfirmEmailDto(email, code)
-        )
-        return if (result.isSuccessful)
-            RequestResult.Success(Unit)
-        else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage(), result.code())
-    }
+    override suspend fun confirmEmail(email: String, code: String) =
+        authApi.confirmEmail(ConfirmEmailDto(email, code)).getRequestResult()
 
-    override suspend fun resendCode(email: String): RequestResult<Unit> {
-        val result = authApi.resendCode(RequestWithEmailDto(email))
-        return if (result.isSuccessful)
-            RequestResult.Success(Unit)
-        else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage())
-    }
+    override suspend fun resendCode(email: String) =
+        authApi.resendCode(RequestWithEmailDto(email)).getRequestResult()
 
-    override suspend fun loginUser(email: String, password: String): RequestResult<String> {
-        val result = authApi.loginUser(AuthUserDto(email, password))
-        return if (result.isSuccessful)
-            RequestResult.Success(result.body()?.id.orEmpty())
-        else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage())
-    }
+    override suspend fun loginUser(email: String, password: String) =
+        authApi.loginUser(AuthUserDto(email, password)).getRequestResult {
+            it?.id.orEmpty()
+        }
 
-    override suspend fun forgetPassword(email: String): RequestResult<Unit> {
-        val result = authApi.forgetPassword(RequestWithEmailDto(email))
-        return if (result.isSuccessful)
-            RequestResult.Success(Unit)
-        else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage())
-    }
+    override suspend fun forgetPassword(email: String) =
+        authApi.forgetPassword(RequestWithEmailDto(email)).getRequestResult()
 
-    override suspend fun resetPassword(email: String, code: String, password: String): RequestResult<Unit> {
-        val result = authApi.resetPassword(RestorePasswordDto(email, code, password))
-        return if (result.isSuccessful)
-            RequestResult.Success(Unit)
-        else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage(), result.code())
-    }
+    override suspend fun resetPassword(email: String, code: String, password: String) =
+        authApi.resetPassword(RestorePasswordDto(email, code, password)).getRequestResult()
 
-    override suspend fun signupWithGoogle(code: String): RequestResult<String> {
-        val result = authApi.signupWithGoogle(code)
-        return if (result.isSuccessful)
-            RequestResult.Success(result.body()?.id.orEmpty())
-        else RequestResult.Error(result.errorBody()?.asCustomResponse().getMessage(), result.code())
-    }
+    override suspend fun signupWithGoogle(code: String) =
+        authApi.signupWithGoogle(code).getRequestResult {
+            it?.id.orEmpty()
+        }
 }
