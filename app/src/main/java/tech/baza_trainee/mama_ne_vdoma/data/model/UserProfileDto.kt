@@ -29,5 +29,6 @@ data class JoinRequestDto(
 
 data class NotificationDto(
     val groupId: String = "",
-    val type: String = ""
+    val notificationType: String = "",
+    val creationTime: Long = 0L
 )

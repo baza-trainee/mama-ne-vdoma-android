@@ -1,6 +1,7 @@
 package tech.baza_trainee.mama_ne_vdoma.data.mapper
 
 import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.snapshots.SnapshotStateMap
 import tech.baza_trainee.mama_ne_vdoma.data.model.ChildDto
 import tech.baza_trainee.mama_ne_vdoma.data.model.DayScheduleDto
 import tech.baza_trainee.mama_ne_vdoma.data.model.GroupDto
@@ -70,7 +71,7 @@ fun UserProfileDto.toDomainModel() = UserProfileEntity(
 
 fun JoinRequestDto.toDomainModel() = JoinRequestEntity(groupId, childId)
 
-fun NotificationDto.toDomainModel() = NotificationEntity(groupId, type)
+fun NotificationDto.toDomainModel() = NotificationEntity(groupId, notificationType)
 
 fun LocationDto?.toDomainModel() = if (this != null)
         LocationEntity(type, coordinates)
@@ -84,17 +85,7 @@ fun ChildDto.toDomainModel() = ChildEntity(
     note = note.orEmpty(),
     parentId = parentId,
     childId = childId,
-    schedule = mutableStateMapOf<DayOfWeek, DayPeriod>().also { map ->
-            if (week != null)
-                week.forEach { entry ->
-                    val key = DayOfWeek.valueOf(entry.key.uppercase())
-                    map[key] = entry.value.toDomainModel()
-                }
-            else
-                DayOfWeek.entries.forEach {
-                    map[it] = DayPeriod()
-                }
-        }
+    schedule = week.toSchedule()
 )
 
 fun DayScheduleDto.toDomainModel() = DayPeriod(
@@ -112,11 +103,7 @@ fun DayPeriod.toDataModel() = DayScheduleDto(
 
 fun PatchChildEntity.toDataModel() = WeekScheduleDto(
     note = comment.ifEmpty { null },
-    week = mutableMapOf<String, DayScheduleDto>().also { map ->
-        schedule.forEach {
-            map[it.key.name.lowercase()] = it.value.toDataModel()
-        }
-    }
+    week = schedule.toWeek()
 )
 
 fun UpdateGroupEntity.toDataModel() = UpdateGroupDto(
@@ -124,11 +111,7 @@ fun UpdateGroupEntity.toDataModel() = UpdateGroupDto(
     desc = desc,
     ages = ages,
     avatar = avatar,
-    week = mutableMapOf<String, DayScheduleDto>().also { map ->
-        schedule.forEach {
-            map[it.key.name.lowercase()] = it.value.toDataModel()
-        }
-    }
+    week = schedule.toWeek()
 )
 
 fun MemberDto.toDomainModel() = MemberEntity(childId, parentId)
@@ -143,18 +126,28 @@ fun GroupDto.toDomainModel() = GroupEntity(
     ages = ages,
     avatar = avatar.orEmpty(),
     location = location.toDomainModel(),
-    schedule = mutableStateMapOf<DayOfWeek, DayPeriod>().also { map ->
-            if (week != null)
-                week.forEach { entry ->
-                    val key = DayOfWeek.valueOf(entry.key.uppercase())
-                    map[key] = entry.value.toDomainModel()
-                }
-            else
-                DayOfWeek.entries.forEach {
-                    map[it] = DayPeriod()
-                }
-        }
+    schedule = week.toSchedule()
 )
+
+fun Map<String, DayScheduleDto>?.toSchedule() = mutableStateMapOf<DayOfWeek, DayPeriod>().also { map ->
+    if (this != null)
+        forEach { entry ->
+            val key = DayOfWeek.valueOf(entry.key.uppercase())
+            map[key] = entry.value.toDomainModel()
+        }
+    else
+        DayOfWeek.entries.forEach {
+            map[it] = DayPeriod()
+        }
+}
+
+fun SnapshotStateMap<DayOfWeek, DayPeriod>.toWeek() = mutableMapOf<String, DayScheduleDto>().also { map ->
+    forEach {
+        map[it.key.name.lowercase()] = it.value.toDataModel()
+    }
+}
+
+
 
 fun GroupFullInfoDto.toDomainModel() = GroupFullInfoEntity(
     group = group.toDomainModel(),

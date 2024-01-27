@@ -10,6 +10,5 @@ sealed interface NotificationsEvent {
     data object GoToMain: NotificationsEvent
     data object SearchGroup: NotificationsEvent
     data object MyGroups: NotificationsEvent
-    data object GoToAdminRequests: NotificationsEvent
     data object ClearNotifications: NotificationsEvent
 }

@@ -4,5 +4,4 @@ sealed interface NotificationsUiState {
     data object Idle: NotificationsUiState
     data object OnAccepted: NotificationsUiState
     data class OnError(val error: String): NotificationsUiState
-    data class GoToPage(val page: Int): NotificationsUiState
 }

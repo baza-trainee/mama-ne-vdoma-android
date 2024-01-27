@@ -5,10 +5,8 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,11 +17,6 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Error
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
@@ -40,7 +33,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -55,14 +47,23 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.cards.AdminJo
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.cards.MyRequestCard
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.LoadingIndicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.functions.customTabIndicatorOffset
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.main.notifications.dialogs.AcceptRequestDialog
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.main.notifications.dialogs.CancelRequestDialog
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.main.notifications.dialogs.DeclineRequestDialog
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.main.notifications.items.AcceptedItem
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.main.notifications.items.AdminItem
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.main.notifications.items.JoinedItem
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.main.notifications.items.KickedItem
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.main.notifications.items.RejectedItem
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.JoinRequestUiModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.NotificationsUiModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
+private const val MY_REQUESTS = 0
+private const val ADMIN_REQUESTS = 1
+private const val NOTIFICATIONS = 2
+
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun NotificationScreen(
     screenState: NotificationsViewState,
@@ -94,8 +95,6 @@ fun NotificationScreen(
             showAcceptDialog = true
             handleEvent(NotificationsEvent.ResetUiState)
         }
-
-        is NotificationsUiState.GoToPage -> currentPage = state.page
     }
 
     LaunchedEffect(key1 = currentPage) {
@@ -143,8 +142,7 @@ fun NotificationScreen(
                     onClick = { currentPage = index }
                 ) {
                     Text(
-                        modifier = Modifier
-                            .padding(vertical = 8.dp),
+                        modifier = Modifier.padding(vertical = 8.dp),
                         text = text,
                         fontSize = 14.sp,
                         fontFamily = redHatDisplayFontFamily,
@@ -168,309 +166,201 @@ fun NotificationScreen(
             verticalAlignment = Alignment.Top
         ) { page ->
             when (page) {
-                0 -> {
-                    LazyColumn(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 16.dp)
-                    ) {
-                        itemsIndexed(screenState.myJoinRequests) { index, request ->
-                            if (index != 0)
-                                Spacer(modifier = Modifier.height(8.dp))
+                MY_REQUESTS -> MyRequests(
+                    requests = screenState.myJoinRequests,
+                    onCancel = {
+                        dialogData = Triple(
+                            it.group.id,
+                            it.child.childId,
+                            it.group.name
+                        )
+                        showCancelDialog = true
+                    }
+                )
 
-                            MyRequestCard(
-                                request = request,
-                                onCancel = {
-                                    dialogData = Triple(request.group.id, request.child.childId, request.group.name)
-                                    showCancelDialog = true
-                                }
+                ADMIN_REQUESTS -> AdminRequests(
+                    requests = screenState.adminJoinRequests,
+                    onDecline = {
+                        dialogData = Triple(
+                            it.group.id,
+                            it.child.childId,
+                            it.group.name
+                        )
+                        showDeclineDialog = true
+                    },
+                    onAccept = {
+                        dialogData = Triple(
+                            it.group.id,
+                            it.child.childId,
+                            it.group.name
+                        )
+                        handleEvent(
+                            NotificationsEvent.AcceptUser(
+                                it.group.id,
+                                it.child.childId
                             )
-                        }
+                        )
                     }
+                )
+
+                NOTIFICATIONS -> Notifications(
+                    notifications = screenState.notifications,
+                    handleEvent = handleEvent,
+                    goToAdminRequests = { currentPage = ADMIN_REQUESTS }
+                )
+            }
+        }
+
+        if (showAcceptDialog)
+            AcceptRequestDialog(
+                groupName = dialogData.third,
+                onDismiss = { showAcceptDialog = false }
+            )
+
+        if (showDeclineDialog)
+            DeclineRequestDialog(
+                groupName = dialogData.third,
+                onDismiss = { showDeclineDialog = false },
+                onDecline = {
+                    showDeclineDialog = false
+                    handleEvent(
+                        NotificationsEvent.DeclineUser(
+                            dialogData.first,
+                            dialogData.second
+                        )
+                    )
+                },
+                onAccept = {
+                    showDeclineDialog = false
+                    handleEvent(
+                        NotificationsEvent.AcceptUser(
+                            dialogData.first,
+                            dialogData.second
+                        )
+                    )
                 }
+            )
 
-                1 -> {
-                    LazyColumn(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 16.dp)
-                    ) {
-                        itemsIndexed(screenState.adminJoinRequests) { index, request ->
-                            if (index != 0)
-                                Spacer(modifier = Modifier.height(8.dp))
-
-                            AdminJoinRequestCard(
-                                request = request,
-                                onAccept = {
-                                    dialogData = Triple(request.group.id, request.child.childId, request.group.name)
-                                    handleEvent(NotificationsEvent.AcceptUser(request.group.id, request.child.childId))
-                                },
-                                onDecline = {
-                                    dialogData = Triple(request.group.id, request.child.childId, request.group.name)
-                                    showDeclineDialog = true
-                                }
-                            )
-                        }
-                    }
+        if (showCancelDialog)
+            CancelRequestDialog(
+                groupName = dialogData.third,
+                onDismiss = { showCancelDialog = false },
+                onCancel = {
+                    showCancelDialog = false
+                    handleEvent(
+                        NotificationsEvent.CancelRequest(
+                            dialogData.first,
+                            dialogData.second
+                        )
+                    )
                 }
+            )
 
-                2 -> {
-                    LazyColumn(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 16.dp)
-                    ) {
-                        itemsIndexed(screenState.notifications) { index, notification ->
-                            if (index != 0)
-                                Spacer(modifier = Modifier.height(8.dp))
+        if (screenState.isLoading) LoadingIndicator()
+    }
+}
 
-                            when(val type = notification.type) {
-                                MessageType.JOIN.type -> JoinedItem(group = notification.group, handleEvent)
-                                MessageType.ACCEPT.type -> AcceptedItem(group = notification.group, handleEvent)
-                                MessageType.REJECT.type -> RejectedItem(group = notification.group, handleEvent)
-                                MessageType.KICK.type -> KickedItem(group = notification.group, handleEvent)
-                                MessageType.MAKE_ADMIN.type -> AdminItem(group = notification.group, handleEvent)
-                                else -> throw IllegalArgumentException("Unknown message type: $type")
-                            }
-                        }
-                    }
+@Composable
+private fun Notifications(
+    notifications: List<NotificationsUiModel>,
+    handleEvent: (NotificationsEvent) -> Unit,
+    goToAdminRequests: () -> Unit
+) {
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 16.dp)
+    ) {
+        itemsIndexed(notifications) { index, notification ->
+            if (index != 0)
+                Spacer(modifier = Modifier.height(8.dp))
 
+            when(notification.type) {
+                MessageType.JOIN.type ->
+                    JoinedItem(group = notification.group, goToAdminRequests)
+                MessageType.ACCEPT.type ->
+                    AcceptedItem(group = notification.group, handleEvent)
+                MessageType.REJECT.type ->
+                    RejectedItem(group = notification.group, handleEvent)
+                MessageType.KICK.type ->
+                    KickedItem(group = notification.group, handleEvent)
+                MessageType.MAKE_ADMIN.type ->
+                    AdminItem(group = notification.group, handleEvent)
+
+                else -> Unit
+            }
+        }
+
+        if (notifications.isNotEmpty()) {
+            item("delete_all") {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 16.dp)
+                        .padding(horizontal = 8.dp),
+                    contentAlignment = Alignment.CenterEnd
+                ) {
                     Text(
                         modifier = Modifier
-                            .padding(horizontal = 8.dp)
                             .clickable {
                                 handleEvent(NotificationsEvent.ClearNotifications)
-                            }
-                            .align(Alignment.End),
+                            },
                         text = "Видалити всі сповіщення",
                         fontSize = 16.sp,
                         fontFamily = redHatDisplayFontFamily,
                         fontWeight = FontWeight.Bold,
-                        color =  Color.Red,
+                        color = Color.Red,
                         textAlign = TextAlign.Center
                     )
                 }
             }
         }
+    }
+}
 
-        if (showAcceptDialog) {
-            AlertDialog(onDismissRequest = { showAcceptDialog = false }) {
-                Column(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(8.dp))
-                        .background(MaterialTheme.colorScheme.background)
-                        .padding(vertical = 8.dp)
-                        .fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.Error,
-                        contentDescription = "alert",
-                        tint = MaterialTheme.colorScheme.primary
-                    )
+@Composable
+private fun AdminRequests(
+    requests: List<JoinRequestUiModel>,
+    onAccept: (JoinRequestUiModel) -> Unit,
+    onDecline: (JoinRequestUiModel) -> Unit
+) {
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 16.dp)
+    ) {
+        itemsIndexed(requests) { index, request ->
+            if (index != 0)
+                Spacer(modifier = Modifier.height(8.dp))
 
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    Text(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp),
-                        text = "Ви погодили запит на приєднання до групи \"${dialogData.third}\"",
-                        fontSize = 14.sp,
-                        fontFamily = redHatDisplayFontFamily,
-                        textAlign = TextAlign.Start
-                    )
-
-                    Spacer(modifier = Modifier.height(24.dp))
-
-                    Text(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .align(Alignment.End)
-                            .clickable(
-                                indication = null,
-                                interactionSource = remember { MutableInteractionSource() }
-                            ) {
-                                showAcceptDialog = false
-                            },
-                        text = "Закрити",
-                        fontSize = 16.sp,
-                        fontFamily = redHatDisplayFontFamily,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.primary,
-                        textAlign = TextAlign.Center
-                    )
-                }
-            }
+            AdminJoinRequestCard(
+                request = request,
+                onAccept = { onAccept(request) },
+                onDecline = { onDecline(request) }
+            )
         }
+    }
+}
 
-        if (showDeclineDialog) {
-            AlertDialog(onDismissRequest = { showDeclineDialog = false }) {
-                Column(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(8.dp))
-                        .background(MaterialTheme.colorScheme.background)
-                        .padding(vertical = 8.dp)
-                        .fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.Error,
-                        contentDescription = "alert",
-                        tint = MaterialTheme.colorScheme.primary
-                    )
+@Composable
+private fun MyRequests(
+    requests: List<JoinRequestUiModel>,
+    onCancel: (JoinRequestUiModel) -> Unit
+) {
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 16.dp)
+    ) {
+        itemsIndexed(requests) { index, request ->
+            if (index != 0)
+                Spacer(modifier = Modifier.height(8.dp))
 
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    Text(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp),
-                        text = "Ви впевнені, що хочете відхилити запит на приєднання до групи \"${dialogData.third}\"?",
-                        fontSize = 14.sp,
-                        fontFamily = redHatDisplayFontFamily,
-                        textAlign = TextAlign.Start
-                    )
-
-                    Spacer(modifier = Modifier.height(24.dp))
-
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp)
-                            .padding(bottom = 16.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            modifier = Modifier
-                                .weight(0.5f)
-                                .clickable(
-                                    indication = null,
-                                    interactionSource = remember { MutableInteractionSource() }
-                                ) {
-                                    showDeclineDialog = false
-                                    handleEvent(
-                                        NotificationsEvent.DeclineUser(
-                                            dialogData.first,
-                                            dialogData.second
-                                        )
-                                    )
-                                },
-                            text = "Відхилити",
-                            fontSize = 16.sp,
-                            fontFamily = redHatDisplayFontFamily,
-                            fontWeight = FontWeight.Bold,
-                            color = Color.Red,
-                            textAlign = TextAlign.Center
-                        )
-
-                        Text(
-                            modifier = Modifier
-                                .weight(0.5f)
-                                .clickable(
-                                    indication = null,
-                                    interactionSource = remember { MutableInteractionSource() }
-                                ) {
-                                    showDeclineDialog = false
-                                    handleEvent(
-                                        NotificationsEvent.AcceptUser(
-                                            dialogData.first,
-                                            dialogData.second
-                                        )
-                                    )
-                                },
-                            text = "Погодити",
-                            fontSize = 16.sp,
-                            fontFamily = redHatDisplayFontFamily,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.primary,
-                            textAlign = TextAlign.Center
-                        )
-                    }
-                }
-            }
+            MyRequestCard(
+                request = request,
+                onCancel = { onCancel(request) }
+            )
         }
-
-        if (showCancelDialog) {
-            AlertDialog(onDismissRequest = { showCancelDialog = false }) {
-                Column(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(8.dp))
-                        .background(MaterialTheme.colorScheme.background)
-                        .padding(vertical = 8.dp)
-                        .fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.Error,
-                        contentDescription = "alert",
-                        tint = MaterialTheme.colorScheme.primary
-                    )
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    Text(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp),
-                        text = "Ви впевнені, що хочете скасувати запит на приєднання до групи \"${dialogData.third}\"?",
-                        fontSize = 14.sp,
-                        fontFamily = redHatDisplayFontFamily,
-                        textAlign = TextAlign.Start
-                    )
-
-                    Spacer(modifier = Modifier.height(24.dp))
-
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp)
-                            .padding(bottom = 16.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            modifier = Modifier
-                                .weight(0.5f)
-                                .clickable(
-                                    indication = null,
-                                    interactionSource = remember { MutableInteractionSource() }
-                                ) { showCancelDialog = false },
-                            text = "Ні",
-                            fontSize = 16.sp,
-                            fontFamily = redHatDisplayFontFamily,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.primary,
-                            textAlign = TextAlign.Center
-                        )
-
-                        Text(
-                            modifier = Modifier
-                                .weight(0.5f)
-                                .clickable(
-                                    indication = null,
-                                    interactionSource = remember { MutableInteractionSource() }
-                                ) {
-                                    showCancelDialog = false
-                                    handleEvent(
-                                        NotificationsEvent.CancelRequest(
-                                            dialogData.first,
-                                            dialogData.second
-                                        )
-                                    )
-                                },
-                            text = "Так, скасувати",
-                            fontSize = 16.sp,
-                            fontFamily = redHatDisplayFontFamily,
-                            fontWeight = FontWeight.Bold,
-                            color = Color.Red,
-                            textAlign = TextAlign.Center
-                        )
-                    }
-                }
-            }
-        }
-
-        if (screenState.isLoading) LoadingIndicator()
     }
 }
 

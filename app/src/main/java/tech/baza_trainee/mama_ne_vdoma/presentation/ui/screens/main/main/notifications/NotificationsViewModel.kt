@@ -72,7 +72,6 @@ class NotificationsViewModel(
             is NotificationsEvent.DeclineUser -> declineJoinRequest(event.group, event.child)
             is NotificationsEvent.CancelRequest -> cancelRequest(event.group, event.child)
             NotificationsEvent.ClearNotifications -> clearNotifications()
-            NotificationsEvent.GoToAdminRequests -> _uiState.value = NotificationsUiState.GoToPage(1)
             NotificationsEvent.GoToMain -> navigator.navigate(MainScreenRoutes.Main)
             NotificationsEvent.MyGroups -> navigator.navigate(GroupsScreenRoutes.Groups)
             NotificationsEvent.SearchGroup -> mainNavigator.navigate(StandaloneGroupsRoutes.ChooseChild.getDestination(isForSearch = true))
@@ -138,7 +137,7 @@ class NotificationsViewModel(
                     getGroupsForNotifications(entity.notifications)
                 else
                     _viewState.update {
-                        it.copy(myJoinRequests = emptyList())
+                        it.copy(notifications = emptyList())
                     }
 
                 preferencesDatastoreManager.myJoinRequests = entity.groupJoinRequests.size

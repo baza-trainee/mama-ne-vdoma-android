@@ -15,14 +15,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.main.notifications.NotificationsEvent
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.GroupUiModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 
 @Composable
 fun JoinedItem(
     group: GroupUiModel,
-    handleEvent: (NotificationsEvent) -> Unit
+    onClick: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -43,9 +42,7 @@ fun JoinedItem(
         Text(
             modifier = Modifier
                 .padding(horizontal = 8.dp)
-                .clickable {
-                    handleEvent(NotificationsEvent.GoToAdminRequests)
-                }
+                .clickable{ onClick() }
                 .align(Alignment.End),
             text = "Переглянути",
             fontSize = 16.sp,
