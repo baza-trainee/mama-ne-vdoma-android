@@ -30,14 +30,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ButtonText
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 @Preview
 fun DangerousActionAlertDialog(
-    modifier: Modifier = Modifier,
     text: String = "Attention",
     button: String = "Delete",
     onDismissRequest: () -> Unit = {},

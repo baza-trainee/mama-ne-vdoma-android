@@ -67,7 +67,6 @@ import java.time.DayOfWeek
 @Composable
 @Preview
 fun ChildScheduleEditDialog(
-    modifier: Modifier = Modifier,
     selectedChild: Int = 0,
     children: List<ChildEntity> = emptyList(),
     onSave: (Map<Int, SnapshotStateMap<DayOfWeek, DayPeriod>>, Map<Int, String>) -> Unit = {_,_ ->},

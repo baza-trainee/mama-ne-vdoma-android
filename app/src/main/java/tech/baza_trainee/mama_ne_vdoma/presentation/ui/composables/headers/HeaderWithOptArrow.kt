@@ -42,7 +42,7 @@ fun HeaderWithOptArrow(
     onBack: (() -> Unit)? = null,
 ) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .background(MaterialTheme.colorScheme.primary)
             .windowInsetsPadding(WindowInsets.statusBars)
             .height(if (info.isNotEmpty()) 160.dp else 128.dp)

@@ -57,7 +57,7 @@ fun ToolbarWithAvatar(
     onBack: () -> Unit = {}
 ) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .background(color = MaterialTheme.colorScheme.primary)
             .fillMaxWidth()
             .windowInsetsPadding(WindowInsets.statusBars)

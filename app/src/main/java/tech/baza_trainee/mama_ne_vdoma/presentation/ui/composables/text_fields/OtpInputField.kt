@@ -49,7 +49,7 @@ fun OtpTextField(
     var textFieldLoaded by remember { mutableStateOf(false) }
 
     BasicTextField(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .focusRequester(focusRequester)
             .onGloballyPositioned {

@@ -16,7 +16,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -50,11 +49,9 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.GrayText
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 import java.time.DayOfWeek
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 @Preview
 fun ParentScheduleEditDialog(
-    modifier: Modifier = Modifier,
     schedule: SnapshotStateMap<DayOfWeek, DayPeriod> = getDefaultSchedule(),
     note: String = "Note",
     onSave: (SnapshotStateMap<DayOfWeek, DayPeriod>, String) -> Unit = {_,_->},
@@ -63,7 +60,7 @@ fun ParentScheduleEditDialog(
     var tempNote by rememberSaveable { mutableStateOf(note) }
     var tempSchedule by rememberSaveable {
         val map = mutableMapOf<DayOfWeek, DayPeriod>().also { map ->
-        DayOfWeek.values().forEach {
+        DayOfWeek.entries.forEach {
             map[it] = (schedule[it] ?: DayPeriod()).copy()
         }
     }

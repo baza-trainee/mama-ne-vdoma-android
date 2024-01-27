@@ -34,7 +34,7 @@ fun ScheduleGroup(
     onValueChange: (DayOfWeek, Period) -> Unit = { _, _ -> }
 ) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .background(MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(4.dp)),
         verticalArrangement = Arrangement.Top
@@ -80,7 +80,7 @@ fun ScheduleGroup(
                 fontWeight = FontWeight.Bold
             )
         }
-        DayOfWeek.values().sortedBy { it.value }.forEach { day ->
+        DayOfWeek.entries.sortedBy { it.value }.forEach { day ->
             Row(
                 modifier = Modifier
                     .padding(vertical = 8.dp)

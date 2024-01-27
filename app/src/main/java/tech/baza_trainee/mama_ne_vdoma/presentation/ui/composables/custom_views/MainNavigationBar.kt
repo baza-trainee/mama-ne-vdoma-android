@@ -33,7 +33,7 @@ fun MainNavigationBar(
     onItemClicked: (Int) -> Unit = {}
 ) {
     NavigationBar(
-        modifier = Modifier
+        modifier = modifier
             .height(72.dp)
             .background(
                 color = MaterialTheme.colorScheme.surface,

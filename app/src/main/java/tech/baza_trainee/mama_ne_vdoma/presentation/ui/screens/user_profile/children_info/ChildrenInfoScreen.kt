@@ -32,7 +32,6 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFa
 
 @Composable
 fun  ChildrenInfoScreen(
-    modifier: Modifier = Modifier,
     screenState: ChildrenInfoViewState,
     onHandleChildrenInfoEvent: (ChildrenInfoEvent) -> Unit,
     onNext: () -> Unit,

@@ -24,7 +24,6 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFa
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditCredentialsSuccessDialog(
-    modifier: Modifier = Modifier,
     title: String = "Title",
     onDismissRequest: () -> Unit = {}
 ) {
