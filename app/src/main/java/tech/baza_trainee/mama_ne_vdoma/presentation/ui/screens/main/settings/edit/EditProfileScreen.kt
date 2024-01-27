@@ -378,7 +378,6 @@ fun EditProfileScreen(
 
         Spacer(modifier = Modifier.height(4.dp))
 
-
         Text(
             modifier = Modifier
                 .fillMaxWidth()
