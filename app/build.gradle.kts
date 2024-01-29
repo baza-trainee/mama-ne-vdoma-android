@@ -115,8 +115,6 @@ dependencies {
 
     implementation("com.google.code.gson:gson:2.10.1")
 
-    implementation("com.canopas.jetcountrypicker:jetcountrypicker:1.0.9")
-
     implementation("com.github.SmartToolFactory:Compose-Cropper:0.4.0")
 
     debugImplementation("com.github.chuckerteam.chucker:library:4.0.0")

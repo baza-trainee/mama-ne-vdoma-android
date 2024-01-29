@@ -4,7 +4,6 @@ import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -22,7 +21,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Error
@@ -34,8 +32,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
@@ -49,15 +45,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
@@ -65,13 +57,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.canopas.campose.countrypicker.CountryPickerBottomSheet
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.cards.ChildInfoDesk
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.cards.ParentInfoDesk
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ButtonText
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.CountryCodePicker
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.CustomGoogleMap
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.LoadingIndicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.UserAvatarWithCameraAndGallery
@@ -84,7 +76,6 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.UpdateDeta
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.edit.dialogs.ChildScheduleEditDialog
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.edit.dialogs.ParentScheduleEditDialog
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.GrayText
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.SlateGray
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 
@@ -246,8 +237,6 @@ fun EditProfileScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         //Phone number
-        var isPhoneFocused by remember { mutableStateOf(false) }
-
         Text(
             modifier = Modifier.fillMaxWidth(),
             text = "Номер телефону",
@@ -255,97 +244,18 @@ fun EditProfileScreen(
             fontFamily = redHatDisplayFontFamily
         )
 
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-
-            val isCodeHighlighted = screenState.code.isEmpty()
-
-            val color = infiniteColorAnimation(
-                initialValue = Color.White,
-                targetValue = Color.Red,
-                duration = 1000
-            )
-
-            OutlinedTextField(
-                modifier = Modifier
-                    .weight(.25f)
-                    .clickable {
-                        openBottomSheet = true
-                    },
-                value = screenState.code,
-                label = { Text("Код") },
-                onValueChange = {},
-                enabled = false,
-                maxLines = 1,
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedContainerColor = SlateGray,
-                    unfocusedContainerColor = SlateGray,
-                    disabledContainerColor = SlateGray,
-                    focusedBorderColor = if (isCodeHighlighted) color else MaterialTheme.colorScheme.surface,
-                    unfocusedBorderColor = if (isCodeHighlighted) color else MaterialTheme.colorScheme.surface,
-                    disabledBorderColor = MaterialTheme.colorScheme.primary
-                ),
-                shape = RoundedCornerShape(topStart = 4.dp, bottomStart = 4.dp)
-            )
-
-            val isPhoneHighlighted = screenState.phoneValid == ValidField.EMPTY
-
-            OutlinedTextField(
-                modifier = Modifier
-                    .focusRequester(focusRequester)
-                    .onFocusChanged {
-                        isPhoneFocused = it.isFocused
-                    }
-                    .weight(.75f),
-                value = screenState.phone,
-                label = {
-                    Text(
-                        modifier = Modifier.basicMarquee(),
-                        text = "Введіть свій номер телефону"
-                    )
-                },
-                placeholder = {
-                    Text(
-                        modifier = Modifier.basicMarquee(),
-                        text = "Номер телефону"
-                    )
-                },
-                onValueChange = { handleEvent(EditProfileEvent.ValidatePhone(it)) },
-                isError = screenState.phoneValid == ValidField.INVALID && isPhoneFocused,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
-                maxLines = 1,
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedContainerColor = MaterialTheme.colorScheme.surface,
-                    unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-                    disabledContainerColor = MaterialTheme.colorScheme.surface,
-                    focusedBorderColor = if (isPhoneHighlighted) color else MaterialTheme.colorScheme.primary,
-                    unfocusedBorderColor = if (isPhoneHighlighted) color else MaterialTheme.colorScheme.surface,
-                    disabledBorderColor = MaterialTheme.colorScheme.surface
-                ),
-                shape = RoundedCornerShape(topEnd = 4.dp, bottomEnd = 4.dp),
-                enabled = screenState.code.isNotEmpty(),
-                textStyle = TextStyle(
-                    fontFamily = redHatDisplayFontFamily
-                )
-            )
-        }
-        if (screenState.phoneValid == ValidField.INVALID && isPhoneFocused) {
-            Spacer(modifier = Modifier.height(4.dp))
-
-            Text(
-                text = "Ви ввели некоректний номер",
-                color = Color.Red,
-                modifier = Modifier
-                    .padding(horizontal = 24.dp),
-                fontFamily = redHatDisplayFontFamily,
-                style = TextStyle(
-                    fontFamily = redHatDisplayFontFamily
-                ),
-                fontSize = 14.sp
-            )
-        }
+        CountryCodePicker(
+            currentCode = screenState.code,
+            currentPhone = screenState.phone,
+            isPhoneValid = screenState.phoneValid,
+            countries = screenState.countries,
+            onCodeSelected = {
+                handleEvent(EditProfileEvent.SetCode(it.phoneCode, it.countryCode))
+            },
+            onPhoneChanged = {
+                handleEvent(EditProfileEvent.ValidatePhone(it))
+            }
+        )
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -531,30 +441,6 @@ fun EditProfileScreen(
         ) {
             ButtonText(
                 text = "Видалити акаунт"
-            )
-        }
-
-        if (openBottomSheet) {
-            CountryPickerBottomSheet(
-                bottomSheetTitle = {
-                    Text(
-                        modifier = Modifier
-                            .imePadding()
-                            .fillMaxWidth()
-                            .padding(16.dp),
-                        text = "Виберіть код",
-                        textAlign = TextAlign.Center,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 20.sp
-                    )
-                },
-                containerColor = MaterialTheme.colorScheme.surface,
-                onItemSelected = {
-                    handleEvent(EditProfileEvent.SetCode(it.dial_code, it.code))
-                    openBottomSheet = false
-                }, onDismissRequest = {
-                    openBottomSheet = false
-                }
             )
         }
 

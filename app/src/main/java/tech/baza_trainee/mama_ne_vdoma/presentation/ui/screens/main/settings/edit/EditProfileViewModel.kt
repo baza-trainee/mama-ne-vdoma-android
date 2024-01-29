@@ -64,7 +64,10 @@ class EditProfileViewModel(
         }
 
         _viewState.update {
-            it.copy(userAvatar = preferencesDatastoreManager.avatarUri)
+            it.copy(
+                userAvatar = preferencesDatastoreManager.avatarUri,
+                countries = userProfileInteractor.getCountryCodes()
+            )
         }
 
         getUserInfo()

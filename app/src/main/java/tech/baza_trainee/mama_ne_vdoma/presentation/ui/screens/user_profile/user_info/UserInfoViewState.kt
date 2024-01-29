@@ -2,6 +2,7 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.use
 
 import android.graphics.Bitmap
 import android.net.Uri
+import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.models.CountryCode
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.BitmapHelper
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 
@@ -14,5 +15,6 @@ data class UserInfoViewState(
     val country: String = "",
     val userAvatar: Uri = Uri.EMPTY,
     val bitmapAvatar: Bitmap = BitmapHelper.DEFAULT_BITMAP,
-    val isLoading: Boolean = false
+    val isLoading: Boolean = false,
+    val countries: List<CountryCode> = emptyList()
 )

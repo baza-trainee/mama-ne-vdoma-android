@@ -8,6 +8,7 @@ import com.google.android.gms.maps.model.LatLng
 import tech.baza_trainee.mama_ne_vdoma.domain.model.ChildEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.DayPeriod
 import tech.baza_trainee.mama_ne_vdoma.domain.model.getDefaultSchedule
+import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.models.CountryCode
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 import java.time.DayOfWeek
 
@@ -27,5 +28,6 @@ data class EditProfileViewState(
     val schedule: SnapshotStateMap<DayOfWeek, DayPeriod> = getDefaultSchedule(),
     val children: List<ChildEntity> = emptyList(),
     val childrenNotesValid: SnapshotStateMap<Int, ValidField> = mutableStateMapOf(),
-    val isLoading: Boolean = false
+    val isLoading: Boolean = false,
+    val countries: List<CountryCode> = emptyList()
 )
