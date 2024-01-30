@@ -35,6 +35,7 @@ android {
         }
         debug {
             buildConfigField("String", "BASE_URL", "\"https://mama-ne-vdoma.online/stage/\"")
+            applicationIdSuffix = ".debug"
         }
     }
     compileOptions {

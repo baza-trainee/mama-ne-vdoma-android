@@ -91,11 +91,14 @@ fun UserCreateScreen(
         LaunchedEffect(key1 = googleLogin) {
             if (googleLogin) {
                 try {
+                    val id = if (BuildConfig.DEBUG) BuildConfig.ONE_TAP_SERVER_CLIENT_ID_DEBUG
+                    else BuildConfig.ONE_TAP_SERVER_CLIENT_ID_RELEASE
+
                     val signUpRequest = BeginSignInRequest.builder()
                         .setGoogleIdTokenRequestOptions(
                             BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
                                 .setSupported(true)
-                                .setServerClientId(BuildConfig.ONE_TAP_SERVER_CLIENT_ID)
+                                .setServerClientId(id)
                                 .setFilterByAuthorizedAccounts(false)
                                 .build()
                         )
