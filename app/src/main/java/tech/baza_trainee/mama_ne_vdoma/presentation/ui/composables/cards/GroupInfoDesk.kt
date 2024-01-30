@@ -87,7 +87,7 @@ fun GroupInfoDesk(
     var adminDialogData by rememberSaveable { mutableStateOf(Triple("", "", "")) }
 
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .background(
                 color = MaterialTheme.colorScheme.surface,

@@ -44,7 +44,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -127,8 +126,6 @@ fun EditProfileScreen(
         }
     }
 
-    val focusRequester = remember { FocusRequester() }
-    var openBottomSheet by rememberSaveable { mutableStateOf(false) }
     var editUserSchedule by rememberSaveable { mutableStateOf(false) }
     var editChildSchedule by rememberSaveable { mutableStateOf(false) }
     var deleteChildDialog by rememberSaveable { mutableStateOf(false) }

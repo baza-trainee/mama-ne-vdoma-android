@@ -45,7 +45,7 @@ fun ImageCropScreen(
     var isCropping by remember { mutableStateOf(false) }
 
     Box(
-        modifier = Modifier.fillMaxWidth()
+        modifier = modifier.fillMaxWidth()
     ) {
         Column(
             modifier = Modifier

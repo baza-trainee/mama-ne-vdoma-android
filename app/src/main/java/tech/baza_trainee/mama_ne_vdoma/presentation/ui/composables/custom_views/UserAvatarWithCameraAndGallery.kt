@@ -97,7 +97,7 @@ fun UserAvatarWithCameraAndGallery(
     }
 
     Box(
-        modifier = Modifier.clickable { showPickerDialog = true }
+        modifier = modifier.clickable { showPickerDialog = true }
     ) {
         Image(
             modifier = Modifier

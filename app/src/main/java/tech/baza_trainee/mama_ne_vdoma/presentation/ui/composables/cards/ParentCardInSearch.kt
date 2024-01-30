@@ -44,7 +44,7 @@ fun ParentCardInSearch(
     parent: ParentInSearchUiModel
 ) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .background(
                 color = MaterialTheme.colorScheme.surface,

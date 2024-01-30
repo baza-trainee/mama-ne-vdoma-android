@@ -49,7 +49,7 @@ fun ParentInfoDesk(
     onDelete: () -> Unit = {}
 ) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .background(
                 color = MaterialTheme.colorScheme.surface,

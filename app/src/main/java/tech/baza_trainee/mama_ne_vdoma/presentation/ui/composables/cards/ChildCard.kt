@@ -36,7 +36,7 @@ fun ChildCard(
     onSelected: (ChildEntity) -> Unit = {}
 ) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .height(82.dp)
             .background(

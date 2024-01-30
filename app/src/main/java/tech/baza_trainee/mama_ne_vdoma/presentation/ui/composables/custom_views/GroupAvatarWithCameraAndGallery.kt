@@ -96,7 +96,7 @@ fun GroupAvatarWithCameraAndGallery(
     }
 
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .clickable {
                 showPickerDialog = true

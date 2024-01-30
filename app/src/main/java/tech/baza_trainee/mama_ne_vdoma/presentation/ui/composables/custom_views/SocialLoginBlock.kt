@@ -40,7 +40,7 @@ fun SocialLoginBlock(
 ) {
 
     Column(
-        modifier = Modifier.fillMaxWidth()
+        modifier = modifier.fillMaxWidth()
     ) {
         OutlinedButton(
             modifier = Modifier

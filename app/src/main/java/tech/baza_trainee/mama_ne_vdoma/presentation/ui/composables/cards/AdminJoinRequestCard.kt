@@ -58,7 +58,7 @@ fun AdminJoinRequestCard(
     onDecline: () -> Unit = {}
 ) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .background(
                 color = MaterialTheme.colorScheme.surface,
