@@ -98,6 +98,12 @@ import javax.net.ssl.SSLSocketFactory
 import javax.net.ssl.TrustManagerFactory
 import javax.net.ssl.X509TrustManager
 
+private const val CHUCKER_CONTENT_MAX_LENGTH = 250000L
+private const val TIMEOUT = 30L
+private const val STRINGS = "STRINGS"
+private const val SCHEDULE = "SCHEDULE"
+private const val UPDATE_GROUP = "UPDATE_GROUP"
+
 val gsoModule = module {
     single { Identity.getSignInClient(androidContext()) }
 }
@@ -298,9 +304,3 @@ fun createSSLSocketFactory(context: Context): Pair<SSLSocketFactory, X509TrustMa
     sslContext.init(null, tmf.trustManagers, SecureRandom())
     return Pair(sslContext.socketFactory, tmf.trustManagers[0] as X509TrustManager)
 }
-
-private const val CHUCKER_CONTENT_MAX_LENGTH = 250000L
-private const val TIMEOUT = 30L
-private const val STRINGS = "STRINGS"
-private const val SCHEDULE = "SCHEDULE"
-private const val UPDATE_GROUP = "UPDATE_GROUP"
