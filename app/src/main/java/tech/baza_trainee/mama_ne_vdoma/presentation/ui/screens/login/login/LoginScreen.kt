@@ -293,9 +293,7 @@ fun LoginUserScreen(
             Spacer(modifier = Modifier.weight(1f))
 
             SocialLoginBlock(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
+                modifier = Modifier.fillMaxWidth(),
                 textForBottomButton = { getTextWithUnderline("Ще немає профілю? ", "Зареєструватись") },
                 onGoogleLogin = { googleLogin = true },
                 onAction = { handleEvent(LoginEvent.OnCreate) }
