@@ -147,15 +147,15 @@ class LoginViewModel(
             val token = Firebase.messaging.token.await()
             if (token.isNotEmpty())
                 preferencesDatastoreManager.fcmToken = token
-        }
 
-        if (id == preferencesDatastoreManager.id)
-            navigator.navigate(HostScreenRoutes.Host.getDestination(MAIN_PAGE))
-        else {
-            val cookies = preferencesDatastoreManager.cookies
-            preferencesDatastoreManager.clearData()
-            preferencesDatastoreManager.cookies = cookies
-            navigator.navigate(HostScreenRoutes.Host.getDestination(EDIT_PROFILE_PAGE))
+            if (id == preferencesDatastoreManager.id)
+                navigator.navigate(HostScreenRoutes.Host.getDestination(MAIN_PAGE))
+            else {
+                val cookies = preferencesDatastoreManager.cookies
+                preferencesDatastoreManager.clearData()
+                preferencesDatastoreManager.cookies = cookies
+                navigator.navigate(HostScreenRoutes.Host.getDestination(EDIT_PROFILE_PAGE))
+            }
         }
     }
 }

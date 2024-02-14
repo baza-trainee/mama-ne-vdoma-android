@@ -150,9 +150,9 @@ class VerifyEmailViewModel(
                     val token = Firebase.messaging.token.await()
                     if (token.isNotEmpty())
                         preferencesDatastoreManager.fcmToken = token
-                }
 
-                navigator.navigate(Graphs.UserProfile)
+                    navigator.navigate(Graphs.UserProfile)
+                }
             }
             onError { error ->
                 _uiState.value = RequestState.OnError(error)
