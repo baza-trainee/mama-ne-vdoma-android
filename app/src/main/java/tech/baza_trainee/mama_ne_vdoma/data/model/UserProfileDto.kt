@@ -15,7 +15,8 @@ data class UserProfileDto(
     val location: LocationDto? = null,
     val week: Map<String, DayScheduleDto>? = null,
     val groupJoinRequests: List<JoinRequestDto> = emptyList(),
-    val notifications: List<NotificationDto> = emptyList()
+    val notifications: List<NotificationDto> = emptyList(),
+    val karma: Float? = null
 )
 
 data class UserProfileResponse(

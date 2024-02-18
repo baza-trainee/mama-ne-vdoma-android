@@ -7,5 +7,6 @@ sealed interface MyGroupsEvent {
     data class OnLeave(val group: String): MyGroupsEvent
     data class OnEdit(val group: String): MyGroupsEvent
     data class OnDelete(val group: String): MyGroupsEvent
+    data class OnRateUser(val user: String): MyGroupsEvent
     data class OnSwitchAdmin(val group: String, val member: String): MyGroupsEvent
 }

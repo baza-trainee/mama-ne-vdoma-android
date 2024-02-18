@@ -14,8 +14,12 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.image_crop
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.image_crop.UpdateGroupAvatarScreen
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.my_groups.MyGroupsScreen
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.my_groups.MyGroupsViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.rate_user.RateUserScreen
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.rate_user.RateUserViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.update_group.UpdateGroupScreen
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.update_group.UpdateGroupViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.view_reviews.ViewReviewsScreen
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.view_reviews.ViewReviewsViewModel
 
 fun NavGraphBuilder.groupNavGraph() {
     navigation(
@@ -27,7 +31,7 @@ fun NavGraphBuilder.groupNavGraph() {
             MyGroupsScreen(
                 screenState = viewModel.viewState.asStateWithLifecycle(),
                 uiState = viewModel.uiState,
-                handleEvent = { viewModel.handleEvent(it) }
+                handleEvent = viewModel::handleEvent
             )
         }
         composable(GroupsScreenRoutes.UpdateGroup.route) {
@@ -35,7 +39,7 @@ fun NavGraphBuilder.groupNavGraph() {
             UpdateGroupScreen(
                 screenState = viewModel.viewState.asStateWithLifecycle(),
                 uiState = viewModel.uiState,
-                handleEvent = { viewModel.handleEvent(it) }
+                handleEvent = viewModel::handleEvent
             )
         }
         composable(GroupsScreenRoutes.UpdateGroupAvatar.route) {
@@ -45,7 +49,35 @@ fun NavGraphBuilder.groupNavGraph() {
             }
             UpdateGroupAvatarScreen(
                 screenState = viewModel.viewState.asStateWithLifecycle(),
-                handleEvent = { viewModel.handleEvent(it) }
+                handleEvent = viewModel::handleEvent
+            )
+        }
+        composable(
+            route = GroupsScreenRoutes.RateUser.ROUTE,
+            arguments = GroupsScreenRoutes.RateUser.argumentList
+        ) {
+            val (userId) = GroupsScreenRoutes.RateUser.parseArguments(it)
+            val viewModel: RateUserViewModel = koinNavViewModel {
+                parametersOf(userId)
+            }
+            RateUserScreen(
+                screenState = viewModel.viewState.asStateWithLifecycle(),
+                uiState = viewModel.uiState,
+                handleEvent = viewModel::handleEvent
+            )
+        }
+        composable(
+            route = GroupsScreenRoutes.ViewReviews.ROUTE,
+            arguments = GroupsScreenRoutes.ViewReviews.argumentList
+        ) {
+            val (userId) = GroupsScreenRoutes.ViewReviews.parseArguments(it)
+            val viewModel: ViewReviewsViewModel = koinNavViewModel {
+                parametersOf(userId)
+            }
+            ViewReviewsScreen(
+                screenState = viewModel.viewState.asStateWithLifecycle(),
+                uiState = viewModel.uiState,
+                handleEvent = viewModel::handleEvent
             )
         }
     }

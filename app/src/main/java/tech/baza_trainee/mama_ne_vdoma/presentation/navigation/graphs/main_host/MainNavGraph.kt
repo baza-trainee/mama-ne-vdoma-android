@@ -29,7 +29,7 @@ fun NavGraphBuilder.mainNavGraph() {
             NotificationScreen(
                 screenState = viewModel.viewState.asStateWithLifecycle(),
                 uiState = viewModel.uiState,
-                handleEvent = { viewModel.handleEvent(it) }
+                handleEvent = viewModel::handleEvent
             )
         }
     }

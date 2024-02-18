@@ -1,11 +1,11 @@
 package tech.baza_trainee.mama_ne_vdoma.data.repository
 
 import tech.baza_trainee.mama_ne_vdoma.data.api.GroupsApi
-import tech.baza_trainee.mama_ne_vdoma.data.mapper.toDataModel
 import tech.baza_trainee.mama_ne_vdoma.data.mapper.toDomainModel
 import tech.baza_trainee.mama_ne_vdoma.data.model.CreateGroupDto
 import tech.baza_trainee.mama_ne_vdoma.data.model.LocationPatchDto
 import tech.baza_trainee.mama_ne_vdoma.data.utils.getRequestResult
+import tech.baza_trainee.mama_ne_vdoma.domain.mapper.toDataModel
 import tech.baza_trainee.mama_ne_vdoma.domain.model.GroupEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.GroupFullInfoEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UpdateGroupEntity

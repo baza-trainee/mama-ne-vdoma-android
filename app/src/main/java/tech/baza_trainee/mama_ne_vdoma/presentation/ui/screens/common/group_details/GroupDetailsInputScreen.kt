@@ -5,8 +5,6 @@ import android.net.Uri
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,7 +26,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -56,10 +53,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
@@ -71,9 +66,11 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.GroupAvatarWithCameraAndGallery
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ScheduleGroup
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.dialogs.AddressNotCheckedDialog
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.dialogs.SuccessDialog
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.functions.infiniteColorAnimation
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.text_fields.OutlinedTextFieldWithError
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.UpdateDetailsUiState
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.group_details.dialogs.KickUserDialog
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.MemberUiModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.GrayText
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
@@ -593,48 +590,14 @@ fun GroupDetailsInputScreen(
     }
 
     if (showSuccessDialog) {
-        AlertDialog(onDismissRequest = { showSuccessDialog = false }) {
-            Column(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(8.dp))
-                    .background(MaterialTheme.colorScheme.background)
-                    .padding(16.dp)
-                    .fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_ok),
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary
-                )
-
-                Text(
-                    modifier = Modifier
-                        .padding(top = 16.dp)
-                        .padding(horizontal = 16.dp)
-                        .fillMaxWidth(),
-                    text = if (isForEditing) "Ваша група успішно змінена" else "Ваша група успішно створена",
-                    fontSize = 14.sp,
-                    textAlign = TextAlign.Start,
-                    fontFamily = redHatDisplayFontFamily
-                )
-
-                Text(
-                    text = "На головну",
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center,
-                    color = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier
-                        .wrapContentWidth()
-                        .align(Alignment.End)
-                        .clickable {
-                            showSuccessDialog = false
-                            handleEvent(GroupDetailsEvent.GoToMain)
-                        }
-                        .padding(16.dp)
-                )
+        SuccessDialog(
+            info = if (isForEditing) "Ваша група успішно змінена" else "Ваша група успішно створена",
+            onDismiss = { showSuccessDialog = false },
+            onClick = {
+                showSuccessDialog = false
+                handleEvent(GroupDetailsEvent.GoToMain)
             }
-        }
+        )
     }
 
     if (showAddressDialog) {
@@ -644,78 +607,15 @@ fun GroupDetailsInputScreen(
     }
 
     if (showKickDialog) {
-        AlertDialog(onDismissRequest = { showKickDialog = false }) {
-            Column(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(8.dp))
-                    .background(MaterialTheme.colorScheme.background)
-                    .padding(vertical = 8.dp)
-                    .fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.Error,
-                    contentDescription = "alert",
-                    tint = MaterialTheme.colorScheme.primary
+        KickUserDialog(
+            userName = kickDialogData.first,
+            onDismiss = { showKickDialog = false },
+            onKick = {
+                showKickDialog = false
+                handleEvent(
+                    GroupDetailsEvent.OnKick(kickDialogData.second)
                 )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Text(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
-                    text = "Ви впевнені, що хочете видалити \"${kickDialogData.first}\" з групи?",
-                    fontSize = 14.sp,
-                    fontFamily = redHatDisplayFontFamily,
-                    textAlign = TextAlign.Start
-                )
-
-                Spacer(modifier = Modifier.height(24.dp))
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
-                        .padding(bottom = 16.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        modifier = Modifier
-                            .weight(0.5f)
-                            .clickable(
-                                indication = null,
-                                interactionSource = remember { MutableInteractionSource() }
-                            ) { showKickDialog = false },
-                        text = "Ні",
-                        fontSize = 16.sp,
-                        fontFamily = redHatDisplayFontFamily,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.primary,
-                        textAlign = TextAlign.Center
-                    )
-
-                    Text(
-                        modifier = Modifier
-                            .weight(0.5f)
-                            .clickable(
-                                indication = null,
-                                interactionSource = remember { MutableInteractionSource() }
-                            ) {
-                                showKickDialog = false
-                                handleEvent(
-                                    GroupDetailsEvent.OnKick(kickDialogData.second)
-                                )
-                            },
-                        text = "Так, видалити",
-                        fontSize = 16.sp,
-                        fontFamily = redHatDisplayFontFamily,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.Red,
-                        textAlign = TextAlign.Center
-                    )
-                }
             }
-        }
+        )
     }
 }

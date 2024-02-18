@@ -10,7 +10,7 @@ fun ResponseBody.asCustomResponse(): CustomResponse =
 
 fun CustomResponse?.getMessage() = this?.message?.first().orEmpty()
 
-fun <T, R> Response<T>.getRequestResult(mapper: (T?) -> R): RequestResult<R> {
+fun <T, R> Response<T>.getRequestResult(mapper: (T) -> R): RequestResult<R> {
     return if (isSuccessful)
         body()?.let {
             RequestResult.Success(mapper(it))

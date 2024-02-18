@@ -15,7 +15,8 @@ data class UserProfileEntity(
     val location: LocationEntity = LocationEntity(),
     val schedule: SnapshotStateMap<DayOfWeek, DayPeriod> = getDefaultSchedule(),
     val groupJoinRequests: List<JoinRequestEntity> = emptyList(),
-    val notifications: List<NotificationEntity> = emptyList()
+    val notifications: List<NotificationEntity> = emptyList(),
+    val rating: Float = 0f
 )
 
 data class JoinRequestEntity(

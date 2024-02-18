@@ -118,7 +118,8 @@ fun MyGroupsScreen(
                     onDelete = {
                         showDeleteDialog = true
                         groupToDelete = it
-                    }
+                    },
+                    onRateUser = { handleEvent(MyGroupsEvent.OnRateUser(it)) }
                 )
             }
         }

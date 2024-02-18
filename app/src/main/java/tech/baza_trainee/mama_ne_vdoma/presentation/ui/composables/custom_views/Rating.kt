@@ -2,6 +2,7 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
@@ -25,7 +26,8 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFa
 fun Rating(
     modifier: Modifier = Modifier,
     rating: Float = 5.0f,
-    backgroundColor: Color = Color.White
+    backgroundColor: Color = Color.White,
+    onClick: () -> Unit = {}
 ) {
     Row(
         modifier = modifier
@@ -35,18 +37,19 @@ fun Rating(
                 color = backgroundColor,
                 shape = RoundedCornerShape(4.dp)
             )
+            .clickable { onClick() }
             .padding(horizontal = 4.dp),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
     ) {
         Image(
-            modifier = Modifier
-                .padding(end = 4.dp),
+            modifier = Modifier.padding(end = 2.dp),
             painter = painterResource(id = R.drawable.ic_star),
             contentDescription = "rating"
         )
         Text(
-            text = rating.toString(),
+            modifier = Modifier.padding(start = 2.dp),
+            text = String.format("%.1f", rating),
             fontSize = 14.sp,
             fontFamily = redHatDisplayFontFamily
         )

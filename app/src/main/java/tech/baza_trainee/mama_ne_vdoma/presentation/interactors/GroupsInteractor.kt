@@ -109,16 +109,21 @@ class GroupsInteractorImpl(
 
             val groups = mutableListOf<GroupUiModel>()
 
-            groupsList.awaitAll().onEach {
-                val membersList = it.members.map {
+            groupsList.awaitAll().onEach { model ->
+                val membersList = model.members.map {
                     async {
                         getMember(it, isMine)
                     }
                 }
+                val members = membersList.awaitAll()
+                val groupRating = members
+                    .map { it.rating / members.size }
+                    .reduce { sum, current -> sum + current }
 
                 groups.add(
-                    it.copy(
-                        members = membersList.awaitAll()
+                    model.copy(
+                        members = members,
+                        rating = groupRating
                     )
                 )
             }
@@ -326,7 +331,8 @@ class GroupsInteractorImpl(
         var newUser = user.copy(
             id = member.id,
             name = member.name,
-            avatar = avatar
+            avatar = avatar,
+            rating = member.rating
         )
 
         if (isMine)

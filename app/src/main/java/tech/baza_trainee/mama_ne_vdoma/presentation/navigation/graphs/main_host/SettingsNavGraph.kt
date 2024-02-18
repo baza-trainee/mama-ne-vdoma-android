@@ -35,7 +35,7 @@ fun NavGraphBuilder.settingsNavGraph() {
             ProfileSettingsScreen(
                 screenState = viewModel.viewState.asStateWithLifecycle(),
                 uiState = viewModel.uiState,
-                handleEvent = { viewModel.handleEvent(it) }
+                handleEvent = viewModel::handleEvent
             )
         }
         composable(SettingsScreenRoutes.EditProfile.route) {
@@ -43,7 +43,7 @@ fun NavGraphBuilder.settingsNavGraph() {
             EditProfileScreen(
                 screenState = viewModel.viewState.asStateWithLifecycle(),
                 uiState = viewModel.uiState,
-                handleEvent = { viewModel.handleEvent(it) }
+                handleEvent = viewModel::handleEvent
             )
         }
         composable(SettingsScreenRoutes.EditProfilePhoto.route) {
@@ -61,7 +61,7 @@ fun NavGraphBuilder.settingsNavGraph() {
             VerifyNewEmailScreen(
                 screenState = viewModel.viewState.asStateWithLifecycle(),
                 uiState = viewModel.uiState,
-                handleEvent = { viewModel.handleEvent(it) }
+                handleEvent = viewModel::handleEvent
             )
         }
         composable(SettingsScreenRoutes.ChildInfo.route) {
@@ -97,7 +97,7 @@ fun NavGraphBuilder.settingsNavGraph() {
             EditCredentialsScreen(
                 screenState = viewModel.viewState.asStateWithLifecycle(),
                 uiState = viewModel.uiState,
-                handleEvent = { viewModel.handleEvent(it) }
+                handleEvent = viewModel::handleEvent
             )
         }
     }

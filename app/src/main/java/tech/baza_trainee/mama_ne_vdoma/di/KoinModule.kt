@@ -65,7 +65,9 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.new_passwor
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.restore_password.RestorePasswordScreenViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.SearchResultsCommunicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.my_groups.MyGroupsViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.rate_user.RateUserViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.update_group.UpdateGroupViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.view_reviews.ViewReviewsViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.host.HostViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.main.main.MainViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.main.notifications.NotificationsViewModel
@@ -208,16 +210,16 @@ val mainModule = module {
 
     viewModel { (page: Int) ->
         HostViewModel(
-            page,
-            get(),
-            get(),
-            get(),
-            get(),
-            get(),
-            get(),
-            get(),
-            get(),
-            get()
+            page = page,
+            mainNavigator = get(),
+            navigator = get(),
+            userAuthRepository = get(),
+            userProfileRepository = get(),
+            filesRepository = get(),
+            locationRepository = get(),
+            groupsRepository = get(),
+            preferencesDatastoreManager = get(),
+            oneTapClient = get()
         )
     }
     viewModel { MainViewModel(get(), get()) }
@@ -230,6 +232,14 @@ val mainModule = module {
     viewModel { EditProfileViewModel(get(), get(), get(), get(), get(), get(), get()) }
     viewModel { VerifyNewEmailViewModel(get(), get(), get(), get(), get()) }
     viewModel { EditCredentialsViewModel(get(), get(), get(), get(), get()) }
+
+    viewModel { (userId: String) ->
+        RateUserViewModel(userId, get(), get(), get())
+    }
+
+    viewModel { (userId: String) ->
+        ViewReviewsViewModel(userId, get(), get(), get())
+    }
 }
 
 inline fun <reified T> createWebService(

@@ -4,6 +4,7 @@ import tech.baza_trainee.mama_ne_vdoma.domain.model.ChildEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.PatchChildEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UserInfoEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UserProfileEntity
+import tech.baza_trainee.mama_ne_vdoma.domain.model.UserRatingDomainModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestResult
 
 interface UserProfileRepository {
@@ -31,4 +32,8 @@ interface UserProfileRepository {
     suspend fun deleteUserAvatar(): RequestResult<Unit>
 
     suspend fun deleteUserNotifications(): RequestResult<Unit>
+
+    suspend fun getUserGrade(userId: String): RequestResult<List<UserRatingDomainModel>>
+
+    suspend fun setUserGrade(userId: String, value: UserRatingDomainModel): RequestResult<Unit>
 }

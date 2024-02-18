@@ -13,6 +13,7 @@ import tech.baza_trainee.mama_ne_vdoma.data.model.LocationPatchDto
 import tech.baza_trainee.mama_ne_vdoma.data.model.UserInfoDto
 import tech.baza_trainee.mama_ne_vdoma.data.model.UserProfileDto
 import tech.baza_trainee.mama_ne_vdoma.data.model.UserProfileResponse
+import tech.baza_trainee.mama_ne_vdoma.data.model.UserRatingDto
 import tech.baza_trainee.mama_ne_vdoma.data.model.UserSearchRequest
 import tech.baza_trainee.mama_ne_vdoma.data.model.WeekScheduleDto
 
@@ -56,4 +57,10 @@ interface UserProfileApi {
 
     @DELETE("api/notifications")
     suspend fun deleteUserNotifications(): Response<Unit>
+
+    @GET("api/karma/{parentId}")
+    suspend fun getUserGrade(@Path("parentId") userId: String): Response<List<UserRatingDto>>
+
+    @POST("api/karma/{parentId}")
+    suspend fun setUserGrade(@Path("parentId") userId: String, @Body data: UserRatingDto): Response<Unit>
 }

@@ -76,7 +76,10 @@ class MyGroupsViewModel(
         when (event) {
             MyGroupsEvent.ResetUiState -> _uiState.value = RequestState.Idle
             MyGroupsEvent.OnBack -> navigator.goToPrevious()
-            MyGroupsEvent.CreateNewGroup -> mainNavigator.navigate(StandaloneGroupsRoutes.ChooseChild.getDestination(isForSearch = false))
+            MyGroupsEvent.CreateNewGroup ->
+                mainNavigator.navigate(
+                    StandaloneGroupsRoutes.ChooseChild.getDestination(isForSearch = false)
+                )
             is MyGroupsEvent.OnLeave -> leaveGroup(event.group)
             is MyGroupsEvent.OnDelete -> deleteGroup(event.group)
             is MyGroupsEvent.OnSwitchAdmin -> switchAdmin(event.group, event.member)
@@ -85,6 +88,9 @@ class MyGroupsViewModel(
                 communicator.setData(group)
                 navigator.navigate(GroupsScreenRoutes.UpdateGroup)
             }
+
+            is MyGroupsEvent.OnRateUser ->
+                navigator.navigate(GroupsScreenRoutes.RateUser.getDestination(event.user))
         }
     }
 
