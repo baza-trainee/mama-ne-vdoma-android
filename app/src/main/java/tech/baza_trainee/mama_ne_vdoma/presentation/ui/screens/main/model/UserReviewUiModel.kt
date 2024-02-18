@@ -8,5 +8,6 @@ data class UserReviewUiModel(
     val name: String = "",
     val rating: Int = 5,
     val note: String = "",
-    val avatar: Uri = Uri.EMPTY
+    val avatar: Uri = Uri.EMPTY,
+    val timestamp: String = ""
 )

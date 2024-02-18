@@ -4,5 +4,6 @@ data class UserRatingDomainModel(
     val rating: Float = 0f,
     val message: String = "",
     val reviewer: String = "",
-    val receiver: String = ""
+    val receiver: String = "",
+    val timestamp: String = ""
 )

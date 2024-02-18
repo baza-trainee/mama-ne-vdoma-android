@@ -28,6 +28,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -132,7 +133,8 @@ fun UserReviewCard(
             text = model.name,
             fontFamily = redHatDisplayFontFamily,
             fontSize = 16.sp,
-            color = Black
+            color = Black,
+            fontWeight = FontWeight.Bold
         )
 
         Text(
@@ -143,8 +145,20 @@ fun UserReviewCard(
             text = model.note,
             fontFamily = redHatDisplayFontFamily,
             fontSize = 14.sp,
-            color = GrayText
+            color = Black
         )
+
+        if (model.timestamp.isNotEmpty())
+            Text(
+                modifier = Modifier
+                    .wrapContentWidth()
+                    .padding(top = 12.dp)
+                    .align(Alignment.Start),
+                text = model.timestamp,
+                fontFamily = redHatDisplayFontFamily,
+                fontSize = 14.sp,
+                color = GrayText
+            )
     }
 }
 

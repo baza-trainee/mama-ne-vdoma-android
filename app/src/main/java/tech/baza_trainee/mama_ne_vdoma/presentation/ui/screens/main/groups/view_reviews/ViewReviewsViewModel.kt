@@ -25,6 +25,10 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.networkExec
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onError
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onLoading
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onSuccess
+import java.text.SimpleDateFormat
+import java.time.Instant
+import java.util.Date
+import java.util.Locale
 
 class ViewReviewsViewModel(
     private val userId: String,
@@ -86,11 +90,18 @@ class ViewReviewsViewModel(
 
         setProgress(false)
 
+        val timestamp = review.timestamp.takeIf { it.isNotEmpty() }
+            ?.let { Instant.parse(it) }
+            ?.let { Date.from(it) }
+            ?.let { SimpleDateFormat("dd MMMM yyyy", Locale.getDefault()).format(it) }
+            .orEmpty()
+
         return UserReviewUiModel(
             avatar = avatar,
             rating = review.rating.toInt(),
             note = review.message,
-            name = member.name
+            name = member.name,
+            timestamp = timestamp
         )
     }
 

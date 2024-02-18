@@ -99,4 +99,10 @@ fun GroupFullInfoDto.toDomainModel() = GroupFullInfoEntity(
     children = children.map { it.toDomainModel() }
 )
 
-fun UserRatingDto.toDomainModel() = UserRatingDomainModel(rating, message, reviewer, receiver)
+fun UserRatingDto.toDomainModel() = UserRatingDomainModel(
+    rating = rating,
+    message = message,
+    reviewer = reviewer,
+    receiver = receiver,
+    timestamp = timestamp.orEmpty()
+)

@@ -9,5 +9,6 @@ data class UserRatingDto(
     @SerializedName("fromId")
     val reviewer: String,
     @SerializedName("toId")
-    val receiver: String
+    val receiver: String,
+    val timestamp: String? = null
 )
