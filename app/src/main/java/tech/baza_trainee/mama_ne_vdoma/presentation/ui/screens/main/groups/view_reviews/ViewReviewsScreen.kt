@@ -69,13 +69,11 @@ fun ViewReviewsScreen(
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .padding(vertical = 16.dp)
+            .padding(vertical = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         items(screenState.reviews) {
-            UserReviewCard(
-                modifier = Modifier.padding(bottom = 8.dp),
-                model = it
-            )
+            UserReviewCard(model = it)
         }
     }
 
