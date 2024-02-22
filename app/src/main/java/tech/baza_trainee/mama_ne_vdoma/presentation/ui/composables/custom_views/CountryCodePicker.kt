@@ -34,6 +34,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -71,9 +72,9 @@ fun CountryCodePicker(
         duration = 1000
     )
 
-    Column() {
+    Column(modifier = modifier) {
         Row(
-            modifier = modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
 
@@ -109,8 +110,8 @@ fun CountryCodePicker(
                     }
                     .weight(.75f),
                 value = currentPhone,
-                label = { Text("Введіть свій номер телефону") },
-                placeholder = { Text("Номер телефону") },
+                label = { Text(stringResource(id = R.string.enter_your_phone_number)) },
+                placeholder = { Text(stringResource(id = R.string.phone_number)) },
                 onValueChange = onPhoneChanged,
                 isError = isPhoneValid == ValidField.INVALID && isPhoneFocused,
                 keyboardOptions = KeyboardOptions(
@@ -141,7 +142,7 @@ fun CountryCodePicker(
             Spacer(modifier = Modifier.height(4.dp))
 
             Text(
-                text = "Ви ввели некоректний номер",
+                text = stringResource(id = R.string.incorrect_phone_number),
                 color = Color.Red,
                 modifier = Modifier.fillMaxWidth(),
                 fontFamily = redHatDisplayFontFamily,
@@ -167,7 +168,7 @@ fun CountryCodePicker(
             ) {
                 Text(
                     modifier = Modifier.fillMaxWidth(),
-                    text = "Виберіть код",
+                    text = stringResource(id = R.string.choose_country_phone_code),
                     textAlign = TextAlign.Center,
                     fontWeight = FontWeight.Bold,
                     fontSize = 20.sp
@@ -179,7 +180,7 @@ fun CountryCodePicker(
                         .padding(top = 8.dp),
                     value = searchCodeRequest,
                     onValueChange = { searchCodeRequest = it.lowercase() },
-                    label = { Text("Введіть назву країни")},
+                    label = { Text(stringResource(id = R.string.enter_country_name)) },
                     trailingIcon = {
                         IconButton(
                             onClick = {

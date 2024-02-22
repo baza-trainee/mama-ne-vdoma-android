@@ -34,6 +34,7 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -74,7 +75,7 @@ fun AdminJoinRequestCard(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "Запит на приєднання",
+                text = stringResource(id = R.string.join_request),
                 fontSize = 16.sp,
                 fontFamily = redHatDisplayFontFamily,
                 fontWeight = FontWeight.SemiBold
@@ -138,7 +139,7 @@ fun AdminJoinRequestCard(
                                 .fillMaxWidth()
                                 .padding(horizontal = 16.dp)
                                 .padding(bottom = 4.dp),
-                            text = "Запит на приєднання до групи \"${request.group.name}\"",
+                            text = stringResource(id = R.string.join_request_info, request.group.name),
                             fontSize = 14.sp,
                             fontFamily = redHatDisplayFontFamily
                         )
@@ -160,7 +161,7 @@ fun AdminJoinRequestCard(
                             .clickable {
                                 onDecline()
                             },
-                        text = "Відхилити",
+                        text = stringResource(id = R.string.action_refuse),
                         fontSize = 16.sp,
                         fontFamily = redHatDisplayFontFamily,
                         fontWeight = FontWeight.Bold,
@@ -174,7 +175,7 @@ fun AdminJoinRequestCard(
                             .clickable {
                                 onAccept()
                             },
-                        text = "Погодити",
+                        text = stringResource(id = R.string.action_approve),
                         fontSize = 16.sp,
                         fontFamily = redHatDisplayFontFamily,
                         fontWeight = FontWeight.Bold,
@@ -282,7 +283,7 @@ fun AdminJoinRequestCard(
                     onClick = onAccept
                 ) {
                     ButtonText(
-                        text = "Погодити запит"
+                        text = stringResource(id = R.string.approve_request)
                     )
                 }
 
@@ -299,7 +300,7 @@ fun AdminJoinRequestCard(
                     )
                 ) {
                     ButtonText(
-                        text = "Відхилити запит"
+                        text = stringResource(id = R.string.refuse_request)
                     )
                 }
             }

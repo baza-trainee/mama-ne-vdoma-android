@@ -3,7 +3,6 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.new_passwo
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
@@ -18,11 +17,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ButtonText
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.LoadingIndicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.SurfaceWithSystemBars
@@ -69,53 +70,53 @@ fun NewPasswordScreen(
             ) {
                 Text(
                     modifier = Modifier.fillMaxWidth(),
-                    text = "Відновлення паролю",
+                    text = stringResource(id = R.string.title_restore_password),
                     fontSize = 20.sp,
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.onBackground,
                     fontFamily = redHatDisplayFontFamily
                 )
 
-                Spacer(modifier = Modifier.height(4.dp))
-
                 Text(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = "Будь ласка, створіть новий пароль нижче",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 4.dp),
+                    text = stringResource(id = R.string.create_new_password),
                     fontSize = 14.sp,
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.onBackground,
                     fontFamily = redHatDisplayFontFamily
                 )
 
-                Spacer(modifier = Modifier.height(16.dp))
-
                 PasswordTextFieldWithError(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 16.dp),
                     password = screenState.password,
                     onValueChange = { handleEvent(NewPasswordEvent.ValidatePassword(it)) },
                     isError = screenState.passwordValid == ValidField.INVALID,
                     imeAction = ImeAction.Next
                 )
 
-                Spacer(modifier = Modifier.height(8.dp))
-
                 Text(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = "Ваш пароль повинен складатись з 6-24 символів і обов’язково містити великі та малі латинські букви, цифри, спеціальні знаки",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 8.dp),
+                    text = stringResource(id = R.string.password_rule_hint),
                     fontSize = 14.sp,
                     fontFamily = redHatDisplayFontFamily,
                     lineHeight = 18.sp
                 )
 
-                Spacer(modifier = Modifier.height(16.dp))
-
                 PasswordTextFieldWithError(
-                    modifier = Modifier.fillMaxWidth(),
-                    label = "Повторіть свій пароль",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 16.dp),
+                    label = stringResource(id = R.string.repeat_password),
                     password = screenState.confirmPassword,
                     onValueChange = { handleEvent(NewPasswordEvent.ValidateConfirmPassword(it)) },
                     isError = screenState.confirmPasswordValid == ValidField.INVALID,
-                    errorText = "Паролі не співпадають",
+                    errorText = stringResource(id = R.string.passwords_do_not_match),
                     imeAction = ImeAction.Done,
                     onImeActionPerformed = { handleEvent(NewPasswordEvent.ResetPassword) }
                 )
@@ -131,7 +132,7 @@ fun NewPasswordScreen(
                         screenState.confirmPasswordValid == ValidField.VALID
             ) {
                 ButtonText(
-                    text = "Зберегти пароль"
+                    text = stringResource(id = R.string.action_save_password)
                 )
             }
         }

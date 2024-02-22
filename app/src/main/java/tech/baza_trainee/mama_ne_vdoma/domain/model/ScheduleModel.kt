@@ -1,9 +1,11 @@
 package tech.baza_trainee.mama_ne_vdoma.domain.model
 
 import android.os.Parcelable
+import androidx.annotation.StringRes
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import kotlinx.parcelize.Parcelize
+import tech.baza_trainee.mama_ne_vdoma.R
 import java.time.DayOfWeek
 
 fun getDefaultSchedule() = mutableStateMapOf<DayOfWeek, DayPeriod>().also { map ->
@@ -114,6 +116,6 @@ data class DayPeriod(
     fun isFilled() = morning || noon || afternoon || wholeDay
 }
 
-enum class Period(val period: String) {
-    MORNING("Ранок"), NOON("Обід"), AFTERNOON("Вечір"), WHOLE_DAY("Цілий день")
+enum class Period(@StringRes val period: Int) {
+    MORNING(R.string.morning), NOON(R.string.noon), AFTERNOON(R.string.evening), WHOLE_DAY(R.string.whole_day)
 }

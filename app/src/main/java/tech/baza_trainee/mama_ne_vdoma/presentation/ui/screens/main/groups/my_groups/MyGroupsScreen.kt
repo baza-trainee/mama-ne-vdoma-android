@@ -24,11 +24,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.cards.GroupInfoDesk
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.LoadingIndicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.dialogs.DangerousActionAlertDialog
@@ -72,7 +74,7 @@ fun MyGroupsScreen(
         ) {
             Text(
                 modifier = Modifier.weight(1f),
-                text = "Мої групи",
+                text = stringResource(id = R.string.my_groups),
                 fontFamily = redHatDisplayFontFamily,
                 fontSize = 16.sp
             )
@@ -83,7 +85,7 @@ fun MyGroupsScreen(
                         indication = null,
                         interactionSource = remember { MutableInteractionSource() }
                     ) { handleEvent(MyGroupsEvent.CreateNewGroup) },
-                text = "Створити групу",
+                text = stringResource(id = R.string.action_create_group),
                 fontFamily = redHatDisplayFontFamily,
                 fontSize = 14.sp,
                 textDecoration = TextDecoration.Underline,
@@ -127,8 +129,8 @@ fun MyGroupsScreen(
 
     if (showDeleteDialog) {
         DangerousActionAlertDialog(
-            text = "Після видалення групи немає можливості її відновити. Підтвердити видалення групи?",
-            button = "Так, видалити групу",
+            text = stringResource(id = R.string.delete_group_info),
+            button = stringResource(id = R.string.action_delete_group),
             onDelete = {
                 showDeleteDialog = false
                 handleEvent(MyGroupsEvent.OnDelete(groupToDelete))

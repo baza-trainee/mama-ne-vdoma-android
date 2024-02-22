@@ -30,6 +30,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -154,8 +155,8 @@ fun RateUserScreen(
                 .fillMaxWidth()
                 .padding(top = 32.dp),
             value = screenState.note,
-            label = "Залишити відгук",
-            hint = "Залишити відгук...",
+            label = stringResource(id = R.string.user_review_info),
+            hint = stringResource(id = R.string.user_review_hint),
             onValueChange = { handleEvent(RateUserEvent.SetNote(it)) },
             maxLines = 3,
             isError = screenState.note.length > 500
@@ -166,7 +167,7 @@ fun RateUserScreen(
                 .wrapContentWidth()
                 .align(Alignment.Start)
                 .padding(horizontal = 16.dp),
-            text = "Опис може містити кирилицю або латиницю до 500 символів",
+            text = stringResource(id = R.string.user_review_length),
             fontFamily = redHatDisplayFontFamily,
             fontSize = 12.sp,
             color = GrayText
@@ -184,14 +185,14 @@ fun RateUserScreen(
             }
         ) {
             ButtonText(
-                text = "Подати відгук"
+                text = stringResource(id = R.string.action_rate_user)
             )
         }
     }
 
     if (showRatingSetDialog) {
         SuccessDialog(
-            info = "Дякуємо за ваш відгук",
+            info = stringResource(id = R.string.user_rated_info),
             onDismiss = { showRatingSetDialog = false },
             onClick = {
                 showRatingSetDialog = false

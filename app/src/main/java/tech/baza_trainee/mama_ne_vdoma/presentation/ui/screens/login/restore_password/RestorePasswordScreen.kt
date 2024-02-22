@@ -4,7 +4,6 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
@@ -27,6 +26,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -34,6 +34,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.LoadingIndicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.SurfaceWithSystemBars
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.text_fields.OutlinedTextFieldWithError
@@ -55,7 +56,7 @@ fun RestorePasswordScreen(
 
         val context = LocalContext.current
 
-        when(val state = uiState.value) {
+        when (val state = uiState.value) {
             RequestState.Idle -> Unit
             is RequestState.OnError -> {
                 context.showToast(state.error)
@@ -77,12 +78,11 @@ fun RestorePasswordScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Top
             ) {
-                Spacer(modifier = Modifier.height(16.dp))
-
                 Row(
                     modifier = Modifier
                         .align(Alignment.Start)
                         .fillMaxWidth()
+                        .padding(top = 16.dp)
                 ) {
                     IconButton(
                         modifier = Modifier
@@ -100,7 +100,7 @@ fun RestorePasswordScreen(
                         modifier = Modifier
                             .weight(1f)
                             .fillMaxWidth(),
-                        text = "Забули пароль?",
+                        text = stringResource(id = R.string.forgot_password),
                         fontSize = 20.sp,
                         textAlign = TextAlign.Center,
                         color = MaterialTheme.colorScheme.onBackground,
@@ -108,29 +108,27 @@ fun RestorePasswordScreen(
                     )
                 }
 
-                Spacer(modifier = Modifier.height(16.dp))
-
                 Text(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = "Не турбуйтеся! Будь ласка, введіть " +
-                            "свій email за яким ви реєструвались, " +
-                            "щоб отримати лист з інструкціями",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 16.dp),
+                    text = stringResource(id = R.string.email_restore_instructions),
                     fontSize = 14.sp,
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.onBackground,
                     fontFamily = redHatDisplayFontFamily
                 )
 
-                Spacer(modifier = Modifier.height(48.dp))
-
                 OutlinedTextFieldWithError(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 48.dp),
                     value = screenState.email,
-                    hint = "Email",
-                    label = "Введіть свій email",
+                    hint = stringResource(id = R.string.email),
+                    label = stringResource(id = R.string.enter_your_email),
                     onValueChange = { handleEvent(RestorePasswordEvent.ValidateEmail(it)) },
                     isError = screenState.emailValid == ValidField.INVALID,
-                    errorText = "Ви ввели некоректний email",
+                    errorText = stringResource(id = R.string.incorrect_email),
                     leadingIcon = {
                         Icon(
                             imageVector = Icons.Default.Email,
@@ -156,7 +154,7 @@ fun RestorePasswordScreen(
                 enabled = screenState.emailValid == ValidField.VALID
             ) {
                 Text(
-                    text = "Відправити",
+                    text = stringResource(id = R.string.action_send),
                     fontWeight = FontWeight.Bold,
                     fontFamily = redHatDisplayFontFamily
                 )

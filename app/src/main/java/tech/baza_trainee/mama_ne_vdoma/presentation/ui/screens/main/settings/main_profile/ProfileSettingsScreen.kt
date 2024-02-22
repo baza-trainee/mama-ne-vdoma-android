@@ -44,6 +44,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -118,10 +119,10 @@ fun ProfileSettingsScreen(
                     .clip(CircleShape)
             )
 
-            Spacer(modifier = Modifier.height(4.dp))
-
             Text(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 4.dp),
                 text = screenState.name,
                 fontSize = 20.sp,
                 textAlign = TextAlign.Center,
@@ -129,31 +130,30 @@ fun ProfileSettingsScreen(
                 fontFamily = redHatDisplayFontFamily
             )
 
-            Spacer(modifier = Modifier.height(4.dp))
-
             Text(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 4.dp),
                 text = "${screenState.code}${screenState.phone}",
                 fontSize = 16.sp,
                 textAlign = TextAlign.Center,
                 fontFamily = redHatDisplayFontFamily
             )
 
-            Spacer(modifier = Modifier.height(2.dp))
-
             Text(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 2.dp),
                 text = screenState.email,
                 fontSize = 16.sp,
                 textAlign = TextAlign.Center,
                 fontFamily = redHatDisplayFontFamily
             )
 
-            Spacer(modifier = Modifier.height(2.dp))
-
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .padding(top = 32.dp)
                     .basicMarquee(),
                 text = screenState.address,
                 fontSize = 16.sp,
@@ -171,11 +171,10 @@ fun ProfileSettingsScreen(
             )
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
-
         Row(
             modifier = Modifier
                 .fillMaxWidth()
+                .padding(top = 16.dp)
                 .background(
                     color = MaterialTheme.colorScheme.surface,
                     shape = RoundedCornerShape(8.dp)
@@ -187,7 +186,7 @@ fun ProfileSettingsScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f),
-                text = "Отримувати повідомлення на електронну пошту",
+                text = stringResource(id = R.string.receive_emails),
                 fontSize = 14.sp,
                 fontFamily = redHatDisplayFontFamily
             )
@@ -198,11 +197,10 @@ fun ProfileSettingsScreen(
         }
 
         if (!screenState.sendEmails) {
-            Spacer(modifier = Modifier.height(8.dp))
-
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .padding(top = 8.dp)
                     .padding(horizontal = 8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -211,7 +209,7 @@ fun ProfileSettingsScreen(
                         .fillMaxWidth()
                         .padding(end = 4.dp)
                         .weight(1f),
-                    text = "Сервісні повідомлення з питань відновлення пароля чи підтвердження електронної пошти, відправляються автоматично і не можуть бути відхилені Користувачем",
+                    text = stringResource(id = R.string.service_email_hint),
                     fontSize = 12.sp,
                     fontFamily = redHatDisplayFontFamily,
                     color = Color.Red,
@@ -225,12 +223,12 @@ fun ProfileSettingsScreen(
             }
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
-
         var showDeleteAccountAlertDialog by rememberSaveable { mutableStateOf(!screenState.isPolicyChecked) }
 
         PrivacyPolicyBlock(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 24.dp),
             isChecked = screenState.isPolicyChecked,
             onCheckedChanged = {
                 showDeleteAccountAlertDialog = !it
@@ -238,47 +236,46 @@ fun ProfileSettingsScreen(
             }
         )
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.weight(1f))
 
         Button(
             modifier = Modifier
                 .fillMaxWidth()
+                .padding(top = 24.dp)
                 .height(48.dp),
             onClick = { handleEvent(ProfileSettingsEvent.EditProfile) }
         ) {
             Icon(
+                modifier = Modifier.padding(end = 4.dp),
                 imageVector = Icons.Filled.Edit,
                 contentDescription = "edit_profile"
             )
-            Spacer(modifier = Modifier.width(4.dp))
             ButtonText(
-                text = "Редагувати інформацію"
+                text = stringResource(id = R.string.title_edit_profile)
             )
         }
-
-        Spacer(modifier = Modifier.height(16.dp))
 
         Button(
             modifier = Modifier
                 .fillMaxWidth()
+                .padding(top = 16.dp)
                 .height(48.dp),
             onClick = { handleEvent(ProfileSettingsEvent.EditCredentials) }
         ) {
             Icon(
+                modifier = Modifier.padding(end = 4.dp),
                 imageVector = Icons.Filled.Lock,
                 contentDescription = "edit_credentials"
             )
-            Spacer(modifier = Modifier.width(4.dp))
             ButtonText(
-                text = "Змінити дані для входу в застосунок"
+                text = stringResource(id = R.string.edit_credentials)
             )
         }
-
-        Spacer(modifier = Modifier.height(16.dp))
 
         Button(
             modifier = Modifier
                 .fillMaxWidth()
+                .padding(vertical = 16.dp)
                 .height(48.dp),
             onClick = { handleEvent(ProfileSettingsEvent.LogOut) },
             colors = ButtonDefaults.buttonColors(
@@ -287,21 +284,19 @@ fun ProfileSettingsScreen(
             )
         ) {
             Icon(
+                modifier = Modifier.padding(end = 4.dp),
                 imageVector = Icons.AutoMirrored.Filled.Logout,
                 contentDescription = "exit"
             )
-            Spacer(modifier = Modifier.width(4.dp))
             ButtonText(
-                text = "Вийти з акаунту"
+                text = stringResource(id = R.string.action_log_out)
             )
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
-
         if (showDeleteAccountAlertDialog) {
             DangerousActionAlertDialog(
-                text = "Після видалення акаунту немає можливості його відновити. Щоб користуватись після цього мобільним додатком, необхідно буде зареєструватись заново. Підтвердити видалення мого акаунту?",
-                button = "Так, видалити акаунт",
+                text = stringResource(id = R.string.delete_account_info),
+                button = stringResource(id = R.string.action_yes_delete_account),
                 onDelete = { handleEvent(ProfileSettingsEvent.DeleteUser) },
                 onDismissRequest = {
                     handleEvent(ProfileSettingsEvent.UpdatePolicyCheck(true))

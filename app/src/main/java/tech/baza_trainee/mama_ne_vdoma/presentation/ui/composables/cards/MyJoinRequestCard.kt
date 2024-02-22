@@ -33,6 +33,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -72,7 +73,7 @@ fun MyRequestCard(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "Запит на приєднання",
+                text = stringResource(id = R.string.join_request),
                 fontSize = 16.sp,
                 fontFamily = redHatDisplayFontFamily,
                 fontWeight = FontWeight.SemiBold
@@ -136,7 +137,7 @@ fun MyRequestCard(
                                 .fillMaxWidth()
                                 .padding(horizontal = 16.dp)
                                 .padding(bottom = 4.dp),
-                            text = "Запит до групи \"${request.group.name}\" успішно відправлений. Ми повідомимо вас, коли адміністратор групи затвердить ваш запит",
+                            text = stringResource(id = R.string.join_request_sent, request.group.name),
                             fontSize = 14.sp,
                             fontFamily = redHatDisplayFontFamily
                         )
@@ -150,7 +151,7 @@ fun MyRequestCard(
                         .padding(horizontal = 8.dp)
                         .align(Alignment.End)
                         .clickable { onCancel() },
-                    text = "Скасувати запит",
+                    text = stringResource(id = R.string.cancel_join_request),
                     fontSize = 16.sp,
                     fontFamily = redHatDisplayFontFamily,
                     fontWeight = FontWeight.Bold,
@@ -232,7 +233,7 @@ fun MyRequestCard(
                     )
 
                     Text(
-                        text = "${request.group.ages} р.",
+                        text = stringResource(id = R.string.format_age, request.group.ages),
                         fontSize = 14.sp,
                         fontFamily = redHatDisplayFontFamily
                     )
@@ -305,7 +306,7 @@ fun MyRequestCard(
                     )
                 ) {
                     ButtonText(
-                        text = "Скасувати запит"
+                        text = stringResource(id = R.string.cancel_join_request)
                     )
                 }
             }

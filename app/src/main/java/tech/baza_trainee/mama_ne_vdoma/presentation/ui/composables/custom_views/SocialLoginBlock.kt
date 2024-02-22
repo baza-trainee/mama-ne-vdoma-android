@@ -16,12 +16,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -33,7 +32,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFa
 @Preview
 fun SocialLoginBlock(
     modifier: Modifier = Modifier,
-    textForBottomButton: () -> CharSequence = { "" },
+    textForBottomButton: @Composable () -> CharSequence = { "" },
     onGoogleLogin: () -> Unit = {},
 //    onFBLogin: () -> Unit = {},
     onAction: () -> Unit = {},
@@ -65,7 +64,7 @@ fun SocialLoginBlock(
                     modifier = Modifier.size(ButtonDefaults.IconSize)
                 )
                 Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
-                Text(text = "Продовжити з Google")
+                Text(text = stringResource(id = R.string.continue_with_google))
             }
         }
 
@@ -99,11 +98,7 @@ fun SocialLoginBlock(
 //
 //        Spacer(modifier = Modifier.height(24.dp))
 
-        val textForButton by remember {
-            mutableStateOf(textForBottomButton.invoke())
-        }
-
-        if (textForButton is AnnotatedString)
+        if (textForBottomButton() is AnnotatedString)
             Text(
                 modifier = Modifier
                     .clickable(
@@ -114,7 +109,7 @@ fun SocialLoginBlock(
                     }
                     .fillMaxWidth()
                     .height(48.dp),
-                text = textForButton as AnnotatedString,
+                text = textForBottomButton() as AnnotatedString,
                 textAlign = TextAlign.Center,
                 fontFamily = redHatDisplayFontFamily
             )

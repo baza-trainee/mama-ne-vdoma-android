@@ -29,11 +29,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ButtonText
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.text_fields.OutlinedTextFieldWithError
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.text_fields.PasswordTextFieldWithError
@@ -75,10 +77,10 @@ fun EditCredentialsScreen(
             modifier = Modifier.fillMaxWidth(),
             value = screenState.email,
             hint = "Email",
-            label = "Введіть свій email",
+            label = stringResource(id = R.string.enter_your_email),
             onValueChange = { handleEvent(EditCredentialsEvent.ValidateEmail(it)) },
             isError = screenState.emailValid == ValidField.INVALID,
-            errorText = "Ви ввели некоректний email",
+            errorText = stringResource(id = R.string.incorrect_email),
             leadingIcon = {
                 Icon(
                     imageVector = Icons.Default.Email,
@@ -94,24 +96,23 @@ fun EditCredentialsScreen(
             )
         )
 
-        Spacer(modifier = Modifier.height(24.dp))
-
         Button(
             modifier = Modifier
                 .fillMaxWidth()
+                .padding(top = 24.dp)
                 .height(48.dp),
             onClick = { handleEvent(EditCredentialsEvent.VerifyEmail) },
             enabled = screenState.emailValid == ValidField.VALID
         ) {
             ButtonText(
-                text = "Змінити email"
+                text = stringResource(id = R.string.action_change_email)
             )
         }
 
-        Spacer(modifier = Modifier.height(32.dp))
-
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 32.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Box(
@@ -122,7 +123,7 @@ fun EditCredentialsScreen(
             )
             Text(
                 modifier = Modifier.padding(horizontal = 4.dp),
-                text = "чи",
+                text = stringResource(id = R.string.or),
                 fontSize = 14.sp,
             )
             Box(
@@ -133,36 +134,36 @@ fun EditCredentialsScreen(
             )
         }
 
-        Spacer(modifier = Modifier.height(32.dp))
-
         //Password
         PasswordTextFieldWithError(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 32.dp),
             password = screenState.password,
             onValueChange = { handleEvent(EditCredentialsEvent.ValidatePassword(it)) },
             isError = screenState.passwordValid == ValidField.INVALID,
             imeAction = ImeAction.Next
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
-
         Text(
-            modifier = Modifier.fillMaxWidth(),
-            text = "Ваш пароль повинен складатись з 6-24 символів і обов’язково містити великі та малі латинські букви, цифри, спеціальні знаки",
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 8.dp),
+            text = stringResource(id = R.string.password_rule_hint),
             fontSize = 14.sp,
             fontFamily = redHatDisplayFontFamily,
             lineHeight = 18.sp
         )
 
-        Spacer(modifier = Modifier.height(24.dp))
-
         PasswordTextFieldWithError(
-            modifier = Modifier.fillMaxWidth(),
-            label = "Повторіть свій пароль",
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 24.dp),
+            label = stringResource(id = R.string.repeat_password),
             password = screenState.confirmPassword,
             onValueChange = { handleEvent(EditCredentialsEvent.ValidateConfirmPassword(it)) },
             isError = screenState.confirmPasswordValid == ValidField.INVALID,
-            errorText = "Паролі не співпадають",
+            errorText = stringResource(id = R.string.passwords_do_not_match),
             imeAction = ImeAction.Done,
             onImeActionPerformed = { handleEvent(EditCredentialsEvent.ResetPassword) }
         )
@@ -177,7 +178,7 @@ fun EditCredentialsScreen(
                     screenState.confirmPasswordValid == ValidField.VALID
         ) {
             ButtonText(
-                text = "Змінити пароль"
+                text = stringResource(id = R.string.action_change_password)
             )
         }
     }

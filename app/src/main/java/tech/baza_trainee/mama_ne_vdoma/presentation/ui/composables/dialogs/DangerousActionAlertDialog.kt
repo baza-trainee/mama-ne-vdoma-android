@@ -25,11 +25,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ButtonText
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 
@@ -59,11 +61,10 @@ fun DangerousActionAlertDialog(
                 tint = Color.Red
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
-
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .padding(top = 16.dp)
                     .padding(horizontal = 16.dp),
                 text = text,
                 fontSize = 14.sp,
@@ -88,7 +89,7 @@ fun DangerousActionAlertDialog(
                         ) {
                             onDismissRequest()
                         },
-                    text = "Ні",
+                    text = stringResource(id = R.string.no),
                     fontSize = 16.sp,
                     fontFamily = redHatDisplayFontFamily,
                     fontWeight = FontWeight.Bold,

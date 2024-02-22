@@ -14,8 +14,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.LoadingIndicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ScaffoldWithNavigationBars
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.headers.HeaderWithToolbar
@@ -33,7 +35,7 @@ fun CreateGroupScreen(
         topBar = {
             HeaderWithToolbar(
                 modifier = Modifier.fillMaxWidth(),
-                title = "Створення нової групи",
+                title = stringResource(id = R.string.title_create_group),
                 avatar = screenState.groupDetails.userAvatar,
                 showNotification = true,
                 notificationCount = screenState.notifications,

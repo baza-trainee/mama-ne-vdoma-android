@@ -5,7 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -26,6 +25,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -107,13 +107,12 @@ fun ParentInfoDesk(
         }
 
         if (address.isNotEmpty()) {
-            Spacer(modifier = Modifier.height(8.dp))
-
             Text(
                 modifier = Modifier
+                    .padding(top = 8.dp)
                     .padding(horizontal = 8.dp)
                     .fillMaxWidth(),
-                text = "Ваша адреса",
+                text = stringResource(id = R.string.your_address),
                 fontFamily = redHatDisplayFontFamily,
                 fontSize = 14.sp
             )
@@ -128,12 +127,11 @@ fun ParentInfoDesk(
             )
         }
 
-        Spacer(modifier = Modifier.height(8.dp))
-
         ScheduleInfoDesk(
+            modifier = Modifier.padding(top = 8.dp),
             schedule = schedule,
-            dayText = "Дні, коли ви можете доглядати за дітьми",
-            periodText = "Час, коли ви можете доглядати за дітьми"
+            dayText = stringResource(id = R.string.child_care_days),
+            periodText = stringResource(id = R.string.child_care_hours)
         )
     }
 }

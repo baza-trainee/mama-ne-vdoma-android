@@ -14,8 +14,10 @@ import androidx.compose.material3.Button
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.domain.model.Gender
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.text_fields.OutlinedTextFieldWithError
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.add_child.ChildInfoEvent
@@ -42,41 +44,40 @@ fun ChildInfoGroup(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
-            Spacer(modifier = Modifier.height(8.dp))
-
             OutlinedTextFieldWithError(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp),
                 value = screenState.name,
-                label = "Ім'я дитини",
-                hint = "Ім'я дитини",
+                label = stringResource(id = R.string.child_name),
+                hint = stringResource(id = R.string.child_name),
                 onValueChange = { handleEvent(ChildInfoEvent.ValidateChildName(it)) },
                 isError = screenState.nameValid == ValidField.INVALID,
-                errorText = "Ви ввели некоректнe ім'я"
+                errorText = stringResource(id = R.string.incorrect_child_name)
             )
-
-            Spacer(modifier = Modifier.height(16.dp))
 
             OutlinedTextFieldWithError(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp),
                 value = screenState.age,
-                label = "Вік дитини",
-                hint = "Вік дитини",
+                label = stringResource(id = R.string.child_age),
+                hint = stringResource(id = R.string.child_age),
                 onValueChange = { handleEvent(ChildInfoEvent.ValidateAge(it)) },
                 isError = screenState.ageValid == ValidField.INVALID,
-                errorText = "Ви ввели некоректний вік",
+                errorText = stringResource(id = R.string.incorrect_child_age),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
             )
-
-            Spacer(modifier = Modifier.height(16.dp))
 
             val genderOptions = listOf(Gender.BOY, Gender.GIRL)
 
             RadioGroup(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .padding(top = 16.dp)
                     .padding(horizontal = 8.dp),
                 radioGroupOptions = genderOptions,
-                getText = { it.gender },
+                getText = { stringResource(id = it.gender) },
                 selected = screenState.gender,
                 onSelectedChange = { handleEvent(ChildInfoEvent.SetGender(it)) }
             )
@@ -97,7 +98,7 @@ fun ChildInfoGroup(
                     screenState.gender != Gender.NONE
         ) {
             ButtonText(
-                text = "Зареєструвати дитину"
+                text = stringResource(id = R.string.register_child)
             )
         }
     }

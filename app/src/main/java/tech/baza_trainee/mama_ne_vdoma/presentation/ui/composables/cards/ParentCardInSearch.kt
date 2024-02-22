@@ -1,6 +1,8 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.cards
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,6 +11,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
@@ -27,6 +31,7 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -38,6 +43,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.Parent
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.SlateGray
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ParentCardInSearch(
     modifier: Modifier = Modifier,
@@ -127,36 +133,35 @@ fun ParentCardInSearch(
                     )
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Column(
+            LazyColumn(
                 modifier = Modifier
-                    .padding(start = 56.dp, end = 8.dp)
-                    .fillMaxWidth()
+                    .padding(start = 56.dp, end = 8.dp, top = 8.dp)
+                    .fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
-                Text(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = "Входить у склад таких груп:",
-                    fontSize = 14.sp,
-                    fontFamily = redHatDisplayFontFamily
-                )
+                stickyHeader {
+                    Text(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = stringResource(id = R.string.is_a_member_of),
+                        fontSize = 14.sp,
+                        fontFamily = redHatDisplayFontFamily
+                    )
+                }
 
-                parent.groups.forEach {
-                    Spacer(modifier = Modifier.height(4.dp))
-
+                items(parent.groups) { group ->
                     Row(
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Text(
                             modifier = Modifier.weight(0.5f),
-                            text = it.name,
+                            text = group.name,
                             fontSize = 14.sp,
                             fontFamily = redHatDisplayFontFamily
                         )
 
                         Text(
                             modifier = Modifier.weight(0.5f),
-                            text = "ID групи:\n${it.id}",
+                            text = stringResource(id = R.string.format_group_id_2, group.id),
                             fontSize = 14.sp,
                             fontFamily = redHatDisplayFontFamily,
                             textAlign = TextAlign.End

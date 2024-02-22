@@ -3,6 +3,7 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Base64
+import java.util.Locale
 import java.util.regex.Pattern
 
 fun String?.orDefault(default: String) = orEmpty().ifEmpty { default }
@@ -32,6 +33,9 @@ fun String.decodeFromBase64(): String {
     val byteArray = Base64.decode(this, Base64.DEFAULT)
     return String(byteArray, Charsets.UTF_8)
 }
+
+fun String.capitalize(locale: Locale = Locale.getDefault()) =
+    replaceFirstChar { if (it.isLowerCase()) it.titlecase(locale) else it.toString() }
 
 const val EMAIL_PATTERN =
     "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})\$"

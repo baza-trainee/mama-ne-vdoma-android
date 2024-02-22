@@ -23,10 +23,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -51,24 +53,22 @@ fun MakeAdminConfirmationDialog(
                 tint = MaterialTheme.colorScheme.primary
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
-
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .padding(top = 16.dp)
                     .padding(horizontal = 16.dp),
-                text = "Ви впевнені, що хочете передати адміністративні права в групі \"$memberName\"?",
+                text = stringResource(id = R.string.make_admin_info, memberName),
                 fontSize = 14.sp,
                 fontFamily = redHatDisplayFontFamily,
                 textAlign = TextAlign.Start
             )
 
-            Spacer(modifier = Modifier.height(24.dp))
-
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp)
+                    .padding(top = 24.dp)
                     .padding(bottom = 16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -79,7 +79,7 @@ fun MakeAdminConfirmationDialog(
                             indication = null,
                             interactionSource = remember { MutableInteractionSource() }
                         ) { onDismiss() },
-                    text = "Відхилити",
+                    text = stringResource(id = R.string.action_refuse),
                     fontSize = 16.sp,
                     fontFamily = redHatDisplayFontFamily,
                     fontWeight = FontWeight.Bold,
@@ -94,7 +94,7 @@ fun MakeAdminConfirmationDialog(
                             indication = null,
                             interactionSource = remember { MutableInteractionSource() }
                         ) { onMakeAdmin() },
-                    text = "Так, я хочу",
+                    text = stringResource(id = R.string.action_yes_i_do),
                     fontSize = 16.sp,
                     fontFamily = redHatDisplayFontFamily,
                     fontWeight = FontWeight.Bold,

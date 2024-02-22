@@ -84,7 +84,7 @@ fun GroupAvatarWithCameraAndGallery(
 
     if (showRationale) {
         PermissionDialog(
-            permissionTextProvider = CameraPermissionTextProvider(),
+            permissionTextProvider = CameraPermissionTextProvider(LocalContext.current),
             isPermanentlyDeclined = !shouldShowRequestPermissionRationale(activity, permission),
             onDismiss = { showRationale = false },
             onGranted = {

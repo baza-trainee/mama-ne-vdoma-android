@@ -7,7 +7,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -21,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -42,11 +42,10 @@ fun MainScreen(
             .fillMaxWidth()
             .verticalScroll(rememberScrollState())
     ) {
-        Spacer(modifier = Modifier.height(16.dp))
-
         Row(
             modifier = Modifier
                 .fillMaxWidth()
+                .padding(top = 16.dp)
                 .height(128.dp)
                 .background(
                     color = MaterialTheme.colorScheme.surface,
@@ -61,7 +60,7 @@ fun MainScreen(
         ) {
             Text(
                 modifier = Modifier.weight(1f),
-                text = "Мої групи",
+                text = stringResource(id = R.string.my_groups),
                 fontSize = 20.sp,
                 fontFamily = redHatDisplayFontFamily,
                 fontWeight = FontWeight.Bold,
@@ -75,11 +74,10 @@ fun MainScreen(
             )
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
-
         Row(
             modifier = Modifier
                 .fillMaxWidth()
+                .padding(top = 16.dp)
                 .height(128.dp)
                 .background(
                     color = MaterialTheme.colorScheme.surface,
@@ -94,7 +92,7 @@ fun MainScreen(
         ) {
             Text(
                 modifier = Modifier.weight(1f),
-                text = "Пошук",
+                text = stringResource(id = R.string.title_search),
                 fontSize = 20.sp,
                 fontFamily = redHatDisplayFontFamily,
                 fontWeight = FontWeight.Bold,
@@ -108,11 +106,10 @@ fun MainScreen(
             )
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
-
         Row(
             modifier = Modifier
                 .fillMaxWidth()
+                .padding(top = 16.dp)
                 .height(128.dp)
                 .background(
                     color = MaterialTheme.colorScheme.surface,
@@ -127,7 +124,7 @@ fun MainScreen(
         ) {
             Text(
                 modifier = Modifier.weight(1f),
-                text = "Мій акаунт та інформація про дітей",
+                text = stringResource(id = R.string.title_account_info),
                 fontSize = 20.sp,
                 fontFamily = redHatDisplayFontFamily,
                 fontWeight = FontWeight.Bold,
@@ -141,11 +138,10 @@ fun MainScreen(
             )
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
-
         Row(
             modifier = Modifier
                 .fillMaxWidth()
+                .padding(top = 16.dp)
                 .height(64.dp)
                 .background(
                     color = MaterialTheme.colorScheme.surface,
@@ -160,7 +156,7 @@ fun MainScreen(
         ) {
             Text(
                 modifier = Modifier.weight(1f),
-                text = "Мої повідомлення",
+                text = stringResource(id = R.string.title_my_notifications),
                 fontSize = 16.sp,
                 fontFamily = redHatDisplayFontFamily,
                 textAlign = TextAlign.Center
@@ -173,11 +169,10 @@ fun MainScreen(
             )
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
-
         Row(
             modifier = Modifier
                 .fillMaxWidth()
+                .padding(vertical = 16.dp)
                 .height(64.dp)
                 .background(
                     color = MaterialTheme.colorScheme.surface,
@@ -192,7 +187,7 @@ fun MainScreen(
         ) {
             Text(
                 modifier = Modifier.weight(1f),
-                text = "Налаштування акаунту",
+                text = stringResource(id = R.string.title_my_settings),
                 fontSize = 16.sp,
                 fontFamily = redHatDisplayFontFamily,
                 textAlign = TextAlign.Center
@@ -204,8 +199,6 @@ fun MainScreen(
                 contentScale = ContentScale.FillHeight
             )
         }
-
-        Spacer(modifier = Modifier.height(16.dp))
     }
 
     if (screenState.isLoading) LoadingIndicator()

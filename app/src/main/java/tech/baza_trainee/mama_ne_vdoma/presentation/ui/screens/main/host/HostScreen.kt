@@ -12,6 +12,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
@@ -75,10 +76,10 @@ fun HostScreen(
         }
 
         val tabContents = listOf(
-            MainNavigationItem("Головна", R.drawable.ic_home),
-            MainNavigationItem("Групи", R.drawable.ic_group),
-            MainNavigationItem("Пошук", R.drawable.ic_search),
-            MainNavigationItem("Налаштування", R.drawable.ic_settings)
+            MainNavigationItem(stringResource(id = R.string.title_main_page), R.drawable.ic_home),
+            MainNavigationItem(stringResource(id = R.string.title_groups), R.drawable.ic_group),
+            MainNavigationItem(stringResource(id = R.string.title_search), R.drawable.ic_search),
+            MainNavigationItem(stringResource(id = R.string.title_settings), R.drawable.ic_settings)
         )
 
         val notificationsCount = screenState.notifications
@@ -88,7 +89,7 @@ fun HostScreen(
             topBar = {
                 if (screenState.currentRoute == MainScreenRoutes.Main) {
                     ToolbarWithAvatar(
-                        title = screenState.currentRoute.title,
+                        title = stringResource(id = screenState.currentRoute.title),
                         avatar = screenState.avatar,
                         showArrow = false,
                         showNotification = true,
@@ -98,7 +99,7 @@ fun HostScreen(
                     )
                 } else {
                     HeaderWithToolbar(
-                        title = screenState.currentRoute.title,
+                        title = stringResource(id = screenState.currentRoute.title),
                         avatar = screenState.avatar,
                         showNotification = notificationsCount != 0,
                         notificationCount = notificationsCount,

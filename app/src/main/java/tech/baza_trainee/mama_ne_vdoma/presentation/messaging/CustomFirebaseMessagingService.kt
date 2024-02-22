@@ -89,11 +89,11 @@ class CustomFirebaseMessagingService: FirebaseMessagingService() {
 
     private fun getMessage(messageType: String) =
         when(messageType) {
-            MessageType.JOIN.type -> "Вам надійшов запит на приєднання до групи"
-            MessageType.ACCEPT.type -> "Адміністратор схвалив Ваш запит на приєднання до групи"
-            MessageType.REJECT.type -> "Адміністратор відхилив Ваш запит на приєднання до групи"
-            MessageType.KICK.type -> "Адміністратор виключив Вас з групи"
-            MessageType.MAKE_ADMIN.type -> "Адміністратор передав Вам права керування групою"
+            MessageType.JOIN.type -> getString(R.string.fcm_message_join)
+            MessageType.ACCEPT.type -> getString(R.string.fcm_message_accept)
+            MessageType.REJECT.type -> getString(R.string.fcm_message_reject)
+            MessageType.KICK.type -> getString(R.string.fcm_message_kick)
+            MessageType.MAKE_ADMIN.type -> getString(R.string.fcm_message_make_admin)
             else -> throw IllegalArgumentException("Unknown message type: $messageType")
         }
 

@@ -16,12 +16,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import tech.baza_trainee.mama_ne_vdoma.domain.model.DayPeriod
 import tech.baza_trainee.mama_ne_vdoma.domain.model.Period
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.capitalize
 import java.time.DayOfWeek
 import java.time.format.TextStyle
 import java.util.Locale
@@ -51,7 +53,7 @@ fun ScheduleGroup(
                 modifier = Modifier
                     .padding(horizontal = 8.dp)
                     .weight(0.34f),
-                text = Period.WHOLE_DAY.period,
+                text = stringResource(id = Period.WHOLE_DAY.period).capitalize(),
                 textAlign = TextAlign.Center,
                 fontWeight = FontWeight.Bold
             )
@@ -59,7 +61,7 @@ fun ScheduleGroup(
                 modifier = Modifier
                     .padding(horizontal = 8.dp)
                     .weight(0.22f),
-                text = Period.MORNING.period,
+                text = stringResource(id = Period.MORNING.period).capitalize(),
                 textAlign = TextAlign.Center,
                 fontWeight = FontWeight.Bold
             )
@@ -67,7 +69,7 @@ fun ScheduleGroup(
                 modifier = Modifier
                     .padding(horizontal = 8.dp)
                     .weight(0.22f),
-                text = Period.NOON.period,
+                text = stringResource(id = Period.NOON.period).capitalize(),
                 textAlign = TextAlign.Center,
                 fontWeight = FontWeight.Bold
             )
@@ -75,7 +77,7 @@ fun ScheduleGroup(
                 modifier = Modifier
                     .padding(horizontal = 8.dp)
                     .weight(0.22f),
-                text = Period.AFTERNOON.period,
+                text = stringResource(id = Period.AFTERNOON.period).capitalize(),
                 textAlign = TextAlign.Center,
                 fontWeight = FontWeight.Bold
             )

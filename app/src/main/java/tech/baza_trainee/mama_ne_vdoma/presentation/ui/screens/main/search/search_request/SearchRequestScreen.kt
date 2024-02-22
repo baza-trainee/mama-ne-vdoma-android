@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -38,6 +37,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -45,6 +45,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ButtonText
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.LoadingIndicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.text_fields.OutlinedTextFieldWithError
@@ -85,26 +86,26 @@ fun SearchRequestScreen(
             .imePadding(),
         verticalArrangement = Arrangement.Top
     ) {
-        Spacer(modifier = Modifier.height(16.dp))
-
         Text(
-            modifier = Modifier.fillMaxWidth(),
-            text = "Знайти користувача",
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 16.dp),
+            text = stringResource(id = R.string.find_user),
             fontFamily = redHatDisplayFontFamily,
             fontWeight = FontWeight.Bold,
             fontSize = 20.sp
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
-
         OutlinedTextFieldWithError(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 8.dp),
             value = screenState.email,
-            label = "Email користувача",
-            hint = "Email",
+            label = stringResource(id = R.string.user_email),
+            hint = stringResource(id = R.string.email),
             onValueChange = { handleEvent(SearchRequestEvent.ValidateEmail(it)) },
             isError = screenState.emailValid == ValidField.INVALID,
-            errorText = "Ви ввели некоректний email",
+            errorText = stringResource(id = R.string.incorrect_email),
             leadingIcon = {
                 Icon(
                     imageVector = Icons.Default.Email,
@@ -120,12 +121,10 @@ fun SearchRequestScreen(
             )
         )
 
-        Spacer(modifier = Modifier.height(32.dp))
-
         Button(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 16.dp)
+                .padding(bottom = 16.dp, top = 48.dp)
                 .height(48.dp),
             onClick = {
                 handleEvent(SearchRequestEvent.SearchUser)
@@ -133,14 +132,14 @@ fun SearchRequestScreen(
             enabled = screenState.emailValid == ValidField.VALID
         ) {
             ButtonText(
-                text = "Розпочати пошук"
+                text = stringResource(id = R.string.start_search)
             )
         }
 
-        Spacer(modifier = Modifier.height(32.dp))
-
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 32.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Box(
@@ -151,7 +150,7 @@ fun SearchRequestScreen(
             )
             Text(
                 modifier = Modifier.padding(horizontal = 4.dp),
-                text = "чи",
+                text = stringResource(id = R.string.or),
                 fontSize = 14.sp,
             )
             Box(
@@ -162,19 +161,17 @@ fun SearchRequestScreen(
             )
         }
 
-        Spacer(modifier = Modifier.height(32.dp))
-
         Button(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 16.dp)
+                .padding(bottom = 16.dp, top = 48.dp)
                 .height(48.dp),
             onClick = {
                 handleEvent(SearchRequestEvent.SearchGroup)
             }
         ) {
             ButtonText(
-                text = "Шукати групу за локацією"
+                text = stringResource(id = R.string.search_group_by_location)
             )
         }
 
@@ -194,25 +191,22 @@ fun SearchRequestScreen(
                         tint = MaterialTheme.colorScheme.primary
                     )
 
-                    Spacer(modifier = Modifier.height(16.dp))
-
                     Text(
                         modifier = Modifier
                             .fillMaxWidth()
+                            .padding(top = 16.dp)
                             .padding(horizontal = 16.dp),
-                        text = "Користувача з заданими параметрами не знайдено",
+                        text = stringResource(id = R.string.user_not_found),
                         fontSize = 14.sp,
                         fontFamily = redHatDisplayFontFamily,
                         textAlign = TextAlign.Start
                     )
 
-                    Spacer(modifier = Modifier.height(24.dp))
-
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 16.dp)
-                            .padding(bottom = 16.dp),
+                            .padding(bottom = 16.dp, top = 24.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
@@ -224,7 +218,7 @@ fun SearchRequestScreen(
                                 ) {
                                     nothingFound = false
                                 },
-                            text = "Новий пошук",
+                            text = stringResource(id = R.string.action_search),
                             fontSize = 16.sp,
                             fontFamily = redHatDisplayFontFamily,
                             fontWeight = FontWeight.Bold,
@@ -242,7 +236,7 @@ fun SearchRequestScreen(
                                     nothingFound = false
                                     handleEvent(SearchRequestEvent.OnMain)
                                 },
-                            text = "На головну",
+                            text = stringResource(id = R.string.action_go_to_main),
                             fontSize = 16.sp,
                             fontFamily = redHatDisplayFontFamily,
                             fontWeight = FontWeight.Bold,

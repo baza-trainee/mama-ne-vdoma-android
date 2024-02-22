@@ -6,6 +6,7 @@ import androidx.navigation.navigation
 import com.google.android.gms.auth.api.identity.SignInClient
 import org.koin.androidx.compose.navigation.koinNavViewModel
 import org.koin.compose.koinInject
+import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.CreateUserRoute
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.Graphs
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.functions.asStateWithLifecycle
@@ -34,7 +35,7 @@ fun NavGraphBuilder.createUserNavGraph() {
             VerifyEmailScreen(
                 screenState = verifyEmailViewModel.viewState.asStateWithLifecycle(),
                 uiState = verifyEmailViewModel.uiState,
-                title = "Створити профіль",
+                title = R.string.title_create_user_profile,
                 handleEvent = { verifyEmailViewModel.handleEvent(it) }
             )
         }

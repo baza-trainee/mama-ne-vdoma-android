@@ -40,6 +40,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -61,10 +62,14 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.LogoutButtonTextCol
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 
 @Composable
-@Preview
 fun GroupInfoDesk(
     modifier: Modifier = Modifier,
-    group: GroupUiModel = GroupUiModel(),
+    group: GroupUiModel = GroupUiModel(
+        adminId = "0",
+        members = List(10) {
+            MemberUiModel(name = "Name $it", id = "$it")
+        }
+    ),
     currentUserId: String = "",
     onEdit: (String) -> Unit = {},
     onSelect: (String) -> Unit = {},
@@ -136,7 +141,7 @@ fun GroupInfoDesk(
                             contentDescription = "admin"
                         )
                         Text(
-                            text = "Ви адміністратор групи",
+                            text = stringResource(id = R.string.you_are_admin),
                             fontSize = 14.sp,
                             fontFamily = redHatDisplayFontFamily,
                             textAlign = TextAlign.Center
@@ -157,7 +162,7 @@ fun GroupInfoDesk(
 
         Text(
             modifier = Modifier.fillMaxWidth(),
-            text = "ID: ${group.id}",
+            text = stringResource(id = R.string.format_group_id, group.id),
             fontSize = 11.sp,
             fontFamily = redHatDisplayFontFamily
         )
@@ -290,16 +295,14 @@ fun GroupInfoDesk(
                     )
                 }
 
-                Spacer(modifier = Modifier.height(8.dp))
-
                 Text(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp),
                     text = group.description,
                     fontSize = 11.sp,
                     fontFamily = redHatDisplayFontFamily
                 )
-
-                Spacer(modifier = Modifier.height(8.dp))
 
                 group.members.sortedBy { it.name }.forEach {
                     if (it.id != currentUserId) {
@@ -315,41 +318,36 @@ fun GroupInfoDesk(
                 }
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
-
             ScheduleInfoDesk(
+                modifier = Modifier.padding(top = 16.dp),
                 schedule = group.schedule,
-                dayText = "Дні нагляду за дітьми",
-                periodText = "Час нагляду за дітьми"
+                dayText = stringResource(id = R.string.child_care_days_set),
+                periodText = stringResource(id = R.string.child_care_hours_set)
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
-
             if (isAdmin) {
-                Spacer(modifier = Modifier.height(16.dp))
-
                 Button(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .padding(top = 16.dp)
                         .height(48.dp),
                     onClick = { onEdit(group.id) }
                 ) {
                     Icon(
+                        modifier = Modifier.padding(end = 4.dp),
                         imageVector = Icons.Filled.Edit,
                         contentDescription = "edit_group"
                     )
-                    Spacer(modifier = Modifier.width(4.dp))
                     ButtonText(
-                        text = "Редагувати групу"
+                        text = stringResource(id = R.string.edit_group)
                     )
                 }
 
                 if (group.members.map { it.id }.filterNot { it == group.adminId }.isNotEmpty()) {
-                    Spacer(modifier = Modifier.height(16.dp))
-
                     Button(
                         modifier = Modifier
                             .fillMaxWidth()
+                            .padding(top = 16.dp)
                             .height(48.dp),
                         onClick = { showAdminDialog = true },
                         colors = ButtonDefaults.buttonColors(
@@ -368,7 +366,7 @@ fun GroupInfoDesk(
                         )
                         Spacer(modifier = Modifier.width(4.dp))
                         ButtonText(
-                            text = "Передати права адміністратора"
+                            text = stringResource(id = R.string.make_admin)
                         )
                     }
                 }
@@ -386,7 +384,7 @@ fun GroupInfoDesk(
                     )
                 ) {
                     ButtonText(
-                        text = "Видалити групу"
+                        text = stringResource(id = R.string.delete_group)
                     )
                 }
             }
@@ -409,7 +407,7 @@ fun GroupInfoDesk(
                 )
                 Spacer(modifier = Modifier.width(4.dp))
                 ButtonText(
-                    text = "Покинути групу"
+                    text = stringResource(id = R.string.leave_group)
                 )
             }
         } else if (!isAdmin) {
@@ -421,7 +419,7 @@ fun GroupInfoDesk(
                 Text(
                     modifier = Modifier
                         .padding(end = 4.dp),
-                    text = "Приєднатись до групи",
+                    text = stringResource(id = R.string.join_group),
                     fontSize = 11.sp,
                     fontFamily = redHatDisplayFontFamily
                 )
@@ -462,9 +460,9 @@ fun GroupInfoDesk(
 
 @Composable
 private fun MemberContent(
-    member: MemberUiModel = MemberUiModel(),
-    isMyGroup: Boolean = false,
-    isAdmin: Boolean = false,
+    member: MemberUiModel,
+    isMyGroup: Boolean,
+    isAdmin: Boolean,
     onRateUser: (String) -> Unit
 ) {
     Row(
@@ -535,4 +533,24 @@ private fun MemberContent(
             }
         }
     }
+}
+
+@Preview
+@Composable
+fun GroupIfoDeskPreview() {
+    GroupInfoDesk(
+        group = GroupUiModel(
+            adminId = "0",
+            members = List(10) {
+                MemberUiModel(name = "Name $it", id = "$it")
+            }
+        ),
+        currentUserId = "0",
+        onEdit = {},
+        onSelect = {},
+        onLeave = {},
+        onSwitchAdmin = { _, _ -> },
+        onDelete = {},
+        onRateUser = {}
+    )
 }

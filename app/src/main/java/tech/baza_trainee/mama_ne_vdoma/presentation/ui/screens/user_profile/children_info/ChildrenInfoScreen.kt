@@ -19,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -42,7 +43,7 @@ fun  ChildrenInfoScreen(
         topBar = {
             HeaderWithOptArrow(
                 modifier = Modifier.fillMaxWidth(),
-                title = "Анкета дитини",
+                title = stringResource(id = R.string.title_child_info),
                 onBack = onBack
             )
         }
@@ -57,10 +58,12 @@ fun  ChildrenInfoScreen(
             horizontalAlignment = Alignment.Start,
             verticalArrangement = Arrangement.Top
         ) {
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            LazyColumn {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
                 items(screenState.children) { child ->
                     ChildInfoDesk(
                         modifier = Modifier.fillMaxWidth(),
@@ -73,7 +76,6 @@ fun  ChildrenInfoScreen(
                             onHandleChildrenInfoEvent(ChildrenInfoEvent.DeleteChild(it))
                         }
                     )
-                    Spacer(modifier = Modifier.height(16.dp))
                 }
             }
 
@@ -93,7 +95,7 @@ fun  ChildrenInfoScreen(
                     tint = MaterialTheme.colorScheme.primary
                 )
                 Text(
-                    text = "Додати ще дитину",
+                    text = stringResource(id = R.string.add_more_children),
                     fontFamily = redHatDisplayFontFamily,
                     fontSize = 20.sp,
                     modifier = Modifier
@@ -112,7 +114,7 @@ fun  ChildrenInfoScreen(
                 onClick = onNext
             ) {
                 ButtonText(
-                    text = "Далі"
+                    text = stringResource(id = R.string.action_next)
                 )
             }
 

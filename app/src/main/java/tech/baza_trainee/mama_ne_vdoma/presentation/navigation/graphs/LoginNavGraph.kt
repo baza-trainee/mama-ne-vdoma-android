@@ -7,6 +7,7 @@ import androidx.navigation.navigation
 import com.google.android.gms.auth.api.identity.SignInClient
 import org.koin.androidx.compose.navigation.koinNavViewModel
 import org.koin.compose.koinInject
+import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.Graphs
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.LoginRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.functions.asStateWithLifecycle
@@ -65,7 +66,7 @@ fun NavGraphBuilder.loginNavGraph(
             VerifyEmailScreen(
                 screenState = verifyEmailViewModel.viewState.asStateWithLifecycle(),
                 uiState = verifyEmailViewModel.uiState,
-                title = "Відновлення паролю",
+                title = R.string.title_restore_password,
                 handleEvent = { verifyEmailViewModel.handleEvent(it) }
             )
         }

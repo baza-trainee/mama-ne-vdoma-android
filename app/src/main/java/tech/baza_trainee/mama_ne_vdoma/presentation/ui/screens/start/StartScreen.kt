@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -48,34 +49,35 @@ fun StartScreen(
     onLogin: () -> Unit
 ) {
     SurfaceWithSystemBars {
-
         val activity = LocalContext.current.findActivity()
-        val permission = Manifest.permission.POST_NOTIFICATIONS
-        var showRationale by rememberSaveable { mutableStateOf(false) }
 
-        val notificationsPermissionResultLauncher = rememberLauncherForActivityResult(
-            contract = ActivityResultContracts.RequestPermission(),
-            onResult = { isGranted ->
-                if (!isGranted) {
-                    if (activity.shouldShowRequestPermissionRationale(permission))
-                        showRationale = true
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            val permission = Manifest.permission.POST_NOTIFICATIONS
+            var showRationale by rememberSaveable { mutableStateOf(false) }
+
+            val notificationsPermissionResultLauncher = rememberLauncherForActivityResult(
+                contract = ActivityResultContracts.RequestPermission(),
+                onResult = { isGranted ->
+                    if (!isGranted) {
+                        if (activity.shouldShowRequestPermissionRationale(permission))
+                            showRationale = true
+                    }
                 }
-            }
-        )
+            )
 
-        LaunchedEffect(key1 = true) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+            LaunchedEffect(key1 = true) {
                 notificationsPermissionResultLauncher.launch(permission)
-        }
+            }
 
-        if (showRationale) {
-            PermissionDialog(
-                permissionTextProvider = NotificationsPermissionTextProvider(),
-                isPermanentlyDeclined = !ActivityCompat
-                    .shouldShowRequestPermissionRationale(activity, permission),
-                onDismiss = { showRationale = false },
-                onGranted = { showRationale = false },
-                onGoToAppSettingsClick = { activity.openAppSettings() })
+            if (showRationale) {
+                PermissionDialog(
+                    permissionTextProvider = NotificationsPermissionTextProvider(LocalContext.current),
+                    isPermanentlyDeclined = !ActivityCompat
+                        .shouldShowRequestPermissionRationale(activity, permission),
+                    onDismiss = { showRationale = false },
+                    onGranted = { showRationale = false },
+                    onGoToAppSettingsClick = { activity.openAppSettings() })
+            }
         }
 
         BackHandler { activity.finish() }
@@ -111,14 +113,17 @@ fun StartScreen(
                 onClick = onStart
             ) {
                 Text(
-                    text = "Почати",
+                    text = stringResource(id = R.string.action_start),
                     fontWeight = FontWeight.Bold,
                     fontFamily = redHatDisplayFontFamily
                 )
             }
 
             Text(
-                text = getTextWithUnderline("Вже є акаунт? ", "Увійти"),
+                text = getTextWithUnderline(
+                    stringResource(id = R.string.account_existed),
+                    stringResource(id = R.string.action_log_in)
+                ),
                 modifier = Modifier
                     .constrainAs(btnLogin) {
                         bottom.linkTo(parent.bottom)

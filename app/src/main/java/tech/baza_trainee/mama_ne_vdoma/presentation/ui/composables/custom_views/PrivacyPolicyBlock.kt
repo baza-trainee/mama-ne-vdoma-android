@@ -14,9 +14,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.functions.getTextWithUnderline
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 
@@ -30,7 +32,7 @@ fun PrivacyPolicyBlock(
     val uriHandler = LocalUriHandler.current
 
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.Top
     ) {
         Checkbox(
@@ -42,7 +44,7 @@ fun PrivacyPolicyBlock(
             verticalArrangement = Arrangement.Top
         ) {
             Text(
-                text = "Даю згоду на обробку моїх персональних даних, а також ознайомлена та погоджуюсь із:",
+                text = stringResource(id = R.string.user_privacy_agreement),
                 fontSize = 14.sp,
                 fontFamily = redHatDisplayFontFamily,
                 lineHeight = 18.sp
@@ -54,12 +56,12 @@ fun PrivacyPolicyBlock(
                 modifier = Modifier
                     .padding(vertical = 6.dp)
                     .clickable {
-                    val uri = "https://mama-ne-vdoma.online/privacy"
-                    uriHandler.openUri(uri)
-                },
+                        val uri = "https://mama-ne-vdoma.online/privacy"
+                        uriHandler.openUri(uri)
+                    },
                 text = getTextWithUnderline(
-                    simpleText = "-   ",
-                    underlinedText = "Політикою конфіденційності",
+                    simpleText = stringResource(id = R.string.list_tab),
+                    underlinedText = stringResource(id = R.string.privacy_policy),
                     isBold = true
                 ),
                 fontSize = 14.sp,
@@ -70,12 +72,12 @@ fun PrivacyPolicyBlock(
                 modifier = Modifier
                     .padding(vertical = 6.dp)
                     .clickable {
-                    val uri = "https://mama-ne-vdoma.online/terms"
-                    uriHandler.openUri(uri)
-                },
+                        val uri = "https://mama-ne-vdoma.online/terms"
+                        uriHandler.openUri(uri)
+                    },
                 text = getTextWithUnderline(
-                    simpleText = "-   ",
-                    underlinedText = "Умовами використання мобільного застосунку “Мама-не-вдома”",
+                    simpleText = stringResource(id = R.string.list_tab),
+                    underlinedText = stringResource(id = R.string.user_agreement),
                     isBold = true
                 ),
                 fontSize = 14.sp,
@@ -86,12 +88,12 @@ fun PrivacyPolicyBlock(
                 modifier = Modifier
                     .padding(vertical = 6.dp)
                     .clickable {
-                    val uri = "https://mama-ne-vdoma.online/refusal"
-                    uriHandler.openUri(uri)
-                },
+                        val uri = "https://mama-ne-vdoma.online/refusal"
+                        uriHandler.openUri(uri)
+                    },
                 text = getTextWithUnderline(
-                    simpleText = "-   ",
-                    underlinedText = "Відмовою від відповідальності",
+                    simpleText = stringResource(id = R.string.list_tab),
+                    underlinedText = stringResource(id = R.string.responsibility_refusal),
                     isBold = true
                 ),
                 fontSize = 14.sp,

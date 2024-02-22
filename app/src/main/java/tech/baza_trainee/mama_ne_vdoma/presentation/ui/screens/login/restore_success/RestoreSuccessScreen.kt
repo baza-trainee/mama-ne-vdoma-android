@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import tech.baza_trainee.mama_ne_vdoma.R
@@ -27,10 +28,8 @@ fun RestoreSuccessScreen(goToMain: () -> Unit) {
         topBar = {
             HeaderWithOptArrow(
                 modifier = Modifier.fillMaxWidth(),
-                title = "Пароль збережено",
-                info = "Ви успішно змінили свій пароль. " +
-                        "Будь ласка, використовуйте цей новий пароль " +
-                        "при вході в додаток"
+                title = stringResource(id = R.string.password_saved),
+                info = stringResource(id = R.string.password_saved_info)
             )
         }
     ) { paddingValues ->
@@ -61,7 +60,7 @@ fun RestoreSuccessScreen(goToMain: () -> Unit) {
                 onClick = goToMain
             ) {
                 ButtonText(
-                    text = "На головну сторінку"
+                    text = stringResource(id = R.string.action_go_to_main)
                 )
             }
         }

@@ -10,7 +10,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.LoadingIndicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.VerifyEmail
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.verify_email.VerifyEmailEvent
@@ -40,12 +42,12 @@ fun VerifyNewEmailScreen(
         }
 
         VerifyEmailUiState.OnPasswordChanged -> {
-            title ="Пароль змінено успішно!"
+            title = stringResource(id = R.string.password_changed)
             showSuccessDialog = true
             handleEvent(VerifyEmailEvent.ResetUiState)
         }
         VerifyEmailUiState.OnEmailChanged -> {
-            title ="Email змінено успішно!"
+            title = stringResource(id = R.string.email_changed)
             showSuccessDialog = true
             handleEvent(VerifyEmailEvent.ResetUiState)
         }

@@ -25,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -33,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ButtonText
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.CountryCodePicker
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.LoadingIndicator
@@ -64,7 +66,7 @@ fun UserInfoScreen(
             UserInfoUiState.OnAvatarError -> {
                 Toast.makeText(
                     context,
-                    "Аватарка має розмір більше 1МБ. Будь ласка, оберіть інше фото і повторіть",
+                    context.getString(R.string.photo_size_error),
                     Toast.LENGTH_LONG
                 ).show()
                 handleEvent(UserInfoEvent.ResetUiState)
@@ -84,17 +86,16 @@ fun UserInfoScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 16.dp),
-                text = "Заповнення профілю",
+                text = stringResource(id = R.string.title_fill_profile),
                 fontSize = 20.sp,
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.onBackground,
                 fontFamily = redHatDisplayFontFamily
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
-
             Box(
                 modifier = Modifier
+                    .padding(top = 16.dp)
                     .height(192.dp)
                     .width(192.dp),
                 contentAlignment = Alignment.Center
@@ -118,34 +119,34 @@ fun UserInfoScreen(
                 )
             }
 
-            Spacer(modifier = Modifier.height(32.dp))
-
             OutlinedTextFieldWithError(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 32.dp),
                 value = screenState.name,
-                label = "Введіть своє ім'я (нікнейм)",
-                hint = "Ім'я (нікнейм)",
+                label = stringResource(id = R.string.enter_your_name),
+                hint = stringResource(id = R.string.nickname),
                 onValueChange = { handleEvent(UserInfoEvent.ValidateUserName(it)) },
                 isError = screenState.nameValid == ValidField.INVALID,
-                errorText = "Ви ввели некоректнe ім'я",
+                errorText = stringResource(id = R.string.incorrect_name),
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Text,
                     imeAction = ImeAction.Next
                 )
             )
-
-            Spacer(modifier = Modifier.height(4.dp))
-
             Text(
-                modifier = Modifier.fillMaxWidth(),
-                text = "Ваше ім’я повинне складатись із 2-18 символів і може містити букви та цифри, а також пробіли та дефіси",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 4.dp),
+                text = stringResource(id = R.string.name_rule_hint),
                 textAlign = TextAlign.Start,
                 fontFamily = redHatDisplayFontFamily
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
-
             CountryCodePicker(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp),
                 currentCode = screenState.code,
                 currentPhone = screenState.phone,
                 isPhoneValid = screenState.phoneValid,
@@ -172,7 +173,7 @@ fun UserInfoScreen(
                         screenState.code.isNotEmpty()
             ) {
                 ButtonText(
-                    text = "Далі"
+                    text = stringResource(id = R.string.action_next)
                 )
             }
         }

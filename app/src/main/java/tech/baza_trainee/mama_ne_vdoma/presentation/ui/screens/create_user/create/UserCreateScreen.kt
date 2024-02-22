@@ -31,6 +31,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -40,6 +41,7 @@ import androidx.compose.ui.unit.sp
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.SignInClient
 import tech.baza_trainee.mama_ne_vdoma.BuildConfig
+import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ButtonText
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.LoadingIndicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.PrivacyPolicyBlock
@@ -83,8 +85,11 @@ fun UserCreateScreen(
                     val credential = oneTapClient?.getSignInCredentialFromIntent(it.data)
                     handleEvent(UserCreateEvent.OnGoogleLogin(credential?.googleIdToken.orEmpty()))
                 } catch (exc: Exception) {
-                    Toast.makeText(context, "Немає даних для авторизації", Toast.LENGTH_LONG)
-                        .show()
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.no_data_for_auth),
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
             }
 
@@ -108,8 +113,11 @@ fun UserCreateScreen(
                             .build()
                     )
                 } catch (exc: Exception) {
-                    Toast.makeText(context, "Авторизація неможлива", Toast.LENGTH_LONG)
-                        .show()
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.auth_impossible),
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
             }
             googleLogin = false
@@ -124,28 +132,28 @@ fun UserCreateScreen(
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(16.dp))
-
             Text(
                 modifier = Modifier
-                    .fillMaxWidth(),
-                text = "Створити профіль",
+                    .fillMaxWidth()
+                    .padding(top = 16.dp),
+                text = stringResource(id = R.string.title_create_user_profile),
                 fontSize = 20.sp,
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.onBackground,
                 fontFamily = redHatDisplayFontFamily
             )
 
-            Spacer(modifier = Modifier.height(24.dp))
 
             OutlinedTextFieldWithError(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 24.dp),
                 value = screenState.email,
-                hint = "Email",
-                label = "Введіть свій email",
+                hint = stringResource(id = R.string.email),
+                label = stringResource(id = R.string.enter_your_email),
                 onValueChange = { handleEvent(UserCreateEvent.ValidateEmail(it)) },
                 isError = screenState.emailValid == ValidField.INVALID,
-                errorText = "Ви ввели некоректний email",
+                errorText = stringResource(id = R.string.incorrect_email),
                 leadingIcon = {
                     Icon(
                         imageVector = Icons.Default.Email,
@@ -157,54 +165,51 @@ fun UserCreateScreen(
                     imeAction = ImeAction.Next
                 )
             )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
             PasswordTextFieldWithError(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp),
                 password = screenState.password,
                 onValueChange = { handleEvent(UserCreateEvent.ValidatePassword(it)) },
                 isError = screenState.passwordValid == ValidField.INVALID,
                 imeAction = ImeAction.Next
             )
 
-            Spacer(modifier = Modifier.height(2.dp))
-
             Text(
-                modifier = Modifier.fillMaxWidth(),
-                text =
-                "Ваш пароль повинен складатись з 6-24 символів і обов’язково містити великі та малі латинські букви, цифри, спеціальні знаки",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 2.dp),
+                text = stringResource(id = R.string.password_rule_hint),
                 fontSize = 14.sp,
                 fontFamily = redHatDisplayFontFamily,
                 lineHeight = 18.sp
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
-
             PasswordTextFieldWithError(
-                modifier = Modifier.fillMaxWidth(),
-                label = "Повторіть свій пароль",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp),
+                label = stringResource(id = R.string.repeat_password),
                 password = screenState.confirmPassword,
                 onValueChange = { handleEvent(UserCreateEvent.ValidateConfirmPassword(it)) },
                 isError = screenState.confirmPasswordValid == ValidField.INVALID,
-                errorText = "Паролі не співпадають",
+                errorText = stringResource(id = R.string.passwords_do_not_match),
                 imeAction = ImeAction.Done,
                 onImeActionPerformed = { handleEvent(UserCreateEvent.RegisterUser) }
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
-
             PrivacyPolicyBlock(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp),
                 isChecked = screenState.isPolicyChecked,
                 onCheckedChanged = { handleEvent(UserCreateEvent.UpdatePolicyCheck(it)) }
             )
 
-            Spacer(modifier = Modifier.height(24.dp))
-
             Button(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .padding(top = 24.dp)
                     .height(48.dp),
                 onClick = {
                     handleEvent(UserCreateEvent.RegisterUser)
@@ -212,7 +217,7 @@ fun UserCreateScreen(
                 enabled = screenState.isAllConform
             ) {
                 ButtonText(
-                    text = "Зареєструватись"
+                    text = stringResource(id = R.string.action_sign_up)
                 )
             }
 
@@ -245,7 +250,12 @@ fun UserCreateScreen(
 
             SocialLoginBlock(
                 modifier = Modifier.fillMaxWidth(),
-                textForBottomButton = { getTextWithUnderline("Вже є акаунт? ", "Увійти") },
+                textForBottomButton = {
+                    getTextWithUnderline(
+                        stringResource(id = R.string.account_existed),
+                        stringResource(id = R.string.action_log_in)
+                    )
+                },
                 onGoogleLogin = { googleLogin = true },
                 onAction = { handleEvent(UserCreateEvent.OnLogin) }
             )

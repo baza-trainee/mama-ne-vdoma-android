@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -50,7 +51,7 @@ fun ImageSourceDialog(
                     .padding(top = 16.dp)
                     .padding(horizontal = 16.dp)
                     .fillMaxWidth(),
-                text = "Обрати фото",
+                text = stringResource(id = R.string.choose_image),
                 fontSize = 24.sp,
                 textAlign = TextAlign.Start,
                 fontFamily = redHatDisplayFontFamily
@@ -60,7 +61,7 @@ fun ImageSourceDialog(
                     .padding(top = 16.dp)
                     .padding(horizontal = 16.dp)
                     .fillMaxWidth(),
-                text = "Оберіть спосіб завантаження файлу",
+                text = stringResource(id = R.string.choose_source),
                 fontSize = 14.sp,
                 textAlign = TextAlign.Start,
                 fontFamily = redHatDisplayFontFamily
@@ -82,7 +83,7 @@ fun ImageSourceDialog(
                         .padding(start = 8.dp)
                         .weight(1f)
                         .fillMaxWidth(),
-                    text = "Камера",
+                    text = stringResource(id = R.string.choose_camera),
                     fontSize = 16.sp,
                     textAlign = TextAlign.Start,
                     fontFamily = redHatDisplayFontFamily
@@ -113,7 +114,7 @@ fun ImageSourceDialog(
                         .padding(start = 8.dp)
                         .weight(1f)
                         .fillMaxWidth(),
-                    text = "Галерея",
+                    text = stringResource(id = R.string.choose_gallery),
                     fontSize = 16.sp,
                     textAlign = TextAlign.Start,
                     fontFamily = redHatDisplayFontFamily

@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -24,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -58,19 +58,19 @@ fun ImageCropScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 16.dp),
-                text = "Обрізати фото",
+                text = stringResource(id = R.string.crop_photo),
                 fontSize = 20.sp,
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.onBackground,
                 fontFamily = redHatDisplayFontFamily
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
             var crop by remember { mutableStateOf(false) }
 
             ImageCropper(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .padding(top = 8.dp)
                     .weight(1f),
                 imageBitmap = imageForCrop,
                 contentDescription = "Image Cropper",
@@ -87,11 +87,9 @@ fun ImageCropScreen(
                 }
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
-
             Row(
                 modifier = Modifier
-                    .padding(vertical = 16.dp)
+                    .padding(bottom = 16.dp, top = 32.dp)
                     .fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceEvenly
@@ -104,13 +102,13 @@ fun ImageCropScreen(
                             .height(32.dp)
                             .width(32.dp),
                         painter = painterResource(id = R.drawable.ic_rotate_right),
-                        contentDescription = "Поворот за годинниковою стрілкою"
+                        contentDescription = stringResource(id = R.string.rotate_photo_right)
                     )
                 }
 
                 Text(
                     modifier = Modifier.padding(horizontal = 16.dp),
-                    text = "Поворот зображення",
+                    text = stringResource(id = R.string.rotate_photo),
                     fontSize = 16.sp,
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.onBackground,
@@ -125,16 +123,14 @@ fun ImageCropScreen(
                             .height(32.dp)
                             .width(32.dp),
                         painter = painterResource(id = R.drawable.ic_rotate_left),
-                        contentDescription = "Поворот проти годинникової стрілки"
+                        contentDescription = stringResource(id = R.string.rotate_photo_left)
                     )
                 }
             }
 
-            Spacer(modifier = Modifier.height(32.dp))
-
             Button(
                 modifier = Modifier
-                    .padding(vertical = 16.dp)
+                    .padding(bottom = 16.dp, top = 48.dp)
                     .fillMaxWidth()
                     .height(48.dp),
                 onClick = {
@@ -142,7 +138,7 @@ fun ImageCropScreen(
                 }
             ) {
                 ButtonText(
-                    text = "Зберегти"
+                    text = stringResource(id = R.string.action_save)
                 )
             }
         }

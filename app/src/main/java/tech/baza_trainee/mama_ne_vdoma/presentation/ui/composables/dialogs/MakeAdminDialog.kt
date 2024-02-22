@@ -22,10 +22,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ButtonText
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.GroupUiModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
@@ -49,7 +51,7 @@ fun MakeAdminDialog(
             var selectedName by remember { mutableStateOf("") }
 
             Text(
-                text = "Передати права адміністратора",
+                text = stringResource(id = R.string.make_admin),
                 fontSize = 18.sp,
                 fontFamily = redHatDisplayFontFamily,
                 fontWeight = FontWeight.Bold
@@ -96,7 +98,7 @@ fun MakeAdminDialog(
                 enabled = selectedId != ""
             ) {
                 ButtonText(
-                    text = "Передати права"
+                    text = stringResource(id = R.string.action_make_admin)
                 )
             }
         }

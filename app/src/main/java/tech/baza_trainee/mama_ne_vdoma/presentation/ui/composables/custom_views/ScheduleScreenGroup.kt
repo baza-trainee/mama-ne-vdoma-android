@@ -15,8 +15,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.domain.model.Period
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.text_fields.OutlinedTextFieldWithError
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.schedule.ScheduleViewState
@@ -55,12 +57,12 @@ fun ScheduleScreenGroup(
             OutlinedTextFieldWithError(
                 modifier = Modifier.fillMaxWidth(),
                 value = screenState.comment,
-                label = "Нотатка",
-                hint = "Введіть будь-які відомості, які Ви вважаєте важливими/корисними для інших користувачів",
+                label = stringResource(id = R.string.note),
+                hint = stringResource(id = R.string.note_hint),
                 onValueChange = { onUpdateComment(it) },
                 minLines = 3,
                 maxLines = 3,
-                errorText = "Нотатка не повинна бути довше 1000 символів",
+                errorText = stringResource(id = R.string.note_error),
                 isError = screenState.commentValid == ValidField.INVALID
             )
 
@@ -68,7 +70,7 @@ fun ScheduleScreenGroup(
                 modifier = Modifier
                     .wrapContentWidth()
                     .align(Alignment.End),
-                text = "до 1000 символів",
+                text = stringResource(id = R.string.note_text_length),
                 fontFamily = redHatDisplayFontFamily,
                 fontSize = 12.sp,
                 color = GrayText
@@ -85,7 +87,7 @@ fun ScheduleScreenGroup(
             onClick = onNext
         ) {
             ButtonText(
-                text = "Далі"
+                text = stringResource(id = R.string.action_next)
             )
         }
     }

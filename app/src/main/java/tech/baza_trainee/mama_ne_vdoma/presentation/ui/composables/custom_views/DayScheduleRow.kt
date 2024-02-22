@@ -2,10 +2,10 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views
 
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
@@ -15,8 +15,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.domain.model.Period
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.short
@@ -24,14 +26,12 @@ import java.time.DayOfWeek
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DayScheduleRow(
+fun ColumnScope.DayScheduleRow(
     daysOfWeek: Set<DayOfWeek>,
     period: Period,
     dayText: String,
     periodText: String
 ) {
-
-    val localModifier = Modifier
 
     val chipColors = FilterChipDefaults.filterChipColors(
         containerColor = MaterialTheme.colorScheme.surface,
@@ -54,7 +54,7 @@ fun DayScheduleRow(
     )
 
     Row(
-        modifier = localModifier
+        modifier = Modifier
             .horizontalScroll(rememberScrollState())
             .fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -146,17 +146,15 @@ fun DayScheduleRow(
         )
     }
 
-    Spacer(modifier = localModifier.height(8.dp))
-
     Text(
+        modifier = Modifier.padding(top = 8.dp),
         text = periodText,
         fontFamily = redHatDisplayFontFamily,
         fontSize = 14.sp,
     )
 
     Row(
-        modifier = localModifier
-            .fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -166,7 +164,7 @@ fun DayScheduleRow(
             colors = chipColors,
             label =  {
                 Text(
-                    text = "ранок",
+                    text = stringResource(id = R.string.morning),
                     fontFamily = redHatDisplayFontFamily,
                     fontSize = 14.sp,
                 )
@@ -178,7 +176,7 @@ fun DayScheduleRow(
             colors = chipColors,
             label =  {
                 Text(
-                    text = "обід",
+                    text = stringResource(id = R.string.noon),
                     fontFamily = redHatDisplayFontFamily,
                     fontSize = 14.sp,
                 )
@@ -190,7 +188,7 @@ fun DayScheduleRow(
             colors = chipColors,
             label =  {
                 Text(
-                    text = "вечір",
+                    text = stringResource(id = R.string.evening),
                     fontFamily = redHatDisplayFontFamily,
                     fontSize = 14.sp,
                 )

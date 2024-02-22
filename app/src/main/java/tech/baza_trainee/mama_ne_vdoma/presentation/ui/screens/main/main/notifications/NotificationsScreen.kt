@@ -36,12 +36,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.domain.model.MessageType
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.cards.AdminJoinRequestCard
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.cards.MyRequestCard
@@ -76,7 +78,11 @@ fun NotificationScreen(
 
     var showAcceptDialog by rememberSaveable { mutableStateOf(false) }
 
-    val tabs = listOf("Мої запити", "Вхідні запити", "Сповіщення")
+    val tabs = listOf(
+        stringResource(id = R.string.tab_my_requests),
+        stringResource(id = R.string.tab_join_requests),
+        stringResource(id = R.string.title_notifications)
+    )
     val pagerState = rememberPagerState(initialPage = 0, pageCount = { tabs.size })
     var currentPage by rememberSaveable { mutableIntStateOf(0) }
 
@@ -305,7 +311,7 @@ private fun Notifications(
                             .clickable {
                                 handleEvent(NotificationsEvent.ClearNotifications)
                             },
-                        text = "Видалити всі сповіщення",
+                        text = stringResource(id = R.string.action_delete_notifications),
                         fontSize = 16.sp,
                         fontFamily = redHatDisplayFontFamily,
                         fontWeight = FontWeight.Bold,

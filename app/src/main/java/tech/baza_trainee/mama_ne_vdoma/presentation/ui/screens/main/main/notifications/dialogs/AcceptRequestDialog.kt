@@ -4,9 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -21,10 +19,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -48,29 +48,27 @@ fun AcceptRequestDialog(
                 tint = MaterialTheme.colorScheme.primary
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
-
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .padding(top = 16.dp)
                     .padding(horizontal = 16.dp),
-                text = "Ви погодили запит на приєднання до групи \"$groupName\"",
+                text = stringResource(id = R.string.join_request_accepted, groupName),
                 fontSize = 14.sp,
                 fontFamily = redHatDisplayFontFamily,
                 textAlign = TextAlign.Start
             )
 
-            Spacer(modifier = Modifier.height(24.dp))
-
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .padding(top = 24.dp)
                     .align(Alignment.End)
                     .clickable(
                         indication = null,
                         interactionSource = remember { MutableInteractionSource() }
                     ) { onDismiss() },
-                text = "Закрити",
+                text = stringResource(id = R.string.action_close),
                 fontSize = 16.sp,
                 fontFamily = redHatDisplayFontFamily,
                 fontWeight = FontWeight.Bold,

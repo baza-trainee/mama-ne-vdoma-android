@@ -3,14 +3,13 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.standalone.
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,11 +21,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.domain.model.ChildEntity
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.cards.ChildCard
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ButtonText
@@ -50,7 +51,10 @@ fun ChooseChildStandaloneScreen(
         topBar = {
             HeaderWithToolbar(
                 modifier = Modifier.fillMaxWidth(),
-                title = if (isForSearch) "Пошук групи" else "Створення групи",
+                title = if (isForSearch)
+                    stringResource(id = R.string.title_group_search)
+                else
+                    stringResource(id = R.string.title_create_group),
                 avatar = screenState.avatar,
                 showNotification = true,
                 notificationCount = screenState.notifications,
@@ -83,12 +87,14 @@ fun ChooseChildStandaloneScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
-
-            Spacer(modifier = Modifier.height(16.dp))
-
             Text(
-                modifier = Modifier.fillMaxWidth(),
-                text = if (isForSearch) "Для кого шукаємо групу?" else "Для кого створюємо групу?",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp),
+                text = if (isForSearch)
+                    stringResource(id = R.string.search_group_for)
+                else
+                    stringResource(id = R.string.create_group_for),
                 fontFamily = redHatDisplayFontFamily,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
@@ -99,12 +105,10 @@ fun ChooseChildStandaloneScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f)
-                    .padding(vertical = 16.dp)
+                    .padding(vertical = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                itemsIndexed(screenState.children) { index, child ->
-                    if (index != 0)
-                        Spacer(modifier = Modifier.height(8.dp))
-
+                items(screenState.children) { child ->
                     ChildCard(
                         modifier = Modifier.fillMaxWidth(),
                         child = child,
@@ -123,7 +127,7 @@ fun ChooseChildStandaloneScreen(
                 enabled = selectedChild != null
             ) {
                 ButtonText(
-                    text = "Далі"
+                    text = stringResource(id = R.string.action_next)
                 )
             }
         }

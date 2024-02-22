@@ -11,10 +11,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.GroupUiModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 
@@ -34,7 +36,7 @@ fun JoinedItem(
     ) {
         Text(
             modifier = Modifier.fillMaxWidth(),
-            text = "Вам надійшов запит на приєднання до групи ”${group.name}” (ID - ${group.id}).",
+            text = stringResource(id = R.string.new_join_request_info, group.name, group.id),
             fontSize = 14.sp,
             fontFamily = redHatDisplayFontFamily
         )
@@ -42,9 +44,9 @@ fun JoinedItem(
         Text(
             modifier = Modifier
                 .padding(horizontal = 8.dp)
-                .clickable{ onClick() }
+                .clickable { onClick() }
                 .align(Alignment.End),
-            text = "Переглянути",
+            text = stringResource(id = R.string.action_view),
             fontSize = 16.sp,
             fontFamily = redHatDisplayFontFamily,
             fontWeight = FontWeight.Bold,

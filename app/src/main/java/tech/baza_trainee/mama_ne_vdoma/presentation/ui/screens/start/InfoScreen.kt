@@ -32,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -51,9 +52,9 @@ fun InfoScreen(onCreate: () -> Unit) {
     val scrollCoroutineScope = rememberCoroutineScope()
 
     val pageTextContent = listOf(
-        "Тобі треба йти на роботу? Ти шукаєш дитячий садочок для своїх дітей, але більшість недоступні для тебе або занадто дорогі?",
-        "Ми допоможемо тобі знайти поруч мам з такими ж проблемами! Організуйте своїх дітей у дитячі групи та по черзі доглядайте за ними у вільний час!",
-        "Насолоджуйся своєю роботою, поки твої діти щасливі та у безпеці!"
+        stringResource(id = R.string.info_screen_hint_1),
+        stringResource(id = R.string.info_screen_hint_2),
+        stringResource(id = R.string.info_screen_hint_3)
     )
 
     val pagerImageContent = listOf(
@@ -99,7 +100,7 @@ fun InfoScreen(onCreate: () -> Unit) {
                         contentScale = ContentScale.FillHeight
                     )
                     Text(
-                        text = "Няня у твоєму телефоні",
+                        text = stringResource(id = R.string.title_info_screen),
                         color = MaterialTheme.colorScheme.primary,
                         modifier = Modifier
                             .fillMaxWidth()
@@ -185,7 +186,7 @@ fun InfoScreen(onCreate: () -> Unit) {
                                     bottom.linkTo(parent.bottom)
                                     end.linkTo(btnNext.start, 16.dp)
                                 },
-                            text = "Пропустити",
+                            text = stringResource(id = R.string.action_skip),
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.primary,
                             fontFamily = redHatDisplayFontFamily
@@ -231,7 +232,7 @@ fun InfoScreen(onCreate: () -> Unit) {
                         onClick = onCreate
                     ) {
                         Text(
-                            text = "Почати",
+                            text = stringResource(id = R.string.action_start),
                             fontWeight = FontWeight.Bold,
                             fontFamily = redHatDisplayFontFamily
                         )

@@ -30,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -58,7 +59,7 @@ fun FullInfoScreen(
         topBar = {
             HeaderWithOptArrow(
                 modifier = Modifier.fillMaxWidth(),
-                title = "Дані Вашого профілю",
+                title = stringResource(id = R.string.title_your_profile),
                 onBack = { handleEvent(FullInfoEvent.OnBack) }
             )
         }
@@ -86,12 +87,11 @@ fun FullInfoScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
-
-            Spacer(modifier = Modifier.height(16.dp))
-
             Text(
-                modifier = Modifier.fillMaxWidth(),
-                text = "Ви:",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp),
+                text = stringResource(id = R.string.you),
                 fontFamily = redHatDisplayFontFamily,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold
@@ -108,8 +108,8 @@ fun FullInfoScreen(
             if (screenState.isUserInfoFilled)
                 ParentInfoDesk(
                     modifier = Modifier.fillMaxWidth(),
-                    name = screenState.name.ifEmpty { "Введіть Ваше ім'я" },
-                    address = screenState.address.ifEmpty { "Вкажіть Вашу адресу" },
+                    name = screenState.name.ifEmpty { stringResource(id = R.string.enter_your_name) },
+                    address = screenState.address.ifEmpty { stringResource(id = R.string.enter_your_address) },
                     avatar = screenState.userAvatar,
                     schedule = screenState.schedule,
                     onEdit = { handleEvent(FullInfoEvent.EditUser) },
@@ -129,18 +129,18 @@ fun FullInfoScreen(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = "Натисніть тут, щоб заповнити Ваш профіль",
+                        text = stringResource(id = R.string.fill_your_profile),
                         fontFamily = redHatDisplayFontFamily,
                         fontSize = 20.sp,
                         textAlign = TextAlign.Center
                     )
                 }
 
-            Spacer(modifier = Modifier.height(32.dp))
-
             Text(
-                modifier = Modifier.fillMaxWidth(),
-                text = "Діти:",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 32.dp),
+                text = stringResource(id = R.string.children),
                 fontFamily = redHatDisplayFontFamily,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold
@@ -161,15 +161,14 @@ fun FullInfoScreen(
                 )
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
-
             val animateAddChildBackground = !screenState.isChildInfoFilled &&
                     screenState.isUserInfoFilled
 
             Row(
                 modifier = Modifier
-                    .height(32.dp)
                     .fillMaxWidth()
+                    .padding(top = 16.dp)
+                    .height(32.dp)
                     .background(
                         color = if (!animateAddChildBackground) MaterialTheme.colorScheme.background
                         else color
@@ -187,8 +186,10 @@ fun FullInfoScreen(
                     else SlateGray
                 )
                 Text(
-                    text = if (screenState.isChildInfoFilled) "Додати ще дитину"
-                    else "Додати дитину",
+                    text = if (screenState.isChildInfoFilled)
+                        stringResource(id = R.string.add_more_children)
+                    else
+                        stringResource(id = R.string.add_child),
                     fontFamily = redHatDisplayFontFamily,
                     fontSize = 20.sp,
                     modifier = Modifier
@@ -210,7 +211,7 @@ fun FullInfoScreen(
                 enabled = screenState.isUserInfoFilled && screenState.isChildInfoFilled
             ) {
                 ButtonText(
-                    text = "Підтвердити"
+                    text = stringResource(id = R.string.actiom_confirm)
                 )
             }
 

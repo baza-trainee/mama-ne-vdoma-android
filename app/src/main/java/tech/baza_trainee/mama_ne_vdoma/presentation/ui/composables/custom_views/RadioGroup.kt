@@ -18,7 +18,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFa
 fun <T> RadioGroup(
     modifier: Modifier = Modifier,
     radioGroupOptions: List<T>,
-    getText: (T) -> String,
+    getText: @Composable (T) -> String,
     selected: T? = null,
     onSelectedChange: (T) -> Unit = { }
 ) {

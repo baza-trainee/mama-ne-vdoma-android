@@ -2,7 +2,6 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.use
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -28,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
@@ -57,9 +57,8 @@ fun UserLocationScreen(
         topBar = {
             HeaderWithOptArrow(
                 modifier = Modifier.fillMaxWidth(),
-                title = "Ваше місцезнаходження",
-                info = "Будь ласка, оберіть ваше місцерозташування," +
-                        " щоб ви могли підібрати найближчі групи до вас"
+                title = stringResource(id = R.string.your_current_location),
+                info = stringResource(id = R.string.your_current_location_hint)
             )
         }
     ) { paddingValues ->
@@ -78,13 +77,13 @@ fun UserLocationScreen(
 
             LocationUiState.AddressNotChecked -> {
                 showAddressDialog = true
-                dialogTitle = "Ви не перевірили вказану адресу"
+                dialogTitle = stringResource(id = R.string.address_not_checked_info)
                 handleEvent(UserLocationEvent.ResetUiState)
             }
 
             LocationUiState.AddressNotFound -> {
                 showAddressDialog = true
-                dialogTitle = "Вказано неіснуючу адресу"
+                dialogTitle = stringResource(id = R.string.address_not_found)
                 handleEvent(UserLocationEvent.ResetUiState)
             }
         }
@@ -110,12 +109,10 @@ fun UserLocationScreen(
             ) {
                 Marker(
                     state = MarkerState(position = screenState.currentLocation),
-                    title = "Ви тут",
-                    snippet = "поточне місцезнаходження"
+                    title = stringResource(id = R.string.you_are_here),
+                    snippet = stringResource(id = R.string.current_location)
                 )
             }
-
-            Spacer(modifier = Modifier.height(8.dp))
 
             val color = infiniteColorAnimation(
                 initialValue = Color.White,
@@ -130,9 +127,10 @@ fun UserLocationScreen(
                 },
                 modifier = Modifier
                     .fillMaxWidth()
+                    .padding(top = 8.dp)
                     .padding(horizontal = 16.dp),
-                label = "Введіть Вашу адресу",
-                hint = "Адреса",
+                label = stringResource(id = R.string.enter_your_address),
+                hint = stringResource(id = R.string.address),
                 trailingIcon = {
                     IconButton(
                         onClick = { handleEvent(UserLocationEvent.GetLocationFromAddress) },
@@ -158,7 +156,7 @@ fun UserLocationScreen(
                     }
                 },
                 isError = !screenState.isAddressChecked,
-                errorText = "Адреса не перевірена",
+                errorText = stringResource(id = R.string.address_not_checked),
                 maxLines = 2,
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Text,
@@ -177,7 +175,7 @@ fun UserLocationScreen(
                 onClick = { handleEvent(UserLocationEvent.SaveUserLocation) }
             ) {
                 ButtonText(
-                    text = "Далі"
+                    text = stringResource(id = R.string.action_next)
                 )
             }
         }

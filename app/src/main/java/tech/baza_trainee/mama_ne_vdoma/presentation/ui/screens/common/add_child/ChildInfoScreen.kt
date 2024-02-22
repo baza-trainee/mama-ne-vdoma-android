@@ -17,12 +17,12 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.showToast
 @Composable
 fun ChildInfoScreen(
     modifier: Modifier = Modifier,
-    screenState: ChildInfoViewState = ChildInfoViewState(),
-    uiState: State<RequestState> = mutableStateOf(RequestState.Idle),
-    handleEvent: (ChildInfoEvent) -> Unit = { _ -> }
+    screenState: ChildInfoViewState,
+    uiState: State<RequestState>,
+    handleEvent: (ChildInfoEvent) -> Unit
 ) {
     Box(
-        modifier = Modifier.fillMaxWidth()
+        modifier = modifier.fillMaxWidth()
     ) {
         BackHandler { handleEvent(ChildInfoEvent.OnBack) }
 

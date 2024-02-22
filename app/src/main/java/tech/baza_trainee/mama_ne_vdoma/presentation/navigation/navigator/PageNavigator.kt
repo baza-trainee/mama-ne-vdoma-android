@@ -26,7 +26,7 @@ class PageNavigatorImpl: PageNavigator {
 
     override val routesFlow: StateFlow<CommonHostRoute>
         get() = _routesFlow.asStateFlow()
-    private val _routesFlow = MutableStateFlow(CommonHostRoute("", -1, ""))
+    private val _routesFlow = MutableStateFlow(CommonHostRoute("", -1, -1))
 
     private val routesQueue: Deque<CommonHostRoute> = LinkedList()
 

@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -44,10 +45,8 @@ fun EmailConfirmScreen(
         topBar = {
             HeaderWithOptArrow(
                 modifier = Modifier.fillMaxWidth(),
-                title = "Лист був відправлений",
-                info = "Перевірте свою пошту $email, " +
-                        "щоб отримати подальші інструкції з " +
-                        "відновлення паролю"
+                title = stringResource(id = R.string.email_sent),
+                info = stringResource(id = R.string.check_your_mailbox, email)
             )
         }
     ) { paddingValues ->
@@ -86,12 +85,15 @@ fun EmailConfirmScreen(
                 onClick = { handleEvent(RestorePasswordEvent.OnLogin(email, password)) }
             ) {
                 ButtonText(
-                    text = "Увійти"
+                    text = stringResource(id = R.string.action_log_in)
                 )
             }
 
             Text(
-                text = getTextWithUnderline("Не отримали листа? ", "Відправити ще раз"),
+                text = getTextWithUnderline(
+                    stringResource(id = R.string.did_not_get_email),
+                    stringResource(id = R.string.action_send_again)
+                ),
                 modifier = Modifier
                     .clickable(
                         indication = null,

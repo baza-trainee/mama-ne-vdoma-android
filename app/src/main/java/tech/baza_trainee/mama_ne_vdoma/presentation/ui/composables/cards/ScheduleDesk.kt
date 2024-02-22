@@ -16,7 +16,9 @@ fun ScheduleInfoDesk(
     dayText: String,
     periodText: String
 ) {
-    Column {
+    Column(
+        modifier = modifier
+    ) {
         val morning = schedule.filter { it.value.morning }.keys
         val noon = schedule.filter { it.value.noon }.keys
         val afternoon = schedule.filter { it.value.afternoon }.keys

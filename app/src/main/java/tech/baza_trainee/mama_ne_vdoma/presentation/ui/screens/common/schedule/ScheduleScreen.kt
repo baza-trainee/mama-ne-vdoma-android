@@ -17,7 +17,6 @@ import java.time.DayOfWeek
 
 @Composable
 fun ScheduleScreen(
-    modifier: Modifier = Modifier,
     title: String,
     screenState: ScheduleViewState,
     onUpdateSchedule: (DayOfWeek, Period) -> Unit,
@@ -54,7 +53,6 @@ fun ScheduleScreen(
 @Preview
 fun ScheduleScreenPreview() {
     ScheduleScreen(
-        modifier = Modifier,
         title = "Title",
         screenState = ScheduleViewState(),
         onUpdateSchedule = { _, _ -> },

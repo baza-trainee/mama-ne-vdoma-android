@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.smarttoolfactory.cropper.model.OutlineType
@@ -19,6 +20,7 @@ import com.smarttoolfactory.cropper.model.RectCropShape
 import com.smarttoolfactory.cropper.model.aspectRatios
 import com.smarttoolfactory.cropper.settings.CropDefaults
 import com.smarttoolfactory.cropper.settings.CropOutlineProperty
+import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ScaffoldWithNavigationBars
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.headers.HeaderWithToolbar
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.image_crop.ImageCropEvent
@@ -34,7 +36,7 @@ fun GroupImageCropScreen(
         topBar = {
             HeaderWithToolbar(
                 modifier = Modifier.fillMaxWidth(),
-                title = "Створення нової групи",
+                title = stringResource(id = R.string.title_create_group),
                 avatar = screenState.avatar,
                 showNotification = false,
                 onNotificationsClicked = {},

@@ -5,7 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -32,6 +31,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -95,7 +95,7 @@ fun ParentScheduleEditDialog(
                     modifier = Modifier
                         .padding(horizontal = 16.dp)
                         .weight(0.8f),
-                    text = "Внесіть зміни до свого графіку, коли можете доглядати дітей",
+                    text = stringResource(id = R.string.change_your_schedule),
                     fontSize = 16.sp
                 )
 
@@ -128,13 +128,13 @@ fun ParentScheduleEditDialog(
                     }
                 )
 
-                Spacer(modifier = Modifier.height(8.dp))
-
                 OutlinedTextFieldWithError(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 8.dp),
                     value = tempNote,
-                    label = "Нотатка",
-                    hint = "Введіть будь-які відомості, які Ви вважаєте важливими/корисними для інших користувачів",
+                    label = stringResource(id = R.string.note),
+                    hint = stringResource(id = R.string.note_hint),
                     onValueChange = { tempNote = it },
                     minLines = 3,
                     maxLines = 3,
@@ -145,7 +145,7 @@ fun ParentScheduleEditDialog(
                     modifier = Modifier
                         .wrapContentWidth()
                         .align(Alignment.End),
-                    text = "до 1000 символів",
+                    text = stringResource(id = R.string.note_text_length),
                     fontFamily = redHatDisplayFontFamily,
                     fontSize = 12.sp,
                     color = GrayText
@@ -173,7 +173,7 @@ fun ParentScheduleEditDialog(
                         onDismissRequest()
                     }
                 ) {
-                    ButtonText(text = "Зберегти зміни")
+                    ButtonText(text = stringResource(id = R.string.action_save_changes))
                 }
                 OutlinedButton(
                     modifier = Modifier
@@ -190,7 +190,7 @@ fun ParentScheduleEditDialog(
                         color = MaterialTheme.colorScheme.onBackground
                     )
                 ) {
-                    ButtonText(text = "Закрити")
+                    ButtonText(text = stringResource(id = R.string.action_close))
                 }
             }
         }

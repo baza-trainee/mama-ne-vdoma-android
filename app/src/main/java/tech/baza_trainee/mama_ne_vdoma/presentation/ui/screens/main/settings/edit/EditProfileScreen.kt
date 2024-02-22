@@ -2,7 +2,6 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.ed
 
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -48,6 +47,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
@@ -78,7 +78,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.GrayText
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditProfileScreen(
     screenState: EditProfileViewState,
@@ -106,7 +106,7 @@ fun EditProfileScreen(
         UpdateDetailsUiState.OnAvatarError -> {
             Toast.makeText(
                 context,
-                "Аватарка має розмір більше 1МБ. Будь ласка, оберіть інше фото і повторіть",
+                stringResource(id = R.string.photo_size_error),
                 Toast.LENGTH_LONG
             ).show()
             handleEvent(EditProfileEvent.ResetUiState)
@@ -115,13 +115,13 @@ fun EditProfileScreen(
         UpdateDetailsUiState.OnSaved -> showSuccessDialog = true
         UpdateDetailsUiState.AddressNotChecked -> {
             showAddressDialog = true
-            dialogTitle = "Ви не перевірили вказану адресу"
+            dialogTitle = stringResource(id = R.string.address_not_checked_info)
             handleEvent(EditProfileEvent.ResetUiState)
         }
 
         UpdateDetailsUiState.AddressNotFound -> {
             showAddressDialog = true
-            dialogTitle = "Вказано неіснуючу адресу"
+            dialogTitle = stringResource(id = R.string.address_not_found)
             handleEvent(EditProfileEvent.ResetUiState)
         }
     }
@@ -140,18 +140,17 @@ fun EditProfileScreen(
     ) {
         Text(
             modifier = Modifier.fillMaxWidth(),
-            text = "Персональна інформація",
+            text = stringResource(id = R.string.personal_info),
             fontSize = 16.sp,
             fontFamily = redHatDisplayFontFamily,
             fontWeight = FontWeight.Bold
         )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
         //Photo
         Text(
-            modifier = Modifier.fillMaxWidth(),
-            text = "Фото",
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 8.dp),
+            text = stringResource(id = R.string.photo),
             fontSize = 14.sp,
             fontFamily = redHatDisplayFontFamily
         )
@@ -190,19 +189,19 @@ fun EditProfileScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f),
-                text = "Формат файлу - jpg, jpeg, gif, tif, tiff, tga, bmp, png",
+                text = stringResource(id = R.string.file_format),
                 fontSize = 11.sp,
                 fontFamily = redHatDisplayFontFamily,
                 color = GrayText
             )
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
-
         //Nickname
         Text(
-            modifier = Modifier.fillMaxWidth(),
-            text = "Нікнейм/Ім’я користувача",
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 16.dp),
+            text = stringResource(id = R.string.nickname),
             fontSize = 14.sp,
             fontFamily = redHatDisplayFontFamily
         )
@@ -210,33 +209,32 @@ fun EditProfileScreen(
         OutlinedTextFieldWithError(
             modifier = Modifier.fillMaxWidth(),
             value = screenState.name,
-            label = "Вкажіть своє ім'я",
-            hint = "Ім'я",
+            label = stringResource(id = R.string.enter_your_name),
+            hint = stringResource(id = R.string.name_nickname),
             onValueChange = { handleEvent(EditProfileEvent.ValidateUserName(it)) },
             isError = screenState.nameValid == ValidField.INVALID,
             isHighlighted = screenState.nameValid == ValidField.EMPTY,
-            errorText = "Ви ввели некоректнe ім'я"
+            errorText = stringResource(id = R.string.incorrect_name)
         )
-
-        Spacer(modifier = Modifier.height(4.dp))
 
         Text(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp),
-            text = "Ваше ім’я повинне складатись із 2-18 символів і може містити букви та цифри, а також пробіли та дефіси",
+                .padding(horizontal = 16.dp)
+                .padding(top = 4.dp),
+            text = stringResource(id = R.string.name_rule_hint),
             fontSize = 11.sp,
             fontFamily = redHatDisplayFontFamily,
             color = GrayText,
             lineHeight = 18.sp
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
-
         //Phone number
         Text(
-            modifier = Modifier.fillMaxWidth(),
-            text = "Номер телефону",
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 16.dp),
+            text = stringResource(id = R.string.phone_number),
             fontSize = 14.sp,
             fontFamily = redHatDisplayFontFamily
         )
@@ -254,12 +252,12 @@ fun EditProfileScreen(
             }
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
-
         //Location
         Text(
-            modifier = Modifier.fillMaxWidth(),
-            text = "Місце розташування",
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 16.dp),
+            text = stringResource(id = R.string.location),
             fontSize = 14.sp,
             fontFamily = redHatDisplayFontFamily
         )
@@ -278,25 +276,22 @@ fun EditProfileScreen(
         ) {
             Marker(
                 state = MarkerState(position = screenState.currentLocation),
-                title = "Ви тут",
-                snippet = "поточне місцезнаходження"
+                title = stringResource(id = R.string.you_are_here),
+                snippet = stringResource(id = R.string.current_location)
             )
         }
-
-        Spacer(modifier = Modifier.height(4.dp))
 
         Text(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp),
-            text = "Оберіть Ваше місцерозташування на карті або введіть назву у поле для пошуку",
+                .padding(horizontal = 16.dp)
+                .padding(top = 4.dp),
+            text = stringResource(id = R.string.choose_or_enter_location),
             fontSize = 11.sp,
             fontFamily = redHatDisplayFontFamily,
             color = GrayText,
             lineHeight = 18.sp
         )
-
-        Spacer(modifier = Modifier.height(8.dp))
 
         val color = infiniteColorAnimation(
             initialValue = Color.White,
@@ -309,9 +304,11 @@ fun EditProfileScreen(
             onValueChange = {
                 handleEvent(EditProfileEvent.UpdateUserAddress(it))
             },
-            modifier = Modifier.fillMaxWidth(),
-            label = "Введіть Вашу адресу",
-            hint = "Адреса",
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 8.dp),
+            label = stringResource(id = R.string.enter_your_address),
+            hint = stringResource(id = R.string.address),
             trailingIcon = {
                 IconButton(
                     onClick = { handleEvent(EditProfileEvent.GetLocationFromAddress) },
@@ -338,16 +335,16 @@ fun EditProfileScreen(
             },
             isError = !screenState.isAddressChecked && screenState.address.isNotEmpty(),
             isHighlighted = screenState.address.isEmpty(),
-            errorText = "Адреса не перевірена",
+            errorText = stringResource(id = R.string.address_not_checked),
             maxLines = 2
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
-
         //Schedule Info
         Text(
-            modifier = Modifier.fillMaxWidth(),
-            text = "Мій розклад",
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 16.dp),
+            text = stringResource(id = R.string.my_schedule),
             fontSize = 16.sp,
             fontFamily = redHatDisplayFontFamily,
             fontWeight = FontWeight.Bold
@@ -363,15 +360,15 @@ fun EditProfileScreen(
             onEdit = { editUserSchedule = true }
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
-
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
                 modifier = Modifier.weight(1f),
-                text = "Інформація о дітях",
+                text = stringResource(id = R.string.children_info),
                 fontSize = 16.sp,
                 fontFamily = redHatDisplayFontFamily,
                 fontWeight = FontWeight.Bold
@@ -384,7 +381,7 @@ fun EditProfileScreen(
                         indication = null,
                         interactionSource = remember { MutableInteractionSource() }
                     ) { exitScreen = 1 },
-                text = "+ Додати дитину",
+                text = stringResource(id = R.string.add_child_plus),
                 fontFamily = redHatDisplayFontFamily,
                 fontSize = 14.sp,
                 textDecoration = TextDecoration.Underline,
@@ -419,7 +416,7 @@ fun EditProfileScreen(
             onClick = { handleEvent(EditProfileEvent.SaveInfo) }
         ) {
             ButtonText(
-                text = "Зберегти зміни"
+                text = stringResource(id = R.string.action_save_changes)
             )
         }
 
@@ -437,7 +434,7 @@ fun EditProfileScreen(
             )
         ) {
             ButtonText(
-                text = "Видалити акаунт"
+                text = stringResource(id = R.string.action_delete_account)
             )
         }
 
@@ -475,8 +472,8 @@ fun EditProfileScreen(
 
         if (showDeleteAccountAlertDialog) {
             DangerousActionAlertDialog(
-                text = "Після видалення акаунту немає можливості його відновити. Щоб користуватись після цього мобільним додатком, необхідно буде зареєструватись заново. Підтвердити видалення мого акаунту?",
-                button = "Так, видалити акаунт",
+                text = stringResource(id = R.string.delete_account_info),
+                button = stringResource(id = R.string.action_yes_delete_account),
                 onDelete = { handleEvent(EditProfileEvent.DeleteUser) },
                 onDismissRequest = { showDeleteAccountAlertDialog = false }
             )
@@ -484,8 +481,8 @@ fun EditProfileScreen(
 
         if (deleteChildDialog) {
             DangerousActionAlertDialog(
-                text = "Картка дитини та розклад по догляду за дитиною будуть видалені. Підтвердити видалення картки дитини?",
-                button = "Так, видалити картку",
+                text = stringResource(id = R.string.delete_child_info),
+                button = stringResource(id = R.string.action_delete_child),
                 onDismissRequest = {
                     selectedChild = 0
                     deleteChildDialog = false
@@ -513,25 +510,22 @@ fun EditProfileScreen(
                         tint = MaterialTheme.colorScheme.primary
                     )
 
-                    Spacer(modifier = Modifier.height(16.dp))
-
                     Text(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 16.dp),
-                        text = "Ви залишаете цей екран. Всі незбережені зміни будуть втрачені",
+                            .padding(horizontal = 16.dp)
+                            .padding(top = 16.dp),
+                        text = stringResource(id = R.string.warning_not_saved),
                         fontSize = 14.sp,
                         fontFamily = redHatDisplayFontFamily,
                         textAlign = TextAlign.Start
                     )
 
-                    Spacer(modifier = Modifier.height(24.dp))
-
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 16.dp)
-                            .padding(bottom = 16.dp),
+                            .padding(bottom = 16.dp, top = 24.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
@@ -548,7 +542,7 @@ fun EditProfileScreen(
                                     }
                                     exitScreen = -1
                                 },
-                            text = "Не зберігати",
+                            text = stringResource(id = R.string.action_not_save),
                             fontSize = 16.sp,
                             fontFamily = redHatDisplayFontFamily,
                             fontWeight = FontWeight.Bold,
@@ -570,7 +564,7 @@ fun EditProfileScreen(
                                     }
                                     exitScreen = -1
                                 },
-                            text = "Зберегти",
+                            text = stringResource(id = R.string.action_save),
                             fontSize = 16.sp,
                             fontFamily = redHatDisplayFontFamily,
                             fontWeight = FontWeight.Bold,
@@ -603,14 +597,14 @@ fun EditProfileScreen(
                             .padding(top = 16.dp)
                             .padding(horizontal = 16.dp)
                             .fillMaxWidth(),
-                        text = "Інформація успішно оновлена!",
+                        text = stringResource(id = R.string.info_updated),
                         fontSize = 14.sp,
                         fontFamily = redHatDisplayFontFamily,
                         textAlign = TextAlign.Start
                     )
 
                     Text(
-                        text = "На головну",
+                        text = stringResource(id = R.string.action_go_to_main),
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Center,
                         color = MaterialTheme.colorScheme.primary,

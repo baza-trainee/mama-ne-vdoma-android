@@ -1,17 +1,22 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes
 
+import androidx.annotation.StringRes
 import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
+import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.GROUPS_PAGE
 
-sealed class GroupsScreenRoutes(override val route: String, override val title: String): CommonHostRoute(route, GROUPS_PAGE, "Групи") {
-    data object Groups: GroupsScreenRoutes(route = "groups_screen", "Групи")
-    data object UpdateGroup: GroupsScreenRoutes(route = "update_group_screen", "Редагування групи")
-    data object UpdateGroupAvatar: GroupsScreenRoutes(route = "update_group_avatar_screen", "Редагування зображення групи")
+sealed class GroupsScreenRoutes(
+    override val route: String,
+    @StringRes override val title: Int
+): CommonHostRoute(route, GROUPS_PAGE, R.string.title_groups) {
+    data object Groups: GroupsScreenRoutes(route = "groups_screen", R.string.title_groups)
+    data object UpdateGroup: GroupsScreenRoutes(route = "update_group_screen", R.string.title_edit_group)
+    data object UpdateGroupAvatar: GroupsScreenRoutes(route = "update_group_avatar_screen", R.string.title_edit_group_avatar)
 
-    class RateUser: GroupsScreenRoutes(route = ROUTE, "") {
+    class RateUser: GroupsScreenRoutes(route = ROUTE, -1) {
 
         data class RateUserArgs (
             val userId: String
@@ -40,13 +45,13 @@ sealed class GroupsScreenRoutes(override val route: String, override val title: 
                             "${USER_ID}=$userId" +
                             "",
                     page = GROUPS_PAGE,
-                    title = "Надати відгук"
+                    title = R.string.title_review_user
                 )
             }
         }
     }
 
-    class ViewReviews: GroupsScreenRoutes(route = ROUTE, "") {
+    class ViewReviews: GroupsScreenRoutes(route = ROUTE, -1) {
 
         data class ViewReviewsArgs (
             val userId: String
@@ -75,7 +80,7 @@ sealed class GroupsScreenRoutes(override val route: String, override val title: 
                             "${USER_ID}=$userId" +
                             "",
                     page = GROUPS_PAGE,
-                    title = "Відгуки"
+                    title = R.string.title_reviews
                 )
             }
         }

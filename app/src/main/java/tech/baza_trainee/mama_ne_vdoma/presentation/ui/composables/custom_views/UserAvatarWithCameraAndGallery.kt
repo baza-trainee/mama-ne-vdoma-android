@@ -85,7 +85,7 @@ fun UserAvatarWithCameraAndGallery(
 
     if (showRationale) {
         PermissionDialog(
-            permissionTextProvider = CameraPermissionTextProvider(),
+            permissionTextProvider = CameraPermissionTextProvider(LocalContext.current),
             isPermanentlyDeclined = !ActivityCompat
                 .shouldShowRequestPermissionRationale(activity, permission),
             onDismiss = { showRationale = false },

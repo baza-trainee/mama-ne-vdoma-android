@@ -1,5 +1,6 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.dialogs
 
+import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -19,18 +20,22 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 @Preview
 fun PermissionDialog(
-    permissionTextProvider: PermissionTextProvider = LocationPermissionTextProvider(),
+    permissionTextProvider: PermissionTextProvider =
+        LocationPermissionTextProvider(LocalContext.current),
     isPermanentlyDeclined: Boolean = false,
     onDismiss: () -> Unit = {},
     onGranted: () -> Unit = {},
@@ -51,7 +56,7 @@ fun PermissionDialog(
                     .padding(top = 8.dp)
                     .padding(horizontal = 16.dp)
                     .fillMaxWidth(),
-                text = "Увага! Потрібен дозвіл",
+                text = stringResource(id = R.string.attention_need_permission),
                 fontSize = 24.sp,
                 textAlign = TextAlign.Center,
                 fontFamily = redHatDisplayFontFamily
@@ -79,7 +84,7 @@ fun PermissionDialog(
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 Text(
-                    text = "Відхилити",
+                    text = stringResource(id = R.string.action_refuse),
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.primary,
@@ -94,9 +99,9 @@ fun PermissionDialog(
 
                 Text(
                     text = if (isPermanentlyDeclined) {
-                        "Дозволити в налаштуваннях"
+                        stringResource(id = R.string.action_allow_in_settings)
                     } else {
-                        "Дозволити"
+                        stringResource(id = R.string.action_allow)
                     },
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
@@ -117,41 +122,39 @@ fun PermissionDialog(
 }
 
 interface PermissionTextProvider {
+
     fun getDescription(isPermanentlyDeclined: Boolean): String
 }
 
-class LocationPermissionTextProvider: PermissionTextProvider {
+class LocationPermissionTextProvider(private val context: Context): PermissionTextProvider {
+
     override fun getDescription(isPermanentlyDeclined: Boolean): String {
         return if (isPermanentlyDeclined) {
-            "Схоже, ви назавжди відхилили дозвіл на місцезнаходження. " +
-                    "Ви можете перейти в налаштування додатку, щоб надати його"
+            context.getString(R.string.permission_location_declined)
         } else {
-            "Цій програмі потрібен доступ до вашого місцезнаходження, щоб " +
-                    "працювати повноцінно"
+            context.getString(R.string.permission_location_info)
         }
     }
 }
 
-class CameraPermissionTextProvider: PermissionTextProvider {
+class CameraPermissionTextProvider(private val context: Context): PermissionTextProvider {
+
     override fun getDescription(isPermanentlyDeclined: Boolean): String {
         return if(isPermanentlyDeclined) {
-            "Схоже, ви назавжди відхилили дозвіл на використання камери. " +
-                    "Ви можете перейти в налаштування додатку, щоб надати його"
+            context.getString(R.string.permission_camera_declined)
         } else {
-            "Цій програмі потрібен доступ на використання камери, щоб " +
-                    "працювати повноцінно"
+            context.getString(R.string.permission_camera_info)
         }
     }
 }
 
-class NotificationsPermissionTextProvider: PermissionTextProvider {
+class NotificationsPermissionTextProvider(private val context: Context): PermissionTextProvider {
+
     override fun getDescription(isPermanentlyDeclined: Boolean): String {
         return if(isPermanentlyDeclined) {
-            "Схоже, ви назавжди відхилили дозвіл на відправлення/отримання повідомлень. " +
-                    "Ви можете перейти в налаштування додатку, щоб надати його"
+            context.getString(R.string.permission_notification_declined)
         } else {
-            "Цій програмі потрібен доступ на відправлення/отримання повідомлень, щоб " +
-                    "працювати повноцінно"
+            context.getString(R.string.permission_notification_info)
         }
     }
 }

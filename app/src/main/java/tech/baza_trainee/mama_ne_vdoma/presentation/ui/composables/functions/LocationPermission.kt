@@ -40,7 +40,7 @@ fun LocationPermission(
 
     if (showRationale) {
         PermissionDialog(
-            permissionTextProvider = LocationPermissionTextProvider(),
+            permissionTextProvider = LocationPermissionTextProvider(LocalContext.current),
             isPermanentlyDeclined = !ActivityCompat
                 .shouldShowRequestPermissionRationale(activity, permission),
             onDismiss = { showRationale = false },

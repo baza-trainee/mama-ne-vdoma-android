@@ -12,10 +12,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.main.notifications.NotificationsEvent
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.GroupUiModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
@@ -36,7 +38,7 @@ fun KickedItem(
     ) {
         Text(
             modifier = Modifier.fillMaxWidth(),
-            text = "Адміністратор виключив Вас з групи ”${group.name}” (ID - ${group.id}).",
+            text = stringResource(id = R.string.admin_kicked, group.name, group.id),
             fontSize = 14.sp,
             fontFamily = redHatDisplayFontFamily
         )
@@ -53,7 +55,7 @@ fun KickedItem(
                     .clickable {
                         handleEvent(NotificationsEvent.SearchGroup)
                     },
-                text = "Пошук нової групи",
+                text = stringResource(id = R.string.search_new_group),
                 fontSize = 16.sp,
                 fontFamily = redHatDisplayFontFamily,
                 fontWeight = FontWeight.Bold,
@@ -67,7 +69,7 @@ fun KickedItem(
                     .clickable {
                         handleEvent(NotificationsEvent.GoToMain)
                     },
-                text = "На головну",
+                text = stringResource(id = R.string.action_go_to_main),
                 fontSize = 16.sp,
                 fontFamily = redHatDisplayFontFamily,
                 fontWeight = FontWeight.Bold,

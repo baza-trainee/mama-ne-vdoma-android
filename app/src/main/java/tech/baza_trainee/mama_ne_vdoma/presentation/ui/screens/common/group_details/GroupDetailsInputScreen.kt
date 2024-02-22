@@ -52,6 +52,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -108,7 +109,7 @@ fun GroupDetailsInputScreen(
         UpdateDetailsUiState.OnAvatarError -> {
             Toast.makeText(
                 context,
-                "Аватарка має розмір більше 1МБ. Будь ласка, оберіть інше фото і повторіть",
+                stringResource(id = R.string.photo_size_error),
                 Toast.LENGTH_LONG
             ).show()
             handleEvent(GroupDetailsEvent.ResetUiState)
@@ -117,13 +118,13 @@ fun GroupDetailsInputScreen(
         UpdateDetailsUiState.OnSaved -> showSuccessDialog = true
         UpdateDetailsUiState.AddressNotChecked -> {
             showAddressDialog = true
-            dialogTitle = "Ви не перевірили вказану адресу"
+            dialogTitle = stringResource(id = R.string.address_not_checked_info)
             handleEvent(GroupDetailsEvent.ResetUiState)
         }
 
         UpdateDetailsUiState.AddressNotFound -> {
             showAddressDialog = true
-            dialogTitle = "Вказано неіснуючу адресу"
+            dialogTitle = stringResource(id = R.string.address_not_found)
             handleEvent(GroupDetailsEvent.ResetUiState)
         }
     }
@@ -146,8 +147,8 @@ fun GroupDetailsInputScreen(
                 handleEvent(GroupDetailsEvent.UpdateGroupAddress(it))
             },
             modifier = Modifier.fillMaxWidth(),
-            label = "Введіть Вашу адресу",
-            hint = "Адреса",
+            label = stringResource(id = R.string.enter_your_address),
+            hint = stringResource(id = R.string.address),
             trailingIcon = {
                 IconButton(
                     onClick = { handleEvent(GroupDetailsEvent.GetLocationFromAddress) },
@@ -173,7 +174,7 @@ fun GroupDetailsInputScreen(
                 }
             },
             isError = !screenState.isAddressChecked,
-            errorText = "Адреса не перевірена",
+            errorText = stringResource(id = R.string.address_not_checked),
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Text,
                 imeAction = ImeAction.Search
@@ -183,37 +184,35 @@ fun GroupDetailsInputScreen(
             )
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
-
         OutlinedTextFieldWithError(
             value = screenState.name,
             onValueChange = { handleEvent(GroupDetailsEvent.UpdateName(it)) },
-            modifier = Modifier.fillMaxWidth(),
-            label = "Введіть назву групи",
-            hint = "Назва групи",
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 8.dp),
+            label = stringResource(id = R.string.enter_group_name),
+            hint = stringResource(id = R.string.group_name),
             isError = screenState.nameValid == ValidField.INVALID,
-            errorText = "Ви ввели некоректну назву"
+            errorText = stringResource(id = R.string.group_name_incorrect)
         )
 
         Text(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 8.dp),
-            text = "Назва групи повинна складатись від 6 до 18 символів, може містити латинські чи кириличні букви та цифри, пробіли, дефіси. НЕ є унікальною",
+            text = stringResource(id = R.string.group_name_hint),
             fontFamily = redHatDisplayFontFamily,
             fontSize = 12.sp,
             lineHeight = 14.sp
         )
 
         if (isForEditing) {
-
-            Spacer(modifier = Modifier.height(8.dp))
-
             var expanded by rememberSaveable { mutableStateOf(false) }
 
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .padding(top = 8.dp)
                     .background(
                         color = MaterialTheme.colorScheme.surface,
                         shape = RoundedCornerShape(4.dp)
@@ -252,7 +251,7 @@ fun GroupDetailsInputScreen(
                             fontFamily = redHatDisplayFontFamily
                         )
                         Text(
-                            text = "Адміністратор групи",
+                            text = stringResource(id = R.string.group_admin),
                             fontSize = 14.sp,
                             fontFamily = redHatDisplayFontFamily
                         )
@@ -372,11 +371,11 @@ fun GroupDetailsInputScreen(
             }
         }
 
-        Spacer(modifier = Modifier.height(8.dp))
-
         Text(
-            modifier = Modifier.fillMaxWidth(),
-            text = "Вік дитини",
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 8.dp),
+            text = stringResource(id = R.string.child_age),
             fontFamily = redHatDisplayFontFamily,
             fontSize = 14.sp
         )
@@ -399,8 +398,8 @@ fun GroupDetailsInputScreen(
                     .onFocusChanged {
                         isMinAgeFocused = it.isFocused
                     },
-                label = { Text("Від") },
-                placeholder = { Text("Вік") },
+                label = { Text(stringResource(id = R.string.from)) },
+                placeholder = { Text(stringResource(id = R.string.age)) },
                 keyboardOptions = KeyboardOptions.Default.copy(
                     keyboardType = KeyboardType.Number
                 ),
@@ -437,8 +436,8 @@ fun GroupDetailsInputScreen(
                     .onFocusChanged {
                         isMaxAgeFocused = it.isFocused
                     },
-                label = { Text("До") },
-                placeholder = { Text("Вік") },
+                label = { Text(stringResource(id = R.string.to)) },
+                placeholder = { Text(stringResource(id = R.string.age)) },
                 keyboardOptions = KeyboardOptions.Default.copy(
                     keyboardType = KeyboardType.Number
                 ),
@@ -465,8 +464,8 @@ fun GroupDetailsInputScreen(
             )
         }
 
-        val minAgeErrorText = "Не може бути менше 1 та більше за макс. вік"
-        val maxAgeErrorText = "Не може бути більше 18 та менше за мін. вік"
+        val minAgeErrorText = stringResource(id = R.string.min_age_error)
+        val maxAgeErrorText = stringResource(id = R.string.max_age_error)
         val errorText = when {
             screenState.maxAgeValid == ValidField.INVALID && isMaxAgeFocused -> maxAgeErrorText
             screenState.minAgeValid == ValidField.INVALID && isMinAgeFocused -> minAgeErrorText
@@ -484,11 +483,11 @@ fun GroupDetailsInputScreen(
             )
         }
 
-        Spacer(modifier = Modifier.height(8.dp))
-
         Text(
-            modifier = Modifier.fillMaxWidth(),
-            text = "Визначіть графік групи",
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 8.dp),
+            text = stringResource(id = R.string.enter_group_schedule),
             fontFamily = redHatDisplayFontFamily,
             fontSize = 14.sp
         )
@@ -507,11 +506,12 @@ fun GroupDetailsInputScreen(
             }
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
 
         Text(
-            modifier = Modifier.fillMaxWidth(),
-            text = "Фото групи",
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 8.dp),
+            text = stringResource(id = R.string.group_photo),
             fontFamily = redHatDisplayFontFamily,
             fontSize = 14.sp
         )
@@ -551,8 +551,8 @@ fun GroupDetailsInputScreen(
         OutlinedTextFieldWithError(
             modifier = Modifier.fillMaxWidth(),
             value = screenState.description,
-            label = "Опис групи",
-            hint = "Введіть будь-які відомості, які Ви вважаєте важливими/корисними для інших користувачів",
+            label = stringResource(id = R.string.group_description),
+            hint = stringResource(id = R.string.group_description_hint),
             onValueChange = { handleEvent(GroupDetailsEvent.UpdateDescription(it)) },
             minLines = 2,
             maxLines = 2,
@@ -563,7 +563,7 @@ fun GroupDetailsInputScreen(
             modifier = Modifier
                 .wrapContentWidth()
                 .align(Alignment.End),
-            text = "до 1000 символів",
+            text = stringResource(id = R.string.note_text_length),
             fontFamily = redHatDisplayFontFamily,
             fontSize = 12.sp,
             color = GrayText
@@ -584,14 +584,20 @@ fun GroupDetailsInputScreen(
                     screenState.schedule.values.any { it.isFilled() }
         ) {
             ButtonText(
-                text = if (isForEditing) "Зберегти зміни" else "Створити нову групу"
+                text = if (isForEditing)
+                    stringResource(id = R.string.action_save_changes)
+                else
+                    stringResource(id = R.string.action_create_new_group)
             )
         }
     }
 
     if (showSuccessDialog) {
         SuccessDialog(
-            info = if (isForEditing) "Ваша група успішно змінена" else "Ваша група успішно створена",
+            info = if (isForEditing)
+                stringResource(id = R.string.group_updated)
+            else
+                stringResource(id = R.string.group_created),
             onDismiss = { showSuccessDialog = false },
             onClick = {
                 showSuccessDialog = false

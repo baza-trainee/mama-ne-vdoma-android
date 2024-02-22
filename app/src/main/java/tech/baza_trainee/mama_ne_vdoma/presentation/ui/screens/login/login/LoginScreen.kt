@@ -34,6 +34,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -44,6 +45,7 @@ import androidx.compose.ui.unit.sp
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.SignInClient
 import tech.baza_trainee.mama_ne_vdoma.BuildConfig
+import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.LoadingIndicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.SocialLoginBlock
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.SurfaceWithSystemBars
@@ -98,15 +100,17 @@ fun LoginUserScreen(
                         else -> {
                             Toast.makeText(
                                 context,
-                                "Немає даних для авторизації",
+                                context.getString(R.string.no_data_for_auth),
                                 Toast.LENGTH_LONG
-                            )
-                                .show()
+                            ).show()
                         }
                     }
                 } catch (exc: Exception) {
-                    Toast.makeText(context, "Немає даних для авторизації", Toast.LENGTH_LONG)
-                        .show()
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.no_data_for_auth),
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
             }
 
@@ -136,8 +140,11 @@ fun LoginUserScreen(
                             .build()
                     )
                 } catch (exc: Exception) {
-                    Toast.makeText(context, "Авторизація неможлива", Toast.LENGTH_LONG)
-                        .show()
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.auth_impossible),
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
                 googleLogin = false
             }
@@ -152,28 +159,27 @@ fun LoginUserScreen(
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(16.dp))
-
             Text(
                 modifier = Modifier
-                    .fillMaxWidth(),
-                text = "Увійти у свій профіль",
+                    .fillMaxWidth()
+                    .padding(top = 16.dp),
+                text = stringResource(id = R.string.profile_log_in),
                 fontSize = 20.sp,
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.onBackground,
                 fontFamily = redHatDisplayFontFamily
             )
 
-            Spacer(modifier = Modifier.height(24.dp))
-
             OutlinedTextFieldWithError(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 24.dp),
                 value = screenState.email,
-                hint = "Email",
-                label = "Введіть свій email",
+                hint = stringResource(id = R.string.email),
+                label = stringResource(id = R.string.enter_your_email),
                 onValueChange = { handleEvent(LoginEvent.ValidateEmail(it)) },
                 isError = screenState.emailValid == ValidField.INVALID,
-                errorText = "Ви ввели некоректний email",
+                errorText = stringResource(id = R.string.incorrect_email),
                 leadingIcon = {
                     Icon(
                         imageVector = Icons.Default.Email,
@@ -186,49 +192,40 @@ fun LoginUserScreen(
                 )
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
-
             PasswordTextFieldWithError(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp),
                 password = screenState.password,
                 onValueChange = { handleEvent(LoginEvent.ValidatePassword(it)) },
                 isError = screenState.passwordValid == ValidField.INVALID,
-                errorText = "Ви ввели некоректний пароль",
+                errorText = stringResource(id = R.string.incorrect_password),
                 imeAction = ImeAction.Done,
                 onImeActionPerformed = { handleEvent(LoginEvent.LoginUser) },
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
-
-            val restoreButtonText by remember {
-                mutableStateOf(
-                    getTextWithUnderline(
-                        "",
-                        "Забули пароль?",
-                        false
-                    )
-                )
-            }
-
             Text(
                 modifier = Modifier
                     .wrapContentWidth()
+                    .padding(top = 8.dp)
                     .align(alignment = Alignment.End)
                     .clickable(
                         indication = null,
                         interactionSource = remember { MutableInteractionSource() }
                     ) { handleEvent(LoginEvent.OnRestore) },
-                text = restoreButtonText,
+                text = getTextWithUnderline(
+                    "",
+                    stringResource(id = R.string.forgot_password),
+                    false
+                ),
                 textAlign = TextAlign.End,
                 fontSize = 14.sp,
                 fontFamily = redHatDisplayFontFamily
             )
 
-            Spacer(modifier = Modifier.height(48.dp))
-
             Button(
                 modifier = Modifier
-                    .padding(vertical = 16.dp)
+                    .padding(bottom = 16.dp, top = 64.dp)
                     .fillMaxWidth()
                     .height(48.dp),
                 onClick = { handleEvent(LoginEvent.LoginUser) },
@@ -236,7 +233,7 @@ fun LoginUserScreen(
                         screenState.emailValid == ValidField.VALID
             ) {
                 Text(
-                    text = "Увійти",
+                    text = stringResource(id = R.string.action_log_in),
                     fontFamily = redHatDisplayFontFamily,
                     fontWeight = FontWeight.Bold
                 )

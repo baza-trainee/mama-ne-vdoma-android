@@ -6,7 +6,9 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.LoadingIndicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.schedule.ScheduleEvent
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.schedule.ScheduleScreen
@@ -30,7 +32,7 @@ fun ChildScheduleScreen(
     }
 
     ScheduleScreen(
-        title = "Вкажіть, коли потрібно доглядати дитину",
+        title = stringResource(id = R.string.title_add_child_schedule),
         screenState = screenState,
         onUpdateSchedule = { day, period -> handleEvent(ScheduleEvent.UpdateChildSchedule(day, period)) },
         onUpdateComment = { handleEvent(ScheduleEvent.UpdateChildComment(it)) },

@@ -44,6 +44,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -118,7 +119,7 @@ fun ChildScheduleEditDialog(
                     modifier = Modifier
                         .padding(horizontal = 16.dp)
                         .weight(0.8f),
-                    text = "Внесіть зміни в розклад, коли потрібно доглядати дитину",
+                    text = stringResource(id = R.string.change_child_schedule),
                     fontSize = 16.sp,
                     fontFamily = redHatDisplayFontFamily
                 )
@@ -251,8 +252,8 @@ fun ChildScheduleEditDialog(
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .menuAnchor(),
-                                    label = { Text("Введіть ім’я") },
-                                    placeholder = { Text("Ім’я") },
+                                    label = { Text(stringResource(id = R.string.enter_name)) },
+                                    placeholder = { Text(stringResource(id = R.string.name)) },
                                     colors = OutlinedTextFieldDefaults.colors(
                                         focusedContainerColor = MaterialTheme.colorScheme.surface,
                                         unfocusedContainerColor = MaterialTheme.colorScheme.surface,
@@ -317,8 +318,8 @@ fun ChildScheduleEditDialog(
                 OutlinedTextFieldWithError(
                     modifier = Modifier.fillMaxWidth(),
                     value = notes[currentChild].orEmpty(),
-                    label = "Нотатка",
-                    hint = "Введіть будь-які відомості, які Ви вважаєте важливими/корисними для інших користувачів",
+                    label = stringResource(id = R.string.note),
+                    hint = stringResource(id = R.string.note_hint),
                     onValueChange = {
                         notes = notes.toMutableMap().apply {
                             put(currentChild, it)
@@ -333,7 +334,7 @@ fun ChildScheduleEditDialog(
                     modifier = Modifier
                         .wrapContentWidth()
                         .align(Alignment.End),
-                    text = "до 1000 символів",
+                    text = stringResource(id = R.string.note_text_length),
                     fontFamily = redHatDisplayFontFamily,
                     fontSize = 12.sp,
                     color = GrayText
@@ -360,7 +361,7 @@ fun ChildScheduleEditDialog(
                         onDismissRequest()
                     }
                 ) {
-                    ButtonText(text = "Зберегти зміни")
+                    ButtonText(text = stringResource(id = R.string.action_save_changes))
                 }
                 OutlinedButton(
                     modifier = Modifier
@@ -377,7 +378,7 @@ fun ChildScheduleEditDialog(
                         color = MaterialTheme.colorScheme.onBackground
                     )
                 ) {
-                    ButtonText(text = "Закрити")
+                    ButtonText(text = stringResource(id = R.string.action_close))
                 }
             }
         }

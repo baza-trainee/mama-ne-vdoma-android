@@ -37,6 +37,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -70,7 +71,7 @@ fun SetAreaForSearchScreen(
         topBar = {
             HeaderWithToolbar(
                 modifier = Modifier.fillMaxWidth(),
-                title = "Пошук групи",
+                title = stringResource(id = R.string.title_group_search),
                 avatar = screenState.avatar,
                 showNotification = true,
                 notificationCount = screenState.notifications,
@@ -97,13 +98,13 @@ fun SetAreaForSearchScreen(
 
             LocationUiState.AddressNotChecked -> {
                 showAddressDialog = true
-                dialogTitle = "Ви не перевірили вказану адресу"
+                dialogTitle = stringResource(id = R.string.address_not_checked_info)
                 handleEvent(SetAreaEvent.ResetUiState)
             }
 
             LocationUiState.AddressNotFound -> {
                 showAddressDialog = true
-                dialogTitle = "Вказано неіснуючу адресу"
+                dialogTitle = stringResource(id = R.string.address_not_found)
                 handleEvent(SetAreaEvent.ResetUiState)
             }
         }
@@ -131,8 +132,8 @@ fun SetAreaForSearchScreen(
             ) {
                 Marker(
                     state = MarkerState(position = screenState.currentLocation),
-                    title = "Ви тут",
-                    snippet = "поточне місцезнаходження"
+                    title = stringResource(id = R.string.you_are_here),
+                    snippet = stringResource(id = R.string.current_location)
                 )
 
                 Circle(
@@ -142,8 +143,6 @@ fun SetAreaForSearchScreen(
                     fillColor = SemiTransparent
                 )
             }
-
-            Spacer(modifier = Modifier.height(8.dp))
 
             val color = infiniteColorAnimation(
                 initialValue = Color.White,
@@ -160,9 +159,10 @@ fun SetAreaForSearchScreen(
                 },
                 modifier = Modifier
                     .fillMaxWidth()
+                    .padding(top = 8.dp)
                     .padding(horizontal = 16.dp),
-                label = "Введіть Вашу адресу",
-                hint = "Адреса",
+                label = stringResource(id = R.string.enter_your_address),
+                hint = stringResource(id = R.string.address),
                 trailingIcon = {
                     IconButton(
                         onClick = { handleEvent(SetAreaEvent.GetLocationFromAddress) },
@@ -188,7 +188,7 @@ fun SetAreaForSearchScreen(
                     }
                 },
                 isError = !screenState.isAddressChecked,
-                errorText = "Адреса не перевірена"
+                errorText = stringResource(id = R.string.address_not_checked)
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -248,7 +248,7 @@ fun SetAreaForSearchScreen(
                 onClick = { handleEvent(SetAreaEvent.SaveArea) },
             ) {
                 ButtonText(
-                    text = "Далі"
+                    text = stringResource(id = R.string.action_next)
                 )
             }
         }

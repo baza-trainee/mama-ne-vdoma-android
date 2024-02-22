@@ -14,7 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -34,6 +34,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
@@ -60,7 +61,7 @@ fun FoundGroupScreen(
         topBar = {
             HeaderWithToolbar(
                 modifier = Modifier.fillMaxWidth(),
-                title = "Пошук групи",
+                title = stringResource(id = R.string.title_group_search),
                 avatar = screenState.avatar,
                 showNotification = true,
                 notificationCount = screenState.notifications,
@@ -76,6 +77,7 @@ fun FoundGroupScreen(
         val context = LocalContext.current
 
         var showSuccessDialog by rememberSaveable { mutableStateOf(false) }
+        var selectedGroupName by rememberSaveable { mutableStateOf("") }
 
         when (val state = uiState.value) {
             FoundGroupUiState.Idle -> Unit
@@ -105,7 +107,7 @@ fun FoundGroupScreen(
                 ) {
                     Text(
                         modifier = Modifier.weight(1f),
-                        text = "Рекомендовані групи",
+                        text = stringResource(id = R.string.recommended_groups),
                         fontFamily = redHatDisplayFontFamily,
                         fontSize = 16.sp
                     )
@@ -116,7 +118,7 @@ fun FoundGroupScreen(
                                 indication = null,
                                 interactionSource = remember { MutableInteractionSource() }
                             ) { handleEvent(FoundGroupEvent.CreateGroup) },
-                        text = "Створити групу",
+                        text = stringResource(id = R.string.action_create_group),
                         fontFamily = redHatDisplayFontFamily,
                         fontSize = 14.sp,
                         textDecoration = TextDecoration.Underline,
@@ -125,22 +127,22 @@ fun FoundGroupScreen(
                     )
                 }
 
-                Spacer(modifier = Modifier.height(8.dp))
-
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .weight(1f)
+                        .padding(top = 8.dp)
+                        .weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    itemsIndexed(screenState.groups) { index, group ->
-                        if (index != 0)
-                            Spacer(modifier = Modifier.height(8.dp))
-
+                    items(screenState.groups) { group ->
                         GroupInfoDesk(
                             modifier = Modifier.fillMaxWidth(),
                             group = group,
                             currentUserId = screenState.currentUserId,
-                            onSelect = { handleEvent(FoundGroupEvent.OnSelect(it)) }
+                            onSelect = {
+                                selectedGroupName = group.name
+                                handleEvent(FoundGroupEvent.OnSelect(it))
+                            }
                         )
                     }
                 }
@@ -154,7 +156,7 @@ fun FoundGroupScreen(
                     enabled = screenState.groups.map { it.isChecked }.contains(true)
                 ) {
                     ButtonText(
-                        text = "Приєднатися до групи"
+                        text = stringResource(id = R.string.action_join)
                     )
                 }
             } else if (!screenState.isLoading) {
@@ -166,7 +168,7 @@ fun FoundGroupScreen(
                             indication = null,
                             interactionSource = remember { MutableInteractionSource() }
                         ) { handleEvent(FoundGroupEvent.GoToMain) },
-                    text = "Створити групу",
+                    text = stringResource(id = R.string.action_create_group),
                     fontFamily = redHatDisplayFontFamily,
                     fontSize = 14.sp,
                     textDecoration = TextDecoration.Underline,
@@ -174,11 +176,11 @@ fun FoundGroupScreen(
                     color = MaterialTheme.colorScheme.primary
                 )
 
-                Spacer(modifier = Modifier.height(32.dp))
-
                 Text(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = "На жаль, групи за даною локацією не знайдені. Ви можете бути першою і створити нову групу",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 32.dp),
+                    text = stringResource(id = R.string.groups_not_found),
                     fontFamily = redHatDisplayFontFamily,
                     fontSize = 14.sp
                 )
@@ -193,7 +195,7 @@ fun FoundGroupScreen(
                     onClick = { handleEvent(FoundGroupEvent.GoToMain) }
                 ) {
                     ButtonText(
-                        text = "На головну"
+                        text = stringResource(id = R.string.action_go_to_main)
                     )
                 }
             }
@@ -220,14 +222,14 @@ fun FoundGroupScreen(
                             .padding(top = 16.dp)
                             .padding(horizontal = 16.dp)
                             .fillMaxWidth(),
-                        text = "Запит до групи успішно відправлений. Ми повідомимо вас, коли адміністратор групи затвердить ваш запит",
+                        text = stringResource(id = R.string.join_request_sent, selectedGroupName),
                         fontSize = 14.sp,
                         textAlign = TextAlign.Start,
                         fontFamily = redHatDisplayFontFamily
                     )
 
                     Text(
-                        text = "На головну",
+                        text = stringResource(id = R.string.action_go_to_main),
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Center,
                         color = MaterialTheme.colorScheme.primary,

@@ -1,12 +1,11 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.verify_email
 
 import androidx.activity.compose.BackHandler
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
@@ -18,6 +17,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -34,7 +34,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.showToast
 fun VerifyEmailScreen(
     screenState: VerifyEmailViewState,
     uiState: State<RequestState>,
-    title: String,
+    @StringRes title: Int = -1,
     handleEvent: (VerifyEmailEvent) -> Unit
 ) {
     SurfaceWithSystemBars {
@@ -58,12 +58,12 @@ fun VerifyEmailScreen(
             verticalArrangement = Arrangement.SpaceBetween,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(16.dp))
-
-            if (title.isNotEmpty()) {
+            if (title != -1) {
                 Text(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = title,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 16.dp),
+                    text = stringResource(id = title),
                     fontSize = 20.sp,
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.onBackground,
@@ -71,9 +71,10 @@ fun VerifyEmailScreen(
                 )
             }
 
-            Spacer(modifier = Modifier.height(48.dp))
-
             VerifyEmail(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 48.dp),
                 otp = screenState.otp,
                 isOtpValid = screenState.otpValid != ValidField.INVALID,
                 onVerify = { value, otpInputFilled ->
@@ -93,7 +94,6 @@ fun CodeVerificationPreview() {
     VerifyEmailScreen(
         screenState = VerifyEmailViewState(),
         uiState = remember { mutableStateOf(RequestState.Idle) },
-        title = "Title",
         handleEvent = { _ -> }
     )
 }
