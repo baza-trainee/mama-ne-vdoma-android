@@ -36,8 +36,6 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.SignInClient
 import tech.baza_trainee.mama_ne_vdoma.BuildConfig
@@ -57,7 +55,6 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFa
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_16_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_24_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_2_dp
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_32_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_48_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_8_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
@@ -152,7 +149,6 @@ fun UserCreateScreen(
                 fontFamily = redHatDisplayFontFamily
             )
 
-
             OutlinedTextFieldWithError(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -174,6 +170,7 @@ fun UserCreateScreen(
                     imeAction = ImeAction.Next
                 )
             )
+
             PasswordTextFieldWithError(
                 modifier = Modifier
                     .fillMaxWidth()

@@ -24,8 +24,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.functions.infiniteColorAnimation
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_14_sp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
@@ -43,7 +41,10 @@ fun PasswordTextFieldWithError(
     imeAction: ImeAction = ImeAction.Default,
     onImeActionPerformed: () -> Unit = {}
 ) {
-    Column {
+    Column(
+        modifier = modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.Top
+    ) {
         var isPasswordFocused by remember { mutableStateOf(false) }
 
         ShowHidePasswordTextField(
@@ -89,6 +90,7 @@ fun OutlinedTextFieldWithError(
     keyboardActions: KeyboardActions = KeyboardActions.Default
 ) {
     Column(
+        modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.Top
     ) {
         var isFieldFocused by remember { mutableStateOf(false) }
@@ -100,7 +102,7 @@ fun OutlinedTextFieldWithError(
         )
 
         OutlinedTextField(
-            modifier = modifier
+            modifier = Modifier
                 .onFocusChanged {
                     isFieldFocused = it.isFocused
                 }
@@ -138,7 +140,7 @@ fun OutlinedTextFieldWithError(
             Text(
                 text = errorText,
                 color = Color.Red,
-                modifier = modifier.padding(top = size_4_dp),
+                modifier = Modifier.padding(top = size_4_dp),
                 style = TextStyle(
                     fontFamily = redHatDisplayFontFamily
                 ),
