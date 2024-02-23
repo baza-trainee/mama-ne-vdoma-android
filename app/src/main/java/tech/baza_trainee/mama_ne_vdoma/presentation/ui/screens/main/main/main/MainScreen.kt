@@ -28,7 +28,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.LoadingIndicator
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_16_sp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_20_sp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_124_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_128_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_16_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_24_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_2_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_4_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_54_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_64_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_8_dp
 
 @Composable
 fun MainScreen(
@@ -45,29 +56,29 @@ fun MainScreen(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 16.dp)
-                .height(128.dp)
+                .padding(top = size_16_dp)
+                .height(size_128_dp)
                 .background(
                     color = MaterialTheme.colorScheme.surface,
-                    shape = RoundedCornerShape(8.dp)
+                    shape = RoundedCornerShape(size_8_dp)
                 )
                 .clickable {
                     handleEvent(MainEvent.Groups)
                 }
-                .padding(2.dp),
+                .padding(size_2_dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
                 modifier = Modifier.weight(1f),
                 text = stringResource(id = R.string.my_groups),
-                fontSize = 20.sp,
+                fontSize = font_size_20_sp,
                 fontFamily = redHatDisplayFontFamily,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center
             )
             Image(
-                modifier = Modifier.height(124.dp),
+                modifier = Modifier.height(size_124_dp),
                 painter = painterResource(id = R.drawable.my_groups),
                 contentDescription = null,
                 contentScale = ContentScale.FillHeight
@@ -77,29 +88,29 @@ fun MainScreen(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 16.dp)
-                .height(128.dp)
+                .padding(top = size_16_dp)
+                .height(size_128_dp)
                 .background(
                     color = MaterialTheme.colorScheme.surface,
-                    shape = RoundedCornerShape(8.dp)
+                    shape = RoundedCornerShape(size_8_dp)
                 )
                 .clickable {
                     handleEvent(MainEvent.Search)
                 }
-                .padding(2.dp),
+                .padding(size_2_dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
                 modifier = Modifier.weight(1f),
                 text = stringResource(id = R.string.title_search),
-                fontSize = 20.sp,
+                fontSize = font_size_20_sp,
                 fontFamily = redHatDisplayFontFamily,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center
             )
             Image(
-                modifier = Modifier.height(124.dp),
+                modifier = Modifier.height(size_124_dp),
                 painter = painterResource(id = R.drawable.search),
                 contentDescription = null,
                 contentScale = ContentScale.FillHeight
@@ -109,29 +120,29 @@ fun MainScreen(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 16.dp)
-                .height(128.dp)
+                .padding(top = size_16_dp)
+                .height(size_128_dp)
                 .background(
                     color = MaterialTheme.colorScheme.surface,
-                    shape = RoundedCornerShape(8.dp)
+                    shape = RoundedCornerShape(size_8_dp)
                 )
                 .clickable {
                     handleEvent(MainEvent.Account)
                 }
-                .padding(2.dp),
+                .padding(size_2_dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
                 modifier = Modifier.weight(1f),
                 text = stringResource(id = R.string.title_account_info),
-                fontSize = 20.sp,
+                fontSize = font_size_20_sp,
                 fontFamily = redHatDisplayFontFamily,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center
             )
             Image(
-                modifier = Modifier.height(124.dp),
+                modifier = Modifier.height(size_124_dp),
                 painter = painterResource(id = R.drawable.my_account),
                 contentDescription = null,
                 contentScale = ContentScale.FillHeight
@@ -141,28 +152,28 @@ fun MainScreen(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 16.dp)
-                .height(64.dp)
+                .padding(top = size_16_dp)
+                .height(size_64_dp)
                 .background(
                     color = MaterialTheme.colorScheme.surface,
-                    shape = RoundedCornerShape(8.dp)
+                    shape = RoundedCornerShape(size_8_dp)
                 )
                 .clickable {
                     handleEvent(MainEvent.Notifications)
                 }
-                .padding(4.dp),
+                .padding(size_4_dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
                 modifier = Modifier.weight(1f),
                 text = stringResource(id = R.string.title_my_notifications),
-                fontSize = 16.sp,
+                fontSize = font_size_16_sp,
                 fontFamily = redHatDisplayFontFamily,
                 textAlign = TextAlign.Center
             )
             Image(
-                modifier = Modifier.height(54.dp),
+                modifier = Modifier.height(size_54_dp),
                 painter = painterResource(id = R.drawable.notifications),
                 contentDescription = null,
                 contentScale = ContentScale.FillHeight
@@ -172,28 +183,28 @@ fun MainScreen(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 16.dp)
-                .height(64.dp)
+                .padding(vertical = size_16_dp)
+                .height(size_64_dp)
                 .background(
                     color = MaterialTheme.colorScheme.surface,
-                    shape = RoundedCornerShape(8.dp)
+                    shape = RoundedCornerShape(size_8_dp)
                 )
                 .clickable {
                     handleEvent(MainEvent.Settings)
                 }
-                .padding(4.dp),
+                .padding(size_4_dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
                 modifier = Modifier.weight(1f),
                 text = stringResource(id = R.string.title_my_settings),
-                fontSize = 16.sp,
+                fontSize = font_size_16_sp,
                 fontFamily = redHatDisplayFontFamily,
                 textAlign = TextAlign.Center
             )
             Image(
-                modifier = Modifier.height(54.dp),
+                modifier = Modifier.height(size_54_dp),
                 painter = painterResource(id = R.drawable.account_settings),
                 contentDescription = null,
                 contentScale = ContentScale.FillHeight

@@ -21,6 +21,8 @@ import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ButtonText
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ScaffoldWithNavigationBars
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.headers.HeaderWithOptArrow
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_16_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_48_dp
 
 @Composable
 fun RestoreSuccessScreen(goToMain: () -> Unit) {
@@ -54,9 +56,9 @@ fun RestoreSuccessScreen(goToMain: () -> Unit) {
 
             Button(
                 modifier = Modifier
-                    .padding(horizontal = 16.dp, vertical = 16.dp)
+                    .padding(all = size_16_dp)
                     .fillMaxWidth()
-                    .height(48.dp),
+                    .height(size_48_dp),
                 onClick = goToMain
             ) {
                 ButtonText(

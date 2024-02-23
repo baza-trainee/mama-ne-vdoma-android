@@ -22,10 +22,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import tech.baza_trainee.mama_ne_vdoma.R
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_14_sp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_16_sp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_16_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_24_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_8_dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -36,9 +39,9 @@ fun AcceptRequestDialog(
     AlertDialog(onDismissRequest = onDismiss) {
         Column(
             modifier = Modifier
-                .clip(RoundedCornerShape(8.dp))
+                .clip(RoundedCornerShape(size_8_dp))
                 .background(MaterialTheme.colorScheme.background)
-                .padding(vertical = 8.dp)
+                .padding(vertical = size_8_dp)
                 .fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -51,10 +54,10 @@ fun AcceptRequestDialog(
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 16.dp)
-                    .padding(horizontal = 16.dp),
+                    .padding(top = size_16_dp)
+                    .padding(horizontal = size_16_dp),
                 text = stringResource(id = R.string.join_request_accepted, groupName),
-                fontSize = 14.sp,
+                fontSize = font_size_14_sp,
                 fontFamily = redHatDisplayFontFamily,
                 textAlign = TextAlign.Start
             )
@@ -62,14 +65,14 @@ fun AcceptRequestDialog(
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 24.dp)
+                    .padding(top = size_24_dp)
                     .align(Alignment.End)
                     .clickable(
                         indication = null,
                         interactionSource = remember { MutableInteractionSource() }
                     ) { onDismiss() },
                 text = stringResource(id = R.string.action_close),
-                fontSize = 16.sp,
+                fontSize = font_size_16_sp,
                 fontFamily = redHatDisplayFontFamily,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary,

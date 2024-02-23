@@ -28,7 +28,14 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.LoadingIndicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.SurfaceWithSystemBars
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.text_fields.PasswordTextFieldWithError
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_14_sp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_18_sp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_20_sp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_16_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_48_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_4_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_8_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.showToast
@@ -56,8 +63,8 @@ fun NewPasswordScreen(
             modifier = Modifier
                 .imePadding()
                 .fillMaxWidth()
-                .padding(top = 16.dp)
-                .padding(horizontal = 16.dp),
+                .padding(top = size_16_dp)
+                .padding(horizontal = size_16_dp),
             verticalArrangement = Arrangement.SpaceBetween,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -71,7 +78,7 @@ fun NewPasswordScreen(
                 Text(
                     modifier = Modifier.fillMaxWidth(),
                     text = stringResource(id = R.string.title_restore_password),
-                    fontSize = 20.sp,
+                    fontSize = font_size_20_sp,
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.onBackground,
                     fontFamily = redHatDisplayFontFamily
@@ -80,9 +87,9 @@ fun NewPasswordScreen(
                 Text(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 4.dp),
+                        .padding(top = size_4_dp),
                     text = stringResource(id = R.string.create_new_password),
-                    fontSize = 14.sp,
+                    fontSize = font_size_14_sp,
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.onBackground,
                     fontFamily = redHatDisplayFontFamily
@@ -91,7 +98,7 @@ fun NewPasswordScreen(
                 PasswordTextFieldWithError(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 16.dp),
+                        .padding(top = size_16_dp),
                     password = screenState.password,
                     onValueChange = { handleEvent(NewPasswordEvent.ValidatePassword(it)) },
                     isError = screenState.passwordValid == ValidField.INVALID,
@@ -101,17 +108,17 @@ fun NewPasswordScreen(
                 Text(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 8.dp),
+                        .padding(top = size_8_dp),
                     text = stringResource(id = R.string.password_rule_hint),
-                    fontSize = 14.sp,
+                    fontSize = font_size_14_sp,
                     fontFamily = redHatDisplayFontFamily,
-                    lineHeight = 18.sp
+                    lineHeight = font_size_18_sp
                 )
 
                 PasswordTextFieldWithError(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 16.dp),
+                        .padding(top = size_16_dp),
                     label = stringResource(id = R.string.repeat_password),
                     password = screenState.confirmPassword,
                     onValueChange = { handleEvent(NewPasswordEvent.ValidateConfirmPassword(it)) },
@@ -124,9 +131,9 @@ fun NewPasswordScreen(
 
             Button(
                 modifier = Modifier
-                    .padding(vertical = 16.dp)
+                    .padding(vertical = size_16_dp)
                     .fillMaxWidth()
-                    .height(48.dp),
+                    .height(size_48_dp),
                 onClick = { handleEvent(NewPasswordEvent.ResetPassword) },
                 enabled = screenState.passwordValid == ValidField.VALID &&
                         screenState.confirmPasswordValid == ValidField.VALID

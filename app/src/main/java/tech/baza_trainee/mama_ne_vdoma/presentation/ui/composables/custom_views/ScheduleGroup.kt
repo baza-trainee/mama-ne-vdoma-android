@@ -23,6 +23,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import tech.baza_trainee.mama_ne_vdoma.domain.model.DayPeriod
 import tech.baza_trainee.mama_ne_vdoma.domain.model.Period
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_48_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_4_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_8_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.capitalize
 import java.time.DayOfWeek
 import java.time.format.TextStyle
@@ -38,20 +41,23 @@ fun ScheduleGroup(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(4.dp)),
+            .background(
+                color = MaterialTheme.colorScheme.surface,
+                shape = RoundedCornerShape(size_4_dp)
+            ),
         verticalArrangement = Arrangement.Top
     ) {
         Row(
             modifier = Modifier
-                .padding(vertical = 8.dp)
+                .padding(vertical = size_8_dp)
                 .fillMaxWidth()
-                .height(48.dp),
+                .height(size_48_dp),
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
                 modifier = Modifier
-                    .padding(horizontal = 8.dp)
+                    .padding(horizontal = size_8_dp)
                     .weight(0.34f),
                 text = stringResource(id = Period.WHOLE_DAY.period).capitalize(),
                 textAlign = TextAlign.Center,
@@ -59,7 +65,7 @@ fun ScheduleGroup(
             )
             Text(
                 modifier = Modifier
-                    .padding(horizontal = 8.dp)
+                    .padding(horizontal = size_8_dp)
                     .weight(0.22f),
                 text = stringResource(id = Period.MORNING.period).capitalize(),
                 textAlign = TextAlign.Center,
@@ -67,7 +73,7 @@ fun ScheduleGroup(
             )
             Text(
                 modifier = Modifier
-                    .padding(horizontal = 8.dp)
+                    .padding(horizontal = size_8_dp)
                     .weight(0.22f),
                 text = stringResource(id = Period.NOON.period).capitalize(),
                 textAlign = TextAlign.Center,
@@ -75,7 +81,7 @@ fun ScheduleGroup(
             )
             Text(
                 modifier = Modifier
-                    .padding(horizontal = 8.dp)
+                    .padding(horizontal = size_8_dp)
                     .weight(0.22f),
                 text = stringResource(id = Period.AFTERNOON.period).capitalize(),
                 textAlign = TextAlign.Center,
@@ -85,9 +91,9 @@ fun ScheduleGroup(
         DayOfWeek.entries.sortedBy { it.value }.forEach { day ->
             Row(
                 modifier = Modifier
-                    .padding(vertical = 8.dp)
+                    .padding(vertical = size_8_dp)
                     .fillMaxWidth()
-                    .height(48.dp),
+                    .height(size_48_dp),
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -96,13 +102,13 @@ fun ScheduleGroup(
 
                 Box(
                     modifier = Modifier
-                        .padding(horizontal = 8.dp)
-                        .height(48.dp)
+                        .padding(horizontal = size_8_dp)
+                        .height(size_48_dp)
                         .weight(0.34f)
                         .background(
                             color = if (schedule[day]?.wholeDay == true) MaterialTheme.colorScheme.primary
                             else MaterialTheme.colorScheme.surface,
-                            shape = RoundedCornerShape(8.dp)
+                            shape = RoundedCornerShape(size_8_dp)
                         )
                         .clickable {
                             onValueChange(day, Period.WHOLE_DAY)
@@ -119,7 +125,7 @@ fun ScheduleGroup(
 
                 Checkbox(
                     modifier = Modifier
-                        .padding(horizontal = 8.dp)
+                        .padding(horizontal = size_8_dp)
                         .weight(0.22f),
                     checked = schedule[day]?.morning == true,
                     onCheckedChange = {
@@ -129,7 +135,7 @@ fun ScheduleGroup(
 
                 Checkbox(
                     modifier = Modifier
-                        .padding(horizontal = 8.dp)
+                        .padding(horizontal =  (size_8_dp))
                         .weight(0.22f),
                     checked = schedule[day]?.noon == true,
                     onCheckedChange = {
@@ -139,7 +145,7 @@ fun ScheduleGroup(
 
                 Checkbox(
                     modifier = Modifier
-                        .padding(horizontal = 8.dp)
+                        .padding(horizontal =  (size_8_dp))
                         .weight(0.22f),
                     checked = schedule[day]?.afternoon == true,
                     onCheckedChange = {

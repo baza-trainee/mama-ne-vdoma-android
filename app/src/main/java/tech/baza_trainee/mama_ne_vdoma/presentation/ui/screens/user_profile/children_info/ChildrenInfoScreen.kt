@@ -21,15 +21,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.cards.ChildInfoDesk
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ButtonText
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.LoadingIndicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ScaffoldWithNavigationBars
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.headers.HeaderWithOptArrow
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_20_sp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_16_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_48_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_8_dp
 
 @Composable
 fun  ChildrenInfoScreen(
@@ -54,15 +56,15 @@ fun  ChildrenInfoScreen(
                 .padding(paddingValues)
                 .imePadding()
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp),
+                .padding(horizontal = size_16_dp),
             horizontalAlignment = Alignment.Start,
             verticalArrangement = Arrangement.Top
         ) {
             LazyColumn(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+                    .padding(top = size_16_dp),
+                verticalArrangement = Arrangement.spacedBy(size_16_dp)
             ) {
                 items(screenState.children) { child ->
                     ChildInfoDesk(
@@ -97,9 +99,9 @@ fun  ChildrenInfoScreen(
                 Text(
                     text = stringResource(id = R.string.add_more_children),
                     fontFamily = redHatDisplayFontFamily,
-                    fontSize = 20.sp,
+                    fontSize = font_size_20_sp,
                     modifier = Modifier
-                        .padding(start = 8.dp)
+                        .padding(start = size_8_dp)
                         .fillMaxWidth(1f)
                 )
             }
@@ -108,9 +110,9 @@ fun  ChildrenInfoScreen(
 
             Button(
                 modifier = Modifier
-                    .padding(vertical = 16.dp)
+                    .padding(vertical = size_16_dp)
                     .fillMaxWidth()
-                    .height(48.dp),
+                    .height(size_48_dp),
                 onClick = onNext
             ) {
                 ButtonText(

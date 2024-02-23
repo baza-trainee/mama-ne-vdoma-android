@@ -38,8 +38,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import tech.baza_trainee.mama_ne_vdoma.R
@@ -47,7 +45,19 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.JoinRequestUiModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.LogoutButtonColor
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.LogoutButtonTextColor
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_14_sp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_16_sp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_20_sp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_120_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_16_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_1_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_24_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_2_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_40_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_48_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_4_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_8_dp
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -63,9 +73,9 @@ fun AdminJoinRequestCard(
             .fillMaxWidth()
             .background(
                 color = MaterialTheme.colorScheme.surface,
-                shape = RoundedCornerShape(8.dp)
+                shape = RoundedCornerShape(size_8_dp)
             )
-            .padding(all = 16.dp),
+            .padding(all = size_16_dp),
         verticalArrangement = Arrangement.Top
     ) {
         var toggleMoreInfo by rememberSaveable { mutableStateOf(false) }
@@ -76,7 +86,7 @@ fun AdminJoinRequestCard(
         ) {
             Text(
                 text = stringResource(id = R.string.join_request),
-                fontSize = 16.sp,
+                fontSize = font_size_16_sp,
                 fontFamily = redHatDisplayFontFamily,
                 fontWeight = FontWeight.SemiBold
             )
@@ -107,8 +117,8 @@ fun AdminJoinRequestCard(
                 ) {
                     AsyncImage(
                         modifier = Modifier
-                            .height(40.dp)
-                            .width(40.dp)
+                            .height(size_40_dp)
+                            .width(size_40_dp)
                             .clip(CircleShape),
                         model = ImageRequest.Builder(LocalContext.current)
                             .data(request.parentAvatar)
@@ -127,42 +137,42 @@ fun AdminJoinRequestCard(
                         Text(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(horizontal = 16.dp)
-                                .padding(bottom = 4.dp),
+                                .padding(horizontal = size_16_dp)
+                                .padding(bottom = size_4_dp),
                             text = request.parentName,
-                            fontSize = 16.sp,
+                            fontSize = font_size_16_sp,
                             fontFamily = redHatDisplayFontFamily
                         )
 
                         Text(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(horizontal = 16.dp)
-                                .padding(bottom = 4.dp),
+                                .padding(horizontal = size_16_dp)
+                                .padding(bottom = size_4_dp),
                             text = stringResource(id = R.string.join_request_info, request.group.name),
-                            fontSize = 14.sp,
+                            fontSize = font_size_14_sp,
                             fontFamily = redHatDisplayFontFamily
                         )
                     }
                 }
 
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(size_24_dp))
 
                 Row(
                     modifier = Modifier
-                        .padding(horizontal = 16.dp)
-                        .padding(bottom = 16.dp)
+                        .padding(horizontal = size_16_dp)
+                        .padding(bottom = size_16_dp)
                         .align(Alignment.End),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
                         modifier = Modifier
-                            .padding(horizontal = 8.dp)
+                            .padding(horizontal = size_8_dp)
                             .clickable {
                                 onDecline()
                             },
                         text = stringResource(id = R.string.action_refuse),
-                        fontSize = 16.sp,
+                        fontSize = font_size_16_sp,
                         fontFamily = redHatDisplayFontFamily,
                         fontWeight = FontWeight.Bold,
                         color = Color.Red,
@@ -171,12 +181,12 @@ fun AdminJoinRequestCard(
 
                     Text(
                         modifier = Modifier
-                            .padding(horizontal = 8.dp)
+                            .padding(horizontal = size_8_dp)
                             .clickable {
                                 onAccept()
                             },
                         text = stringResource(id = R.string.action_approve),
-                        fontSize = 16.sp,
+                        fontSize = font_size_16_sp,
                         fontFamily = redHatDisplayFontFamily,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.primary,
@@ -190,9 +200,9 @@ fun AdminJoinRequestCard(
                     .fillMaxWidth()
                     .background(
                         color = MaterialTheme.colorScheme.surface,
-                        shape = RoundedCornerShape(8.dp)
+                        shape = RoundedCornerShape(size_8_dp)
                     )
-                    .padding(8.dp),
+                    .padding(size_8_dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Top
             ) {
@@ -205,68 +215,68 @@ fun AdminJoinRequestCard(
                     contentDescription = "avatar",
                     contentScale = ContentScale.FillBounds,
                     modifier = Modifier
-                        .width(120.dp)
-                        .height(120.dp)
+                        .width(size_120_dp)
+                        .height(size_120_dp)
                         .clip(CircleShape)
                 )
 
-                Spacer(modifier = Modifier.height(4.dp))
+                Spacer(modifier = Modifier.height(size_4_dp))
 
                 Text(
                     modifier = Modifier.fillMaxWidth(),
                     text = request.parentName,
-                    fontSize = 20.sp,
+                    fontSize = font_size_20_sp,
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.primary,
                     fontFamily = redHatDisplayFontFamily
                 )
 
-                Spacer(modifier = Modifier.height(4.dp))
+                Spacer(modifier = Modifier.height(size_4_dp))
 
                 Text(
                     modifier = Modifier.fillMaxWidth(),
                     text = request.parentPhone,
-                    fontSize = 16.sp,
+                    fontSize = font_size_16_sp,
                     textAlign = TextAlign.Center,
                     fontFamily = redHatDisplayFontFamily
                 )
 
-                Spacer(modifier = Modifier.height(2.dp))
+                Spacer(modifier = Modifier.height(size_2_dp))
 
                 Text(
                     modifier = Modifier.fillMaxWidth(),
                     text = request.parentEmail,
-                    fontSize = 16.sp,
+                    fontSize = font_size_16_sp,
                     textAlign = TextAlign.Center,
                     fontFamily = redHatDisplayFontFamily
                 )
 
-                Spacer(modifier = Modifier.height(2.dp))
+                Spacer(modifier = Modifier.height(size_2_dp))
 
                 Text(
                     modifier = Modifier
                         .fillMaxWidth()
                         .basicMarquee(),
                     text = request.parentAddress,
-                    fontSize = 16.sp,
+                    fontSize = font_size_16_sp,
                     textAlign = TextAlign.Center,
                     fontFamily = redHatDisplayFontFamily
                 )
 
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(size_8_dp))
 
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 4.dp)
-                        .height(1.dp)
+                        .padding(horizontal = size_4_dp)
+                        .height(size_1_dp)
                         .background(
                             color = MaterialTheme.colorScheme.onBackground,
                             shape = RectangleShape
                         )
                 )
 
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(size_8_dp))
 
                 ChildInfoDesk(
                     child = request.child,
@@ -274,12 +284,12 @@ fun AdminJoinRequestCard(
                     canDelete = false,
                 )
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(size_16_dp))
 
                 Button(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(48.dp),
+                        .height(size_48_dp),
                     onClick = onAccept
                 ) {
                     ButtonText(
@@ -287,12 +297,12 @@ fun AdminJoinRequestCard(
                     )
                 }
 
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(size_8_dp))
 
                 Button(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(48.dp),
+                        .height(size_48_dp),
                     onClick = onDecline,
                     colors = ButtonDefaults.buttonColors(
                         containerColor = LogoutButtonColor,

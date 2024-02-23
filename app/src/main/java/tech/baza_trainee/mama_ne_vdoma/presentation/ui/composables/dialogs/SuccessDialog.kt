@@ -23,7 +23,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import tech.baza_trainee.mama_ne_vdoma.R
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_14_sp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_16_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_8_dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -35,9 +38,9 @@ fun SuccessDialog(
     AlertDialog(onDismissRequest = onDismiss) {
         Column(
             modifier = Modifier
-                .clip(RoundedCornerShape(8.dp))
+                .clip(RoundedCornerShape(size_8_dp))
                 .background(MaterialTheme.colorScheme.background)
-                .padding(16.dp)
+                .padding(size_16_dp)
                 .fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -49,11 +52,11 @@ fun SuccessDialog(
 
             Text(
                 modifier = Modifier
-                    .padding(top = 16.dp)
-                    .padding(horizontal = 16.dp)
+                    .padding(top = size_16_dp)
+                    .padding(horizontal = size_16_dp)
                     .fillMaxWidth(),
                 text = info,
-                fontSize = 14.sp,
+                fontSize = font_size_14_sp,
                 textAlign = TextAlign.Start,
                 fontFamily = redHatDisplayFontFamily
             )
@@ -67,7 +70,7 @@ fun SuccessDialog(
                     .wrapContentWidth()
                     .align(Alignment.End)
                     .clickable { onClick() }
-                    .padding(16.dp)
+                    .padding(size_16_dp)
             )
         }
     }

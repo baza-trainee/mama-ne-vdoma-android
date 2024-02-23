@@ -34,6 +34,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.SlateGray
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_1_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_2_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_4_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_56_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_72_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_8_dp
 
 @Composable
 @Preview
@@ -78,7 +84,7 @@ fun OtpTextField(
                         text = otpText
                     )
                     if (index < otpCount - 1)
-                        Spacer(modifier = Modifier.width(8.dp))
+                        Spacer(modifier = Modifier.width(size_8_dp))
                 }
             }
         }
@@ -97,17 +103,17 @@ private fun CharView(
     }
     Box(
         modifier = Modifier
-            .height(56.dp)
-            .width(78.dp)
+            .height(size_56_dp)
+            .width(size_72_dp)
             .border(
-                width = 1.dp,
+                width = size_1_dp,
                 color = when {
                     isFocused -> MaterialTheme.colorScheme.primary
                     else -> SlateGray
                 },
-                shape = RoundedCornerShape(4.dp)
+                shape = RoundedCornerShape(size_4_dp)
             )
-            .padding(2.dp),
+            .padding(size_2_dp),
         contentAlignment = Alignment.Center
     ) {
         Text(

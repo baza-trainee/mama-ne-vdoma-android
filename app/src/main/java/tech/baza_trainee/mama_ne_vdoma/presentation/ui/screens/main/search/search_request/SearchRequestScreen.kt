@@ -50,7 +50,17 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.LoadingIndicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.text_fields.OutlinedTextFieldWithError
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.SlateGray
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_14_sp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_16_sp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_20_sp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_16_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_24_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_2_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_32_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_48_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_4_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_8_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -89,17 +99,17 @@ fun SearchRequestScreen(
         Text(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 16.dp),
+                .padding(top = size_16_dp),
             text = stringResource(id = R.string.find_user),
             fontFamily = redHatDisplayFontFamily,
             fontWeight = FontWeight.Bold,
-            fontSize = 20.sp
+            fontSize = font_size_20_sp
         )
 
         OutlinedTextFieldWithError(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 8.dp),
+                .padding(top = size_8_dp),
             value = screenState.email,
             label = stringResource(id = R.string.user_email),
             hint = stringResource(id = R.string.email),
@@ -124,8 +134,8 @@ fun SearchRequestScreen(
         Button(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 16.dp, top = 48.dp)
-                .height(48.dp),
+                .padding(bottom = size_16_dp, top = size_48_dp)
+                .height(size_48_dp),
             onClick = {
                 handleEvent(SearchRequestEvent.SearchUser)
             },
@@ -139,24 +149,24 @@ fun SearchRequestScreen(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 32.dp),
+                .padding(top = size_32_dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Box(
                 modifier = Modifier
                     .weight(1f)
-                    .height(height = 2.dp)
+                    .height(height = size_2_dp)
                     .background(color = SlateGray)
             )
             Text(
-                modifier = Modifier.padding(horizontal = 4.dp),
+                modifier = Modifier.padding(horizontal = size_4_dp),
                 text = stringResource(id = R.string.or),
-                fontSize = 14.sp,
+                fontSize = font_size_14_sp,
             )
             Box(
                 modifier = Modifier
                     .weight(1f)
-                    .height(height = 2.dp)
+                    .height(height = size_2_dp)
                     .background(color = SlateGray)
             )
         }
@@ -164,8 +174,8 @@ fun SearchRequestScreen(
         Button(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 16.dp, top = 48.dp)
-                .height(48.dp),
+                .padding(bottom = size_16_dp, top = size_48_dp)
+                .height(size_48_dp),
             onClick = {
                 handleEvent(SearchRequestEvent.SearchGroup)
             }
@@ -179,9 +189,9 @@ fun SearchRequestScreen(
             AlertDialog(onDismissRequest = { nothingFound = false }) {
                 Column(
                     modifier = Modifier
-                        .clip(RoundedCornerShape(8.dp))
+                        .clip(RoundedCornerShape(size_8_dp))
                         .background(MaterialTheme.colorScheme.background)
-                        .padding(vertical = 8.dp)
+                        .padding(vertical = size_8_dp)
                         .fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
@@ -194,10 +204,10 @@ fun SearchRequestScreen(
                     Text(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(top = 16.dp)
-                            .padding(horizontal = 16.dp),
+                            .padding(top = size_16_dp)
+                            .padding(horizontal = size_16_dp),
                         text = stringResource(id = R.string.user_not_found),
-                        fontSize = 14.sp,
+                        fontSize = font_size_14_sp,
                         fontFamily = redHatDisplayFontFamily,
                         textAlign = TextAlign.Start
                     )
@@ -205,8 +215,8 @@ fun SearchRequestScreen(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 16.dp)
-                            .padding(bottom = 16.dp, top = 24.dp),
+                            .padding(horizontal = size_16_dp)
+                            .padding(bottom = size_16_dp, top = size_24_dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
@@ -219,7 +229,7 @@ fun SearchRequestScreen(
                                     nothingFound = false
                                 },
                             text = stringResource(id = R.string.action_search),
-                            fontSize = 16.sp,
+                            fontSize = font_size_16_sp,
                             fontFamily = redHatDisplayFontFamily,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.primary,
@@ -237,7 +247,7 @@ fun SearchRequestScreen(
                                     handleEvent(SearchRequestEvent.OnMain)
                                 },
                             text = stringResource(id = R.string.action_go_to_main),
-                            fontSize = 16.sp,
+                            fontSize = font_size_16_sp,
                             fontFamily = redHatDisplayFontFamily,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.primary,

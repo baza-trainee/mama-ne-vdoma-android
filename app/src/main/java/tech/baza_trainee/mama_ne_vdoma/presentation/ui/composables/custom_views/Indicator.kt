@@ -16,6 +16,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_0_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_1_dp
 
 @Composable
 fun Indicator(
@@ -32,7 +34,7 @@ fun Indicator(
         label = ""
     )
     Box(
-        modifier = Modifier
+        modifier = modifier
             .clip(CircleShape)
             .height(defaultRadius)
             .width(width)
@@ -41,7 +43,7 @@ fun Indicator(
                 shape = CircleShape
             )
             .border(
-                width = if (isSelected) 0.dp else 1.dp,
+                width = if (isSelected) size_0_dp else size_1_dp,
                 color = selectedColor,
                 shape = CircleShape
             )

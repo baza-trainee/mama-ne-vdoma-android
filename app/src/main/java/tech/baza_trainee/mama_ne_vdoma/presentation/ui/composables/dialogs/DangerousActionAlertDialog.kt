@@ -29,11 +29,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ButtonText
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_14_sp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_16_sp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_16_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_24_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_48_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_8_dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -49,9 +53,9 @@ fun DangerousActionAlertDialog(
     ) {
         Column(
             modifier = Modifier
-                .clip(RoundedCornerShape(8.dp))
+                .clip(RoundedCornerShape(size_8_dp))
                 .background(MaterialTheme.colorScheme.background)
-                .padding(vertical = 8.dp)
+                .padding(vertical = size_8_dp)
                 .fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -64,20 +68,20 @@ fun DangerousActionAlertDialog(
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 16.dp)
-                    .padding(horizontal = 16.dp),
+                    .padding(top = size_16_dp)
+                    .padding(horizontal = size_16_dp),
                 text = text,
-                fontSize = 14.sp,
+                fontSize = font_size_14_sp,
                 fontFamily = redHatDisplayFontFamily,
                 textAlign = TextAlign.Start
             )
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(size_24_dp))
 
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
+                    .padding(horizontal = size_16_dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
@@ -90,7 +94,7 @@ fun DangerousActionAlertDialog(
                             onDismissRequest()
                         },
                     text = stringResource(id = R.string.no),
-                    fontSize = 16.sp,
+                    fontSize = font_size_16_sp,
                     fontFamily = redHatDisplayFontFamily,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.primary,
@@ -100,7 +104,7 @@ fun DangerousActionAlertDialog(
                 Button(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(48.dp)
+                        .height(size_48_dp)
                         .weight(0.8f),
                     onClick = { onDelete() },
                     colors = ButtonDefaults.buttonColors(

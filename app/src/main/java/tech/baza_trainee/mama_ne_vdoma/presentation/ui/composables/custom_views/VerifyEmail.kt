@@ -20,7 +20,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.text_fields.OtpTextField
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_14_sp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_16_sp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_16_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_32_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_48_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_4_dp
 
 @Composable
 fun VerifyEmail(
@@ -37,7 +43,7 @@ fun VerifyEmail(
         Text(
             modifier = Modifier.fillMaxWidth(),
             text = stringResource(id = R.string.verify_email_info),
-            fontSize = 16.sp,
+            fontSize = font_size_16_sp,
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.onBackground,
             fontFamily = redHatDisplayFontFamily
@@ -46,7 +52,7 @@ fun VerifyEmail(
         OtpTextField(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 32.dp),
+                .padding(top = size_32_dp),
             otpText = otp,
             onOtpTextChange = { value, otpInputFilled ->
                 onVerify(value, otpInputFilled)
@@ -54,23 +60,23 @@ fun VerifyEmail(
         )
         if (!isOtpValid)
             Text(
-                modifier = Modifier.padding(top = 4.dp),
+                modifier = Modifier.padding(top = size_4_dp),
                 text = stringResource(id = R.string.wrong_otp),
                 color = Color.Red,
                 fontFamily = redHatDisplayFontFamily,
                 style = TextStyle(
                     fontFamily = redHatDisplayFontFamily
                 ),
-                fontSize = 14.sp
+                fontSize = font_size_14_sp
             )
 
         Spacer(modifier = Modifier.weight(1f))
 
         Button(
             modifier = Modifier
-                .padding(vertical = 16.dp)
+                .padding(vertical = size_16_dp)
                 .fillMaxWidth()
-                .height(48.dp),
+                .height(size_48_dp),
             onClick = onResend
         ) {
             ButtonText(

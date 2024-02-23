@@ -46,7 +46,13 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ScheduleGroup
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.text_fields.OutlinedTextFieldWithError
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.GrayText
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_12_sp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_16_sp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_16_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_1_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_48_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_8_dp
 import java.time.DayOfWeek
 
 @Composable
@@ -73,9 +79,9 @@ fun ParentScheduleEditDialog(
         ConstraintLayout(
             modifier = Modifier
                 .fillMaxHeight(0.9f)
-                .clip(RoundedCornerShape(8.dp))
+                .clip(RoundedCornerShape(size_8_dp))
                 .background(MaterialTheme.colorScheme.background)
-                .padding(vertical = 8.dp)
+                .padding(vertical = size_8_dp)
                 .fillMaxWidth()
         ) {
 
@@ -93,10 +99,10 @@ fun ParentScheduleEditDialog(
             ) {
                 Text(
                     modifier = Modifier
-                        .padding(horizontal = 16.dp)
+                        .padding(horizontal = size_16_dp)
                         .weight(0.8f),
                     text = stringResource(id = R.string.change_your_schedule),
-                    fontSize = 16.sp
+                    fontSize = font_size_16_sp
                 )
 
                 IconButton(
@@ -114,8 +120,8 @@ fun ParentScheduleEditDialog(
                 modifier = Modifier
                     .verticalScroll(rememberScrollState())
                     .constrainAs(content) {
-                        top.linkTo(title.bottom, 8.dp)
-                        bottom.linkTo(buttons.top, 8.dp)
+                        top.linkTo(title.bottom, size_8_dp)
+                        bottom.linkTo(buttons.top, size_8_dp)
                         height = Dimension.fillToConstraints
                     },
                 horizontalAlignment = Alignment.CenterHorizontally
@@ -131,7 +137,7 @@ fun ParentScheduleEditDialog(
                 OutlinedTextFieldWithError(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 8.dp),
+                        .padding(top = size_8_dp),
                     value = tempNote,
                     label = stringResource(id = R.string.note),
                     hint = stringResource(id = R.string.note_hint),
@@ -147,7 +153,7 @@ fun ParentScheduleEditDialog(
                         .align(Alignment.End),
                     text = stringResource(id = R.string.note_text_length),
                     fontFamily = redHatDisplayFontFamily,
-                    fontSize = 12.sp,
+                    fontSize = font_size_12_sp,
                     color = GrayText
                 )
             }
@@ -164,8 +170,8 @@ fun ParentScheduleEditDialog(
             ) {
                 Button(
                     modifier = Modifier
-                        .height(48.dp)
-                        .padding(horizontal = 8.dp)
+                        .height(size_48_dp)
+                        .padding(horizontal = size_8_dp)
                         .weight(0.6f),
                     onClick = {
                         val map = mutableStateMapOf<DayOfWeek, DayPeriod>().apply { putAll(tempSchedule) }
@@ -177,8 +183,8 @@ fun ParentScheduleEditDialog(
                 }
                 OutlinedButton(
                     modifier = Modifier
-                        .height(48.dp)
-                        .padding(horizontal = 8.dp)
+                        .height(size_48_dp)
+                        .padding(horizontal = size_8_dp)
                         .weight(0.4f),
                     onClick = onDismissRequest,
                     colors = ButtonDefaults.buttonColors(
@@ -186,7 +192,7 @@ fun ParentScheduleEditDialog(
                         contentColor = MaterialTheme.colorScheme.primary
                     ),
                     border = BorderStroke(
-                        width = 1.dp,
+                        width = size_1_dp,
                         color = MaterialTheme.colorScheme.onBackground
                     )
                 ) {

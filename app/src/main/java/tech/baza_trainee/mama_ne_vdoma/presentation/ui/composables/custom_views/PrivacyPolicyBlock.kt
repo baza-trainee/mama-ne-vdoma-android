@@ -20,7 +20,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.functions.getTextWithUnderline
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_14_sp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_18_sp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_4_dp
 
 @Composable
 @Preview
@@ -45,12 +48,12 @@ fun PrivacyPolicyBlock(
         ) {
             Text(
                 text = stringResource(id = R.string.user_privacy_agreement),
-                fontSize = 14.sp,
+                fontSize = font_size_14_sp,
                 fontFamily = redHatDisplayFontFamily,
-                lineHeight = 18.sp
+                lineHeight = font_size_18_sp
             )
 
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(size_4_dp))
 
             Text(
                 modifier = Modifier
@@ -64,7 +67,7 @@ fun PrivacyPolicyBlock(
                     underlinedText = stringResource(id = R.string.privacy_policy),
                     isBold = true
                 ),
-                fontSize = 14.sp,
+                fontSize = font_size_14_sp,
                 fontFamily = redHatDisplayFontFamily
             )
 
@@ -80,7 +83,7 @@ fun PrivacyPolicyBlock(
                     underlinedText = stringResource(id = R.string.user_agreement),
                     isBold = true
                 ),
-                fontSize = 14.sp,
+                fontSize = font_size_14_sp,
                 fontFamily = redHatDisplayFontFamily
             )
 
@@ -96,7 +99,7 @@ fun PrivacyPolicyBlock(
                     underlinedText = stringResource(id = R.string.responsibility_refusal),
                     isBold = true
                 ),
-                fontSize = 14.sp,
+                fontSize = font_size_14_sp,
                 fontFamily = redHatDisplayFontFamily
             )
         }

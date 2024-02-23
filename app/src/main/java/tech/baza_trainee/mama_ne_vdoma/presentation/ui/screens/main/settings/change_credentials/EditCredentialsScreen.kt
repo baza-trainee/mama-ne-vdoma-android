@@ -33,14 +33,21 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ButtonText
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.text_fields.OutlinedTextFieldWithError
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.text_fields.PasswordTextFieldWithError
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.SlateGray
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_14_sp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_18_sp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_16_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_24_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_2_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_32_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_48_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_4_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_8_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 
@@ -70,7 +77,7 @@ fun EditCredentialsScreen(
             .imePadding(),
         verticalArrangement = Arrangement.Top
     ) {
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(size_8_dp))
 
         //Login
         OutlinedTextFieldWithError(
@@ -99,8 +106,8 @@ fun EditCredentialsScreen(
         Button(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 24.dp)
-                .height(48.dp),
+                .padding(top = size_24_dp)
+                .height(size_48_dp),
             onClick = { handleEvent(EditCredentialsEvent.VerifyEmail) },
             enabled = screenState.emailValid == ValidField.VALID
         ) {
@@ -112,24 +119,24 @@ fun EditCredentialsScreen(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 32.dp),
+                .padding(top = size_32_dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Box(
                 modifier = Modifier
                     .weight(1f)
-                    .height(height = 2.dp)
+                    .height(height = size_2_dp)
                     .background(color = SlateGray)
             )
             Text(
-                modifier = Modifier.padding(horizontal = 4.dp),
+                modifier = Modifier.padding(horizontal = size_4_dp),
                 text = stringResource(id = R.string.or),
-                fontSize = 14.sp,
+                fontSize = font_size_14_sp,
             )
             Box(
                 modifier = Modifier
                     .weight(1f)
-                    .height(height = 2.dp)
+                    .height(height = size_2_dp)
                     .background(color = SlateGray)
             )
         }
@@ -138,7 +145,7 @@ fun EditCredentialsScreen(
         PasswordTextFieldWithError(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 32.dp),
+                .padding(top = size_32_dp),
             password = screenState.password,
             onValueChange = { handleEvent(EditCredentialsEvent.ValidatePassword(it)) },
             isError = screenState.passwordValid == ValidField.INVALID,
@@ -148,17 +155,17 @@ fun EditCredentialsScreen(
         Text(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 8.dp),
+                .padding(top = size_8_dp),
             text = stringResource(id = R.string.password_rule_hint),
-            fontSize = 14.sp,
+            fontSize = font_size_14_sp,
             fontFamily = redHatDisplayFontFamily,
-            lineHeight = 18.sp
+            lineHeight = font_size_18_sp
         )
 
         PasswordTextFieldWithError(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 24.dp),
+                .padding(top = size_24_dp),
             label = stringResource(id = R.string.repeat_password),
             password = screenState.confirmPassword,
             onValueChange = { handleEvent(EditCredentialsEvent.ValidateConfirmPassword(it)) },
@@ -170,9 +177,9 @@ fun EditCredentialsScreen(
 
         Button(
             modifier = Modifier
-                .padding(vertical = 16.dp)
+                .padding(vertical = size_16_dp)
                 .fillMaxWidth()
-                .height(48.dp),
+                .height(size_48_dp),
             onClick = { handleEvent(EditCredentialsEvent.ResetPassword) },
             enabled = screenState.passwordValid == ValidField.VALID &&
                     screenState.confirmPasswordValid == ValidField.VALID

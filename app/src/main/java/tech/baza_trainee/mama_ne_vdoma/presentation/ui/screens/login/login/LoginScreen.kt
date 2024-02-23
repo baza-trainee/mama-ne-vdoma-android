@@ -52,7 +52,15 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.functions.getTextWithUnderline
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.text_fields.OutlinedTextFieldWithError
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.text_fields.PasswordTextFieldWithError
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_14_sp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_20_sp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_16_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_24_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_32_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_48_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_64_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_8_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.beginSignInGoogleOneTap
@@ -155,16 +163,16 @@ fun LoginUserScreen(
                 .imePadding()
                 .verticalScroll(rememberScrollState())
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp),
+                .padding(horizontal = size_16_dp),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 16.dp),
+                    .padding(top = size_16_dp),
                 text = stringResource(id = R.string.profile_log_in),
-                fontSize = 20.sp,
+                fontSize = font_size_20_sp,
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.onBackground,
                 fontFamily = redHatDisplayFontFamily
@@ -173,7 +181,7 @@ fun LoginUserScreen(
             OutlinedTextFieldWithError(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 24.dp),
+                    .padding(top = size_24_dp),
                 value = screenState.email,
                 hint = stringResource(id = R.string.email),
                 label = stringResource(id = R.string.enter_your_email),
@@ -195,7 +203,7 @@ fun LoginUserScreen(
             PasswordTextFieldWithError(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 16.dp),
+                    .padding(top = size_16_dp),
                 password = screenState.password,
                 onValueChange = { handleEvent(LoginEvent.ValidatePassword(it)) },
                 isError = screenState.passwordValid == ValidField.INVALID,
@@ -207,7 +215,7 @@ fun LoginUserScreen(
             Text(
                 modifier = Modifier
                     .wrapContentWidth()
-                    .padding(top = 8.dp)
+                    .padding(top = size_8_dp)
                     .align(alignment = Alignment.End)
                     .clickable(
                         indication = null,
@@ -219,15 +227,15 @@ fun LoginUserScreen(
                     false
                 ),
                 textAlign = TextAlign.End,
-                fontSize = 14.sp,
+                fontSize = font_size_14_sp,
                 fontFamily = redHatDisplayFontFamily
             )
 
             Button(
                 modifier = Modifier
-                    .padding(bottom = 16.dp, top = 64.dp)
+                    .padding(bottom = size_16_dp, top = size_64_dp)
                     .fillMaxWidth()
-                    .height(48.dp),
+                    .height(size_48_dp),
                 onClick = { handleEvent(LoginEvent.LoginUser) },
                 enabled = screenState.passwordValid == ValidField.VALID &&
                         screenState.emailValid == ValidField.VALID
@@ -239,56 +247,16 @@ fun LoginUserScreen(
                 )
             }
 
-            Spacer(modifier = Modifier.height(32.dp))
-
-//                ConstraintLayout(
-//                    modifier = Modifier.fillMaxWidth()
-//                ) {
-//                    val (box1, text, box2) = createRefs()
-//                    Box(
-//                        modifier = Modifier
-//                            .height(height = 2.dp)
-//                            .background(color = Gray)
-//                            .constrainAs(box1) {
-//                                start.linkTo(parent.start, 24.dp)
-//                                end.linkTo(text.start, 16.dp)
-//                                top.linkTo(parent.top)
-//                                bottom.linkTo(parent.bottom)
-//                                width = Dimension.fillToConstraints
-//                            }
-//                    )
-//                    Text(
-//                        modifier = Modifier
-//                            .constrainAs(text) {
-//                                start.linkTo(box1.end, 16.dp)
-//                                end.linkTo(box2.start, 16.dp)
-//                                top.linkTo(parent.top)
-//                                bottom.linkTo(parent.bottom)
-//                                width = Dimension.wrapContent
-//                            },
-//                        text = "чи",
-//                        fontSize = 14.sp,
-//                        fontFamily = redHatDisplayFontFamily
-//                    )
-//                    Box(
-//                        modifier = Modifier
-//                            .height(height = 2.dp)
-//                            .background(color = Gray)
-//                            .constrainAs(box2) {
-//                                start.linkTo(text.end, 16.dp)
-//                                end.linkTo(parent.end, 24.dp)
-//                                top.linkTo(parent.top)
-//                                bottom.linkTo(parent.bottom)
-//                                width = Dimension.fillToConstraints
-//                            }
-//                    )
-//                }
-
             Spacer(modifier = Modifier.weight(1f))
 
             SocialLoginBlock(
                 modifier = Modifier.fillMaxWidth(),
-                textForBottomButton = { getTextWithUnderline("Ще немає профілю? ", "Зареєструватись") },
+                textForBottomButton = {
+                    getTextWithUnderline(
+                        stringResource(id = R.string.do_not_have_account),
+                        stringResource(id = R.string.action_sign_up)
+                    )
+                },
                 onGoogleLogin = { googleLogin = true },
                 onAction = { handleEvent(LoginEvent.OnCreate) }
             )

@@ -24,10 +24,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import tech.baza_trainee.mama_ne_vdoma.R
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_14_sp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_16_sp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_16_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_24_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_8_dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -40,9 +43,9 @@ fun DeclineRequestDialog(
     AlertDialog(onDismissRequest = onDismiss) {
         Column(
             modifier = Modifier
-                .clip(RoundedCornerShape(8.dp))
+                .clip(RoundedCornerShape(size_8_dp))
                 .background(MaterialTheme.colorScheme.background)
-                .padding(vertical = 8.dp)
+                .padding(vertical = size_8_dp)
                 .fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -55,10 +58,10 @@ fun DeclineRequestDialog(
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 16.dp)
-                    .padding(horizontal = 16.dp),
+                    .padding(top = size_16_dp)
+                    .padding(horizontal = size_16_dp),
                 text = stringResource(id = R.string.join_request_declined_info, groupName),
-                fontSize = 14.sp,
+                fontSize = font_size_14_sp,
                 fontFamily = redHatDisplayFontFamily,
                 textAlign = TextAlign.Start
             )
@@ -66,8 +69,8 @@ fun DeclineRequestDialog(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-                    .padding(bottom = 16.dp, top = 24.dp),
+                    .padding(horizontal = size_16_dp)
+                    .padding(bottom = size_16_dp, top = size_24_dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
@@ -78,7 +81,7 @@ fun DeclineRequestDialog(
                             interactionSource = remember { MutableInteractionSource() }
                         ) { onDecline() },
                     text = stringResource(id = R.string.action_refuse),
-                    fontSize = 16.sp,
+                    fontSize = font_size_16_sp,
                     fontFamily = redHatDisplayFontFamily,
                     fontWeight = FontWeight.Bold,
                     color = Color.Red,
@@ -93,7 +96,7 @@ fun DeclineRequestDialog(
                             interactionSource = remember { MutableInteractionSource() }
                         ) { onAccept() },
                     text = stringResource(id = R.string.action_approve),
-                    fontSize = 16.sp,
+                    fontSize = font_size_16_sp,
                     fontFamily = redHatDisplayFontFamily,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.primary,

@@ -23,7 +23,10 @@ import tech.baza_trainee.mama_ne_vdoma.domain.model.Period
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.text_fields.OutlinedTextFieldWithError
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.schedule.ScheduleViewState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.GrayText
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_12_sp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_16_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_48_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 import java.time.DayOfWeek
 
@@ -72,7 +75,7 @@ fun ScheduleScreenGroup(
                     .align(Alignment.End),
                 text = stringResource(id = R.string.note_text_length),
                 fontFamily = redHatDisplayFontFamily,
-                fontSize = 12.sp,
+                fontSize = font_size_12_sp,
                 color = GrayText
             )
         }
@@ -81,9 +84,9 @@ fun ScheduleScreenGroup(
 
         Button(
             modifier = Modifier
-                .padding(vertical = 16.dp)
+                .padding(vertical = size_16_dp)
                 .fillMaxWidth()
-                .height(48.dp),
+                .height(size_48_dp),
             onClick = onNext
         ) {
             ButtonText(

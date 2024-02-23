@@ -33,7 +33,13 @@ import com.smarttoolfactory.cropper.settings.CropProperties
 import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ButtonText
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.LoadingIndicator
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_16_sp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_20_sp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_16_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_32_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_48_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_8_dp
 
 @Composable
 fun ImageCropScreen(
@@ -50,16 +56,16 @@ fun ImageCropScreen(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp),
+                .padding(horizontal = size_16_dp),
             verticalArrangement = Arrangement.SpaceBetween,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 16.dp),
+                    .padding(top = size_16_dp),
                 text = stringResource(id = R.string.crop_photo),
-                fontSize = 20.sp,
+                fontSize = font_size_20_sp,
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.onBackground,
                 fontFamily = redHatDisplayFontFamily
@@ -70,7 +76,7 @@ fun ImageCropScreen(
             ImageCropper(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 8.dp)
+                    .padding(top = size_8_dp)
                     .weight(1f),
                 imageBitmap = imageForCrop,
                 contentDescription = "Image Cropper",
@@ -89,7 +95,7 @@ fun ImageCropScreen(
 
             Row(
                 modifier = Modifier
-                    .padding(bottom = 16.dp, top = 32.dp)
+                    .padding(bottom = size_16_dp, top = size_32_dp)
                     .fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceEvenly
@@ -99,17 +105,17 @@ fun ImageCropScreen(
                 ) {
                     Icon(
                         modifier = Modifier
-                            .height(32.dp)
-                            .width(32.dp),
+                            .height(size_32_dp)
+                            .width(size_32_dp),
                         painter = painterResource(id = R.drawable.ic_rotate_right),
                         contentDescription = stringResource(id = R.string.rotate_photo_right)
                     )
                 }
 
                 Text(
-                    modifier = Modifier.padding(horizontal = 16.dp),
+                    modifier = Modifier.padding(horizontal = size_16_dp),
                     text = stringResource(id = R.string.rotate_photo),
-                    fontSize = 16.sp,
+                    fontSize = font_size_16_sp,
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.onBackground,
                     fontFamily = redHatDisplayFontFamily
@@ -120,8 +126,8 @@ fun ImageCropScreen(
                 ) {
                     Icon(
                         modifier = Modifier
-                            .height(32.dp)
-                            .width(32.dp),
+                            .height(size_32_dp)
+                            .width(size_32_dp),
                         painter = painterResource(id = R.drawable.ic_rotate_left),
                         contentDescription = stringResource(id = R.string.rotate_photo_left)
                     )
@@ -130,12 +136,10 @@ fun ImageCropScreen(
 
             Button(
                 modifier = Modifier
-                    .padding(bottom = 16.dp, top = 48.dp)
+                    .padding(bottom = size_16_dp, top = size_48_dp)
                     .fillMaxWidth()
-                    .height(48.dp),
-                onClick = {
-                    crop = true
-                }
+                    .height(size_48_dp),
+                onClick = { crop = true }
             ) {
                 ButtonText(
                     text = stringResource(id = R.string.action_save)

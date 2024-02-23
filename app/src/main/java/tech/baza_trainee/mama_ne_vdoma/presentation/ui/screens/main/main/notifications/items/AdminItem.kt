@@ -15,12 +15,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.main.notifications.NotificationsEvent
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.GroupUiModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_14_sp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_16_sp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_16_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_8_dp
 
 @Composable
 fun AdminItem(
@@ -32,31 +34,31 @@ fun AdminItem(
             .fillMaxWidth()
             .background(
                 color = MaterialTheme.colorScheme.surface,
-                shape = RoundedCornerShape(8.dp)
+                shape = RoundedCornerShape(size_8_dp)
             )
-            .padding(all = 16.dp)
+            .padding(all = size_16_dp)
     ) {
         Text(
             modifier = Modifier.fillMaxWidth(),
             text = stringResource(id = R.string.make_admin_request, group.name, group.id),
-            fontSize = 14.sp,
+            fontSize = font_size_14_sp,
             fontFamily = redHatDisplayFontFamily
         )
         Row(
             modifier = Modifier
-                .padding(horizontal = 16.dp)
-                .padding(bottom = 16.dp)
+                .padding(horizontal = size_16_dp)
+                .padding(bottom = size_16_dp)
                 .align(Alignment.End),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
                 modifier = Modifier
-                    .padding(horizontal = 8.dp)
+                    .padding(horizontal = size_8_dp)
                     .clickable {
                         handleEvent(NotificationsEvent.MyGroups)
                     },
                 text = stringResource(id = R.string.my_groups),
-                fontSize = 16.sp,
+                fontSize = font_size_16_sp,
                 fontFamily = redHatDisplayFontFamily,
                 fontWeight = FontWeight.Bold,
                 color =  MaterialTheme.colorScheme.primary,
@@ -65,12 +67,12 @@ fun AdminItem(
 
             Text(
                 modifier = Modifier
-                    .padding(horizontal = 8.dp)
+                    .padding(horizontal = size_8_dp)
                     .clickable {
                         handleEvent(NotificationsEvent.GoToMain)
                     },
                 text = stringResource(id = R.string.action_go_to_main),
-                fontSize = 16.sp,
+                fontSize = font_size_16_sp,
                 fontFamily = redHatDisplayFontFamily,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary,

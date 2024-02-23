@@ -57,7 +57,15 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.text_fields.O
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.LocationUiState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.SemiTransparent
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.SliderColor
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_12_sp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_16_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_1_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_20_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_2_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_48_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_4_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_8_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.showToast
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -159,19 +167,19 @@ fun SetAreaForSearchScreen(
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 8.dp)
-                    .padding(horizontal = 16.dp),
+                    .padding(top = size_8_dp)
+                    .padding(horizontal = size_16_dp),
                 label = stringResource(id = R.string.enter_your_address),
                 hint = stringResource(id = R.string.address),
                 trailingIcon = {
                     IconButton(
                         onClick = { handleEvent(SetAreaEvent.GetLocationFromAddress) },
                         modifier = Modifier
-                            .padding(4.dp)
+                            .padding(size_4_dp)
                             .border(
-                                width = 1.dp,
+                                width = size_1_dp,
                                 color = if (screenState.isAddressChecked) Color.Transparent else color,
-                                shape = RoundedCornerShape(2.dp)
+                                shape = RoundedCornerShape(size_2_dp)
                             )
                     ) {
                         if (screenState.isAddressChecked) {
@@ -191,12 +199,12 @@ fun SetAreaForSearchScreen(
                 errorText = stringResource(id = R.string.address_not_checked)
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(size_8_dp))
 
             Slider(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
+                    .padding(horizontal = size_16_dp),
                 value = screenState.radius / KM,
                 onValueChange = {
                     handleEvent(SetAreaEvent.SetAreaRadius(it * KM))
@@ -220,17 +228,17 @@ fun SetAreaForSearchScreen(
                             )
                             Text(
                                 modifier = Modifier
-                                    .padding(bottom = 8.dp),
+                                    .padding(bottom = size_8_dp),
                                 text = position.value.toInt().toString(),
                                 fontFamily = redHatDisplayFontFamily,
-                                fontSize = 12.sp,
+                                fontSize = font_size_12_sp,
                                 color = MaterialTheme.colorScheme.onPrimary
                             )
                         }
                         Box(
                             modifier = Modifier
-                                .width(20.dp)
-                                .height(20.dp)
+                                .width(size_20_dp)
+                                .height(size_20_dp)
                                 .background(
                                     color = SliderColor,
                                     shape = CircleShape
@@ -242,9 +250,9 @@ fun SetAreaForSearchScreen(
 
             Button(
                 modifier = Modifier
-                    .padding(horizontal = 16.dp, vertical = 16.dp)
+                    .padding(all = size_16_dp)
                     .fillMaxWidth()
-                    .height(48.dp),
+                    .height(size_48_dp),
                 onClick = { handleEvent(SetAreaEvent.SaveArea) },
             ) {
                 ButtonText(

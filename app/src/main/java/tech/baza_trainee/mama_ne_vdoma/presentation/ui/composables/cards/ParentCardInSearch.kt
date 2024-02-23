@@ -41,7 +41,16 @@ import coil.request.ImageRequest
 import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.ParentInSearchUiModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.SlateGray
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_14_sp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_16_sp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_12_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_16_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_2_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_40_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_4_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_56_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_8_dp
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -54,9 +63,9 @@ fun ParentCardInSearch(
             .fillMaxWidth()
             .background(
                 color = MaterialTheme.colorScheme.surface,
-                shape = RoundedCornerShape(8.dp)
+                shape = RoundedCornerShape(size_8_dp)
             )
-            .padding(all = 16.dp)
+            .padding(all = size_16_dp)
     ) {
         var toggleMoreInfo by rememberSaveable { mutableStateOf(false) }
 
@@ -66,8 +75,8 @@ fun ParentCardInSearch(
         ) {
             AsyncImage(
                 modifier = Modifier
-                    .height(40.dp)
-                    .width(40.dp)
+                    .height(size_40_dp)
+                    .width(size_40_dp)
                     .clip(CircleShape),
                 model = ImageRequest.Builder(LocalContext.current)
                     .data(parent.avatar)
@@ -82,24 +91,24 @@ fun ParentCardInSearch(
 
             Column(
                 modifier = Modifier
-                    .padding(horizontal = 16.dp)
+                    .padding(horizontal = size_16_dp)
                     .weight(1f)
             ) {
                 Text(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(bottom = 4.dp),
+                        .padding(bottom = size_4_dp),
                     text = parent.name,
-                    fontSize = 16.sp,
+                    fontSize = font_size_16_sp,
                     fontFamily = redHatDisplayFontFamily
                 )
 
                 Text(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(bottom = 4.dp),
+                        .padding(bottom = size_4_dp),
                     text = parent.email,
-                    fontSize = 14.sp,
+                    fontSize = font_size_14_sp,
                     fontFamily = redHatDisplayFontFamily
                 )
             }
@@ -121,12 +130,11 @@ fun ParentCardInSearch(
         }
 
         if (toggleMoreInfo) {
-            Spacer(modifier = Modifier.height(12.dp))
-
             Box(
                 modifier = Modifier
+                    .padding(top = size_12_dp)
                     .fillMaxWidth()
-                    .height(2.dp)
+                    .height(size_2_dp)
                     .background(
                         color = SlateGray,
                         shape = RectangleShape
@@ -135,15 +143,15 @@ fun ParentCardInSearch(
 
             LazyColumn(
                 modifier = Modifier
-                    .padding(start = 56.dp, end = 8.dp, top = 8.dp)
+                    .padding(start = size_56_dp, end = size_8_dp, top = size_8_dp)
                     .fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(4.dp)
+                verticalArrangement = Arrangement.spacedBy(size_4_dp)
             ) {
                 stickyHeader {
                     Text(
                         modifier = Modifier.fillMaxWidth(),
                         text = stringResource(id = R.string.is_a_member_of),
-                        fontSize = 14.sp,
+                        fontSize = font_size_14_sp,
                         fontFamily = redHatDisplayFontFamily
                     )
                 }
@@ -155,14 +163,14 @@ fun ParentCardInSearch(
                         Text(
                             modifier = Modifier.weight(0.5f),
                             text = group.name,
-                            fontSize = 14.sp,
+                            fontSize = font_size_14_sp,
                             fontFamily = redHatDisplayFontFamily
                         )
 
                         Text(
                             modifier = Modifier.weight(0.5f),
                             text = stringResource(id = R.string.format_group_id_2, group.id),
-                            fontSize = 14.sp,
+                            fontSize = font_size_14_sp,
                             fontFamily = redHatDisplayFontFamily,
                             textAlign = TextAlign.End
                         )

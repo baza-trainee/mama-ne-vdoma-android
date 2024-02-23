@@ -20,12 +20,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.domain.model.ChildEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.Gender
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_14_sp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_21_sp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_82_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_8_dp
 
 @Composable
 @Preview
@@ -39,15 +41,15 @@ fun ChildCard(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .height(82.dp)
+            .height(size_82_dp)
             .background(
                 color = MaterialTheme.colorScheme.surface,
-                shape = RoundedCornerShape(8.dp)
+                shape = RoundedCornerShape(size_8_dp)
             )
             .clickable {
                 onSelected(child)
             }
-            .padding(8.dp),
+            .padding(size_8_dp),
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -58,14 +60,14 @@ fun ChildCard(
 
         Column(
             modifier = Modifier
-                .padding(horizontal = 8.dp)
+                .padding(horizontal = size_8_dp)
                 .fillMaxWidth()
                 .weight(1f)
         ) {
             Text(
                 text = child.name,
                 fontFamily = redHatDisplayFontFamily,
-                fontSize = 21.sp,
+                fontSize = font_size_21_sp,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onBackground
             )
@@ -73,7 +75,7 @@ fun ChildCard(
             Text(
                 text = stringResource(id = R.string.format_age, child.age),
                 fontFamily = redHatDisplayFontFamily,
-                fontSize = 14.sp,
+                fontSize = font_size_14_sp,
                 color = MaterialTheme.colorScheme.onBackground
             )
         }

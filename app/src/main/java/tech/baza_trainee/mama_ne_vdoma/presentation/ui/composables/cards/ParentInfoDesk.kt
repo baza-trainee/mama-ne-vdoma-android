@@ -34,7 +34,12 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.domain.model.DayPeriod
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_14_sp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_20_sp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_16_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_48_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_8_dp
 import java.time.DayOfWeek
 
 @Composable
@@ -53,9 +58,9 @@ fun ParentInfoDesk(
             .fillMaxWidth()
             .background(
                 color = MaterialTheme.colorScheme.surface,
-                shape = RoundedCornerShape(8.dp)
+                shape = RoundedCornerShape(size_8_dp)
             )
-            .padding(all = 16.dp)
+            .padding(all = size_16_dp)
     ) {
         Row(
             modifier = Modifier
@@ -65,8 +70,8 @@ fun ParentInfoDesk(
         ) {
             AsyncImage(
                 modifier = Modifier
-                    .height(48.dp)
-                    .width(48.dp)
+                    .height(size_48_dp)
+                    .width(size_48_dp)
                     .clip(CircleShape),
                 model = ImageRequest.Builder(LocalContext.current)
                     .data(avatar)
@@ -80,12 +85,12 @@ fun ParentInfoDesk(
             )
             Text(
                 modifier = Modifier
-                    .padding(horizontal = 8.dp)
+                    .padding(horizontal = size_8_dp)
                     .fillMaxWidth()
                     .weight(1f),
                 text = name,
                 fontFamily = redHatDisplayFontFamily,
-                fontSize = 20.sp,
+                fontSize = font_size_20_sp,
                 fontWeight = FontWeight.Bold
             )
             IconButton(onClick = { onEdit() }) {
@@ -109,26 +114,26 @@ fun ParentInfoDesk(
         if (address.isNotEmpty()) {
             Text(
                 modifier = Modifier
-                    .padding(top = 8.dp)
-                    .padding(horizontal = 8.dp)
+                    .padding(top = size_8_dp)
+                    .padding(horizontal = size_8_dp)
                     .fillMaxWidth(),
                 text = stringResource(id = R.string.your_address),
                 fontFamily = redHatDisplayFontFamily,
-                fontSize = 14.sp
+                fontSize = font_size_14_sp
             )
 
             Text(
                 modifier = Modifier
-                    .padding(horizontal = 8.dp)
+                    .padding(horizontal = size_8_dp)
                     .fillMaxWidth(),
                 text = address,
                 fontFamily = redHatDisplayFontFamily,
-                fontSize = 14.sp
+                fontSize = font_size_14_sp
             )
         }
 
         ScheduleInfoDesk(
-            modifier = Modifier.padding(top = 8.dp),
+            modifier = Modifier.padding(top = size_8_dp),
             schedule = schedule,
             dayText = stringResource(id = R.string.child_care_days),
             periodText = stringResource(id = R.string.child_care_hours)

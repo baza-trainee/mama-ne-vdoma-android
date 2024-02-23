@@ -52,8 +52,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.google.maps.android.compose.Marker
@@ -75,7 +73,20 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.UpdateDeta
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.edit.dialogs.ChildScheduleEditDialog
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.edit.dialogs.ParentScheduleEditDialog
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.GrayText
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_11_sp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_14_sp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_16_sp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_18_sp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_160_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_16_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_1_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_24_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_2_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_48_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_4_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_8_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_96_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -141,7 +152,7 @@ fun EditProfileScreen(
         Text(
             modifier = Modifier.fillMaxWidth(),
             text = stringResource(id = R.string.personal_info),
-            fontSize = 16.sp,
+            fontSize = font_size_16_sp,
             fontFamily = redHatDisplayFontFamily,
             fontWeight = FontWeight.Bold
         )
@@ -149,9 +160,9 @@ fun EditProfileScreen(
         Text(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 8.dp),
+                .padding(top = size_8_dp),
             text = stringResource(id = R.string.photo),
-            fontSize = 14.sp,
+            fontSize = font_size_14_sp,
             fontFamily = redHatDisplayFontFamily
         )
         Row(
@@ -160,8 +171,8 @@ fun EditProfileScreen(
         ) {
             Box(
                 modifier = Modifier
-                    .height(98.dp)
-                    .width(98.dp),
+                    .height(size_96_dp)
+                    .width(size_96_dp),
                 contentAlignment = Alignment.Center
             ) {
                 AsyncImage(
@@ -183,14 +194,14 @@ fun EditProfileScreen(
                 )
             }
 
-            Spacer(modifier = Modifier.width(4.dp))
+            Spacer(modifier = Modifier.width(size_4_dp))
 
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f),
                 text = stringResource(id = R.string.file_format),
-                fontSize = 11.sp,
+                fontSize = font_size_11_sp,
                 fontFamily = redHatDisplayFontFamily,
                 color = GrayText
             )
@@ -200,9 +211,9 @@ fun EditProfileScreen(
         Text(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 16.dp),
+                .padding(top = size_16_dp),
             text = stringResource(id = R.string.nickname),
-            fontSize = 14.sp,
+            fontSize = font_size_14_sp,
             fontFamily = redHatDisplayFontFamily
         )
 
@@ -220,22 +231,22 @@ fun EditProfileScreen(
         Text(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp)
-                .padding(top = 4.dp),
+                .padding(horizontal = size_16_dp)
+                .padding(top = size_4_dp),
             text = stringResource(id = R.string.name_rule_hint),
-            fontSize = 11.sp,
+            fontSize = font_size_11_sp,
             fontFamily = redHatDisplayFontFamily,
             color = GrayText,
-            lineHeight = 18.sp
+            lineHeight = font_size_18_sp
         )
 
         //Phone number
         Text(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 16.dp),
+                .padding(top = size_16_dp),
             text = stringResource(id = R.string.phone_number),
-            fontSize = 14.sp,
+            fontSize = font_size_14_sp,
             fontFamily = redHatDisplayFontFamily
         )
 
@@ -256,9 +267,9 @@ fun EditProfileScreen(
         Text(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 16.dp),
+                .padding(top = size_16_dp),
             text = stringResource(id = R.string.location),
-            fontSize = 14.sp,
+            fontSize = font_size_14_sp,
             fontFamily = redHatDisplayFontFamily
         )
 
@@ -268,7 +279,7 @@ fun EditProfileScreen(
         CustomGoogleMap(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(160.dp),
+                .height(size_160_dp),
             location = screenState.currentLocation,
             showMyLocationButton = isPermissionGranted,
             onMyLocationButtonClick = { handleEvent(EditProfileEvent.RequestUserLocation) },
@@ -284,13 +295,13 @@ fun EditProfileScreen(
         Text(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp)
-                .padding(top = 4.dp),
+                .padding(horizontal = size_16_dp)
+                .padding(top = size_4_dp),
             text = stringResource(id = R.string.choose_or_enter_location),
-            fontSize = 11.sp,
+            fontSize = font_size_11_sp,
             fontFamily = redHatDisplayFontFamily,
             color = GrayText,
-            lineHeight = 18.sp
+            lineHeight = font_size_18_sp
         )
 
         val color = infiniteColorAnimation(
@@ -306,18 +317,18 @@ fun EditProfileScreen(
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 8.dp),
+                .padding(top = size_8_dp),
             label = stringResource(id = R.string.enter_your_address),
             hint = stringResource(id = R.string.address),
             trailingIcon = {
                 IconButton(
                     onClick = { handleEvent(EditProfileEvent.GetLocationFromAddress) },
                     modifier = Modifier
-                        .padding(4.dp)
+                        .padding(size_4_dp)
                         .border(
-                            width = 1.dp,
+                            width = size_1_dp,
                             color = if (screenState.isAddressChecked || screenState.address.isEmpty()) Color.Transparent else color,
-                            shape = RoundedCornerShape(2.dp)
+                            shape = RoundedCornerShape(size_2_dp)
                         )
                 ) {
                     if (screenState.isAddressChecked) {
@@ -343,9 +354,9 @@ fun EditProfileScreen(
         Text(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 16.dp),
+                .padding(top = size_16_dp),
             text = stringResource(id = R.string.my_schedule),
-            fontSize = 16.sp,
+            fontSize = font_size_16_sp,
             fontFamily = redHatDisplayFontFamily,
             fontWeight = FontWeight.Bold
         )
@@ -363,13 +374,13 @@ fun EditProfileScreen(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 16.dp),
+                .padding(top = size_16_dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
                 modifier = Modifier.weight(1f),
                 text = stringResource(id = R.string.children_info),
-                fontSize = 16.sp,
+                fontSize = font_size_16_sp,
                 fontFamily = redHatDisplayFontFamily,
                 fontWeight = FontWeight.Bold
             )
@@ -383,7 +394,7 @@ fun EditProfileScreen(
                     ) { exitScreen = 1 },
                 text = stringResource(id = R.string.add_child_plus),
                 fontFamily = redHatDisplayFontFamily,
-                fontSize = 14.sp,
+                fontSize = font_size_14_sp,
                 textDecoration = TextDecoration.Underline,
                 textAlign = TextAlign.End,
                 color = if (screenState.children.isEmpty()) color else MaterialTheme.colorScheme.primary
@@ -392,7 +403,7 @@ fun EditProfileScreen(
 
         screenState.children.forEachIndexed { index, child ->
             if (index != 0)
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(size_8_dp))
 
             ChildInfoDesk(
                 modifier = Modifier.fillMaxWidth(),
@@ -411,8 +422,8 @@ fun EditProfileScreen(
         Button(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 16.dp)
-                .height(48.dp),
+                .padding(vertical = size_16_dp)
+                .height(size_48_dp),
             onClick = { handleEvent(EditProfileEvent.SaveInfo) }
         ) {
             ButtonText(
@@ -425,8 +436,8 @@ fun EditProfileScreen(
         Button(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 16.dp)
-                .height(48.dp),
+                .padding(bottom = size_16_dp)
+                .height(size_48_dp),
             onClick = { showDeleteAccountAlertDialog = true },
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color.Red,
@@ -498,9 +509,9 @@ fun EditProfileScreen(
             AlertDialog(onDismissRequest = { exitScreen = -1 }) {
                 Column(
                     modifier = Modifier
-                        .clip(RoundedCornerShape(8.dp))
+                        .clip(RoundedCornerShape(size_8_dp))
                         .background(MaterialTheme.colorScheme.background)
-                        .padding(vertical = 8.dp)
+                        .padding(vertical = size_8_dp)
                         .fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
@@ -513,10 +524,10 @@ fun EditProfileScreen(
                     Text(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 16.dp)
-                            .padding(top = 16.dp),
+                            .padding(horizontal = size_16_dp)
+                            .padding(top = size_16_dp),
                         text = stringResource(id = R.string.warning_not_saved),
-                        fontSize = 14.sp,
+                        fontSize = font_size_14_sp,
                         fontFamily = redHatDisplayFontFamily,
                         textAlign = TextAlign.Start
                     )
@@ -524,8 +535,8 @@ fun EditProfileScreen(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 16.dp)
-                            .padding(bottom = 16.dp, top = 24.dp),
+                            .padding(horizontal = size_16_dp)
+                            .padding(bottom = size_16_dp, top = size_24_dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
@@ -543,7 +554,7 @@ fun EditProfileScreen(
                                     exitScreen = -1
                                 },
                             text = stringResource(id = R.string.action_not_save),
-                            fontSize = 16.sp,
+                            fontSize = font_size_16_sp,
                             fontFamily = redHatDisplayFontFamily,
                             fontWeight = FontWeight.Bold,
                             color = Color.Red,
@@ -565,7 +576,7 @@ fun EditProfileScreen(
                                     exitScreen = -1
                                 },
                             text = stringResource(id = R.string.action_save),
-                            fontSize = 16.sp,
+                            fontSize = font_size_16_sp,
                             fontFamily = redHatDisplayFontFamily,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.primary,
@@ -580,9 +591,9 @@ fun EditProfileScreen(
             AlertDialog(onDismissRequest = { showSuccessDialog = false }) {
                 Column(
                     modifier = Modifier
-                        .clip(RoundedCornerShape(8.dp))
+                        .clip(RoundedCornerShape(size_8_dp))
                         .background(MaterialTheme.colorScheme.background)
-                        .padding(16.dp)
+                        .padding(size_16_dp)
                         .fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
@@ -594,11 +605,11 @@ fun EditProfileScreen(
 
                     Text(
                         modifier = Modifier
-                            .padding(top = 16.dp)
-                            .padding(horizontal = 16.dp)
+                            .padding(top = size_16_dp)
+                            .padding(horizontal = size_16_dp)
                             .fillMaxWidth(),
                         text = stringResource(id = R.string.info_updated),
-                        fontSize = 14.sp,
+                        fontSize = font_size_14_sp,
                         fontFamily = redHatDisplayFontFamily,
                         textAlign = TextAlign.Start
                     )
@@ -615,7 +626,7 @@ fun EditProfileScreen(
                                 showSuccessDialog = false
                                 handleEvent(EditProfileEvent.GoToMain)
                             }
-                            .padding(16.dp)
+                            .padding(size_16_dp)
                     )
                 }
             }

@@ -45,6 +45,12 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.functions.inf
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.headers.HeaderWithOptArrow
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.text_fields.OutlinedTextFieldWithError
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.LocationUiState
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_16_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_1_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_2_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_48_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_4_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_8_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.showToast
 
 @Composable
@@ -127,19 +133,19 @@ fun UserLocationScreen(
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 8.dp)
-                    .padding(horizontal = 16.dp),
+                    .padding(top = size_8_dp)
+                    .padding(horizontal = size_16_dp),
                 label = stringResource(id = R.string.enter_your_address),
                 hint = stringResource(id = R.string.address),
                 trailingIcon = {
                     IconButton(
                         onClick = { handleEvent(UserLocationEvent.GetLocationFromAddress) },
                         modifier = Modifier
-                            .padding(4.dp)
+                            .padding(size_4_dp)
                             .border(
-                                width = 1.dp,
+                                width = size_1_dp,
                                 color = if (screenState.isAddressChecked) Color.Transparent else color,
-                                shape = RoundedCornerShape(2.dp)
+                                shape = RoundedCornerShape(size_2_dp)
                             )
                     ) {
                         if (screenState.isAddressChecked) {
@@ -169,9 +175,9 @@ fun UserLocationScreen(
 
             Button(
                 modifier = Modifier
-                    .padding(horizontal = 16.dp, vertical = 16.dp)
+                    .padding(all = size_16_dp)
                     .fillMaxWidth()
-                    .height(48.dp),
+                    .height(size_48_dp),
                 onClick = { handleEvent(UserLocationEvent.SaveUserLocation) }
             ) {
                 ButtonText(

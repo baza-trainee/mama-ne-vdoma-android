@@ -25,7 +25,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.SlateGray
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_14_sp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_16_sp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_16_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_2_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_8_dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -41,15 +46,15 @@ fun ImageSourceDialog(
         val dialogModifier = Modifier
         Column(
             modifier = dialogModifier
-                .clip(RoundedCornerShape(8.dp))
+                .clip(RoundedCornerShape(size_8_dp))
                 .background(MaterialTheme.colorScheme.background)
-                .padding(16.dp)
+                .padding(size_16_dp)
                 .fillMaxWidth()
         ) {
             Text(
                 modifier = dialogModifier
-                    .padding(top = 16.dp)
-                    .padding(horizontal = 16.dp)
+                    .padding(top = size_16_dp)
+                    .padding(horizontal = size_16_dp)
                     .fillMaxWidth(),
                 text = stringResource(id = R.string.choose_image),
                 fontSize = 24.sp,
@@ -58,18 +63,18 @@ fun ImageSourceDialog(
             )
             Text(
                 modifier = dialogModifier
-                    .padding(top = 16.dp)
-                    .padding(horizontal = 16.dp)
+                    .padding(top = size_16_dp)
+                    .padding(horizontal = size_16_dp)
                     .fillMaxWidth(),
                 text = stringResource(id = R.string.choose_source),
-                fontSize = 14.sp,
+                fontSize = font_size_14_sp,
                 textAlign = TextAlign.Start,
                 fontFamily = redHatDisplayFontFamily
             )
             Row(
                 modifier = dialogModifier
-                    .padding(top = 16.dp)
-                    .padding(horizontal = 16.dp)
+                    .padding(top = size_16_dp)
+                    .padding(horizontal = size_16_dp)
                     .fillMaxWidth()
                     .clickable { onPickFromCamera() },
                 verticalAlignment = Alignment.CenterVertically
@@ -80,27 +85,27 @@ fun ImageSourceDialog(
                 )
                 Text(
                     modifier = dialogModifier
-                        .padding(start = 8.dp)
+                        .padding(start = size_8_dp)
                         .weight(1f)
                         .fillMaxWidth(),
                     text = stringResource(id = R.string.choose_camera),
-                    fontSize = 16.sp,
+                    fontSize = font_size_16_sp,
                     textAlign = TextAlign.Start,
                     fontFamily = redHatDisplayFontFamily
                 )
             }
             HorizontalDivider(
                 modifier = dialogModifier
-                    .padding(top = 16.dp)
-                    .padding(horizontal = 16.dp)
+                    .padding(top = size_16_dp)
+                    .padding(horizontal = size_16_dp)
                     .fillMaxWidth(),
-                thickness = 2.dp,
+                thickness = size_2_dp,
                 color = SlateGray
             )
             Row(
                 modifier = dialogModifier
-                    .padding(top = 16.dp, bottom = 16.dp)
-                    .padding(horizontal = 16.dp)
+                    .padding(top = size_16_dp, bottom = size_16_dp)
+                    .padding(horizontal = size_16_dp)
                     .fillMaxWidth()
                     .clickable { onPickFromGallery() },
                 verticalAlignment = Alignment.CenterVertically
@@ -111,11 +116,11 @@ fun ImageSourceDialog(
                 )
                 Text(
                     modifier = dialogModifier
-                        .padding(start = 8.dp)
+                        .padding(start = size_8_dp)
                         .weight(1f)
                         .fillMaxWidth(),
                     text = stringResource(id = R.string.choose_gallery),
-                    fontSize = 16.sp,
+                    fontSize = font_size_16_sp,
                     textAlign = TextAlign.Start,
                     fontFamily = redHatDisplayFontFamily
                 )

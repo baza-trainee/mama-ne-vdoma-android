@@ -23,7 +23,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ButtonText
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ScaffoldWithNavigationBars
@@ -31,6 +30,9 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.functions.get
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.headers.HeaderWithOptArrow
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.restore_password.RestorePasswordEvent
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_16_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_24_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_48_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.showToast
 
@@ -80,8 +82,8 @@ fun EmailConfirmScreen(
             Button(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 16.dp)
-                    .height(48.dp),
+                    .padding(all = size_16_dp)
+                    .height(size_48_dp),
                 onClick = { handleEvent(RestorePasswordEvent.OnLogin(email, password)) }
             ) {
                 ButtonText(
@@ -100,7 +102,7 @@ fun EmailConfirmScreen(
                         interactionSource = remember { MutableInteractionSource() }
                     ) { handleEvent(RestorePasswordEvent.SendEmail) }
                     .fillMaxWidth()
-                    .padding(horizontal = 24.dp, vertical = 16.dp),
+                    .padding(horizontal = size_24_dp, vertical = size_16_dp),
                 textAlign = TextAlign.Center,
                 fontFamily = redHatDisplayFontFamily
             )

@@ -59,7 +59,21 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.dialogs.DangerousActionAlertDialog
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.LogoutButtonColor
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.LogoutButtonTextColor
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_12_sp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_14_sp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_16_sp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_18_sp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_20_sp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_120_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_16_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_24_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_256_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_2_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_32_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_48_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_4_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_8_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -89,17 +103,17 @@ fun ProfileSettingsScreen(
             .imePadding(),
         verticalArrangement = Arrangement.Top
     ) {
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(size_8_dp))
 
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(256.dp)
+                .height(size_256_dp)
                 .background(
                     color = MaterialTheme.colorScheme.surface,
-                    shape = RoundedCornerShape(8.dp)
+                    shape = RoundedCornerShape(size_8_dp)
                 )
-                .padding(8.dp),
+                .padding(size_8_dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
@@ -114,17 +128,17 @@ fun ProfileSettingsScreen(
                 contentDescription = "avatar",
                 contentScale = ContentScale.FillBounds,
                 modifier = Modifier
-                    .width(120.dp)
-                    .height(120.dp)
+                    .width(size_120_dp)
+                    .height(size_120_dp)
                     .clip(CircleShape)
             )
 
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 4.dp),
+                    .padding(top = size_4_dp),
                 text = screenState.name,
-                fontSize = 20.sp,
+                fontSize = font_size_20_sp,
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.primary,
                 fontFamily = redHatDisplayFontFamily
@@ -133,9 +147,9 @@ fun ProfileSettingsScreen(
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 4.dp),
+                    .padding(top = size_4_dp),
                 text = "${screenState.code}${screenState.phone}",
-                fontSize = 16.sp,
+                fontSize = font_size_16_sp,
                 textAlign = TextAlign.Center,
                 fontFamily = redHatDisplayFontFamily
             )
@@ -143,9 +157,9 @@ fun ProfileSettingsScreen(
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 2.dp),
+                    .padding(top = size_2_dp),
                 text = screenState.email,
-                fontSize = 16.sp,
+                fontSize = font_size_16_sp,
                 textAlign = TextAlign.Center,
                 fontFamily = redHatDisplayFontFamily
             )
@@ -153,17 +167,17 @@ fun ProfileSettingsScreen(
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 32.dp)
+                    .padding(top = size_32_dp)
                     .basicMarquee(),
                 text = screenState.address,
-                fontSize = 16.sp,
+                fontSize = font_size_16_sp,
                 textAlign = TextAlign.Center,
                 fontFamily = redHatDisplayFontFamily
             )
         }
 
         screenState.children.forEach {
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(size_8_dp))
 
             ChildCard(
                 child = it,
@@ -174,12 +188,12 @@ fun ProfileSettingsScreen(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 16.dp)
+                .padding(top = size_16_dp)
                 .background(
                     color = MaterialTheme.colorScheme.surface,
-                    shape = RoundedCornerShape(8.dp)
+                    shape = RoundedCornerShape(size_8_dp)
                 )
-                .padding(8.dp),
+                .padding(size_8_dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
@@ -187,7 +201,7 @@ fun ProfileSettingsScreen(
                     .fillMaxWidth()
                     .weight(1f),
                 text = stringResource(id = R.string.receive_emails),
-                fontSize = 14.sp,
+                fontSize = font_size_14_sp,
                 fontFamily = redHatDisplayFontFamily
             )
             Switch(
@@ -200,20 +214,20 @@ fun ProfileSettingsScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 8.dp)
-                    .padding(horizontal = 8.dp),
+                    .padding(top = size_8_dp)
+                    .padding(horizontal = size_8_dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(end = 4.dp)
+                        .padding(end = size_4_dp)
                         .weight(1f),
                     text = stringResource(id = R.string.service_email_hint),
-                    fontSize = 12.sp,
+                    fontSize = font_size_12_sp,
                     fontFamily = redHatDisplayFontFamily,
                     color = Color.Red,
-                    lineHeight = 18.sp
+                    lineHeight = font_size_18_sp
                 )
                 Icon(
                     imageVector = Icons.Filled.Error,
@@ -228,7 +242,7 @@ fun ProfileSettingsScreen(
         PrivacyPolicyBlock(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 24.dp),
+                .padding(top = size_24_dp),
             isChecked = screenState.isPolicyChecked,
             onCheckedChanged = {
                 showDeleteAccountAlertDialog = !it
@@ -241,12 +255,12 @@ fun ProfileSettingsScreen(
         Button(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 24.dp)
-                .height(48.dp),
+                .padding(top = size_24_dp)
+                .height(size_48_dp),
             onClick = { handleEvent(ProfileSettingsEvent.EditProfile) }
         ) {
             Icon(
-                modifier = Modifier.padding(end = 4.dp),
+                modifier = Modifier.padding(end = size_4_dp),
                 imageVector = Icons.Filled.Edit,
                 contentDescription = "edit_profile"
             )
@@ -258,12 +272,12 @@ fun ProfileSettingsScreen(
         Button(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 16.dp)
-                .height(48.dp),
+                .padding(top = size_16_dp)
+                .height(size_48_dp),
             onClick = { handleEvent(ProfileSettingsEvent.EditCredentials) }
         ) {
             Icon(
-                modifier = Modifier.padding(end = 4.dp),
+                modifier = Modifier.padding(end = size_4_dp),
                 imageVector = Icons.Filled.Lock,
                 contentDescription = "edit_credentials"
             )
@@ -275,8 +289,8 @@ fun ProfileSettingsScreen(
         Button(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 16.dp)
-                .height(48.dp),
+                .padding(vertical = size_16_dp)
+                .height(size_48_dp),
             onClick = { handleEvent(ProfileSettingsEvent.LogOut) },
             colors = ButtonDefaults.buttonColors(
                 containerColor = LogoutButtonColor,
@@ -284,7 +298,7 @@ fun ProfileSettingsScreen(
             )
         ) {
             Icon(
-                modifier = Modifier.padding(end = 4.dp),
+                modifier = Modifier.padding(end = size_4_dp),
                 imageVector = Icons.AutoMirrored.Filled.Logout,
                 contentDescription = "exit"
             )

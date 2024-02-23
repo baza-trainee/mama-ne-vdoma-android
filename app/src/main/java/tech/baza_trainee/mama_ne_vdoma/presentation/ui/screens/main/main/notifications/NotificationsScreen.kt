@@ -59,7 +59,15 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.main.notific
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.main.notifications.items.RejectedItem
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.JoinRequestUiModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.NotificationsUiModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_14_sp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_16_sp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_0_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_16_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_2_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_4_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_52_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_8_dp
 
 private const val MY_REQUESTS = 0
 private const val ADMIN_REQUESTS = 1
@@ -116,13 +124,13 @@ fun NotificationScreen(
         val tabWidths = remember {
             val tabWidthStateList = mutableStateListOf<Dp>()
             repeat(tabs.size) {
-                tabWidthStateList.add(0.dp)
+                tabWidthStateList.add(size_0_dp)
             }
             tabWidthStateList
         }
 
         TabRow(
-            modifier = Modifier.height(52.dp),
+            modifier = Modifier.height(size_52_dp),
             selectedTabIndex = pagerState.currentPage,
             containerColor = MaterialTheme.colorScheme.background,
             contentColor = MaterialTheme.colorScheme.onBackground,
@@ -133,24 +141,24 @@ fun NotificationScreen(
                             currentTabPosition = tabPositions[pagerState.currentPage],
                             tabWidth = tabWidths[pagerState.currentPage]
                         )
-                        .height(4.dp)
+                        .height(size_4_dp)
                         .background(
                             color = MaterialTheme.colorScheme.primary,
-                            shape = RoundedCornerShape(topStart = 4.dp, topEnd = 4.dp)
+                            shape = RoundedCornerShape(topStart = size_4_dp, topEnd = size_4_dp)
                         )
                 )
             }
         ) {
             tabs.forEachIndexed { index, text ->
                 Tab(
-                    modifier = Modifier.padding(4.dp),
+                    modifier = Modifier.padding(size_4_dp),
                     selected = pagerState.currentPage == index,
                     onClick = { currentPage = index }
                 ) {
                     Text(
-                        modifier = Modifier.padding(vertical = 8.dp),
+                        modifier = Modifier.padding(vertical = size_8_dp),
                         text = text,
-                        fontSize = 14.sp,
+                        fontSize = font_size_14_sp,
                         fontFamily = redHatDisplayFontFamily,
                         onTextLayout = {
                             tabWidths[index] =
@@ -162,7 +170,7 @@ fun NotificationScreen(
             }
         }
 
-        Spacer(modifier = Modifier.height(2.dp))
+        Spacer(modifier = Modifier.height(size_2_dp))
 
         HorizontalPager(
             state = pagerState,
@@ -275,11 +283,11 @@ private fun Notifications(
     LazyColumn(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 16.dp)
+            .padding(vertical = size_16_dp)
     ) {
         itemsIndexed(notifications) { index, notification ->
             if (index != 0)
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(size_8_dp))
 
             when(notification.type) {
                 MessageType.JOIN.type ->
@@ -302,8 +310,8 @@ private fun Notifications(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 16.dp)
-                        .padding(horizontal = 8.dp),
+                        .padding(top = size_16_dp)
+                        .padding(horizontal = size_8_dp),
                     contentAlignment = Alignment.CenterEnd
                 ) {
                     Text(
@@ -312,7 +320,7 @@ private fun Notifications(
                                 handleEvent(NotificationsEvent.ClearNotifications)
                             },
                         text = stringResource(id = R.string.action_delete_notifications),
-                        fontSize = 16.sp,
+                        fontSize = font_size_16_sp,
                         fontFamily = redHatDisplayFontFamily,
                         fontWeight = FontWeight.Bold,
                         color = Color.Red,
@@ -333,11 +341,11 @@ private fun AdminRequests(
     LazyColumn(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 16.dp)
+            .padding(vertical = size_16_dp)
     ) {
         itemsIndexed(requests) { index, request ->
             if (index != 0)
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(size_8_dp))
 
             AdminJoinRequestCard(
                 request = request,
@@ -356,11 +364,11 @@ private fun MyRequests(
     LazyColumn(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 16.dp)
+            .padding(vertical = size_16_dp)
     ) {
         itemsIndexed(requests) { index, request ->
             if (index != 0)
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(size_8_dp))
 
             MyRequestCard(
                 request = request,

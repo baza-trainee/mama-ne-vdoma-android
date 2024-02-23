@@ -40,6 +40,12 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_16_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_24_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_32_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_40_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_64_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_8_dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -61,16 +67,16 @@ fun ToolbarWithAvatar(
             .background(color = MaterialTheme.colorScheme.primary)
             .fillMaxWidth()
             .windowInsetsPadding(WindowInsets.statusBars)
-            .height(64.dp),
+            .height(size_64_dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
         if (showArrow) {
             IconButton(
                 modifier = Modifier
-                    .padding(horizontal = 16.dp)
-                    .height(24.dp)
-                    .width(24.dp),
+                    .padding(horizontal = size_16_dp)
+                    .height(size_24_dp)
+                    .width(size_24_dp),
                 onClick = { onBack() }
             ) {
                 Icon(
@@ -103,13 +109,13 @@ fun ToolbarWithAvatar(
             Box(
                 modifier = Modifier
                     .fillMaxHeight()
-                    .padding(8.dp),
+                    .padding(size_8_dp),
                 contentAlignment = Alignment.Center
             ) {
                 Box(
                     modifier = Modifier
-                        .height(40.dp)
-                        .width(40.dp)
+                        .height(size_40_dp)
+                        .width(size_40_dp)
                         .clip(CircleShape)
                         .clickable {
                             onNotificationsClicked()
@@ -118,8 +124,8 @@ fun ToolbarWithAvatar(
                 ) {
                     Image(
                         modifier = Modifier
-                            .height(32.dp)
-                            .width(32.dp),
+                            .height(size_32_dp)
+                            .width(size_32_dp),
                         painter = painterResource(id = R.drawable.ic_notification),
                         contentDescription = "notification",
                         contentScale = ContentScale.Fit
@@ -139,9 +145,9 @@ fun ToolbarWithAvatar(
 
         AsyncImage(
             modifier = Modifier
-                .padding(end = 8.dp)
-                .height(40.dp)
-                .width(40.dp)
+                .padding(end = size_8_dp)
+                .height(size_40_dp)
+                .width(size_40_dp)
                 .clip(CircleShape)
                 .clickable {
                     onAvatarClicked()

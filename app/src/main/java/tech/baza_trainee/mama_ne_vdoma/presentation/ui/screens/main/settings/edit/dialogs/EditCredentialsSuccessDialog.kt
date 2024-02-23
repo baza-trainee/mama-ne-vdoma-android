@@ -18,10 +18,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import tech.baza_trainee.mama_ne_vdoma.R
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_14_sp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_18_sp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_16_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_8_dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -34,20 +36,20 @@ fun EditCredentialsSuccessDialog(
     ) {
         Column(
             modifier = Modifier
-                .clip(RoundedCornerShape(8.dp))
+                .clip(RoundedCornerShape(size_8_dp))
                 .background(MaterialTheme.colorScheme.background)
-                .padding(16.dp)
+                .padding(size_16_dp)
                 .fillMaxWidth()
         ) {
             Text(
                 modifier = Modifier
-                    .padding(top = 16.dp)
-                    .padding(horizontal = 16.dp)
+                    .padding(top = size_16_dp)
+                    .padding(horizontal = size_16_dp)
                     .fillMaxWidth(),
                 text = title,
-                fontSize = 14.sp,
+                fontSize = font_size_14_sp,
                 fontFamily = redHatDisplayFontFamily,
-                lineHeight = 18.sp
+                lineHeight = font_size_18_sp
             )
 
             Text(
@@ -59,7 +61,7 @@ fun EditCredentialsSuccessDialog(
                     .wrapContentWidth()
                     .align(Alignment.End)
                     .clickable { onDismissRequest() }
-                    .padding(16.dp)
+                    .padding(size_16_dp)
             )
         }
     }

@@ -29,7 +29,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import tech.baza_trainee.mama_ne_vdoma.R
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_14_sp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_16_sp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_16_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_24_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_8_dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -41,9 +46,9 @@ fun MakeAdminConfirmationDialog(
     AlertDialog(onDismissRequest = onDismiss) {
         Column(
             modifier = Modifier
-                .clip(RoundedCornerShape(8.dp))
+                .clip(RoundedCornerShape(size_8_dp))
                 .background(MaterialTheme.colorScheme.background)
-                .padding(vertical = 8.dp)
+                .padding(vertical = size_8_dp)
                 .fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -56,10 +61,10 @@ fun MakeAdminConfirmationDialog(
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 16.dp)
-                    .padding(horizontal = 16.dp),
+                    .padding(top = size_16_dp)
+                    .padding(horizontal = size_16_dp),
                 text = stringResource(id = R.string.make_admin_info, memberName),
-                fontSize = 14.sp,
+                fontSize = font_size_14_sp,
                 fontFamily = redHatDisplayFontFamily,
                 textAlign = TextAlign.Start
             )
@@ -67,9 +72,9 @@ fun MakeAdminConfirmationDialog(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-                    .padding(top = 24.dp)
-                    .padding(bottom = 16.dp),
+                    .padding(horizontal = size_16_dp)
+                    .padding(top = size_24_dp)
+                    .padding(bottom = size_16_dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
@@ -80,7 +85,7 @@ fun MakeAdminConfirmationDialog(
                             interactionSource = remember { MutableInteractionSource() }
                         ) { onDismiss() },
                     text = stringResource(id = R.string.action_refuse),
-                    fontSize = 16.sp,
+                    fontSize = font_size_16_sp,
                     fontFamily = redHatDisplayFontFamily,
                     fontWeight = FontWeight.Bold,
                     color = Color.Red,
@@ -95,7 +100,7 @@ fun MakeAdminConfirmationDialog(
                             interactionSource = remember { MutableInteractionSource() }
                         ) { onMakeAdmin() },
                     text = stringResource(id = R.string.action_yes_i_do),
-                    fontSize = 16.sp,
+                    fontSize = font_size_16_sp,
                     fontFamily = redHatDisplayFontFamily,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.primary,

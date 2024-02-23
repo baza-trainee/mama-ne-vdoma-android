@@ -23,6 +23,8 @@ import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.cards.ParentCardInSearch
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ButtonText
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.LoadingIndicator
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_16_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_48_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 
 @Composable
@@ -49,7 +51,7 @@ fun SearchResultsScreen(
         verticalArrangement = Arrangement.Top
     ) {
         ParentCardInSearch(
-            modifier = Modifier.padding(top = 16.dp),
+            modifier = Modifier.padding(top = size_16_dp),
             parent = screenState.parent
         )
 
@@ -58,8 +60,8 @@ fun SearchResultsScreen(
         Button(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 16.dp)
-                .height(48.dp),
+                .padding(vertical = size_16_dp)
+                .height(size_48_dp),
             onClick = {
                 handleEvent(SearchResultsEvent.OnNewSearch)
             }

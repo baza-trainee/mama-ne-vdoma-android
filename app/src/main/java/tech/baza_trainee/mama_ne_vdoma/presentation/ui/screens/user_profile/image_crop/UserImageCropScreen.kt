@@ -13,6 +13,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.image_crop.ImageCropEvent
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.image_crop.ImageCropScreen
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.image_crop.ImageCropViewState
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_20_dp
 
 @Composable
 fun UserImageCropScreen(
@@ -20,7 +21,7 @@ fun UserImageCropScreen(
     handleEvent: (ImageCropEvent) -> Unit
 ) {
     SurfaceWithSystemBars {
-        val handleSize: Float = LocalDensity.current.run { 20.dp.toPx() }
+        val handleSize: Float = LocalDensity.current.run { size_20_dp.toPx() }
 
         ImageCropScreen(
             imageForCrop = screenState.image,

@@ -39,15 +39,19 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.cards.GroupInfoDesk
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ButtonText
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.LoadingIndicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ScaffoldWithNavigationBars
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.headers.HeaderWithToolbar
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_14_sp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_16_sp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_16_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_32_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_48_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_8_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.showToast
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -93,12 +97,12 @@ fun FoundGroupScreen(
             modifier = Modifier
                 .padding(paddingValues)
                 .fillMaxSize()
-                .padding(horizontal = 16.dp),
+                .padding(horizontal = size_16_dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(size_8_dp))
 
             if (screenState.groups.isNotEmpty()) {
                 Row(
@@ -109,7 +113,7 @@ fun FoundGroupScreen(
                         modifier = Modifier.weight(1f),
                         text = stringResource(id = R.string.recommended_groups),
                         fontFamily = redHatDisplayFontFamily,
-                        fontSize = 16.sp
+                        fontSize = font_size_16_sp
                     )
                     Text(
                         modifier = Modifier
@@ -120,7 +124,7 @@ fun FoundGroupScreen(
                             ) { handleEvent(FoundGroupEvent.CreateGroup) },
                         text = stringResource(id = R.string.action_create_group),
                         fontFamily = redHatDisplayFontFamily,
-                        fontSize = 14.sp,
+                        fontSize = font_size_14_sp,
                         textDecoration = TextDecoration.Underline,
                         textAlign = TextAlign.End,
                         color = MaterialTheme.colorScheme.primary
@@ -130,9 +134,9 @@ fun FoundGroupScreen(
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 8.dp)
+                        .padding(top = size_8_dp)
                         .weight(1f),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                    verticalArrangement = Arrangement.spacedBy(size_8_dp)
                 ) {
                     items(screenState.groups) { group ->
                         GroupInfoDesk(
@@ -149,9 +153,9 @@ fun FoundGroupScreen(
 
                 Button(
                     modifier = Modifier
-                        .padding(vertical = 16.dp)
+                        .padding(vertical = size_16_dp)
                         .fillMaxWidth()
-                        .height(48.dp),
+                        .height(size_48_dp),
                     onClick = { handleEvent(FoundGroupEvent.OnJoin) },
                     enabled = screenState.groups.map { it.isChecked }.contains(true)
                 ) {
@@ -170,7 +174,7 @@ fun FoundGroupScreen(
                         ) { handleEvent(FoundGroupEvent.GoToMain) },
                     text = stringResource(id = R.string.action_create_group),
                     fontFamily = redHatDisplayFontFamily,
-                    fontSize = 14.sp,
+                    fontSize = font_size_14_sp,
                     textDecoration = TextDecoration.Underline,
                     textAlign = TextAlign.End,
                     color = MaterialTheme.colorScheme.primary
@@ -179,19 +183,19 @@ fun FoundGroupScreen(
                 Text(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 32.dp),
+                        .padding(top = size_32_dp),
                     text = stringResource(id = R.string.groups_not_found),
                     fontFamily = redHatDisplayFontFamily,
-                    fontSize = 14.sp
+                    fontSize = font_size_14_sp
                 )
 
                 Spacer(modifier = Modifier.weight(1f))
 
                 Button(
                     modifier = Modifier
-                        .padding(vertical = 16.dp)
+                        .padding(vertical = size_16_dp)
                         .fillMaxWidth()
-                        .height(48.dp),
+                        .height(size_48_dp),
                     onClick = { handleEvent(FoundGroupEvent.GoToMain) }
                 ) {
                     ButtonText(
@@ -205,9 +209,9 @@ fun FoundGroupScreen(
             AlertDialog(onDismissRequest = { showSuccessDialog = false }) {
                 Column(
                     modifier = Modifier
-                        .clip(RoundedCornerShape(8.dp))
+                        .clip(RoundedCornerShape(size_8_dp))
                         .background(MaterialTheme.colorScheme.background)
-                        .padding(16.dp)
+                        .padding(size_16_dp)
                         .fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
@@ -219,11 +223,11 @@ fun FoundGroupScreen(
 
                     Text(
                         modifier = Modifier
-                            .padding(top = 16.dp)
-                            .padding(horizontal = 16.dp)
+                            .padding(top = size_16_dp)
+                            .padding(horizontal = size_16_dp)
                             .fillMaxWidth(),
                         text = stringResource(id = R.string.join_request_sent, selectedGroupName),
-                        fontSize = 14.sp,
+                        fontSize = font_size_14_sp,
                         textAlign = TextAlign.Start,
                         fontFamily = redHatDisplayFontFamily
                     )
@@ -240,7 +244,7 @@ fun FoundGroupScreen(
                                 showSuccessDialog = false
                                 handleEvent(FoundGroupEvent.GoToMain)
                             }
-                            .padding(16.dp)
+                            .padding(size_16_dp)
                     )
                 }
             }

@@ -41,7 +41,13 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.SurfaceWithSystemBars
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.UserAvatarWithCameraAndGallery
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.text_fields.OutlinedTextFieldWithError
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_20_sp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_16_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_192_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_32_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_48_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_4_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.showToast
 
@@ -78,16 +84,16 @@ fun UserInfoScreen(
                 .verticalScroll(rememberScrollState())
                 .imePadding()
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp),
+                .padding(horizontal = size_16_dp),
             verticalArrangement = Arrangement.SpaceBetween,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 16.dp),
+                    .padding(top = size_16_dp),
                 text = stringResource(id = R.string.title_fill_profile),
-                fontSize = 20.sp,
+                fontSize = font_size_20_sp,
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.onBackground,
                 fontFamily = redHatDisplayFontFamily
@@ -95,9 +101,9 @@ fun UserInfoScreen(
 
             Box(
                 modifier = Modifier
-                    .padding(top = 16.dp)
-                    .height(192.dp)
-                    .width(192.dp),
+                    .padding(top = size_16_dp)
+                    .height(size_192_dp)
+                    .width(size_192_dp),
                 contentAlignment = Alignment.Center
             ) {
                 AsyncImage(
@@ -122,7 +128,7 @@ fun UserInfoScreen(
             OutlinedTextFieldWithError(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 32.dp),
+                    .padding(top = size_32_dp),
                 value = screenState.name,
                 label = stringResource(id = R.string.enter_your_name),
                 hint = stringResource(id = R.string.nickname),
@@ -137,7 +143,7 @@ fun UserInfoScreen(
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 4.dp),
+                    .padding(top = size_4_dp),
                 text = stringResource(id = R.string.name_rule_hint),
                 textAlign = TextAlign.Start,
                 fontFamily = redHatDisplayFontFamily
@@ -146,7 +152,7 @@ fun UserInfoScreen(
             CountryCodePicker(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 16.dp),
+                    .padding(top = size_16_dp),
                 currentCode = screenState.code,
                 currentPhone = screenState.phone,
                 isPhoneValid = screenState.phoneValid,
@@ -164,9 +170,9 @@ fun UserInfoScreen(
 
             Button(
                 modifier = Modifier
-                    .padding(vertical = 16.dp)
+                    .padding(vertical = size_16_dp)
                     .fillMaxWidth()
-                    .height(48.dp),
+                    .height(size_48_dp),
                 onClick = { handleEvent(UserInfoEvent.SaveInfo) },
                 enabled = screenState.nameValid == ValidField.VALID &&
                         screenState.phoneValid == ValidField.VALID &&

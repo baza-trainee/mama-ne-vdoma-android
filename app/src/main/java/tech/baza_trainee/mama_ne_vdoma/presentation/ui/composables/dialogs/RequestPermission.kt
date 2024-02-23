@@ -28,7 +28,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import tech.baza_trainee.mama_ne_vdoma.R
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_14_sp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_16_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_4_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_8_dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -46,15 +50,15 @@ fun PermissionDialog(
     ) {
         Column(
             modifier = Modifier
-                .clip(RoundedCornerShape(8.dp))
+                .clip(RoundedCornerShape(size_8_dp))
                 .background(MaterialTheme.colorScheme.background)
-                .padding(16.dp)
+                .padding(size_16_dp)
                 .fillMaxWidth()
         ) {
             Text(
                 modifier = Modifier
-                    .padding(top = 8.dp)
-                    .padding(horizontal = 16.dp)
+                    .padding(top = size_8_dp)
+                    .padding(horizontal = size_16_dp)
                     .fillMaxWidth(),
                 text = stringResource(id = R.string.attention_need_permission),
                 fontSize = 24.sp,
@@ -64,18 +68,18 @@ fun PermissionDialog(
 
             Text(
                 modifier = Modifier
-                    .padding(top = 16.dp)
-                    .padding(horizontal = 16.dp)
+                    .padding(top = size_16_dp)
+                    .padding(horizontal = size_16_dp)
                     .fillMaxWidth(),
                 text = permissionTextProvider.getDescription(
                     isPermanentlyDeclined = isPermanentlyDeclined
                 ),
-                fontSize = 14.sp,
+                fontSize = font_size_14_sp,
                 textAlign = TextAlign.Center,
                 fontFamily = redHatDisplayFontFamily
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(size_16_dp))
 
             Row(
                 modifier = Modifier
@@ -92,10 +96,10 @@ fun PermissionDialog(
                         .clickable {
                             onDismiss()
                         }
-                        .padding(16.dp)
+                        .padding(size_16_dp)
                 )
 
-                Spacer(modifier = Modifier.width(4.dp))
+                Spacer(modifier = Modifier.width(size_4_dp))
 
                 Text(
                     text = if (isPermanentlyDeclined) {
@@ -114,7 +118,7 @@ fun PermissionDialog(
                                 onGranted()
                             }
                         }
-                        .padding(16.dp)
+                        .padding(size_16_dp)
                 )
             }
         }

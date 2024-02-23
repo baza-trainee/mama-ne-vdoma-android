@@ -40,13 +40,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.models.CountryCode
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.functions.infiniteColorAnimation
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.SlateGray
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_14_sp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_20_sp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_16_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_1_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_4_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_8_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -97,7 +101,7 @@ fun CountryCodePicker(
                     unfocusedBorderColor = if (isCodeHighlighted) color else MaterialTheme.colorScheme.surface,
                     disabledBorderColor = MaterialTheme.colorScheme.primary
                 ),
-                shape = RoundedCornerShape(topStart = 4.dp, bottomStart = 4.dp)
+                shape = RoundedCornerShape(topStart = size_4_dp, bottomStart = size_4_dp)
             )
 
             val focusRequester = remember { FocusRequester() }
@@ -130,7 +134,7 @@ fun CountryCodePicker(
                     unfocusedBorderColor = MaterialTheme.colorScheme.surface,
                     disabledBorderColor = MaterialTheme.colorScheme.surface
                 ),
-                shape = RoundedCornerShape(topEnd = 4.dp, bottomEnd = 4.dp),
+                shape = RoundedCornerShape(topEnd = size_4_dp, bottomEnd = size_4_dp),
                 enabled = currentCode.isNotEmpty(),
                 textStyle = TextStyle(
                     fontFamily = redHatDisplayFontFamily
@@ -139,7 +143,7 @@ fun CountryCodePicker(
         }
 
         if (isPhoneValid == ValidField.INVALID && isPhoneFocused) {
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(size_4_dp))
 
             Text(
                 text = stringResource(id = R.string.incorrect_phone_number),
@@ -149,7 +153,7 @@ fun CountryCodePicker(
                 style = TextStyle(
                     fontFamily = redHatDisplayFontFamily
                 ),
-                fontSize = 14.sp
+                fontSize = font_size_14_sp
             )
         }
     }
@@ -164,20 +168,20 @@ fun CountryCodePicker(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp)
+                    .padding(size_16_dp)
             ) {
                 Text(
                     modifier = Modifier.fillMaxWidth(),
                     text = stringResource(id = R.string.choose_country_phone_code),
                     textAlign = TextAlign.Center,
                     fontWeight = FontWeight.Bold,
-                    fontSize = 20.sp
+                    fontSize = font_size_20_sp
                 )
 
                 OutlinedTextField(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 8.dp),
+                        .padding(top = size_8_dp),
                     value = searchCodeRequest,
                     onValueChange = { searchCodeRequest = it.lowercase() },
                     label = { Text(stringResource(id = R.string.enter_country_name)) },
@@ -198,7 +202,7 @@ fun CountryCodePicker(
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 8.dp)
+                        .padding(top = size_8_dp)
                         .weight(1f)
                 ) {
                     itemsIndexed(
@@ -209,7 +213,7 @@ fun CountryCodePicker(
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(top = 4.dp)
+                                .padding(top = size_4_dp)
                                 .clickable {
                                     onCodeSelected(item)
                                     openBottomSheet = false
@@ -219,22 +223,22 @@ fun CountryCodePicker(
                             Text(
                                 modifier = Modifier
                                     .weight(0.3f)
-                                    .padding(end = 8.dp),
+                                    .padding(end = size_8_dp),
                                 text = item.phoneCode,
-                                fontSize = 14.sp
+                                fontSize = font_size_14_sp
                             )
                             Text(
                                 modifier = Modifier.weight(0.7f),
                                 text = item.country,
-                                fontSize = 14.sp
+                                fontSize = font_size_14_sp
                             )
                         }
 
                         HorizontalDivider(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(top = 4.dp),
-                            thickness = 1.dp,
+                                .padding(top = size_4_dp),
+                            thickness = size_1_dp,
                             color = Color.Gray
                         )
                     }

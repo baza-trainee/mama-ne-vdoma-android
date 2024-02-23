@@ -34,7 +34,11 @@ import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.cards.GroupInfoDesk
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.LoadingIndicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.dialogs.DangerousActionAlertDialog
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_14_sp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_16_sp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_16_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_8_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 
 @Composable
@@ -66,7 +70,7 @@ fun MyGroupsScreen(
     Column(
         modifier = Modifier.fillMaxWidth()
     ) {
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(size_16_dp))
 
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -76,7 +80,7 @@ fun MyGroupsScreen(
                 modifier = Modifier.weight(1f),
                 text = stringResource(id = R.string.my_groups),
                 fontFamily = redHatDisplayFontFamily,
-                fontSize = 16.sp
+                fontSize = font_size_16_sp
             )
             Text(
                 modifier = Modifier
@@ -87,7 +91,7 @@ fun MyGroupsScreen(
                     ) { handleEvent(MyGroupsEvent.CreateNewGroup) },
                 text = stringResource(id = R.string.action_create_group),
                 fontFamily = redHatDisplayFontFamily,
-                fontSize = 14.sp,
+                fontSize = font_size_14_sp,
                 textDecoration = TextDecoration.Underline,
                 textAlign = TextAlign.End,
                 color = MaterialTheme.colorScheme.primary
@@ -97,11 +101,11 @@ fun MyGroupsScreen(
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 16.dp)
+                .padding(vertical = size_16_dp)
         ) {
             itemsIndexed(screenState.groups) { index, group ->
                 if (index != 0)
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(size_8_dp))
 
                 GroupInfoDesk(
                     modifier = Modifier.fillMaxWidth(),

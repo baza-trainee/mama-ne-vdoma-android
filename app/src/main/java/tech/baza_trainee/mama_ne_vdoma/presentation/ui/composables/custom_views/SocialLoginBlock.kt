@@ -27,6 +27,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_24_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_2_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_48_dp
 
 @Composable
 @Preview
@@ -44,13 +47,13 @@ fun SocialLoginBlock(
         OutlinedButton(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(48.dp),
+                .height(size_48_dp),
             onClick = onGoogleLogin,
             colors = ButtonDefaults.elevatedButtonColors(
                 containerColor = MaterialTheme.colorScheme.surface,
                 contentColor = MaterialTheme.colorScheme.onBackground
             ),
-            border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary)
+            border = BorderStroke(size_2_dp, MaterialTheme.colorScheme.primary)
         ) {
             Row(
                 modifier = Modifier
@@ -68,35 +71,7 @@ fun SocialLoginBlock(
             }
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
-//
-//        OutlinedButton(
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .height(48.dp),
-//            onClick = onGoogleLogin,
-//            colors = ButtonDefaults.elevatedButtonColors(
-//                containerColor = MaterialTheme.colorScheme.surface,
-//                contentColor = MaterialTheme.colorScheme.onBackground
-//            ),
-//            border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary)
-//        ) {
-//            Row(
-//                modifier = Modifier.fillMaxWidth(),
-//                horizontalArrangement = Arrangement.Center,
-//                verticalAlignment = Alignment.CenterVertically
-//            ) {
-//                Image(
-//                    painter = painterResource(id = R.drawable.ic_fb),
-//                    contentDescription = "Google",
-//                    modifier = Modifier.size(ButtonDefaults.IconSize)
-//                )
-//                Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
-//                Text(text = "Продовжити з Facebook")
-//            }
-//        }
-//
-//        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(size_24_dp))
 
         if (textForBottomButton() is AnnotatedString)
             Text(
@@ -108,7 +83,7 @@ fun SocialLoginBlock(
                         onAction()
                     }
                     .fillMaxWidth()
-                    .height(48.dp),
+                    .height(size_48_dp),
                 text = textForBottomButton() as AnnotatedString,
                 textAlign = TextAlign.Center,
                 fontFamily = redHatDisplayFontFamily
@@ -123,7 +98,7 @@ fun SocialLoginBlock(
                         onAction()
                     }
                     .fillMaxWidth()
-                    .height(48.dp),
+                    .height(size_48_dp),
                 text = textForBottomButton.toString(),
                 textAlign = TextAlign.Center,
                 fontFamily = redHatDisplayFontFamily

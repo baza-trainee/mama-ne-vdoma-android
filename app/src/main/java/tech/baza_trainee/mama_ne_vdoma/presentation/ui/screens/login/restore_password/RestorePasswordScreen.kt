@@ -38,7 +38,12 @@ import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.LoadingIndicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.SurfaceWithSystemBars
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.text_fields.OutlinedTextFieldWithError
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_14_sp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_20_sp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_16_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_24_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_48_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.showToast
@@ -68,8 +73,8 @@ fun RestorePasswordScreen(
             modifier = Modifier
                 .imePadding()
                 .fillMaxWidth()
-                .padding(bottom = 16.dp)
-                .padding(horizontal = 16.dp),
+                .padding(bottom = size_16_dp)
+                .padding(horizontal = size_16_dp),
             verticalArrangement = Arrangement.SpaceBetween,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -82,12 +87,12 @@ fun RestorePasswordScreen(
                     modifier = Modifier
                         .align(Alignment.Start)
                         .fillMaxWidth()
-                        .padding(top = 16.dp)
+                        .padding(top = size_16_dp)
                 ) {
                     IconButton(
                         modifier = Modifier
-                            .height(24.dp)
-                            .width(24.dp),
+                            .height(size_24_dp)
+                            .width(size_24_dp),
                         onClick = { handleEvent(RestorePasswordEvent.OnBack) }
                     ) {
                         Icon(
@@ -101,7 +106,7 @@ fun RestorePasswordScreen(
                             .weight(1f)
                             .fillMaxWidth(),
                         text = stringResource(id = R.string.forgot_password),
-                        fontSize = 20.sp,
+                        fontSize = font_size_20_sp,
                         textAlign = TextAlign.Center,
                         color = MaterialTheme.colorScheme.onBackground,
                         fontFamily = redHatDisplayFontFamily
@@ -111,9 +116,9 @@ fun RestorePasswordScreen(
                 Text(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 16.dp),
+                        .padding(top = size_16_dp),
                     text = stringResource(id = R.string.email_restore_instructions),
-                    fontSize = 14.sp,
+                    fontSize = font_size_14_sp,
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.onBackground,
                     fontFamily = redHatDisplayFontFamily
@@ -122,7 +127,7 @@ fun RestorePasswordScreen(
                 OutlinedTextFieldWithError(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 48.dp),
+                        .padding(top = size_48_dp),
                     value = screenState.email,
                     hint = stringResource(id = R.string.email),
                     label = stringResource(id = R.string.enter_your_email),
@@ -147,9 +152,9 @@ fun RestorePasswordScreen(
 
             Button(
                 modifier = Modifier
-                    .padding(vertical = 16.dp)
+                    .padding(vertical = size_16_dp)
                     .fillMaxWidth()
-                    .height(48.dp),
+                    .height(size_48_dp),
                 onClick = { handleEvent(RestorePasswordEvent.SendEmail) },
                 enabled = screenState.emailValid == ValidField.VALID
             ) {

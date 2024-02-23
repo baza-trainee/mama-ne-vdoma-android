@@ -35,6 +35,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.SurfaceWithNavigationBars
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.headers.HeaderWithToolbar
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.headers.ToolbarWithAvatar
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_16_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.SETTINGS_PAGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.findActivity
@@ -130,7 +131,7 @@ fun HostScreen(
                     .padding(it)
                     .consumeWindowInsets(it)
                     .fillMaxSize()
-                    .padding(horizontal = 16.dp),
+                    .padding(horizontal = size_16_dp),
                 navController = navController,
                 startDestination = Graphs.HostNested.Main.route
             ) {

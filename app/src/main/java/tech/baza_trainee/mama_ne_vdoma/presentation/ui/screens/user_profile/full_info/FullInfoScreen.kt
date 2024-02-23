@@ -34,8 +34,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.cards.ChildInfoDesk
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.cards.ParentInfoDesk
@@ -45,7 +43,16 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.functions.infiniteColorAnimation
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.headers.HeaderWithOptArrow
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.SlateGray
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_18_sp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_20_sp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_16_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_1_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_2_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_32_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_48_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_64_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_8_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.showToast
 
@@ -82,7 +89,7 @@ fun FullInfoScreen(
                 .padding(paddingValues)
                 .imePadding()
                 .fillMaxSize()
-                .padding(horizontal = 16.dp)
+                .padding(horizontal = size_16_dp)
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
@@ -90,14 +97,14 @@ fun FullInfoScreen(
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 16.dp),
+                    .padding(top = size_16_dp),
                 text = stringResource(id = R.string.you),
                 fontFamily = redHatDisplayFontFamily,
-                fontSize = 18.sp,
+                fontSize = font_size_18_sp,
                 fontWeight = FontWeight.Bold
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(size_8_dp))
 
             val color = infiniteColorAnimation(
                 initialValue = Color.White,
@@ -119,11 +126,11 @@ fun FullInfoScreen(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(64.dp)
+                        .height(size_64_dp)
                         .border(
                             color = color,
-                            shape = RoundedCornerShape(2.dp),
-                            width = 1.dp
+                            shape = RoundedCornerShape(size_2_dp),
+                            width = size_1_dp
                         )
                         .clickable { handleEvent(FullInfoEvent.EditUser) },
                     contentAlignment = Alignment.Center
@@ -131,7 +138,7 @@ fun FullInfoScreen(
                     Text(
                         text = stringResource(id = R.string.fill_your_profile),
                         fontFamily = redHatDisplayFontFamily,
-                        fontSize = 20.sp,
+                        fontSize = font_size_20_sp,
                         textAlign = TextAlign.Center
                     )
                 }
@@ -139,15 +146,15 @@ fun FullInfoScreen(
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 32.dp),
+                    .padding(top = size_32_dp),
                 text = stringResource(id = R.string.children),
                 fontFamily = redHatDisplayFontFamily,
-                fontSize = 18.sp,
+                fontSize = font_size_18_sp,
                 fontWeight = FontWeight.Bold
             )
 
             screenState.children.forEach { child ->
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(size_8_dp))
 
                 ChildInfoDesk(
                     modifier = Modifier.fillMaxWidth(),
@@ -167,8 +174,8 @@ fun FullInfoScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 16.dp)
-                    .height(32.dp)
+                    .padding(top = size_16_dp)
+                    .height(size_32_dp)
                     .background(
                         color = if (!animateAddChildBackground) MaterialTheme.colorScheme.background
                         else color
@@ -191,9 +198,9 @@ fun FullInfoScreen(
                     else
                         stringResource(id = R.string.add_child),
                     fontFamily = redHatDisplayFontFamily,
-                    fontSize = 20.sp,
+                    fontSize = font_size_20_sp,
                     modifier = Modifier
-                        .padding(start = 8.dp)
+                        .padding(start = size_8_dp)
                         .fillMaxWidth(1f),
                     color = if (screenState.isUserInfoFilled) MaterialTheme.colorScheme.onBackground
                     else SlateGray
@@ -204,9 +211,9 @@ fun FullInfoScreen(
 
             Button(
                 modifier = Modifier
-                    .padding(vertical = 16.dp)
+                    .padding(vertical = size_16_dp)
                     .fillMaxWidth()
-                    .height(48.dp),
+                    .height(size_48_dp),
                 onClick = { handleEvent(FullInfoEvent.OnNext) },
                 enabled = screenState.isUserInfoFilled && screenState.isChildInfoFilled
             ) {

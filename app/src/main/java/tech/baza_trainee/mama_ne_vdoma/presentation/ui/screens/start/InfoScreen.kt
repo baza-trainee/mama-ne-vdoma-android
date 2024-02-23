@@ -44,7 +44,14 @@ import kotlinx.coroutines.launch
 import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.Indicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.SurfaceWithNavigationBars
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_16_sp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_16_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_24_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_48_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_4_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_70_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_8_dp
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -78,7 +85,7 @@ fun InfoScreen(onCreate: () -> Unit) {
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
                         top.linkTo(parent.top)
-                        bottom.linkTo(footer.top, 16.dp)
+                        bottom.linkTo(footer.top, size_16_dp)
                     }
                     .fillMaxSize()
             ) { page ->
@@ -104,9 +111,9 @@ fun InfoScreen(onCreate: () -> Unit) {
                         color = MaterialTheme.colorScheme.primary,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 24.dp)
+                            .padding(horizontal = size_24_dp)
                             .constrainAs(title) {
-                                top.linkTo(image.bottom, 8.dp)
+                                top.linkTo(image.bottom, size_8_dp)
                                 height = Dimension.wrapContent
                             },
                         fontSize = 24.sp,
@@ -119,12 +126,12 @@ fun InfoScreen(onCreate: () -> Unit) {
                         color = MaterialTheme.colorScheme.onBackground,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 24.dp)
+                            .padding(horizontal = size_24_dp)
                             .constrainAs(info) {
-                                top.linkTo(title.bottom, 16.dp)
+                                top.linkTo(title.bottom, size_16_dp)
                                 height = Dimension.wrapContent
                             },
-                        fontSize = 16.sp,
+                        fontSize = font_size_16_sp,
                         textAlign = TextAlign.Center,
                         fontFamily = redHatDisplayFontFamily
                     )
@@ -135,8 +142,8 @@ fun InfoScreen(onCreate: () -> Unit) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .constrainAs(footer) {
-                        bottom.linkTo(parent.bottom, 16.dp)
-                        height = Dimension.preferredValue(70.dp)
+                        bottom.linkTo(parent.bottom, size_16_dp)
+                        height = Dimension.preferredValue(size_70_dp)
                     },
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -160,7 +167,7 @@ fun InfoScreen(onCreate: () -> Unit) {
                                     top.linkTo(parent.top)
                                     bottom.linkTo(parent.bottom)
                                 }
-                                .padding(horizontal = 16.dp)
+                                .padding(horizontal = size_16_dp)
                         ) {
                             repeat(pageTextContent.size) { iteration ->
                                 val isSelected by remember {
@@ -170,12 +177,12 @@ fun InfoScreen(onCreate: () -> Unit) {
                                     isSelected = isSelected,
                                     selectedColor = MaterialTheme.colorScheme.primary,
                                     backgroundColor = MaterialTheme.colorScheme.background,
-                                    defaultRadius = 8.dp,
-                                    selectedLength = 24.dp
+                                    defaultRadius = size_8_dp,
+                                    selectedLength = size_24_dp
                                 )
 
                                 if (iteration < pageTextContent.size)
-                                    Spacer(modifier = Modifier.width(4.dp))
+                                    Spacer(modifier = Modifier.width(size_4_dp))
                             }
                         }
                         Text(
@@ -184,7 +191,7 @@ fun InfoScreen(onCreate: () -> Unit) {
                                 .constrainAs(btnSkip) {
                                     top.linkTo(parent.top)
                                     bottom.linkTo(parent.bottom)
-                                    end.linkTo(btnNext.start, 16.dp)
+                                    end.linkTo(btnNext.start, size_16_dp)
                                 },
                             text = stringResource(id = R.string.action_skip),
                             fontWeight = FontWeight.Bold,
@@ -198,7 +205,7 @@ fun InfoScreen(onCreate: () -> Unit) {
                                 .constrainAs(btnNext) {
                                     top.linkTo(parent.top)
                                     bottom.linkTo(parent.bottom)
-                                    end.linkTo(parent.end, 16.dp)
+                                    end.linkTo(parent.end, size_16_dp)
                                 },
                             onClick = {
                                 with(pagerState) {
@@ -226,9 +233,9 @@ fun InfoScreen(onCreate: () -> Unit) {
                 ) {
                     Button(
                         modifier = Modifier
-                            .padding(horizontal = 16.dp)
+                            .padding(horizontal = size_16_dp)
                             .fillMaxWidth()
-                            .height(48.dp),
+                            .height(size_48_dp),
                         onClick = onCreate
                     ) {
                         Text(

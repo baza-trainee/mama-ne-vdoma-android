@@ -27,7 +27,9 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.functions.infiniteColorAnimation
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_14_sp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_4_dp
 
 @Composable
 fun PasswordTextFieldWithError(
@@ -59,11 +61,11 @@ fun PasswordTextFieldWithError(
             Text(
                 text = errorText,
                 color = Color.Red,
-                modifier = Modifier.padding(top = 4.dp),
+                modifier = Modifier.padding(top = size_4_dp),
                 style = TextStyle(
                     fontFamily = redHatDisplayFontFamily
                 ),
-                fontSize = 14.sp
+                fontSize = font_size_14_sp
             )
         }
     }
@@ -136,11 +138,11 @@ fun OutlinedTextFieldWithError(
             Text(
                 text = errorText,
                 color = Color.Red,
-                modifier = modifier.padding(top = 4.dp),
+                modifier = modifier.padding(top = size_4_dp),
                 style = TextStyle(
                     fontFamily = redHatDisplayFontFamily
                 ),
-                fontSize = 14.sp
+                fontSize = font_size_14_sp
             )
         }
     }

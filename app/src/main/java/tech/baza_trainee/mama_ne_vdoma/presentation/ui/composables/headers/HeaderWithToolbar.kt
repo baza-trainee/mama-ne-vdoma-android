@@ -19,6 +19,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_128_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_16_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_2_dp
 
 @Composable
 @Preview
@@ -36,7 +39,7 @@ fun HeaderWithToolbar(
         modifier = Modifier
             .background(MaterialTheme.colorScheme.primary)
             .windowInsetsPadding(WindowInsets.statusBars)
-            .height(128.dp)
+            .height(size_128_dp)
             .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
@@ -53,7 +56,7 @@ fun HeaderWithToolbar(
 
         Text(
             modifier = Modifier
-                .padding(horizontal = 16.dp, vertical = 2.dp)
+                .padding(horizontal = size_16_dp, vertical = size_2_dp)
                 .fillMaxWidth(),
             text = title,
             fontSize = 24.sp,

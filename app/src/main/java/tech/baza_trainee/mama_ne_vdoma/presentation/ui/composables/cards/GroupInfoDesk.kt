@@ -59,7 +59,19 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.GroupU
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.MemberUiModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.LogoutButtonColor
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.LogoutButtonTextColor
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_10_sp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_11_sp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_14_sp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_16_sp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_16_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_24_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_28_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_2_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_48_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_4_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_8_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_96_dp
 
 @Composable
 fun GroupInfoDesk(
@@ -90,20 +102,20 @@ fun GroupInfoDesk(
             .fillMaxWidth()
             .background(
                 color = MaterialTheme.colorScheme.surface,
-                shape = RoundedCornerShape(4.dp)
+                shape = RoundedCornerShape(size_4_dp)
             )
-            .padding(all = 16.dp)
+            .padding(all = size_16_dp)
     ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(96.dp),
+                .height(size_96_dp),
             contentAlignment = Alignment.Center
         ) {
             AsyncImage(
                 modifier = Modifier
                     .fillMaxSize()
-                    .clip(RoundedCornerShape(4.dp)),
+                    .clip(RoundedCornerShape(size_4_dp)),
                 model = ImageRequest.Builder(LocalContext.current)
                     .data(group.avatar)
                     .crossfade(true)
@@ -123,26 +135,26 @@ fun GroupInfoDesk(
                 if (isAdmin) {
                     Row(
                         modifier = Modifier
-                            .padding(8.dp)
-                            .height(28.dp)
+                            .padding(size_8_dp)
+                            .height(size_28_dp)
                             .background(
                                 color = Color.White,
-                                shape = RoundedCornerShape(4.dp)
+                                shape = RoundedCornerShape(size_4_dp)
                             )
-                            .padding(horizontal = 4.dp),
+                            .padding(horizontal = size_4_dp),
                         horizontalArrangement = Arrangement.Start,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Icon(
                             modifier = Modifier
-                                .width(16.dp)
-                                .height(28.dp),
+                                .width(size_16_dp)
+                                .height(size_28_dp),
                             painter = painterResource(id = R.drawable.ic_crown),
                             contentDescription = "admin"
                         )
                         Text(
                             text = stringResource(id = R.string.you_are_admin),
-                            fontSize = 14.sp,
+                            fontSize = font_size_14_sp,
                             fontFamily = redHatDisplayFontFamily,
                             textAlign = TextAlign.Center
                         )
@@ -152,32 +164,32 @@ fun GroupInfoDesk(
                 Spacer(modifier = Modifier.weight(1f))
 
                 Rating(
-                    modifier = Modifier.padding(all = 8.dp),
+                    modifier = Modifier.padding(all = size_8_dp),
                     rating = group.rating
                 )
             }
         }
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(size_8_dp))
 
         Text(
             modifier = Modifier.fillMaxWidth(),
             text = stringResource(id = R.string.format_group_id, group.id),
-            fontSize = 11.sp,
+            fontSize = font_size_11_sp,
             fontFamily = redHatDisplayFontFamily
         )
 
-        Spacer(modifier = Modifier.height(4.dp))
+        Spacer(modifier = Modifier.height(size_4_dp))
 
         Text(
             modifier = Modifier.fillMaxWidth(),
             text = group.name,
-            fontSize = 16.sp,
+            fontSize = font_size_16_sp,
             fontFamily = redHatDisplayFontFamily,
             fontWeight = FontWeight.Bold
         )
 
-        Spacer(modifier = Modifier.height(4.dp))
+        Spacer(modifier = Modifier.height(size_4_dp))
 
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -186,20 +198,20 @@ fun GroupInfoDesk(
         ) {
             Image(
                 modifier = Modifier
-                    .padding(end = 4.dp),
+                    .padding(end = size_4_dp),
                 painter = painterResource(id = R.drawable.ic_group_children),
                 contentDescription = "children_age",
                 contentScale = ContentScale.Inside
             )
 
             Text(
-                text = "${group.ages} р.",
-                fontSize = 14.sp,
+                text = stringResource(id = R.string.format_age, group.ages),
+                fontSize = font_size_14_sp,
                 fontFamily = redHatDisplayFontFamily
             )
         }
 
-        Spacer(modifier = Modifier.height(4.dp))
+        Spacer(modifier = Modifier.height(size_4_dp))
 
         var toggleMoreInfo by rememberSaveable { mutableStateOf(false) }
 
@@ -213,9 +225,9 @@ fun GroupInfoDesk(
                     if (index < 3) {
                         AsyncImage(
                             modifier = Modifier
-                                .padding(end = 2.dp)
-                                .height(24.dp)
-                                .width(24.dp)
+                                .padding(end = size_2_dp)
+                                .height(size_24_dp)
+                                .width(size_24_dp)
                                 .clip(CircleShape),
                             model = ImageRequest.Builder(LocalContext.current)
                                 .data(member.avatar)
@@ -234,8 +246,8 @@ fun GroupInfoDesk(
             if (group.members.size > 3)
                 Box(
                     modifier = Modifier
-                        .height(24.dp)
-                        .width(24.dp)
+                        .height(size_24_dp)
+                        .width(size_24_dp)
                         .background(
                             color = MaterialTheme.colorScheme.primary,
                             shape = CircleShape
@@ -245,7 +257,7 @@ fun GroupInfoDesk(
                     Text(
                         text = "+${group.members.size - 3}",
                         color = MaterialTheme.colorScheme.onPrimary,
-                        fontSize = 10.sp,
+                        fontSize = font_size_10_sp,
                         fontFamily = redHatDisplayFontFamily
                     )
                 }
@@ -268,7 +280,7 @@ fun GroupInfoDesk(
             }
         }
 
-        Spacer(modifier = Modifier.height(4.dp))
+        Spacer(modifier = Modifier.height(size_4_dp))
 
         if (toggleMoreInfo) {
             Column(
@@ -282,7 +294,7 @@ fun GroupInfoDesk(
                     horizontalArrangement = Arrangement.Start
                 ) {
                     Image(
-                        modifier = Modifier.padding(end = 4.dp),
+                        modifier = Modifier.padding(end = size_4_dp),
                         painter = painterResource(id = R.drawable.ic_group_location),
                         contentDescription = "group_location",
                         contentScale = ContentScale.Inside
@@ -290,7 +302,7 @@ fun GroupInfoDesk(
 
                     Text(
                         text = group.address,
-                        fontSize = 14.sp,
+                        fontSize = font_size_14_sp,
                         fontFamily = redHatDisplayFontFamily
                     )
                 }
@@ -298,9 +310,9 @@ fun GroupInfoDesk(
                 Text(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 8.dp),
+                        .padding(vertical = size_8_dp),
                     text = group.description,
-                    fontSize = 11.sp,
+                    fontSize = font_size_11_sp,
                     fontFamily = redHatDisplayFontFamily
                 )
 
@@ -313,13 +325,13 @@ fun GroupInfoDesk(
                             onRateUser = onRateUser
                         )
 
-                        Spacer(modifier = Modifier.height(4.dp))
+                        Spacer(modifier = Modifier.height(size_4_dp))
                     }
                 }
             }
 
             ScheduleInfoDesk(
-                modifier = Modifier.padding(top = 16.dp),
+                modifier = Modifier.padding(top = size_16_dp),
                 schedule = group.schedule,
                 dayText = stringResource(id = R.string.child_care_days_set),
                 periodText = stringResource(id = R.string.child_care_hours_set)
@@ -329,12 +341,12 @@ fun GroupInfoDesk(
                 Button(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 16.dp)
-                        .height(48.dp),
+                        .padding(top = size_16_dp)
+                        .height(size_48_dp),
                     onClick = { onEdit(group.id) }
                 ) {
                     Icon(
-                        modifier = Modifier.padding(end = 4.dp),
+                        modifier = Modifier.padding(end = size_4_dp),
                         imageVector = Icons.Filled.Edit,
                         contentDescription = "edit_group"
                     )
@@ -347,15 +359,15 @@ fun GroupInfoDesk(
                     Button(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(top = 16.dp)
-                            .height(48.dp),
+                            .padding(top = size_16_dp)
+                            .height(size_48_dp),
                         onClick = { showAdminDialog = true },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.surface,
                             contentColor = MaterialTheme.colorScheme.onSurface
                         ),
                         border = BorderStroke(
-                            width = 2.dp,
+                            width = size_2_dp,
                             color = MaterialTheme.colorScheme.primary
                         )
                     ) {
@@ -364,19 +376,19 @@ fun GroupInfoDesk(
                             contentDescription = "make_admin",
                             tint = MaterialTheme.colorScheme.onBackground
                         )
-                        Spacer(modifier = Modifier.width(4.dp))
+                        Spacer(modifier = Modifier.width(size_4_dp))
                         ButtonText(
                             text = stringResource(id = R.string.make_admin)
                         )
                     }
                 }
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(size_16_dp))
 
                 Button(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(48.dp),
+                        .height(size_48_dp),
                     onClick = { onDelete(group.id) },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = LogoutButtonColor,
@@ -394,7 +406,7 @@ fun GroupInfoDesk(
             Button(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(48.dp),
+                    .height(size_48_dp),
                 onClick = { onLeave(group.id) },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = LogoutButtonColor,
@@ -405,7 +417,7 @@ fun GroupInfoDesk(
                     imageVector = Icons.AutoMirrored.Filled.Logout,
                     contentDescription = "exit"
                 )
-                Spacer(modifier = Modifier.width(4.dp))
+                Spacer(modifier = Modifier.width(size_4_dp))
                 ButtonText(
                     text = stringResource(id = R.string.leave_group)
                 )
@@ -418,9 +430,9 @@ fun GroupInfoDesk(
             ) {
                 Text(
                     modifier = Modifier
-                        .padding(end = 4.dp),
+                        .padding(end = size_4_dp),
                     text = stringResource(id = R.string.join_group),
-                    fontSize = 11.sp,
+                    fontSize = font_size_11_sp,
                     fontFamily = redHatDisplayFontFamily
                 )
 
@@ -472,9 +484,9 @@ private fun MemberContent(
     ) {
         AsyncImage(
             modifier = Modifier
-                .padding(end = 8.dp)
-                .height(24.dp)
-                .width(24.dp)
+                .padding(end = size_8_dp)
+                .height(size_24_dp)
+                .width(size_24_dp)
                 .clip(CircleShape),
             model = ImageRequest.Builder(LocalContext.current)
                 .data(member.avatar)
@@ -488,7 +500,7 @@ private fun MemberContent(
         )
         Text(
             text = member.name,
-            fontSize = 14.sp,
+            fontSize = font_size_14_sp,
             fontFamily = redHatDisplayFontFamily
         )
 

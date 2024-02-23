@@ -25,8 +25,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.domain.model.ChildEntity
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.cards.ChildCard
@@ -36,7 +34,11 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.headers.HeaderWithToolbar
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.ChooseChildEvent
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.ChooseChildViewState
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_18_sp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_16_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_48_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_8_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.showToast
 
@@ -83,20 +85,20 @@ fun ChooseChildStandaloneScreen(
                 .padding(paddingValues)
                 .fillMaxSize()
                 .imePadding()
-                .padding(horizontal = 16.dp),
+                .padding(horizontal = size_16_dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 16.dp),
+                    .padding(top = size_16_dp),
                 text = if (isForSearch)
                     stringResource(id = R.string.search_group_for)
                 else
                     stringResource(id = R.string.create_group_for),
                 fontFamily = redHatDisplayFontFamily,
-                fontSize = 18.sp,
+                fontSize = font_size_18_sp,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Start
             )
@@ -105,8 +107,8 @@ fun ChooseChildStandaloneScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f)
-                    .padding(vertical = 16.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                    .padding(vertical = size_16_dp),
+                verticalArrangement = Arrangement.spacedBy(size_8_dp)
             ) {
                 items(screenState.children) { child ->
                     ChildCard(
@@ -120,9 +122,9 @@ fun ChooseChildStandaloneScreen(
 
             Button(
                 modifier = Modifier
-                    .padding(vertical = 16.dp)
+                    .padding(vertical = size_16_dp)
                     .fillMaxWidth()
-                    .height(48.dp),
+                    .height(size_48_dp),
                 onClick = { handleEvent(ChooseChildEvent.OnChooseChild(selectedChild?.childId.orEmpty())) },
                 enabled = selectedChild != null
             ) {

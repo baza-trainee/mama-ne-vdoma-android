@@ -30,7 +30,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_14_sp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_18_sp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_128_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_160_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_16_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_24_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_8_dp
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -45,7 +52,7 @@ fun HeaderWithOptArrow(
         modifier = modifier
             .background(MaterialTheme.colorScheme.primary)
             .windowInsetsPadding(WindowInsets.statusBars)
-            .height(if (info.isNotEmpty()) 160.dp else 128.dp)
+            .height(if (info.isNotEmpty()) size_160_dp else size_128_dp)
             .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = if (onBack != null) Arrangement.Top else Arrangement.SpaceBetween
@@ -58,9 +65,9 @@ fun HeaderWithOptArrow(
             ) {
                 IconButton(
                     modifier = Modifier
-                        .padding(start = 16.dp, top = 16.dp)
-                        .height(24.dp)
-                        .width(24.dp),
+                        .padding(start = size_16_dp, top = size_16_dp)
+                        .height(size_24_dp)
+                        .width(size_24_dp),
                     onClick = { onBack() }
                 ) {
                     Icon(
@@ -74,7 +81,7 @@ fun HeaderWithOptArrow(
         Text(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 16.dp),
+                .padding(all = size_16_dp),
             text = title,
             fontSize = 24.sp,
             textAlign = if (onBack != null) TextAlign.Start else TextAlign.Center,
@@ -88,11 +95,11 @@ fun HeaderWithOptArrow(
             if (isOverflowed)
                 Text(
                     modifier = Modifier
-                        .padding(horizontal = 16.dp, vertical = 8.dp)
+                        .padding(horizontal = size_16_dp, vertical = size_8_dp)
                         .fillMaxWidth()
                         .basicMarquee(),
                     text = info,
-                    fontSize = 14.sp,
+                    fontSize = font_size_14_sp,
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.onPrimary,
                     fontFamily = redHatDisplayFontFamily
@@ -100,10 +107,10 @@ fun HeaderWithOptArrow(
             else
                 Text(
                     modifier = Modifier
-                        .padding(horizontal = 16.dp, vertical = 8.dp)
+                        .padding(horizontal = size_16_dp, vertical = size_8_dp)
                         .fillMaxWidth(),
                     text = info,
-                    fontSize = 14.sp,
+                    fontSize = font_size_14_sp,
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.onPrimary,
                     fontFamily = redHatDisplayFontFamily,
@@ -112,7 +119,7 @@ fun HeaderWithOptArrow(
                     onTextLayout = {
                         isOverflowed = it.hasVisualOverflow
                     },
-                    lineHeight = 18.sp
+                    lineHeight = font_size_18_sp
                 )
         }
     }

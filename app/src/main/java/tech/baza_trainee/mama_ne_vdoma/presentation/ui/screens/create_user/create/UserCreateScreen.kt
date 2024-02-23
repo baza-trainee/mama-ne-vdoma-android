@@ -50,7 +50,16 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.functions.getTextWithUnderline
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.text_fields.OutlinedTextFieldWithError
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.text_fields.PasswordTextFieldWithError
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_14_sp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_18_sp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_20_sp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_16_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_24_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_2_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_32_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_48_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_8_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.beginSignInGoogleOneTap
@@ -128,16 +137,16 @@ fun UserCreateScreen(
                 .verticalScroll(rememberScrollState())
                 .imePadding()
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp),
+                .padding(horizontal = size_16_dp),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 16.dp),
+                    .padding(top = size_16_dp),
                 text = stringResource(id = R.string.title_create_user_profile),
-                fontSize = 20.sp,
+                fontSize = font_size_20_sp,
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.onBackground,
                 fontFamily = redHatDisplayFontFamily
@@ -147,7 +156,7 @@ fun UserCreateScreen(
             OutlinedTextFieldWithError(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 24.dp),
+                    .padding(top = size_24_dp),
                 value = screenState.email,
                 hint = stringResource(id = R.string.email),
                 label = stringResource(id = R.string.enter_your_email),
@@ -168,7 +177,7 @@ fun UserCreateScreen(
             PasswordTextFieldWithError(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 16.dp),
+                    .padding(top = size_16_dp),
                 password = screenState.password,
                 onValueChange = { handleEvent(UserCreateEvent.ValidatePassword(it)) },
                 isError = screenState.passwordValid == ValidField.INVALID,
@@ -178,17 +187,17 @@ fun UserCreateScreen(
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 2.dp),
+                    .padding(top = size_2_dp),
                 text = stringResource(id = R.string.password_rule_hint),
-                fontSize = 14.sp,
+                fontSize = font_size_14_sp,
                 fontFamily = redHatDisplayFontFamily,
-                lineHeight = 18.sp
+                lineHeight = font_size_18_sp
             )
 
             PasswordTextFieldWithError(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 16.dp),
+                    .padding(top = size_16_dp),
                 label = stringResource(id = R.string.repeat_password),
                 password = screenState.confirmPassword,
                 onValueChange = { handleEvent(UserCreateEvent.ValidateConfirmPassword(it)) },
@@ -201,7 +210,7 @@ fun UserCreateScreen(
             PrivacyPolicyBlock(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 8.dp),
+                    .padding(top = size_8_dp),
                 isChecked = screenState.isPolicyChecked,
                 onCheckedChanged = { handleEvent(UserCreateEvent.UpdatePolicyCheck(it)) }
             )
@@ -209,8 +218,8 @@ fun UserCreateScreen(
             Button(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 24.dp)
-                    .height(48.dp),
+                    .padding(top = size_24_dp)
+                    .height(size_48_dp),
                 onClick = {
                     handleEvent(UserCreateEvent.RegisterUser)
                 },
@@ -220,31 +229,6 @@ fun UserCreateScreen(
                     text = stringResource(id = R.string.action_sign_up)
                 )
             }
-
-            Spacer(modifier = Modifier.height(32.dp))
-//
-//            Row(
-//                modifier = Modifier.fillMaxWidth(),
-//                verticalAlignment = Alignment.CenterVertically
-//            ) {
-//                Box(
-//                    modifier = Modifier
-//                        .weight(1f)
-//                        .height(height = 2.dp)
-//                        .background(color = SlateGray)
-//                )
-//                Text(
-//                    modifier = Modifier.padding(horizontal = 4.dp),
-//                    text = "чи",
-//                    fontSize = 14.sp,
-//                )
-//                Box(
-//                    modifier = Modifier
-//                        .weight(1f)
-//                        .height(height = 2.dp)
-//                        .background(color = SlateGray)
-//                )
-//            }
 
             Spacer(modifier = Modifier.weight(1f))
 

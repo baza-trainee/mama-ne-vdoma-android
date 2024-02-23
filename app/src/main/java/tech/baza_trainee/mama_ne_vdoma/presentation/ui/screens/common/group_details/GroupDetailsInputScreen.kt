@@ -56,8 +56,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -74,7 +72,20 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.UpdateDeta
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.group_details.dialogs.KickUserDialog
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.MemberUiModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.GrayText
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_12_sp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_14_sp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_16_sp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_16_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_1_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_24_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_2_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_32_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_40_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_48_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_4_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_88_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_8_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -97,12 +108,12 @@ fun GroupDetailsInputScreen(
     when (val state = uiState.value) {
         UpdateDetailsUiState.Idle -> Unit
         is UpdateDetailsUiState.OnError -> {
-            if (state.error.isNotBlank()) Toast.makeText(
-                context,
-                state.error,
-                Toast.LENGTH_LONG
-            )
-                .show()
+            if (state.error.isNotBlank())
+                Toast.makeText(
+                    context,
+                    state.error,
+                    Toast.LENGTH_LONG
+                ).show()
             handleEvent(GroupDetailsEvent.ResetUiState)
         }
 
@@ -134,7 +145,7 @@ fun GroupDetailsInputScreen(
             .verticalScroll(rememberScrollState())
             .imePadding()
             .fillMaxSize()
-            .padding(horizontal = 16.dp)
+            .padding(horizontal = size_16_dp)
     ) {
         val color = infiniteColorAnimation(
             initialValue = Color.White,
@@ -153,11 +164,11 @@ fun GroupDetailsInputScreen(
                 IconButton(
                     onClick = { handleEvent(GroupDetailsEvent.GetLocationFromAddress) },
                     modifier = Modifier
-                        .padding(4.dp)
+                        .padding(size_4_dp)
                         .border(
-                            width = 1.dp,
+                            width = size_1_dp,
                             color = if (screenState.isAddressChecked) Color.Transparent else color,
-                            shape = RoundedCornerShape(2.dp)
+                            shape = RoundedCornerShape(size_2_dp)
                         )
                 ) {
                     if (screenState.isAddressChecked) {
@@ -189,7 +200,7 @@ fun GroupDetailsInputScreen(
             onValueChange = { handleEvent(GroupDetailsEvent.UpdateName(it)) },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 8.dp),
+                .padding(top = size_8_dp),
             label = stringResource(id = R.string.enter_group_name),
             hint = stringResource(id = R.string.group_name),
             isError = screenState.nameValid == ValidField.INVALID,
@@ -199,11 +210,11 @@ fun GroupDetailsInputScreen(
         Text(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 8.dp),
+                .padding(horizontal = size_8_dp),
             text = stringResource(id = R.string.group_name_hint),
             fontFamily = redHatDisplayFontFamily,
-            fontSize = 12.sp,
-            lineHeight = 14.sp
+            fontSize = font_size_12_sp,
+            lineHeight = font_size_14_sp
         )
 
         if (isForEditing) {
@@ -212,10 +223,10 @@ fun GroupDetailsInputScreen(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 8.dp)
+                    .padding(top = size_8_dp)
                     .background(
                         color = MaterialTheme.colorScheme.surface,
-                        shape = RoundedCornerShape(4.dp)
+                        shape = RoundedCornerShape(size_4_dp)
                     )
             ) {
                 Row(
@@ -229,9 +240,9 @@ fun GroupDetailsInputScreen(
 
                     AsyncImage(
                         modifier = Modifier
-                            .padding(end = 8.dp)
-                            .height(40.dp)
-                            .width(40.dp)
+                            .padding(end = size_8_dp)
+                            .height(size_40_dp)
+                            .width(size_40_dp)
                             .clip(CircleShape),
                         model = ImageRequest.Builder(LocalContext.current)
                             .data(admin.avatar)
@@ -247,12 +258,12 @@ fun GroupDetailsInputScreen(
                     Column {
                         Text(
                             text = admin.name,
-                            fontSize = 16.sp,
+                            fontSize = font_size_16_sp,
                             fontFamily = redHatDisplayFontFamily
                         )
                         Text(
                             text = stringResource(id = R.string.group_admin),
-                            fontSize = 14.sp,
+                            fontSize = font_size_14_sp,
                             fontFamily = redHatDisplayFontFamily
                         )
                     }
@@ -275,7 +286,7 @@ fun GroupDetailsInputScreen(
                     }
                 }
 
-                Spacer(modifier = Modifier.height(4.dp))
+                Spacer(modifier = Modifier.height(size_4_dp))
 
                 if (expanded) {
                     screenState.members.sortedBy { it.name }.forEach {
@@ -300,9 +311,9 @@ fun GroupDetailsInputScreen(
 
                                 AsyncImage(
                                     modifier = Modifier
-                                        .padding(end = 8.dp)
-                                        .height(24.dp)
-                                        .width(24.dp)
+                                        .padding(end = size_8_dp)
+                                        .height(size_24_dp)
+                                        .width(size_24_dp)
                                         .clip(CircleShape),
                                     model = ImageRequest.Builder(LocalContext.current)
                                         .data(it.avatar)
@@ -317,7 +328,7 @@ fun GroupDetailsInputScreen(
 
                                 Text(
                                     text = it.name,
-                                    fontSize = 14.sp,
+                                    fontSize = font_size_14_sp,
                                     fontFamily = redHatDisplayFontFamily
                                 )
 
@@ -374,10 +385,10 @@ fun GroupDetailsInputScreen(
         Text(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 8.dp),
+                .padding(top = size_8_dp),
             text = stringResource(id = R.string.child_age),
             fontFamily = redHatDisplayFontFamily,
-            fontSize = 14.sp
+            fontSize = font_size_14_sp
         )
 
         var isMinAgeFocused by rememberSaveable { mutableStateOf(false) }
@@ -425,7 +436,7 @@ fun GroupDetailsInputScreen(
                 maxLines = 1
             )
 
-            Spacer(modifier = Modifier.width(32.dp))
+            Spacer(modifier = Modifier.width(size_32_dp))
 
             OutlinedTextField(
                 value = screenState.maxAge,
@@ -475,24 +486,24 @@ fun GroupDetailsInputScreen(
             Text(
                 text = errorText,
                 color = Color.Red,
-                modifier = Modifier.padding(top = 4.dp),
+                modifier = Modifier.padding(top = size_4_dp),
                 style = TextStyle(
                     fontFamily = redHatDisplayFontFamily
                 ),
-                fontSize = 14.sp
+                fontSize = font_size_14_sp
             )
         }
 
         Text(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 8.dp),
+                .padding(top = size_8_dp),
             text = stringResource(id = R.string.enter_group_schedule),
             fontFamily = redHatDisplayFontFamily,
-            fontSize = 14.sp
+            fontSize = font_size_14_sp
         )
 
-        Spacer(modifier = Modifier.width(4.dp))
+        Spacer(modifier = Modifier.width(size_4_dp))
 
         ScheduleGroup(
             schedule = screenState.schedule,
@@ -506,25 +517,24 @@ fun GroupDetailsInputScreen(
             }
         )
 
-
         Text(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 8.dp),
+                .padding(top = size_8_dp),
             text = stringResource(id = R.string.group_photo),
             fontFamily = redHatDisplayFontFamily,
-            fontSize = 14.sp
+            fontSize = font_size_14_sp
         )
 
-        Spacer(modifier = Modifier.width(4.dp))
+        Spacer(modifier = Modifier.width(size_4_dp))
 
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(88.dp)
+                .height(size_88_dp)
                 .background(
                     color = MaterialTheme.colorScheme.surface,
-                    shape = RoundedCornerShape(4.dp)
+                    shape = RoundedCornerShape(size_4_dp)
                 ),
             contentAlignment = Alignment.Center
         ) {
@@ -565,15 +575,15 @@ fun GroupDetailsInputScreen(
                 .align(Alignment.End),
             text = stringResource(id = R.string.note_text_length),
             fontFamily = redHatDisplayFontFamily,
-            fontSize = 12.sp,
+            fontSize = font_size_12_sp,
             color = GrayText
         )
 
         Button(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 16.dp)
-                .height(48.dp),
+                .padding(vertical = size_16_dp)
+                .height(size_48_dp),
             onClick = {
                 handleEvent(GroupDetailsEvent.OnSave)
             },

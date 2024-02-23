@@ -13,6 +13,7 @@ import tech.baza_trainee.mama_ne_vdoma.domain.model.Period
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ScaffoldWithNavigationBars
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ScheduleScreenGroup
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.headers.HeaderWithOptArrow
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_16_dp
 import java.time.DayOfWeek
 
 @Composable
@@ -39,7 +40,7 @@ fun ScheduleScreen(
             modifier = Modifier
                 .padding(paddingValues)
                 .fillMaxSize()
-                .padding(horizontal = 16.dp)
+                .padding(horizontal = size_16_dp)
                 .imePadding(),
             screenState = screenState,
             onUpdateSchedule = onUpdateSchedule,

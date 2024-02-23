@@ -30,7 +30,12 @@ import androidx.compose.ui.window.Dialog
 import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ButtonText
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.GroupUiModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_14_sp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_18_sp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_16_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_48_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_8_dp
 
 @Composable
 fun MakeAdminDialog(
@@ -41,9 +46,9 @@ fun MakeAdminDialog(
     Dialog(onDismissRequest = onDismiss) {
         Column(
             modifier = Modifier
-                .clip(RoundedCornerShape(8.dp))
+                .clip(RoundedCornerShape(size_8_dp))
                 .background(MaterialTheme.colorScheme.background)
-                .padding(horizontal = 16.dp, vertical = 8.dp)
+                .padding(horizontal = size_16_dp, vertical = size_8_dp)
                 .fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -52,20 +57,20 @@ fun MakeAdminDialog(
 
             Text(
                 text = stringResource(id = R.string.make_admin),
-                fontSize = 18.sp,
+                fontSize = font_size_18_sp,
                 fontFamily = redHatDisplayFontFamily,
                 fontWeight = FontWeight.Bold
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
-
-            LazyColumn {
+            LazyColumn(
+                modifier = Modifier.padding(size_8_dp)
+            ) {
                 items(group.members.sortedBy { it.name }) { member ->
                     if (member.id != group.adminId) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Text(
                                 text = member.name,
-                                fontSize = 14.sp,
+                                fontSize = font_size_14_sp,
                                 fontFamily = redHatDisplayFontFamily
                             )
 
@@ -88,12 +93,11 @@ fun MakeAdminDialog(
                 }
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
-
             Button(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(48.dp),
+                    .padding(size_16_dp)
+                    .height(size_48_dp),
                 onClick = { onMakeAdmin(selectedId, selectedName) },
                 enabled = selectedId != ""
             ) {

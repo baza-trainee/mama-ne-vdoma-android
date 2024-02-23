@@ -19,7 +19,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import tech.baza_trainee.mama_ne_vdoma.R
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_14_sp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_28_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_2_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_4_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_64_dp
 
 @Composable
 @Preview
@@ -31,26 +36,26 @@ fun Rating(
 ) {
     Row(
         modifier = modifier
-            .height(28.dp)
-            .width(64.dp)
+            .height(size_28_dp)
+            .width(size_64_dp)
             .background(
                 color = backgroundColor,
-                shape = RoundedCornerShape(4.dp)
+                shape = RoundedCornerShape(size_4_dp)
             )
             .clickable { onClick() }
-            .padding(horizontal = 4.dp),
+            .padding(horizontal = size_4_dp),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
     ) {
         Image(
-            modifier = Modifier.padding(end = 2.dp),
+            modifier = Modifier.padding(end = size_2_dp),
             painter = painterResource(id = R.drawable.ic_star),
             contentDescription = "rating"
         )
         Text(
-            modifier = Modifier.padding(start = 2.dp),
+            modifier = Modifier.padding(start = size_2_dp),
             text = String.format("%.1f", rating),
-            fontSize = 14.sp,
+            fontSize = font_size_14_sp,
             fontFamily = redHatDisplayFontFamily
         )
     }

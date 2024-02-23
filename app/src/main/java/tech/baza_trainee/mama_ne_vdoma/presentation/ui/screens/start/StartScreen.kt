@@ -40,6 +40,9 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.dialogs.Notif
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.dialogs.PermissionDialog
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.functions.getTextWithUnderline
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_16_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_24_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_48_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.findActivity
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.openAppSettings
 
@@ -92,8 +95,8 @@ fun StartScreen(
                     .constrainAs(image) {
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
-                        top.linkTo(parent.top, margin = 24.dp)
-                        bottom.linkTo(btnStart.top, margin = 24.dp)
+                        top.linkTo(parent.top, margin = size_24_dp)
+                        bottom.linkTo(btnStart.top, margin = size_24_dp)
                         height = Dimension.fillToConstraints
                     },
                 painter = painterResource(id = R.drawable.collage),
@@ -108,8 +111,8 @@ fun StartScreen(
                         bottom.linkTo(btnLogin.top)
                     }
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 16.dp)
-                    .height(48.dp),
+                    .padding(all = size_16_dp)
+                    .height(size_48_dp),
                 onClick = onStart
             ) {
                 Text(
@@ -135,7 +138,7 @@ fun StartScreen(
                         onLogin()
                     }
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 16.dp),
+                    .padding(all = size_16_dp),
                 textAlign = TextAlign.Center,
                 fontFamily = redHatDisplayFontFamily
             )

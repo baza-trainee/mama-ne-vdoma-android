@@ -44,7 +44,16 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.dialogs.SuccessDialog
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.text_fields.OutlinedTextFieldWithError
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.GrayText
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_12_sp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_14_sp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_20_sp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_120_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_16_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_2_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_32_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_48_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_8_dp
 
 @Composable
 fun RateUserScreen(
@@ -90,18 +99,18 @@ fun RateUserScreen(
             contentDescription = "avatar",
             contentScale = ContentScale.FillBounds,
             modifier = Modifier
-                .padding(top = 16.dp)
-                .width(120.dp)
-                .height(120.dp)
+                .padding(top = size_16_dp)
+                .width(size_120_dp)
+                .height(size_120_dp)
                 .clip(CircleShape)
         )
 
         Text(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 16.dp),
+                .padding(top = size_16_dp),
             text = screenState.name,
-            fontSize = 20.sp,
+            fontSize = font_size_20_sp,
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.primary,
             fontFamily = redHatDisplayFontFamily
@@ -110,7 +119,7 @@ fun RateUserScreen(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 16.dp, end = 8.dp),
+                .padding(top = size_16_dp, end = size_8_dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {
@@ -121,7 +130,7 @@ fun RateUserScreen(
 
             Row(
                 modifier = Modifier
-                    .padding(start = 8.dp)
+                    .padding(start = size_8_dp)
                     .clickable {
                         handleEvent(RateUserEvent.ViewReviews)
                     },
@@ -129,31 +138,31 @@ fun RateUserScreen(
                 horizontalArrangement = Arrangement.Center
             ) {
                 Image(
-                    modifier = Modifier.padding(end = 2.dp),
+                    modifier = Modifier.padding(end = size_2_dp),
                     painter = painterResource(id = R.drawable.ic_reviews),
                     contentDescription = null
                 )
                 Text(
-                    modifier = Modifier.padding(start = 2.dp),
+                    modifier = Modifier.padding(start = size_2_dp),
                     text = screenState.reviews.toString(),
-                    fontSize = 14.sp,
+                    fontSize = font_size_14_sp,
                     fontFamily = redHatDisplayFontFamily
                 )
             }
         }
 
         RatingBar(
-            modifier = Modifier.padding(top = 32.dp),
+            modifier = Modifier.padding(top = size_32_dp),
             rating = screenState.currentRating,
             totalCount = 5,
-            spaceBetween = 8.dp,
+            spaceBetween = size_8_dp,
             onRate = { handleEvent(RateUserEvent.SetRating(it)) }
         )
 
         OutlinedTextFieldWithError(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 32.dp),
+                .padding(top = size_32_dp),
             value = screenState.note,
             label = stringResource(id = R.string.user_review_info),
             hint = stringResource(id = R.string.user_review_hint),
@@ -166,10 +175,10 @@ fun RateUserScreen(
             modifier = Modifier
                 .wrapContentWidth()
                 .align(Alignment.Start)
-                .padding(horizontal = 16.dp),
+                .padding(horizontal = size_16_dp),
             text = stringResource(id = R.string.user_review_length),
             fontFamily = redHatDisplayFontFamily,
-            fontSize = 12.sp,
+            fontSize = font_size_12_sp,
             color = GrayText
         )
 
@@ -178,8 +187,8 @@ fun RateUserScreen(
         Button(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 16.dp)
-                .height(48.dp),
+                .padding(vertical = size_16_dp)
+                .height(size_48_dp),
             onClick = {
                 handleEvent(RateUserEvent.OnSave)
             }

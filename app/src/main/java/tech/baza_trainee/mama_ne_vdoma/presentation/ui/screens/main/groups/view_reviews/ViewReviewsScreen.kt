@@ -40,7 +40,14 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.UserReviewUiModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.Black
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.GrayText
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_14_sp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_16_sp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_12_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_16_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_24_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_70_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_8_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 
 @Composable
@@ -69,8 +76,8 @@ fun ViewReviewsScreen(
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .padding(vertical = 16.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+            .padding(vertical = size_16_dp),
+        verticalArrangement = Arrangement.spacedBy(size_8_dp)
     ) {
         items(screenState.reviews) {
             UserReviewCard(model = it)
@@ -91,9 +98,9 @@ fun UserReviewCard(
             .fillMaxWidth()
             .background(
                 color = MaterialTheme.colorScheme.surface,
-                shape = RoundedCornerShape(8.dp)
+                shape = RoundedCornerShape(size_8_dp)
             )
-            .padding(all = 16.dp),
+            .padding(all = size_16_dp),
         verticalArrangement = Arrangement.Top
     ) {
         Row(
@@ -103,8 +110,8 @@ fun UserReviewCard(
         ) {
             AsyncImage(
                 modifier = Modifier
-                    .height(70.dp)
-                    .width(70.dp)
+                    .height(size_70_dp)
+                    .width(size_70_dp)
                     .clip(CircleShape),
                 model = ImageRequest.Builder(LocalContext.current)
                     .data(model.avatar)
@@ -126,11 +133,11 @@ fun UserReviewCard(
         Text(
             modifier = Modifier
                 .wrapContentWidth()
-                .padding(top = 24.dp)
+                .padding(top = size_24_dp)
                 .align(Alignment.Start),
             text = model.name,
             fontFamily = redHatDisplayFontFamily,
-            fontSize = 16.sp,
+            fontSize = font_size_16_sp,
             color = Black,
             fontWeight = FontWeight.Bold
         )
@@ -138,11 +145,11 @@ fun UserReviewCard(
         Text(
             modifier = Modifier
                 .wrapContentWidth()
-                .padding(top = 12.dp)
+                .padding(top = size_12_dp)
                 .align(Alignment.Start),
             text = model.note,
             fontFamily = redHatDisplayFontFamily,
-            fontSize = 14.sp,
+            fontSize = font_size_14_sp,
             color = Black
         )
 
@@ -150,11 +157,11 @@ fun UserReviewCard(
             Text(
                 modifier = Modifier
                     .wrapContentWidth()
-                    .padding(top = 12.dp)
+                    .padding(top = size_12_dp)
                     .align(Alignment.Start),
                 text = model.timestamp,
                 fontFamily = redHatDisplayFontFamily,
-                fontSize = 14.sp,
+                fontSize = font_size_14_sp,
                 color = GrayText
             )
     }

@@ -16,12 +16,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.unit.dp
 import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.domain.model.Gender
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.text_fields.OutlinedTextFieldWithError
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.add_child.ChildInfoEvent
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.add_child.ChildInfoViewState
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_16_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_48_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_8_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 
 @Composable
@@ -47,7 +49,7 @@ fun ChildInfoGroup(
             OutlinedTextFieldWithError(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 8.dp),
+                    .padding(top = size_8_dp),
                 value = screenState.name,
                 label = stringResource(id = R.string.child_name),
                 hint = stringResource(id = R.string.child_name),
@@ -59,7 +61,7 @@ fun ChildInfoGroup(
             OutlinedTextFieldWithError(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 16.dp),
+                    .padding(top = size_16_dp),
                 value = screenState.age,
                 label = stringResource(id = R.string.child_age),
                 hint = stringResource(id = R.string.child_age),
@@ -74,8 +76,8 @@ fun ChildInfoGroup(
             RadioGroup(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 16.dp)
-                    .padding(horizontal = 8.dp),
+                    .padding(top = size_16_dp)
+                    .padding(horizontal = size_8_dp),
                 radioGroupOptions = genderOptions,
                 getText = { stringResource(id = it.gender) },
                 selected = screenState.gender,
@@ -87,9 +89,9 @@ fun ChildInfoGroup(
 
         Button(
             modifier = Modifier
-                .padding(vertical = 16.dp)
+                .padding(vertical = size_16_dp)
                 .fillMaxWidth()
-                .height(48.dp),
+                .height(size_48_dp),
             onClick = {
                 handleEvent(ChildInfoEvent.SaveChild)
             },

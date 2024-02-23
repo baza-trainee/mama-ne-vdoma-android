@@ -47,7 +47,16 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.JoinRequestUiModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.LogoutButtonColor
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.LogoutButtonTextColor
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_11_sp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_14_sp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_16_sp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_16_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_24_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_40_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_48_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_4_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_8_dp
 
 @Composable
 @Preview
@@ -61,9 +70,9 @@ fun MyRequestCard(
             .fillMaxWidth()
             .background(
                 color = MaterialTheme.colorScheme.surface,
-                shape = RoundedCornerShape(8.dp)
+                shape = RoundedCornerShape(size_8_dp)
             )
-            .padding(all = 16.dp),
+            .padding(all = size_16_dp),
         verticalArrangement = Arrangement.Top
     ) {
         var toggleMoreInfo by rememberSaveable { mutableStateOf(false) }
@@ -74,7 +83,7 @@ fun MyRequestCard(
         ) {
             Text(
                 text = stringResource(id = R.string.join_request),
-                fontSize = 16.sp,
+                fontSize = font_size_16_sp,
                 fontFamily = redHatDisplayFontFamily,
                 fontWeight = FontWeight.SemiBold
             )
@@ -105,8 +114,8 @@ fun MyRequestCard(
                 ) {
                     AsyncImage(
                         modifier = Modifier
-                            .height(40.dp)
-                            .width(40.dp)
+                            .height(size_40_dp)
+                            .width(size_40_dp)
                             .clip(CircleShape),
                         model = ImageRequest.Builder(LocalContext.current)
                             .data(request.parentAvatar)
@@ -125,34 +134,33 @@ fun MyRequestCard(
                         Text(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(horizontal = 16.dp)
-                                .padding(bottom = 4.dp),
+                                .padding(horizontal = size_16_dp)
+                                .padding(bottom = size_4_dp),
                             text = request.parentName,
-                            fontSize = 16.sp,
+                            fontSize = font_size_16_sp,
                             fontFamily = redHatDisplayFontFamily
                         )
 
                         Text(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(horizontal = 16.dp)
-                                .padding(bottom = 4.dp),
+                                .padding(horizontal = size_16_dp)
+                                .padding(bottom = size_4_dp),
                             text = stringResource(id = R.string.join_request_sent, request.group.name),
-                            fontSize = 14.sp,
+                            fontSize = font_size_14_sp,
                             fontFamily = redHatDisplayFontFamily
                         )
                     }
                 }
 
-                Spacer(modifier = Modifier.height(8.dp))
-
                 Text(
                     modifier = Modifier
-                        .padding(horizontal = 8.dp)
+                        .padding(top = size_8_dp)
+                        .padding(horizontal = size_8_dp)
                         .align(Alignment.End)
                         .clickable { onCancel() },
                     text = stringResource(id = R.string.cancel_join_request),
-                    fontSize = 16.sp,
+                    fontSize = font_size_16_sp,
                     fontFamily = redHatDisplayFontFamily,
                     fontWeight = FontWeight.Bold,
                     color = Color.Red,
@@ -165,9 +173,9 @@ fun MyRequestCard(
                     .fillMaxWidth()
                     .background(
                         color = MaterialTheme.colorScheme.surface,
-                        shape = RoundedCornerShape(8.dp)
+                        shape = RoundedCornerShape(size_8_dp)
                     )
-                    .padding(8.dp),
+                    .padding(top = size_8_dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Top
             ) {
@@ -180,7 +188,7 @@ fun MyRequestCard(
                     AsyncImage(
                         modifier = Modifier
                             .fillMaxSize()
-                            .clip(RoundedCornerShape(4.dp)),
+                            .clip(RoundedCornerShape(size_4_dp)),
                         model = ImageRequest.Builder(LocalContext.current)
                             .data(request.group.avatar)
                             .crossfade(true)
@@ -193,40 +201,40 @@ fun MyRequestCard(
                     Rating(
                         modifier = Modifier
                             .align(Alignment.TopEnd)
-                            .padding(all = 8.dp),
+                            .padding(all = size_8_dp),
                         rating = request.group.rating
-                    ) //TODO: Implement group rating
+                    )
                 }
 
-                Spacer(modifier = Modifier.height(8.dp))
-
                 Text(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = "ID: ${request.group.id}",
-                    fontSize = 11.sp,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = size_8_dp),
+                    text = stringResource(id = R.string.format_group_id, request.group.id),
+                    fontSize = font_size_11_sp,
                     fontFamily = redHatDisplayFontFamily
                 )
 
-                Spacer(modifier = Modifier.height(4.dp))
-
                 Text(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = size_4_dp),
                     text = request.group.name,
-                    fontSize = 16.sp,
+                    fontSize = font_size_16_sp,
                     fontFamily = redHatDisplayFontFamily,
                     fontWeight = FontWeight.Bold
                 )
 
-                Spacer(modifier = Modifier.height(4.dp))
-
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = size_4_dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Start
                 ) {
                     Image(
                         modifier = Modifier
-                            .padding(end = 4.dp),
+                            .padding(end = size_4_dp),
                         painter = painterResource(id = R.drawable.ic_group_children),
                         contentDescription = "children_age",
                         contentScale = ContentScale.Inside
@@ -234,20 +242,20 @@ fun MyRequestCard(
 
                     Text(
                         text = stringResource(id = R.string.format_age, request.group.ages),
-                        fontSize = 14.sp,
+                        fontSize = font_size_14_sp,
                         fontFamily = redHatDisplayFontFamily
                     )
                 }
 
-                Spacer(modifier = Modifier.height(4.dp))
-
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = size_4_dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Start
                 ) {
                     Image(
-                        modifier = Modifier.padding(end = 4.dp),
+                        modifier = Modifier.padding(end = size_4_dp),
                         painter = painterResource(id = R.drawable.ic_group_location),
                         contentDescription = "group_location",
                         contentScale = ContentScale.Inside
@@ -255,12 +263,12 @@ fun MyRequestCard(
 
                     Text(
                         text = request.group.address,
-                        fontSize = 14.sp,
+                        fontSize = font_size_14_sp,
                         fontFamily = redHatDisplayFontFamily
                     )
                 }
 
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(size_8_dp))
 
                 request.group.members.forEachIndexed { index, member ->
                     Row(
@@ -270,9 +278,9 @@ fun MyRequestCard(
                     ) {
                         AsyncImage(
                             modifier = Modifier
-                                .padding(end = 8.dp)
-                                .height(24.dp)
-                                .width(24.dp)
+                                .padding(end = size_8_dp)
+                                .height(size_24_dp)
+                                .width(size_24_dp)
                                 .clip(CircleShape),
                             model = ImageRequest.Builder(LocalContext.current)
                                 .data(member.avatar)
@@ -284,21 +292,20 @@ fun MyRequestCard(
                         )
                         Text(
                             text = member.name,
-                            fontSize = 14.sp,
+                            fontSize = font_size_14_sp,
                             fontFamily = redHatDisplayFontFamily
                         )
                     }
 
                     if (index != request.group.members.size - 1)
-                        Spacer(modifier = Modifier.height(4.dp))
+                        Spacer(modifier = Modifier.height(size_4_dp))
                 }
-
-                Spacer(modifier = Modifier.height(8.dp))
 
                 Button(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(48.dp),
+                        .padding(top = size_8_dp)
+                        .height(size_48_dp),
                     onClick = { onCancel() },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = LogoutButtonColor,

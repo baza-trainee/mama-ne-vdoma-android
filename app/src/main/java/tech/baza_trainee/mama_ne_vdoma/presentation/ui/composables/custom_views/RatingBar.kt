@@ -14,13 +14,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import tech.baza_trainee.mama_ne_vdoma.R
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_0_dp
 
 @Composable
 fun RatingBar(
     modifier: Modifier = Modifier,
     rating: Int,
     totalCount: Int,
-    spaceBetween: Dp = 0.dp,
+    spaceBetween: Dp = size_0_dp,
     onRate: (Int) -> Unit
 ) {
     Row(

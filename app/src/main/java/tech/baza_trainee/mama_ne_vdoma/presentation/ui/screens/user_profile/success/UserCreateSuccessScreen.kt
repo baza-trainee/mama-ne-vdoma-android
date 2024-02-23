@@ -19,7 +19,15 @@ import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ButtonText
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ScaffoldWithNavigationBars
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.headers.HeaderWithOptArrow
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_11_sp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_14_sp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_15_sp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_18_sp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_20_sp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_16_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_48_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_8_dp
 
 @Composable
 fun UserCreateSuccessScreen(
@@ -43,45 +51,45 @@ fun UserCreateSuccessScreen(
             modifier = Modifier
                 .padding(paddingValues)
                 .fillMaxSize()
-                .padding(horizontal = 16.dp)
+                .padding(horizontal = size_16_dp)
         ) {
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 16.dp),
+                    .padding(top = size_16_dp),
                 text = stringResource(id = R.string.hello_user, name),
-                fontSize = 20.sp,
+                fontSize = font_size_20_sp,
                 fontFamily = redHatDisplayFontFamily,
-                lineHeight = 18.sp
+                lineHeight = font_size_18_sp
             )
 
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 16.dp),
+                    .padding(top = size_16_dp),
                 text = stringResource(id = R.string.find_group_for_you),
-                fontSize = 14.sp,
+                fontSize = font_size_14_sp,
                 fontFamily = redHatDisplayFontFamily,
-                lineHeight = 18.sp
+                lineHeight = font_size_18_sp
             )
 
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 8.dp),
+                    .padding(top = size_8_dp),
                 text = stringResource(id = R.string.questions_to_find_group),
-                fontSize = 11.sp,
+                fontSize = font_size_11_sp,
                 fontFamily = redHatDisplayFontFamily,
-                lineHeight = 15.sp
+                lineHeight = font_size_15_sp
             )
 
             Spacer(modifier = Modifier.weight(1f))
 
             Button(
                 modifier = Modifier
-                    .padding(vertical = 16.dp)
+                    .padding(vertical = size_16_dp)
                     .fillMaxWidth()
-                    .height(48.dp),
+                    .height(size_48_dp),
                 onClick = onNext
             ) {
                 ButtonText(

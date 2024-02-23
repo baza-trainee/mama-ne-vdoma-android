@@ -16,11 +16,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.domain.model.Period
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_14_sp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_8_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.short
 import java.time.DayOfWeek
 
@@ -50,7 +50,7 @@ fun ColumnScope.DayScheduleRow(
     Text(
         text = dayText,
         fontFamily = redHatDisplayFontFamily,
-        fontSize = 14.sp,
+        fontSize = font_size_14_sp,
     )
 
     Row(
@@ -68,7 +68,7 @@ fun ColumnScope.DayScheduleRow(
                 Text(
                     text = DayOfWeek.MONDAY.short(),
                     fontFamily = redHatDisplayFontFamily,
-                    fontSize = 14.sp,
+                    fontSize = font_size_14_sp,
                 )
             }
         )
@@ -80,7 +80,7 @@ fun ColumnScope.DayScheduleRow(
                 Text(
                     text = DayOfWeek.TUESDAY.short(),
                     fontFamily = redHatDisplayFontFamily,
-                    fontSize = 14.sp,
+                    fontSize = font_size_14_sp,
                 )
             }
         )
@@ -92,7 +92,7 @@ fun ColumnScope.DayScheduleRow(
                 Text(
                     text = DayOfWeek.WEDNESDAY.short(),
                     fontFamily = redHatDisplayFontFamily,
-                    fontSize = 14.sp,
+                    fontSize = font_size_14_sp,
                 )
             }
         )
@@ -104,7 +104,7 @@ fun ColumnScope.DayScheduleRow(
                 Text(
                     text = DayOfWeek.THURSDAY.short(),
                     fontFamily = redHatDisplayFontFamily,
-                    fontSize = 14.sp,
+                    fontSize = font_size_14_sp,
                 )
             }
         )
@@ -116,7 +116,7 @@ fun ColumnScope.DayScheduleRow(
                 Text(
                     text = DayOfWeek.FRIDAY.short(),
                     fontFamily = redHatDisplayFontFamily,
-                    fontSize = 14.sp,
+                    fontSize = font_size_14_sp,
                 )
             }
         )
@@ -128,7 +128,7 @@ fun ColumnScope.DayScheduleRow(
                 Text(
                     text = DayOfWeek.SATURDAY.short(),
                     fontFamily = redHatDisplayFontFamily,
-                    fontSize = 14.sp,
+                    fontSize = font_size_14_sp,
                 )
             }
         )
@@ -140,17 +140,17 @@ fun ColumnScope.DayScheduleRow(
                 Text(
                     text = DayOfWeek.SUNDAY.short(),
                     fontFamily = redHatDisplayFontFamily,
-                    fontSize = 14.sp,
+                    fontSize = font_size_14_sp,
                 )
             }
         )
     }
 
     Text(
-        modifier = Modifier.padding(top = 8.dp),
+        modifier = Modifier.padding(top = size_8_dp),
         text = periodText,
         fontFamily = redHatDisplayFontFamily,
-        fontSize = 14.sp,
+        fontSize = font_size_14_sp,
     )
 
     Row(
@@ -166,7 +166,7 @@ fun ColumnScope.DayScheduleRow(
                 Text(
                     text = stringResource(id = R.string.morning),
                     fontFamily = redHatDisplayFontFamily,
-                    fontSize = 14.sp,
+                    fontSize = font_size_14_sp,
                 )
             }
         )
@@ -178,7 +178,7 @@ fun ColumnScope.DayScheduleRow(
                 Text(
                     text = stringResource(id = R.string.noon),
                     fontFamily = redHatDisplayFontFamily,
-                    fontSize = 14.sp,
+                    fontSize = font_size_14_sp,
                 )
             }
         )
@@ -190,7 +190,7 @@ fun ColumnScope.DayScheduleRow(
                 Text(
                     text = stringResource(id = R.string.evening),
                     fontFamily = redHatDisplayFontFamily,
-                    fontSize = 14.sp,
+                    fontSize = font_size_14_sp,
                 )
             }
         )
