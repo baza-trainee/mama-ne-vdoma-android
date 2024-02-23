@@ -5,13 +5,12 @@ import tech.baza_trainee.mama_ne_vdoma.data.mapper.toDomainModel
 import tech.baza_trainee.mama_ne_vdoma.data.model.ValidateEmailDto
 import tech.baza_trainee.mama_ne_vdoma.data.model.VerifyEmailDto
 import tech.baza_trainee.mama_ne_vdoma.data.utils.getRequestResult
-import tech.baza_trainee.mama_ne_vdoma.domain.model.UserProfileEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserAuthRepository
 
 class UserAuthRepositoryImpl(private val userAuthApi: UserAuthApi): UserAuthRepository {
 
     override suspend fun getUserInfo() = userAuthApi.getUserInfo().getRequestResult {
-            it?.toDomainModel() ?: UserProfileEntity()
+            it.toDomainModel()
         }
 
     override suspend fun changeEmailInit(email: String) =

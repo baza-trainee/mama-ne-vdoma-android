@@ -6,8 +6,6 @@ import tech.baza_trainee.mama_ne_vdoma.data.model.CreateGroupDto
 import tech.baza_trainee.mama_ne_vdoma.data.model.LocationPatchDto
 import tech.baza_trainee.mama_ne_vdoma.data.utils.getRequestResult
 import tech.baza_trainee.mama_ne_vdoma.domain.mapper.toDataModel
-import tech.baza_trainee.mama_ne_vdoma.domain.model.GroupEntity
-import tech.baza_trainee.mama_ne_vdoma.domain.model.GroupFullInfoEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UpdateGroupEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.GroupsRepository
 
@@ -19,7 +17,7 @@ class GroupsRepositoryImpl(
         name: String,
         description: String
     ) = groupsApi.createGroup(childId, CreateGroupDto(name, description)).getRequestResult {
-        it?.toDomainModel() ?: GroupEntity()
+        it.toDomainModel()
     }
 
     override suspend fun updateGroup(
@@ -36,12 +34,12 @@ class GroupsRepositoryImpl(
 
     override suspend fun getGroupById(group: String) =
         groupsApi.getGroupById(group).getRequestResult {
-            it?.toDomainModel() ?: GroupEntity()
+            it.toDomainModel()
         }
 
     override suspend fun getGroupsForParent(parent: String) =
         groupsApi.getGroupsForParent(parent).getRequestResult { list ->
-            list?.map { it.toDomainModel() }?.toList() ?: emptyList()
+            list.map { it.toDomainModel() }.toList()
         }
 
     override suspend fun getGroupsByArea(
@@ -49,7 +47,7 @@ class GroupsRepositoryImpl(
         lng: Double,
         radius: Int
     ) = groupsApi.getGroupsByArea(lat, lng, radius).getRequestResult { list ->
-        list?.map { it.toDomainModel() }?.toList() ?: emptyList()
+        list.map { it.toDomainModel() }.toList()
     }
 
     override suspend fun sendJoinRequest(groupId: String, childId: String) =
@@ -69,7 +67,7 @@ class GroupsRepositoryImpl(
 
     override suspend fun getGroupFullInfo(groupId: String) =
         groupsApi.getGroupFullInfo(groupId).getRequestResult {
-            it?.toDomainModel() ?: GroupFullInfoEntity()
+            it.toDomainModel()
         }
 
     override suspend fun cancelRequest(groupId: String, childId: String) =

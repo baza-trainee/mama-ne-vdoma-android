@@ -23,7 +23,7 @@ class AuthRepositoryImpl(
 
     override suspend fun loginUser(email: String, password: String) =
         authApi.loginUser(AuthUserDto(email, password)).getRequestResult {
-            it?.id.orEmpty()
+            it.id
         }
 
     override suspend fun forgetPassword(email: String) =
@@ -34,6 +34,6 @@ class AuthRepositoryImpl(
 
     override suspend fun signupWithGoogle(code: String) =
         authApi.signupWithGoogle(code).getRequestResult {
-            it?.id.orEmpty()
+            it.id
         }
 }
