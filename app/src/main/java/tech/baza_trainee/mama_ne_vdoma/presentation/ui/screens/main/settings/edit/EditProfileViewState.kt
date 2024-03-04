@@ -1,7 +1,7 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.edit
 
 import android.net.Uri
-import androidx.compose.runtime.Stable
+import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import com.google.android.gms.maps.model.LatLng
@@ -12,7 +12,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.models.CountryCo
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 import java.time.DayOfWeek
 
-@Stable
+@Immutable
 data class EditProfileViewState(
     val name: String = "",
     val nameValid: ValidField = ValidField.EMPTY,

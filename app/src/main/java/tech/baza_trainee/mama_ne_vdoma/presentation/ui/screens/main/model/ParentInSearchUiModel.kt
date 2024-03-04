@@ -1,9 +1,9 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model
 
 import android.net.Uri
-import androidx.compose.runtime.Stable
+import androidx.compose.runtime.Immutable
 
-@Stable
+@Immutable
 data class ParentInSearchUiModel(
     val id: String = "",
     val name: String = "",

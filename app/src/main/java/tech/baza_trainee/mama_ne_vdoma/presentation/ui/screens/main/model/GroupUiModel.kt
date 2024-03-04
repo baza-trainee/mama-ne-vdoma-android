@@ -1,14 +1,14 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model
 
 import android.net.Uri
-import androidx.compose.runtime.Stable
+import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import com.google.android.gms.maps.model.LatLng
 import tech.baza_trainee.mama_ne_vdoma.domain.model.DayPeriod
 import tech.baza_trainee.mama_ne_vdoma.domain.model.getDefaultSchedule
 import java.time.DayOfWeek
 
-@Stable
+@Immutable
 data class GroupUiModel(
     val id: String = "",
     val adminId: String = "",
@@ -24,7 +24,7 @@ data class GroupUiModel(
     val schedule: SnapshotStateMap<DayOfWeek, DayPeriod> = getDefaultSchedule()
 )
 
-@Stable
+@Immutable
 data class MemberUiModel(
     val id: String = "",
     val name: String = "",

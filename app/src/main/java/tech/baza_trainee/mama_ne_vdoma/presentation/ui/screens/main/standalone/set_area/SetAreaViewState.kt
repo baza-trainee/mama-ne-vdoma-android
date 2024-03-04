@@ -1,10 +1,10 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.standalone.set_area
 
 import android.net.Uri
-import androidx.compose.runtime.Stable
+import androidx.compose.runtime.Immutable
 import com.google.android.gms.maps.model.LatLng
 
-@Stable
+@Immutable
 data class SetAreaViewState(
     val avatar: Uri = Uri.EMPTY,
     val address: String = "",

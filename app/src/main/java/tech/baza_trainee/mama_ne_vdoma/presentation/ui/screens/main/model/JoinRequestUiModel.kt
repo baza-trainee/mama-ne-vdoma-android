@@ -1,10 +1,10 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model
 
 import android.net.Uri
-import androidx.compose.runtime.Stable
+import androidx.compose.runtime.Immutable
 import tech.baza_trainee.mama_ne_vdoma.domain.model.ChildEntity
 
-@Stable
+@Immutable
 data class JoinRequestUiModel(
     val group: GroupUiModel = GroupUiModel(),
     val parentId: String = "",

@@ -1,11 +1,11 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.host
 
 import android.net.Uri
-import androidx.compose.runtime.Stable
+import androidx.compose.runtime.Immutable
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.CommonHostRoute
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.MainScreenRoutes
 
-@Stable
+@Immutable
 data class HostViewState(
     val currentRoute: CommonHostRoute = MainScreenRoutes.Main,
     val notifications: Int = 0,

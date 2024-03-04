@@ -1,10 +1,10 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.main_profile
 
 import android.net.Uri
-import androidx.compose.runtime.Stable
+import androidx.compose.runtime.Immutable
 import tech.baza_trainee.mama_ne_vdoma.domain.model.ChildEntity
 
-@Stable
+@Immutable
 data class ProfileSettingsViewState(
     val name: String = "Name",
     val email: String = "email",

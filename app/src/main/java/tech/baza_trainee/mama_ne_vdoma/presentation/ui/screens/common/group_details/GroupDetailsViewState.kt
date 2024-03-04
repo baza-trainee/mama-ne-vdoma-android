@@ -2,7 +2,7 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.group_det
 
 import android.graphics.Bitmap
 import android.net.Uri
-import androidx.compose.runtime.Stable
+import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import com.google.android.gms.maps.model.LatLng
 import tech.baza_trainee.mama_ne_vdoma.domain.model.DayPeriod
@@ -12,7 +12,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.BitmapHelper
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 import java.time.DayOfWeek
 
-@Stable
+@Immutable
 data class GroupDetailsViewState(
     val members: List<MemberUiModel> = emptyList(),
     val userAvatar: Uri = Uri.EMPTY,

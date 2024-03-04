@@ -1,9 +1,9 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.rate_user
 
 import android.net.Uri
-import androidx.compose.runtime.Stable
+import androidx.compose.runtime.Immutable
 
-@Stable
+@Immutable
 data class RateUserViewState(
     val name: String = "Name",
     val avatar: Uri = Uri.EMPTY,
