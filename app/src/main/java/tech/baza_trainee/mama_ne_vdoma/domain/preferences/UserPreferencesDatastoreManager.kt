@@ -10,7 +10,6 @@ import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
@@ -36,13 +35,13 @@ import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesKeys.KE
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesKeys.KEY_PROFILE_FILLED
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesKeys.KEY_RADIUS
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesKeys.KEY_SEND_EMAIL
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.get
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.set
 import java.io.IOException
 
 class UserPreferencesDatastoreManager(private val context: Context) {
 
-    private val Context.dataStore by preferencesDataStore(
-        name = USER_PREFERENCES
-    )
+    private val Context.dataStore by preferencesDataStore(name = USER_PREFERENCES)
 
     private val userDataStore: DataStore<Preferences> get() = context.dataStore
 
@@ -87,312 +86,93 @@ class UserPreferencesDatastoreManager(private val context: Context) {
         }
 
     var id: String
-        get() = runBlocking {
-            withContext(Dispatchers.Default) {
-                userPreferencesFlow.first().id
-            }
-        }
-        set(value) = runBlocking {
-            withContext(Dispatchers.Default) {
-                userDataStore.edit {
-                    it[KEY_ID] = value
-                }
-            }
-        }
+        get() = userDataStore.get(KEY_ID, "")
+        set(value) = userDataStore.set(KEY_ID, value)
 
     var avatar: String
-        get() = runBlocking {
-            withContext(Dispatchers.Default) {
-                userPreferencesFlow.first().avatar
-            }
-        }
-        set(value) = runBlocking {
-            withContext(Dispatchers.Default) {
-                userDataStore.edit {
-                    it[KEY_AVATAR] = value
-                }
-            }
-        }
+        get() = userDataStore.get(KEY_AVATAR, "")
+        set(value) = userDataStore.set(KEY_AVATAR, value)
+
 
     var avatarUri: Uri
-        get() = runBlocking {
-            withContext(Dispatchers.Default) {
-                userPreferencesFlow.first().avatarUri
-            }
-        }
-        set(value) = runBlocking {
-            withContext(Dispatchers.Default) {
-                userDataStore.edit {
-                    it[KEY_AVATAR_URI] = value.toString()
-                }
-            }
-        }
+        get() = Uri.parse(userDataStore.get(KEY_AVATAR_URI, ""))
+        set(value) = userDataStore.set(KEY_AVATAR_URI, value.toString())
 
     var name: String
-        get() = runBlocking {
-            withContext(Dispatchers.Default) {
-                userPreferencesFlow.first().name
-            }
-        }
-        set(value) = runBlocking {
-            withContext(Dispatchers.Default) {
-                userDataStore.edit {
-                    it[KEY_NAME] = value
-                }
-            }
-        }
+        get() = userDataStore.get(KEY_NAME, "")
+        set(value) = userDataStore.set(KEY_NAME, value)
 
     var code: String
-        get() = runBlocking {
-            withContext(Dispatchers.Default) {
-                userPreferencesFlow.first().code
-            }
-        }
-        set(value) = runBlocking {
-            withContext(Dispatchers.Default) {
-                userDataStore.edit {
-                    it[KEY_COUNTRY_CODE] = value
-                }
-            }
-        }
+        get() = userDataStore.get(KEY_COUNTRY_CODE, "")
+        set(value) = userDataStore.set(KEY_COUNTRY_CODE, value)
 
     var phone: String
-        get() = runBlocking {
-            withContext(Dispatchers.Default) {
-                userPreferencesFlow.first().phone
-            }
-        }
-        set(value) = runBlocking {
-            withContext(Dispatchers.Default) {
-                userDataStore.edit {
-                    it[KEY_PHONE_NUMBER] = value
-                }
-            }
-        }
+        get() = userDataStore.get(KEY_PHONE_NUMBER, "")
+        set(value) = userDataStore.set(KEY_PHONE_NUMBER, value)
 
     var email: String
-        get() = runBlocking {
-            withContext(Dispatchers.Default) {
-                userPreferencesFlow.first().email
-            }
-        }
-        set(value) = runBlocking {
-            withContext(Dispatchers.Default) {
-                userDataStore.edit {
-                    it[KEY_EMAIL] = value
-                }
-            }
-        }
+        get() = userDataStore.get(KEY_EMAIL, "")
+        set(value) = userDataStore.set(KEY_EMAIL, value)
 
     var address: String
-        get() = runBlocking {
-            withContext(Dispatchers.Default) {
-                userPreferencesFlow.first().address
-            }
-        }
-        set(value) = runBlocking {
-            withContext(Dispatchers.Default) {
-                userDataStore.edit {
-                    it[KEY_ADDRESS] = value
-                }
-            }
-        }
+        get() = userDataStore.get(KEY_ADDRESS, "")
+        set(value) = userDataStore.set(KEY_ADDRESS, value)
 
     var radius: Int
-        get() = runBlocking {
-            withContext(Dispatchers.Default) {
-                userPreferencesFlow.first().radius
-            }
-        }
-        set(value) = runBlocking {
-            withContext(Dispatchers.Default) {
-                userDataStore.edit {
-                    it[KEY_RADIUS] = value
-                }
-            }
-        }
+        get() = userDataStore.get(KEY_RADIUS, 0)
+        set(value) = userDataStore.set(KEY_RADIUS, value)
 
     var latitude: Double
-        get() = runBlocking {
-            withContext(Dispatchers.Default) {
-                userPreferencesFlow.first().latitude
-            }
-        }
-        set(value) = runBlocking {
-            withContext(Dispatchers.Default) {
-                userDataStore.edit {
-                    it[KEY_LOCATION_LAT] = value
-                }
-            }
-        }
+        get() = userDataStore.get(KEY_LOCATION_LAT, 0.00)
+        set(value) = userDataStore.set(KEY_LOCATION_LAT, value)
 
     var longitude: Double
-        get() = runBlocking {
-            withContext(Dispatchers.Default) {
-                userPreferencesFlow.first().longitude
-            }
-        }
-        set(value) = runBlocking {
-            withContext(Dispatchers.Default) {
-                userDataStore.edit {
-                    it[KEY_LOCATION_LNG] = value
-                }
-            }
-        }
+        get() = userDataStore.get(KEY_LOCATION_LNG, 0.00)
+        set(value) = userDataStore.set(KEY_LOCATION_LNG, value)
 
     var sendEmail: Boolean
-        get() = runBlocking {
-            withContext(Dispatchers.Default) {
-                userPreferencesFlow.first().sendEmail
-            }
-        }
-        set(value) = runBlocking {
-            withContext(Dispatchers.Default) {
-                userDataStore.edit {
-                    it[KEY_SEND_EMAIL] = value
-                }
-            }
-        }
+        get() = userDataStore.get(KEY_SEND_EMAIL, true)
+        set(value) = userDataStore.set(KEY_SEND_EMAIL, value)
 
     var isChildrenDataProvided: Boolean
-        get() = runBlocking {
-            withContext(Dispatchers.Default) {
-                userPreferencesFlow.first().isChildrenDataProvided
-            }
-        }
-        set(value) = runBlocking {
-            withContext(Dispatchers.Default) {
-                userDataStore.edit {
-                    it[KEY_CHILDREN_PROVIDED] = value
-                }
-            }
-        }
+        get() = userDataStore.get(KEY_CHILDREN_PROVIDED, true)
+        set(value) = userDataStore.set(KEY_CHILDREN_PROVIDED, value)
 
     var isUserProfileFilled: Boolean
-        get() = runBlocking {
-            withContext(Dispatchers.Default) {
-                userPreferencesFlow.first().isUserProfileFilled
-            }
-        }
-        set(value) = runBlocking {
-            withContext(Dispatchers.Default) {
-                userDataStore.edit {
-                    it[KEY_PROFILE_FILLED] = value
-                }
-            }
-        }
+        get() = userDataStore.get(KEY_PROFILE_FILLED, true)
+        set(value) = userDataStore.set(KEY_PROFILE_FILLED, value)
 
     var currentChild: String
-        get() = runBlocking {
-            withContext(Dispatchers.Default) {
-                userPreferencesFlow.first().currentChild
-            }
-        }
-        set(value) = runBlocking {
-            withContext(Dispatchers.Default) {
-                userDataStore.edit {
-                    it[KEY_CURRENT_CHILD] = value
-                }
-            }
-        }
+        get() = userDataStore.get(KEY_CURRENT_CHILD, "")
+        set(value) = userDataStore.set(KEY_CURRENT_CHILD, value)
 
     var myJoinRequests: Int
-        get() = runBlocking {
-            withContext(Dispatchers.Default) {
-                userPreferencesFlow.first().myJoinRequests
-            }
-        }
-        set(value) = runBlocking {
-            withContext(Dispatchers.Default) {
-                userDataStore.edit {
-                    it[KEY_MY_JOIN_REQUESTS] = value
-                }
-            }
-        }
+        get() = userDataStore.get(KEY_MY_JOIN_REQUESTS, 0)
+        set(value) = userDataStore.set(KEY_MY_JOIN_REQUESTS, value)
 
     var adminJoinRequests: Int
-        get() = runBlocking {
-            withContext(Dispatchers.Default) {
-                userPreferencesFlow.first().adminJoinRequests
-            }
-        }
-        set(value) = runBlocking {
-            withContext(Dispatchers.Default) {
-                userDataStore.edit {
-                    it[KEY_ADMIN_JOIN_REQUESTS] = value
-                }
-            }
-        }
+        get() = userDataStore.get(KEY_ADMIN_JOIN_REQUESTS, 0)
+        set(value) = userDataStore.set(KEY_ADMIN_JOIN_REQUESTS, value)
 
     var login: String
-        get() = runBlocking {
-            withContext(Dispatchers.Default) {
-                userPreferencesFlow.first().login
-            }
-        }
-        set(value) = runBlocking {
-            withContext(Dispatchers.Default) {
-                userDataStore.edit {
-                    it[KEY_ACCOUNT_LOGIN] = value
-                }
-            }
-        }
+        get() = userDataStore.get(KEY_ACCOUNT_LOGIN, "")
+        set(value) = userDataStore.set(KEY_ACCOUNT_LOGIN, value)
 
     var authToken: String
-        get() = runBlocking {
-            withContext(Dispatchers.Default) {
-                userPreferencesFlow.first().authToken
-            }
-        }
-        set(value) = runBlocking {
-            withContext(Dispatchers.Default) {
-                userDataStore.edit {
-                    it[KEY_ACCOUNT_AUTH_TOKEN] = value
-                }
-            }
-        }
+        get() = userDataStore.get(KEY_ACCOUNT_LOGIN, "")
+        set(value) = userDataStore.set(KEY_ACCOUNT_LOGIN, value)
 
     var fcmToken: String
-        get() = runBlocking {
-            withContext(Dispatchers.Default) {
-                userPreferencesFlow.first().fcmToken
-            }
-        }
-        set(value) = runBlocking {
-            withContext(Dispatchers.Default) {
-                userDataStore.edit {
-                    it[KEY_ACCOUNT_FCM_TOKEN] = value
-                }
-            }
-        }
+        get() = userDataStore.get(KEY_ACCOUNT_FCM_TOKEN, "")
+        set(value) = userDataStore.set(KEY_ACCOUNT_FCM_TOKEN, value)
 
     var cookies: Set<String>
-        get() = runBlocking {
-            withContext(Dispatchers.Default) {
-                userPreferencesFlow.first().cookies
-            }
-        }
-        set(value) = runBlocking {
-            withContext(Dispatchers.Default) {
-                userDataStore.edit {
-                    it[KEY_ACCOUNT_COOKIES] = value
-                }
-            }
-        }
+        get() = userDataStore.get(KEY_ACCOUNT_COOKIES, emptySet())
+        set(value) = userDataStore.set(KEY_ACCOUNT_COOKIES, value)
 
     var note: String
-        get() = runBlocking {
-            withContext(Dispatchers.Default) {
-                userPreferencesFlow.first().note
-            }
-        }
-        set(value) = runBlocking {
-            withContext(Dispatchers.Default) {
-                userDataStore.edit {
-                    it[KEY_NOTE] = value
-                }
-            }
-        }
+        get() = userDataStore.get(KEY_NOTE, "")
+        set(value) = userDataStore.set(KEY_NOTE, value)
 
     fun clearData() = runBlocking {
         withContext(Dispatchers.Default) {
