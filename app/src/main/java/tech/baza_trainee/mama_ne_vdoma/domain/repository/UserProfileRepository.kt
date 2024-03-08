@@ -9,6 +9,8 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestResult
 
 interface UserProfileRepository {
 
+    suspend fun getUserInfo(): RequestResult<UserProfileEntity>
+
     suspend fun saveUserInfo(userInfo: UserInfoEntity): RequestResult<Unit>
 
     suspend fun saveUserLocation(latitude: Double, longitude: Double): RequestResult<Unit>

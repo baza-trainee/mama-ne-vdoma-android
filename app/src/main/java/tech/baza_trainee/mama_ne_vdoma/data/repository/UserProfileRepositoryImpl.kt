@@ -19,6 +19,10 @@ class UserProfileRepositoryImpl(
     private val preferencesDatastoreManager: UserPreferencesDatastoreManager
 ): UserProfileRepository {
 
+    override suspend fun getUserInfo() = userProfileApi.getUserInfo().getRequestResult() {
+        it.toDomainModel()
+    }
+
     override suspend fun saveUserInfo(userInfo: UserInfoEntity): RequestResult<Unit> {
         val _userInfo = if (preferencesDatastoreManager.fcmToken.isNotEmpty())
             userInfo.copy(deviceId = preferencesDatastoreManager.fcmToken)

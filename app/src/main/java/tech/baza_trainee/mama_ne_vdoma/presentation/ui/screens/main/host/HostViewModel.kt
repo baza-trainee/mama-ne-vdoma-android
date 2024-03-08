@@ -25,12 +25,14 @@ import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserAuthRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.PageNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.ChatScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.CommonHostRoute
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.GroupsScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.LoginRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.MainScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.SearchScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.SettingsScreenRoutes
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.CHAT_PAGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.EDIT_PROFILE_PAGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.GROUPS_PAGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.NOTIFICATIONS_PAGE
@@ -303,6 +305,7 @@ class HostViewModel(
             SETTINGS_PAGE -> SettingsScreenRoutes.Settings
             EDIT_PROFILE_PAGE -> SettingsScreenRoutes.EditProfile
             NOTIFICATIONS_PAGE -> MainScreenRoutes.Notifications
+            CHAT_PAGE -> ChatScreenRoutes.Chats
             else -> MainScreenRoutes.Main
         }
     }

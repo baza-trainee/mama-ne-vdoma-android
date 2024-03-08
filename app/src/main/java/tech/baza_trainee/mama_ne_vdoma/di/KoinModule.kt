@@ -34,6 +34,7 @@ import tech.baza_trainee.mama_ne_vdoma.data.repository.GroupsRepositoryImpl
 import tech.baza_trainee.mama_ne_vdoma.data.repository.LocationRepositoryImpl
 import tech.baza_trainee.mama_ne_vdoma.data.repository.UserAuthRepositoryImpl
 import tech.baza_trainee.mama_ne_vdoma.data.repository.UserProfileRepositoryImpl
+import tech.baza_trainee.mama_ne_vdoma.data.socket.SocketManagerImpl
 import tech.baza_trainee.mama_ne_vdoma.domain.model.getDefaultSchedule
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatastoreManager
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.AuthRepository
@@ -42,6 +43,7 @@ import tech.baza_trainee.mama_ne_vdoma.domain.repository.GroupsRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.LocationRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserAuthRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
+import tech.baza_trainee.mama_ne_vdoma.domain.socket.SocketManager
 import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.GroupsInteractor
 import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.GroupsInteractorImpl
 import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.LocationInteractor
@@ -63,6 +65,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.creat
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.login.LoginViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.new_password.NewPasswordScreenViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.restore_password.RestorePasswordScreenViewModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.chat.ChatsViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common.SearchResultsCommunicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.my_groups.MyGroupsViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.rate_user.RateUserViewModel
@@ -240,6 +243,9 @@ val mainModule = module {
     viewModel { (userId: String) ->
         ViewReviewsViewModel(userId, get(), get(), get())
     }
+
+    single<SocketManager> { SocketManagerImpl(get(), get()) }
+    viewModel { ChatsViewModel(get(), get(), get(), get(), get(), get()) }
 }
 
 inline fun <reified T> createWebService(

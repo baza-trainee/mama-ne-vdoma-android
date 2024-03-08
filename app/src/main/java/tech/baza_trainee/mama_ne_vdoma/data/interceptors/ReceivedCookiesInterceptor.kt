@@ -8,16 +8,19 @@ import java.io.IOException
 class ReceivedCookiesInterceptor(
     private val preferencesDatastoreManager: UserPreferencesDatastoreManager
 ) : Interceptor {
+
     @Throws(IOException::class)
     override fun intercept(chain: Interceptor.Chain): Response {
         val originalResponse: Response = chain.proceed(chain.request())
-        if (originalResponse.headers(COOKIES).isNotEmpty()) {
+        val cookies = originalResponse.headers(COOKIES)
+        if (cookies.isNotEmpty()) {
             preferencesDatastoreManager.cookies = mutableSetOf<String>().apply {
-                for (header in originalResponse.headers(COOKIES)) {
+                for (header in cookies) {
                     add(header)
                 }
             }
         }
+
         return originalResponse
     }
 

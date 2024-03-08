@@ -22,3 +22,7 @@ val SliderColor = Color(0xFF6750A4)
 val LogoutButtonColor = Color(0xFFFFBABA)
 val LogoutButtonTextColor = Color(0xFFB3261E)
 val GrayText = Color(0xFF787878)
+
+val ChatMessageBackgroundMine = Color(0xFF448AF7)
+val ChatMessageBackgroundOther = Color(0xFFE9E9EB)
+val ChatMessageFieldColor = Color(0xFFECE6F0)

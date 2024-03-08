@@ -130,6 +130,13 @@ dependencies {
 
     implementation("com.google.firebase:firebase-messaging-ktx:23.4.0")
 
+    implementation("io.socket:socket.io-client:2.1.0") {
+        exclude(
+            group = "org.json",
+            module = "json"
+        )
+    }
+
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")

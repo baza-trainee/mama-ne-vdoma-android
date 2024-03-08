@@ -1,10 +1,15 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Base64
+import tech.baza_trainee.mama_ne_vdoma.R
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.Locale
 import java.util.regex.Pattern
+import kotlin.math.abs
 
 fun String?.orDefault(default: String) = orEmpty().ifEmpty { default }
 
@@ -36,6 +41,32 @@ fun String.decodeFromBase64(): String {
 
 fun String.capitalize(locale: Locale = Locale.getDefault()) =
     replaceFirstChar { if (it.isLowerCase()) it.titlecase(locale) else it.toString() }
+
+fun String.formatDate(): String {
+    val inputFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+    val outputFormat = DateTimeFormatter.ofPattern("dd.MM.yyyy")
+    val localDateTime = LocalDateTime.parse(this, inputFormat)
+
+    return outputFormat.format(localDateTime)
+}
+
+fun String.getMessageDate(context: Context): String {
+    if (isEmpty()) return ""
+
+    val inputFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+    val parsedDateTime = LocalDateTime.parse(this, inputFormat)
+    val currentDateTime = LocalDateTime.now()
+
+    val diffMinutes = abs(java.time.Duration.between(parsedDateTime, currentDateTime).toMinutes())
+
+    return when {
+        diffMinutes <= 5 -> context.getString(R.string.right_now)
+        parsedDateTime.toLocalDate() == currentDateTime.toLocalDate() -> context.getString(R.string.today)
+        parsedDateTime.plusDays(1).toLocalDate() == currentDateTime.toLocalDate() -> context.getString(R.string.yesterday)
+        parsedDateTime.year == currentDateTime.year -> parsedDateTime.format(DateTimeFormatter.ofPattern("dd MMM"))
+        else -> parsedDateTime.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
+    }
+}
 
 const val EMAIL_PATTERN =
     "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})\$"

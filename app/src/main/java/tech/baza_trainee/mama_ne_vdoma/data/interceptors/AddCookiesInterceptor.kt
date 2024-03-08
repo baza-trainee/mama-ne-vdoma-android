@@ -14,12 +14,12 @@ class AddCookiesInterceptor(
     @Throws(IOException::class)
     override fun intercept(chain: Interceptor.Chain): Response {
         val builder: Request.Builder = chain.request().newBuilder()
-        val preferences = preferencesDatastoreManager.cookies
+        val cookies = preferencesDatastoreManager.cookies
 
         // Use the following if you need everything in one line.
         // Some APIs die if you do it differently.
         val cookieString = StringBuilder()
-        preferences.forEach {
+        cookies.forEach {
             val parser = it.split(";")
             cookieString.append(parser[0] + "; ")
         }

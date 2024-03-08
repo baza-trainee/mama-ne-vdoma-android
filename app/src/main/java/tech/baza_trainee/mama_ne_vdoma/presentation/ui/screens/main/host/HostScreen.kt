@@ -14,13 +14,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import tech.baza_trainee.mama_ne_vdoma.R
+import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.graphs.main_host.chatNavGraph
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.graphs.main_host.groupNavGraph
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.graphs.main_host.mainNavGraph
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.graphs.main_host.searchNavGraph
@@ -79,6 +79,7 @@ fun HostScreen(
         val tabContents = listOf(
             MainNavigationItem(stringResource(id = R.string.title_main_page), R.drawable.ic_home),
             MainNavigationItem(stringResource(id = R.string.title_groups), R.drawable.ic_group),
+            MainNavigationItem(stringResource(id = R.string.title_chat), R.drawable.ic_chat),
             MainNavigationItem(stringResource(id = R.string.title_search), R.drawable.ic_search),
             MainNavigationItem(stringResource(id = R.string.title_settings), R.drawable.ic_settings)
         )
@@ -137,6 +138,7 @@ fun HostScreen(
             ) {
                 mainNavGraph()
                 groupNavGraph()
+                chatNavGraph()
                 searchNavGraph()
                 settingsNavGraph()
             }

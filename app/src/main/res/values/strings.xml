@@ -253,4 +253,9 @@
     <string name="title_set_your_schedule">изначіть свій графік, коли можете доглядати дітей</string>
     <string name="title_fill_profile">Заповнення профілю</string>
     <string name="do_not_have_account">"Ще немає профілю? "</string>
+    <string name="title_chat">Чат</string>
+    <string name="right_now">Щойно</string>
+    <string name="today">Сьогодні</string>
+    <string name="yesterday">Вчора</string>
+    <string name="go_to_chats">Назад до списку чатів</string>
 </resources>

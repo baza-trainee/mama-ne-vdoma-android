@@ -28,6 +28,7 @@ import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesKeys.KE
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesKeys.KEY_ID
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesKeys.KEY_LOCATION_LAT
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesKeys.KEY_LOCATION_LNG
+import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesKeys.KEY_MESSAGES
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesKeys.KEY_MY_JOIN_REQUESTS
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesKeys.KEY_NAME
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesKeys.KEY_NOTE
@@ -75,13 +76,14 @@ class UserPreferencesDatastoreManager(private val context: Context) {
             val authToken = preferences[KEY_ACCOUNT_AUTH_TOKEN].orEmpty()
             val fcmToken = preferences[KEY_ACCOUNT_FCM_TOKEN].orEmpty()
             val cookies = preferences[KEY_ACCOUNT_COOKIES].orEmpty()
+            val messages = preferences[KEY_MESSAGES].orEmpty()
             UserPreferences(
                 id, avatar, avatarUri, name, code,
                 phone, email, address, radius,
                 latitude, longitude, sendEmail,
                 profileFilled, childrenProvided, currentChild,
                 myJoinRequests, adminJoinRequests, login, authToken,
-                fcmToken, cookies, note
+                fcmToken, cookies, note, messages
             )
         }
 
@@ -173,6 +175,10 @@ class UserPreferencesDatastoreManager(private val context: Context) {
     var note: String
         get() = userDataStore.get(KEY_NOTE, "")
         set(value) = userDataStore.set(KEY_NOTE, value)
+
+    var messages: Set<String>
+        get() = userDataStore.get(KEY_MESSAGES, emptySet())
+        set(value) = userDataStore.set(KEY_MESSAGES, value)
 
     fun clearData() = runBlocking {
         withContext(Dispatchers.Default) {

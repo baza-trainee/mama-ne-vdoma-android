@@ -11,6 +11,7 @@ sealed class Graphs(override val route: String): CommonRoute(route) {
     sealed class HostNested {
         data object Main : Graphs("host_main_graph")
         data object Groups : Graphs("host_groups_graph")
+        data object Chat : Graphs("host_chat_graph")
         data object Search : Graphs("host_search_graph")
         data object Settings : Graphs("host_settings_graph")
     }

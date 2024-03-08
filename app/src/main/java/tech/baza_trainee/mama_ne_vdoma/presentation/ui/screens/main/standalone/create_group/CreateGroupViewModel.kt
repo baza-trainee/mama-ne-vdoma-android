@@ -254,16 +254,8 @@ class CreateGroupViewModel(
                     }
                 }
             }
-            onError { error ->
-                _uiState.value = UpdateDetailsUiState.OnError(error)
-            }
-            onLoading { isLoading ->
-                _viewState.update {
-                    it.copy(
-                        isLoading = isLoading
-                    )
-                }
-            }
+            onError(::onError)
+            onLoading(::onLoading)
         }
     }
 
@@ -298,16 +290,8 @@ class CreateGroupViewModel(
                     )
                 }
             }
-            onError { error ->
-                _uiState.value = UpdateDetailsUiState.OnError(error)
-            }
-            onLoading { isLoading ->
-                _viewState.update {
-                    it.copy(
-                        isLoading = isLoading
-                    )
-                }
-            }
+            onError(::onError)
+            onLoading(::onLoading)
         }
     }
 
