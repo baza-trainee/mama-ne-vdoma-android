@@ -24,7 +24,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -506,7 +506,7 @@ fun EditProfileScreen(
         }
 
         if (exitScreen != -1) {
-            AlertDialog(onDismissRequest = { exitScreen = -1 }) {
+            BasicAlertDialog(onDismissRequest = { exitScreen = -1 }) {
                 Column(
                     modifier = Modifier
                         .clip(RoundedCornerShape(size_8_dp))
@@ -588,7 +588,7 @@ fun EditProfileScreen(
         }
 
         if (showSuccessDialog) {
-            AlertDialog(onDismissRequest = { showSuccessDialog = false }) {
+            BasicAlertDialog(onDismissRequest = { showSuccessDialog = false }) {
                 Column(
                     modifier = Modifier
                         .clip(RoundedCornerShape(size_8_dp))

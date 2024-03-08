@@ -41,7 +41,7 @@ fun ShowHidePasswordTextField(
     var showPassword by remember { mutableStateOf(value = false) }
 
     OutlinedTextField(
-        modifier = Modifier
+        modifier = modifier
             .onFocusChanged {
                 onFocusChanged(it.isFocused)
             }

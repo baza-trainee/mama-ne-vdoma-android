@@ -16,7 +16,7 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -206,7 +206,7 @@ fun FoundGroupScreen(
         }
 
         if (showSuccessDialog) {
-            AlertDialog(onDismissRequest = { showSuccessDialog = false }) {
+            BasicAlertDialog(onDismissRequest = { showSuccessDialog = false }) {
                 Column(
                     modifier = Modifier
                         .clip(RoundedCornerShape(size_8_dp))
