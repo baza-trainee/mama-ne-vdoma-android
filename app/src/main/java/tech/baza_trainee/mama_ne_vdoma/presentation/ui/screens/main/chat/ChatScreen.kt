@@ -45,6 +45,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.domain.socket.ChatMessage
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.functions.isScrollingUp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.ParentInChatModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.Black
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.ChatMessageBackgroundMine
@@ -64,8 +65,6 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_4_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_8_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.formatDate
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.formatTime
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.lazylist.ScrollDirection
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.lazylist.rememberDirectionalLazyListState
 
 @Composable
 fun ChatScreen(
@@ -73,10 +72,10 @@ fun ChatScreen(
     handleEvent: (ChatsScreenEvent) -> Unit
 ) {
     val lazyListState = rememberLazyListState()
-    val directionalLazyListState = rememberDirectionalLazyListState(lazyListState)
 
     var needToScroll by remember { mutableStateOf(false) }
     var needToScrollByFAB by remember { mutableStateOf(false) }
+    val isScrollingUp = lazyListState.isScrollingUp()
 
     val chatMessages by remember {
         derivedStateOf { screenState.groupChats[screenState.selectedChat]?.messages.orEmpty() }
@@ -126,8 +125,7 @@ fun ChatScreen(
     }
 
     LaunchedEffect(visibleItems.firstOrNull()?.key) {
-        val isAtTop = visibleItems.firstOrNull()?.key == key &&
-                directionalLazyListState.scrollDirection == ScrollDirection.Down
+        val isAtTop = visibleItems.firstOrNull()?.key == key && isScrollingUp
         if (isAtTop)
             handleEvent(ChatsScreenEvent.OnLoadMore)
     }
