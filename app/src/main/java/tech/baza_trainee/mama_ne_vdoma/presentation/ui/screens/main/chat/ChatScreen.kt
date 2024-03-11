@@ -50,6 +50,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.Black
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.ChatMessageBackgroundMine
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.ChatMessageBackgroundOther
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.ChatMessageFieldColor
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.Gray
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.GrayText
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.White
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_11_sp
@@ -62,6 +63,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_40_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_4_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_8_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.formatDate
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.formatTime
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.lazylist.ScrollDirection
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.lazylist.rememberDirectionalLazyListState
 
@@ -268,16 +270,27 @@ private fun MyChatMessageView(
                 )
                 .padding(all = size_8_dp)
         ) {
-            Text(
-                text = message.message,
-                fontSize = font_size_14_sp,
-                color = White
-            )
+            Row {
+                Text(
+                    modifier = Modifier
+                        .weight(1f)
+                        .align(Alignment.Top),
+                    text = message.message,
+                    fontSize = font_size_14_sp,
+                    color = White
+                )
+
+                Text(
+                    modifier = Modifier
+                        .align(Alignment.Bottom),
+                    text = message.createdAt.formatTime(),
+                    fontSize = font_size_11_sp,
+                    color = Gray
+                )
+            }
         }
     }
 }
-
-
 
 @Composable
 private fun OtherChatMessageView(
@@ -298,7 +311,7 @@ private fun OtherChatMessageView(
                 .crossfade(true)
                 .build(),
             placeholder = painterResource(id = R.drawable.no_photo),
-            contentDescription = "group_avatar",
+            contentDescription = "user_avatar",
             contentScale = ContentScale.FillWidth
         )
 
@@ -315,22 +328,34 @@ private fun OtherChatMessageView(
                 )
                 .padding(all = size_8_dp)
         ) {
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.Start,
-                verticalArrangement = Arrangement.Top
-            ) {
-                Text(
-                    text = member.name,
-                    fontSize = font_size_16_sp,
-                    color = Black,
-                    fontWeight = FontWeight.Bold
-                )
+            Row {
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .align(Alignment.Top),
+                    horizontalAlignment = Alignment.Start,
+                    verticalArrangement = Arrangement.Top
+                ) {
+                    Text(
+                        text = member.name,
+                        fontSize = font_size_16_sp,
+                        color = Black,
+                        fontWeight = FontWeight.Bold
+                    )
+
+                    Text(
+                        text = message.message,
+                        fontSize = font_size_14_sp,
+                        color = Black
+                    )
+                }
 
                 Text(
-                    text = message.message,
-                    fontSize = font_size_14_sp,
-                    color = Black
+                    modifier = Modifier
+                        .align(Alignment.Bottom),
+                    text = message.createdAt.formatTime(),
+                    fontSize = font_size_11_sp,
+                    color = GrayText
                 )
             }
         }

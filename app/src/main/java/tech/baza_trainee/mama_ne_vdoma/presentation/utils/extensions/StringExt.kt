@@ -50,6 +50,14 @@ fun String.formatDate(): String {
     return outputFormat.format(localDateTime)
 }
 
+fun String.formatTime(): String {
+    val inputFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+    val outputFormat = DateTimeFormatter.ofPattern("HH:mm")
+    val localDateTime = LocalDateTime.parse(this, inputFormat)
+
+    return outputFormat.format(localDateTime)
+}
+
 fun String.getMessageDate(context: Context): String {
     if (isEmpty()) return ""
 
