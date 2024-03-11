@@ -420,7 +420,8 @@ fun EditProfileScreen(
                 .fillMaxWidth()
                 .padding(vertical = size_16_dp)
                 .height(size_48_dp),
-            onClick = { handleEvent(EditProfileEvent.SaveInfo) }
+            onClick = { handleEvent(EditProfileEvent.SaveInfo) },
+            enabled = screenState.isStateValid
         ) {
             ButtonText(
                 text = stringResource(id = R.string.action_save_changes)

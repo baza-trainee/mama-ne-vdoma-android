@@ -2,7 +2,6 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.ed
 
 import android.net.Uri
 import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import com.google.android.gms.maps.model.LatLng
 import tech.baza_trainee.mama_ne_vdoma.domain.model.ChildEntity
@@ -27,7 +26,7 @@ data class EditProfileViewState(
     val note: String = "",
     val schedule: SnapshotStateMap<DayOfWeek, DayPeriod> = getDefaultSchedule(),
     val children: List<ChildEntity> = emptyList(),
-    val childrenNotesValid: SnapshotStateMap<Int, ValidField> = mutableStateMapOf(),
     val isLoading: Boolean = false,
-    val countries: List<CountryCode> = emptyList()
+    val countries: List<CountryCode> = emptyList(),
+    val isStateValid: Boolean = false
 )

@@ -68,6 +68,8 @@ class EditProfileViewModel(
             )
         }
 
+        validateState()
+
         getUserInfo()
 
         viewModelScope.launch {
@@ -184,9 +186,12 @@ class EditProfileViewModel(
             )
             children.add(index, newChild)
         }
+
         _viewState.update {
             it.copy(children = children)
         }
+
+        validateState()
     }
 
     private fun deleteUser() {
@@ -200,6 +205,8 @@ class EditProfileViewModel(
             _viewState.update {
                 it.copy(children = entity)
             }
+
+            validateState()
         }
     }
 
@@ -215,6 +222,8 @@ class EditProfileViewModel(
                     schedule = entity.schedule
                 )
             }
+
+            validateState()
 
             if (entity.location.coordinates.isNotEmpty()) {
                 val location = LatLng(
@@ -232,9 +241,12 @@ class EditProfileViewModel(
             if (preferencesDatastoreManager.avatarUri == Uri.EMPTY)
                 getUserAvatar(entity.avatar) { uri ->
                     preferencesDatastoreManager.avatarUri = uri
+
                     _viewState.update {
                         it.copy(userAvatar = uri)
                     }
+
+                    validateState()
                 }
 
             getChildren()
@@ -250,17 +262,24 @@ class EditProfileViewModel(
                     isAddressChecked = address.isNotEmpty()
                 )
             }
+
+            validateState()
         }
     }
 
     private fun deleteChild(childId: String) {
         childrenToRemove.add(childId)
+
         val children = _viewState.value.children.toMutableList()
         val childToRemove = children.first { it.childId == childId }
+
         children.remove(childToRemove)
+
         _viewState.update {
             it.copy(children = children)
         }
+
+        validateState()
     }
 
     private fun getLocationFromAddress() {
@@ -278,6 +297,8 @@ class EditProfileViewModel(
                             isAddressChecked = true
                         )
                     }
+
+                    validateState()
                 } ?: run {
                     _uiState.update { UpdateDetailsUiState.AddressNotFound }
                 }
@@ -289,6 +310,8 @@ class EditProfileViewModel(
             _viewState.update {
                 it.copy(userAvatar = Uri.EMPTY)
             }
+
+            validateState()
         }
     }
 
@@ -300,6 +323,8 @@ class EditProfileViewModel(
                 country = country
             )
         }
+
+        validateState()
     }
 
     private fun validatePhone(phone: String) {
@@ -310,6 +335,8 @@ class EditProfileViewModel(
                     phoneValid = valid
                 )
             }
+
+            validateState()
         }
     }
 
@@ -321,6 +348,8 @@ class EditProfileViewModel(
                     nameValid = valid
                 )
             }
+
+            validateState()
         }
     }
 
@@ -354,6 +383,8 @@ class EditProfileViewModel(
                 isAddressChecked = false
             )
         }
+
+        validateState()
     }
 
     private fun saveUserAvatar(image: Bitmap) {
@@ -364,6 +395,9 @@ class EditProfileViewModel(
                     _viewState.update {
                         it.copy(userAvatar = uri)
                     }
+
+                    validateState()
+
                     newAvatar = newImage
                     communicator.justCropped = false
                     communicator.setCroppedImage(null)
@@ -372,5 +406,13 @@ class EditProfileViewModel(
                     _uiState.update { UpdateDetailsUiState.OnAvatarError }
                 }
             )
+    }
+
+    private fun validateState() = with(_viewState.value) {
+        val isValid = isAddressChecked && nameValid == ValidField.VALID &&
+                phoneValid == ValidField.VALID && userAvatar != Uri.EMPTY
+        _viewState.update {
+            it.copy(isStateValid = isValid)
+        }
     }
 }
