@@ -19,6 +19,7 @@ fun NavGraphBuilder.chatNavGraph() {
             val chatsViewModel: ChatsViewModel = koinNavViewModel()
             ChatsScreen(
                 screenState = chatsViewModel.viewState.asStateWithLifecycle(),
+                uiState = chatsViewModel.uiState,
                 handleEvent = chatsViewModel::handleEvent
             )
         }

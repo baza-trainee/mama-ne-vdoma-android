@@ -13,4 +13,6 @@ sealed interface ChatsScreenEvent {
     data object OnBack: ChatsScreenEvent
 
     data object OnLoadMore: ChatsScreenEvent
+
+    data object ResetUiState: ChatsScreenEvent
 }

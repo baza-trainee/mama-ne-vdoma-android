@@ -18,6 +18,7 @@ import tech.baza_trainee.mama_ne_vdoma.domain.repository.FilesRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.GroupsRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.socket.SocketManager
+import tech.baza_trainee.mama_ne_vdoma.domain.socket.SocketManager.Companion.ERROR_TAG
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.PageNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.GroupChatModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.ParentInChatModel
@@ -72,23 +73,27 @@ class ChatsViewModel(
 
         viewModelScope.launch {
             socketManager.message.collect { message ->
-                _viewState.update { state ->
-                    val id = message.chatId
-                    val groupChat = state.groupChats[id]
-                    val newMessages = groupChat?.messages.orEmpty() + listOf(message)
-                    val newGroupChat = groupChat?.copy(
-                        id = id,
-                        messages = newMessages
-                    ) ?: GroupChatModel(
-                        id = id,
-                        messages = newMessages
-                    )
+                if (message.id == ERROR_TAG) {
+                    _uiState.value = RequestState.OnError(message.message)
+                } else {
+                    _viewState.update { state ->
+                        val id = message.chatId
+                        val groupChat = state.groupChats[id]
+                        val newMessages = groupChat?.messages.orEmpty() + listOf(message)
+                        val newGroupChat = groupChat?.copy(
+                            id = id,
+                            messages = newMessages
+                        ) ?: GroupChatModel(
+                            id = id,
+                            messages = newMessages
+                        )
 
-                    state.copy(
-                        groupChats = state.groupChats.add(id, newGroupChat).also {
-                            checkUnreadCount(id)
-                        }
-                    )
+                        state.copy(
+                            groupChats = state.groupChats.add(id, newGroupChat).also {
+                                checkUnreadCount(id)
+                            }
+                        )
+                    }
                 }
             }
         }
@@ -144,6 +149,8 @@ class ChatsViewModel(
             }
 
             ChatsScreenEvent.OnLoadMore -> loadMoreMessages()
+
+            ChatsScreenEvent.ResetUiState -> _uiState.value = RequestState.Idle
         }
     }
 

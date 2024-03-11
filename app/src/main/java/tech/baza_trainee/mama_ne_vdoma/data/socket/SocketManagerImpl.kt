@@ -75,20 +75,41 @@ class SocketManagerImpl(
             message.tryEmit(newMessage)
         }
 
+        socket?.on("exception") { args ->
+            val errors = mutableListOf<String>()
+
+            (args[0] as JSONArray).apply {
+                for (index in 0 until length()) {
+                    val error = get(index) as String
+
+                    errors.add(error)
+                }
+            }
+
+            errors.forEach { error ->
+                message.tryEmit(
+                    ChatMessage(
+                        id = SocketManager.ERROR_TAG,
+                        message = error
+                    )
+                )
+            }
+        }
+
         socket?.on(Socket.EVENT_CONNECT) {
-            Log.d("Socket", "connected")
+            Log.d(TAG, "connected")
         }
 
         socket?.on(Socket.EVENT_DISCONNECT) {
-            Log.d("Socket", "disconnected")
+            Log.d(TAG, "disconnected")
         }
 
         socket?.on("auth") {
-            Log.d("Socket", "authorized")
+            Log.d(TAG, "authorized")
         }
 
         socket?.on(Socket.EVENT_CONNECT_ERROR) {
-            Log.d("Socket", "connection error")
+            Log.d(TAG, "connection error")
         }
     }
 
@@ -134,5 +155,7 @@ class SocketManagerImpl(
         private const val BASE = "https://mama-ne-vdoma.online"
         private const val DEBUG_NSP = "/stage/socket.io"
         private const val PROD_NSP = "/back/socket.io"
+
+        private const val TAG = "Socket"
     }
 }

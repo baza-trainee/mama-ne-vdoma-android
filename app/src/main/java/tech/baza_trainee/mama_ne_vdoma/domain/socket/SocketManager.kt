@@ -17,4 +17,9 @@ interface SocketManager {
     fun getMessages(groupId: String, startDate: String = "")
 
     fun sendMessage(groupId: String, message: String)
+
+    companion object {
+
+        const val ERROR_TAG = "socket_error"
+    }
 }
