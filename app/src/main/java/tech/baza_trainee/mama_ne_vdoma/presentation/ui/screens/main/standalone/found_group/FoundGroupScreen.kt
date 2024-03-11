@@ -1,7 +1,6 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.standalone.found_group
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -15,11 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -31,11 +26,9 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
@@ -44,6 +37,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.cards.GroupIn
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ButtonText
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.LoadingIndicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ScaffoldWithNavigationBars
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.dialogs.GenericAlertDialog
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.headers.HeaderWithToolbar
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_14_sp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_16_sp
@@ -54,7 +48,6 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_48_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_8_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.showToast
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FoundGroupScreen(
     screenState: FoundGroupViewState = FoundGroupViewState(),
@@ -206,48 +199,16 @@ fun FoundGroupScreen(
         }
 
         if (showSuccessDialog) {
-            BasicAlertDialog(onDismissRequest = { showSuccessDialog = false }) {
-                Column(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(size_8_dp))
-                        .background(MaterialTheme.colorScheme.background)
-                        .padding(size_16_dp)
-                        .fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_ok),
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.primary
-                    )
-
-                    Text(
-                        modifier = Modifier
-                            .padding(top = size_16_dp)
-                            .padding(horizontal = size_16_dp)
-                            .fillMaxWidth(),
-                        text = stringResource(id = R.string.join_request_sent, selectedGroupName),
-                        fontSize = font_size_14_sp,
-                        textAlign = TextAlign.Start,
-                        fontFamily = redHatDisplayFontFamily
-                    )
-
-                    Text(
-                        text = stringResource(id = R.string.action_go_to_main),
-                        fontWeight = FontWeight.Bold,
-                        textAlign = TextAlign.Center,
-                        color = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier
-                            .wrapContentWidth()
-                            .align(Alignment.End)
-                            .clickable {
-                                showSuccessDialog = false
-                                handleEvent(FoundGroupEvent.GoToMain)
-                            }
-                            .padding(size_16_dp)
-                    )
-                }
-            }
+            GenericAlertDialog(
+                icon = painterResource(id = R.drawable.ic_ok),
+                text = stringResource(id = R.string.join_request_sent, selectedGroupName),
+                confirmButtonText = stringResource(id = R.string.action_go_to_main),
+                confirmButtonAction = {
+                    showSuccessDialog = false
+                    handleEvent(FoundGroupEvent.GoToMain)
+                },
+                onDismissRequest = { showSuccessDialog = false }
+            )
         }
 
         if (screenState.isLoading) LoadingIndicator()

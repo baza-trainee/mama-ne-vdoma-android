@@ -29,6 +29,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_16_sp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_16_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_2_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_4_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_8_dp
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -45,9 +46,9 @@ fun ImageSourceDialog(
         val dialogModifier = Modifier
         Column(
             modifier = dialogModifier
-                .clip(RoundedCornerShape(size_8_dp))
+                .clip(RoundedCornerShape(size_4_dp))
                 .background(MaterialTheme.colorScheme.background)
-                .padding(size_16_dp)
+                .padding(size_8_dp)
                 .fillMaxWidth()
         ) {
             Text(

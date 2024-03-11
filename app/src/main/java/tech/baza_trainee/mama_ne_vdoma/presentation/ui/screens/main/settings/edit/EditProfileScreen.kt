@@ -2,7 +2,6 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.ed
 
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -17,14 +16,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -42,7 +39,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -66,6 +62,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.UserAvatarWithCameraAndGallery
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.dialogs.AddressNotCheckedDialog
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.dialogs.DangerousActionAlertDialog
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.dialogs.GenericAlertDialog
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.functions.LocationPermission
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.functions.infiniteColorAnimation
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.text_fields.OutlinedTextFieldWithError
@@ -81,7 +78,6 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFa
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_160_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_16_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_1_dp
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_24_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_2_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_48_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_4_dp
@@ -506,130 +502,42 @@ fun EditProfileScreen(
         }
 
         if (exitScreen != -1) {
-            BasicAlertDialog(onDismissRequest = { exitScreen = -1 }) {
-                Column(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(size_8_dp))
-                        .background(MaterialTheme.colorScheme.background)
-                        .padding(vertical = size_8_dp)
-                        .fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.Error,
-                        contentDescription = "alert",
-                        tint = MaterialTheme.colorScheme.primary
-                    )
-
-                    Text(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = size_16_dp)
-                            .padding(top = size_16_dp),
-                        text = stringResource(id = R.string.warning_not_saved),
-                        fontSize = font_size_14_sp,
-                        fontFamily = redHatDisplayFontFamily,
-                        textAlign = TextAlign.Start
-                    )
-
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = size_16_dp)
-                            .padding(bottom = size_16_dp, top = size_24_dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            modifier = Modifier
-                                .weight(0.5f)
-                                .clickable(
-                                    indication = null,
-                                    interactionSource = remember { MutableInteractionSource() }
-                                ) {
-                                    when (exitScreen) {
-                                        0 -> handleEvent(EditProfileEvent.OnBack)
-                                        1 -> handleEvent(EditProfileEvent.AddChild)
-                                        else -> Unit
-                                    }
-                                    exitScreen = -1
-                                },
-                            text = stringResource(id = R.string.action_not_save),
-                            fontSize = font_size_16_sp,
-                            fontFamily = redHatDisplayFontFamily,
-                            fontWeight = FontWeight.Bold,
-                            color = Color.Red,
-                            textAlign = TextAlign.Center
-                        )
-
-                        Text(
-                            modifier = Modifier
-                                .weight(0.5f)
-                                .clickable(
-                                    indication = null,
-                                    interactionSource = remember { MutableInteractionSource() }
-                                ) {
-                                    when (exitScreen) {
-                                        0 -> handleEvent(EditProfileEvent.OnSaveAndBack)
-                                        1 -> handleEvent(EditProfileEvent.OnSaveAndAddChild)
-                                        else -> Unit
-                                    }
-                                    exitScreen = -1
-                                },
-                            text = stringResource(id = R.string.action_save),
-                            fontSize = font_size_16_sp,
-                            fontFamily = redHatDisplayFontFamily,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.primary,
-                            textAlign = TextAlign.Center
-                        )
+            GenericAlertDialog(
+                icon = Icons.Filled.Error,
+                text = stringResource(id = R.string.warning_not_saved),
+                confirmButtonText = stringResource(id = R.string.action_not_save),
+                confirmButtonAction = {
+                    when (exitScreen) {
+                        0 -> handleEvent(EditProfileEvent.OnBack)
+                        1 -> handleEvent(EditProfileEvent.AddChild)
+                        else -> Unit
                     }
-                }
-            }
+                    exitScreen = -1
+                },
+                dismissButtonText = stringResource(id = R.string.action_save),
+                dismissButtonAction = {
+                    when (exitScreen) {
+                        0 -> handleEvent(EditProfileEvent.OnSaveAndBack)
+                        1 -> handleEvent(EditProfileEvent.OnSaveAndAddChild)
+                        else -> Unit
+                    }
+                    exitScreen = -1
+                },
+                onDismissRequest = { exitScreen = -1 }
+            )
         }
 
         if (showSuccessDialog) {
-            BasicAlertDialog(onDismissRequest = { showSuccessDialog = false }) {
-                Column(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(size_8_dp))
-                        .background(MaterialTheme.colorScheme.background)
-                        .padding(size_16_dp)
-                        .fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_ok),
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.primary
-                    )
-
-                    Text(
-                        modifier = Modifier
-                            .padding(top = size_16_dp)
-                            .padding(horizontal = size_16_dp)
-                            .fillMaxWidth(),
-                        text = stringResource(id = R.string.info_updated),
-                        fontSize = font_size_14_sp,
-                        fontFamily = redHatDisplayFontFamily,
-                        textAlign = TextAlign.Start
-                    )
-
-                    Text(
-                        text = stringResource(id = R.string.action_go_to_main),
-                        fontWeight = FontWeight.Bold,
-                        textAlign = TextAlign.Center,
-                        color = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier
-                            .wrapContentWidth()
-                            .align(Alignment.End)
-                            .clickable {
-                                showSuccessDialog = false
-                                handleEvent(EditProfileEvent.GoToMain)
-                            }
-                            .padding(size_16_dp)
-                    )
-                }
-            }
+            GenericAlertDialog(
+                icon = painterResource(id = R.drawable.ic_ok),
+                text = stringResource(id = R.string.info_updated),
+                confirmButtonText = stringResource(id = R.string.action_go_to_main),
+                confirmButtonAction = {
+                    showSuccessDialog = false
+                    handleEvent(EditProfileEvent.GoToMain)
+                },
+                onDismissRequest = { showSuccessDialog = false }
+            )
         }
 
         if (showAddressDialog) {

@@ -37,6 +37,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFa
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_16_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_24_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_48_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_4_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_8_dp
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -53,7 +54,7 @@ fun DangerousActionAlertDialog(
     ) {
         Column(
             modifier = Modifier
-                .clip(RoundedCornerShape(size_8_dp))
+                .clip(RoundedCornerShape(size_4_dp))
                 .background(MaterialTheme.colorScheme.background)
                 .padding(vertical = size_8_dp)
                 .fillMaxWidth(),

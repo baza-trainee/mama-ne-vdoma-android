@@ -80,7 +80,7 @@
     <string name="choose_source">Оберіть спосіб завантаження файлу</string>
     <string name="choose_camera">Камера</string>
     <string name="choose_gallery">Галерея</string>
-    <string name="make_admin_info">Ви впевнені, що хочете передати адміністративні права в групі \\\"%s\\\"?</string>
+    <string name="make_admin_info">Ви впевнені, що хочете передати адміністративні права в групі \"%s\"?</string>
     <string name="action_yes_i_do">Так, я хочу</string>
     <string name="action_make_admin">Передати права</string>
     <string name="attention_need_permission">Увага! Потрібен дозвіл</string>
