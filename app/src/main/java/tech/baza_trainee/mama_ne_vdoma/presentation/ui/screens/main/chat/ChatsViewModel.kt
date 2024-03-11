@@ -1,8 +1,6 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.chat
 
 import android.net.Uri
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -42,9 +40,9 @@ class ChatsViewModel(
     private val _viewState = MutableStateFlow(ChatsViewState())
     val viewState: StateFlow<ChatsViewState> = _viewState.asStateFlow()
 
-    private val _uiState = mutableStateOf<RequestState>(RequestState.Idle)
-    val uiState: State<RequestState>
-        get() = _uiState
+    private val _uiState = MutableStateFlow<RequestState>(RequestState.Idle)
+    val uiState: StateFlow<RequestState>
+        get() = _uiState.asStateFlow()
 
     init {
         viewModelScope.launch {
@@ -74,7 +72,7 @@ class ChatsViewModel(
         viewModelScope.launch {
             socketManager.message.collect { message ->
                 if (message.id == ERROR_TAG) {
-                    _uiState.value = RequestState.OnError(message.message)
+                    _uiState.update { RequestState.OnError(message.message) }
                 } else {
                     _viewState.update { state ->
                         val id = message.chatId
@@ -150,7 +148,7 @@ class ChatsViewModel(
 
             ChatsScreenEvent.OnLoadMore -> loadMoreMessages()
 
-            ChatsScreenEvent.ResetUiState -> _uiState.value = RequestState.Idle
+            ChatsScreenEvent.ResetUiState -> _uiState.update { RequestState.Idle }
         }
     }
 
@@ -166,7 +164,7 @@ class ChatsViewModel(
 
                 getGroupsForParent(user.id)
             }
-            onError { _uiState.value = RequestState.OnError(it) }
+            onError { error ->_uiState.update { RequestState.OnError(error) } }
             onLoading { isLoading ->
                 _viewState.update {
                     it.copy(isLoading = isLoading)
@@ -202,7 +200,7 @@ class ChatsViewModel(
                     }
                 }
             }
-            onError { _uiState.value = RequestState.OnError(it) }
+            onError { error ->_uiState.update { RequestState.OnError(error) } }
             onLoading { isLoading ->
                 _viewState.update {
                     it.copy(isLoading = isLoading)
@@ -226,6 +224,12 @@ class ChatsViewModel(
                     state.copy(
                         groupChats = state.groupChats.add(id, groupChat)
                     )
+                }
+            }
+            onError { error ->_uiState.update { RequestState.OnError(error) } }
+            onLoading { isLoading ->
+                _viewState.update {
+                    it.copy(isLoading = isLoading)
                 }
             }
         }
@@ -271,9 +275,7 @@ class ChatsViewModel(
             message = _viewState.value.userMessage
         )
 
-        _viewState.update {
-            it.copy(userMessage = "")
-        }
+        _viewState.update { it.copy(userMessage = "") }
     }
 
     private fun checkUnreadCount(groupId: String) {
@@ -317,7 +319,7 @@ class ChatsViewModel(
     private fun <T> getResult(result: RequestResult<T>): T? {
         return when(result) {
             is RequestResult.Error -> {
-                _uiState.value = RequestState.OnError(result.error)
+                _uiState.update { RequestState.OnError(result.error) }
                 null
             }
 

@@ -1,7 +1,5 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.search.search_request
 
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -35,18 +33,21 @@ class SearchRequestViewModel(
     private val _viewState = MutableStateFlow(SearchRequestViewState())
     val viewState: StateFlow<SearchRequestViewState> = _viewState.asStateFlow()
 
-    private val _uiState = mutableStateOf<SearchRequestUiState>(SearchRequestUiState.Idle)
-    val uiState: State<SearchRequestUiState>
-        get() = _uiState
+    private val _uiState = MutableStateFlow<SearchRequestUiState>(SearchRequestUiState.Idle)
+    val uiState: StateFlow<SearchRequestUiState>
+        get() = _uiState.asStateFlow()
 
     fun handleEvent(event: SearchRequestEvent) {
         when(event) {
             SearchRequestEvent.OnBack -> navigator.goToPrevious()
-            SearchRequestEvent.ResetUiState -> _uiState.value = SearchRequestUiState.Idle
+            SearchRequestEvent.ResetUiState -> _uiState.update { SearchRequestUiState.Idle }
             SearchRequestEvent.SearchUser -> searchUser()
             is SearchRequestEvent.ValidateEmail -> validateEmail(event.value)
             SearchRequestEvent.OnMain -> navigator.navigate(MainScreenRoutes.Main)
-            SearchRequestEvent.SearchGroup -> mainNavigator.navigate(StandaloneGroupsRoutes.ChooseChild.getDestination(isForSearch = true))
+            SearchRequestEvent.SearchGroup ->
+                mainNavigator.navigate(
+                    StandaloneGroupsRoutes.ChooseChild.getDestination(isForSearch = true)
+                )
         }
     }
 
@@ -80,15 +81,13 @@ class SearchRequestViewModel(
             }
             onErrorWithCode { error, code ->
                 if (code == HttpURLConnection.HTTP_NOT_FOUND)
-                    _uiState.value = SearchRequestUiState.OnNothingFound
+                    _uiState.update { SearchRequestUiState.OnNothingFound }
                 else
-                    _uiState.value = SearchRequestUiState.OnError(error)
+                    _uiState.update { SearchRequestUiState.OnError(error) }
             }
             onLoading { isLoading ->
                 _viewState.update {
-                    it.copy(
-                        isLoading = isLoading
-                    )
+                    it.copy(isLoading = isLoading)
                 }
             }
         }

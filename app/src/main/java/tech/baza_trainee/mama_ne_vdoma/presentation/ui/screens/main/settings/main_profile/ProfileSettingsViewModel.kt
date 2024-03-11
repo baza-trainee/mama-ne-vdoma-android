@@ -1,7 +1,5 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.main_profile
 
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.auth.api.identity.SignInClient
@@ -34,9 +32,9 @@ class ProfileSettingsViewModel(
     private val _viewState = MutableStateFlow(ProfileSettingsViewState())
     val viewState: StateFlow<ProfileSettingsViewState> = _viewState.asStateFlow()
 
-    private val _uiState = mutableStateOf<RequestState>(RequestState.Idle)
-    val uiState: State<RequestState>
-        get() = _uiState
+    private val _uiState = MutableStateFlow<RequestState>(RequestState.Idle)
+    val uiState: StateFlow<RequestState>
+        get() = _uiState.asStateFlow()
 
     init {
         userProfileInteractor.apply {
@@ -61,6 +59,7 @@ class ProfileSettingsViewModel(
                             sendEmails = preferencesDatastoreManager.sendEmail
                         )
                     }
+
                     getChildren()
                 }
             }
@@ -77,20 +76,18 @@ class ProfileSettingsViewModel(
 
     override fun onLoading(state: Boolean) {
         _viewState.update {
-            it.copy(
-                isLoading = state
-            )
+            it.copy(isLoading = state)
         }
     }
 
     override fun onError(error: String) {
-        _uiState.value = RequestState.OnError(error)
+        _uiState.update { RequestState.OnError(error) }
     }
 
     fun handleEvent(event: ProfileSettingsEvent) {
         when (event) {
             ProfileSettingsEvent.OnBack -> navigator.goToPrevious()
-            ProfileSettingsEvent.ResetUiState -> _uiState.value = RequestState.Idle
+            ProfileSettingsEvent.ResetUiState -> _uiState.update { RequestState.Idle }
             is ProfileSettingsEvent.UpdatePolicyCheck -> updatePolicyCheck(event.isChecked)
             ProfileSettingsEvent.EditProfile -> navigator.navigate(SettingsScreenRoutes.EditProfile)
             ProfileSettingsEvent.LogOut -> {
@@ -115,9 +112,7 @@ class ProfileSettingsViewModel(
     private fun getChildren() {
         getChildren { entity ->
             _viewState.update {
-                it.copy(
-                    children = entity
-                )
+                it.copy(children = entity)
             }
         }
     }
@@ -141,18 +136,14 @@ class ProfileSettingsViewModel(
         updateParent(user) {
             preferencesDatastoreManager.sendEmail = !_viewState.value.sendEmails
             _viewState.update {
-                it.copy(
-                    sendEmails = !it.sendEmails
-                )
+                it.copy(sendEmails = !it.sendEmails)
             }
         }
     }
 
     private fun updatePolicyCheck(isChecked: Boolean) {
         _viewState.update {
-            it.copy(
-                isPolicyChecked = isChecked
-            )
+            it.copy(isPolicyChecked = isChecked)
         }
     }
 }

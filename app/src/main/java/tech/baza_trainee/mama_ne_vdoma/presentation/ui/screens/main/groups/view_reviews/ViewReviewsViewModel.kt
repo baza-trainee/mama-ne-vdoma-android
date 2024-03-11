@@ -1,8 +1,6 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.view_reviews
 
 import android.net.Uri
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.async
@@ -40,9 +38,9 @@ class ViewReviewsViewModel(
     private val _viewState = MutableStateFlow(ViewReviewsViewState())
     val viewState: StateFlow<ViewReviewsViewState> = _viewState.asStateFlow()
 
-    private val _uiState = mutableStateOf<RequestState>(RequestState.Idle)
-    val uiState: State<RequestState>
-        get() = _uiState
+    private val _uiState = MutableStateFlow<RequestState>(RequestState.Idle)
+    val uiState: StateFlow<RequestState>
+        get() = _uiState.asStateFlow()
 
     init {
         getUserRating()
@@ -51,7 +49,7 @@ class ViewReviewsViewModel(
     fun handleEvent(event: ViewReviewsEvent) {
         when(event) {
             ViewReviewsEvent.OnBack -> navigator.goToPrevious()
-            ViewReviewsEvent.ResetUiState -> _uiState.value = RequestState.Idle
+            ViewReviewsEvent.ResetUiState -> _uiState.update { RequestState.Idle }
         }
     }
 
@@ -73,7 +71,7 @@ class ViewReviewsViewModel(
                 }
             }
             onError { error ->
-                _uiState.value = RequestState.OnError(error)
+                _uiState.update { RequestState.OnError(error) }
             }
             onLoading(::setProgress)
         }
@@ -116,7 +114,7 @@ class ViewReviewsViewModel(
     private fun <T> getResult(result: RequestResult<T>): T? {
         return when(result) {
             is RequestResult.Error -> {
-                _uiState.value = RequestState.OnError(result.error)
+                _uiState.update { RequestState.OnError(result.error) }
                 null
             }
 

@@ -1,7 +1,5 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.verify_email
 
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -36,9 +34,9 @@ class VerifyNewEmailViewModel(
     private val _viewState = MutableStateFlow(VerifyEmailViewState())
     val viewState: StateFlow<VerifyEmailViewState> = _viewState.asStateFlow()
 
-    private val _uiState = mutableStateOf<VerifyEmailUiState>(VerifyEmailUiState.Idle)
-    val uiState: State<VerifyEmailUiState>
-        get() = _uiState
+    private val _uiState = MutableStateFlow<VerifyEmailUiState>(VerifyEmailUiState.Idle)
+    val uiState: StateFlow<VerifyEmailUiState>
+        get() = _uiState.asStateFlow()
 
     fun handleEvent(event: VerifyEmailEvent) {
         when (event) {
@@ -47,7 +45,7 @@ class VerifyNewEmailViewModel(
                 event.otpInputFilled
             )
 
-            VerifyEmailEvent.ResetUiState -> _uiState.value = VerifyEmailUiState.Idle
+            VerifyEmailEvent.ResetUiState -> _uiState.update { VerifyEmailUiState.Idle }
             VerifyEmailEvent.ResendCode -> resendCode()
             VerifyEmailEvent.OnBack -> navigator.goBack()
             VerifyEmailEvent.GoToMain -> {
@@ -84,7 +82,7 @@ class VerifyNewEmailViewModel(
             }
             onSuccess {
                 preferencesDatastoreManager.login = ""
-                _uiState.value = VerifyEmailUiState.OnEmailChanged
+                _uiState.update { VerifyEmailUiState.OnEmailChanged }
             }
             onErrorWithCode { error, code ->
                 if (code == HttpURLConnection.HTTP_BAD_REQUEST)
@@ -92,13 +90,11 @@ class VerifyNewEmailViewModel(
                         it.copy(otpValid = ValidField.INVALID)
                     }
                 else
-                    _uiState.value = VerifyEmailUiState.OnError(error)
+                    _uiState.update { VerifyEmailUiState.OnError(error) }
             }
             onLoading { isLoading ->
                 _viewState.update {
-                    it.copy(
-                        isLoading = isLoading
-                    )
+                    it.copy(isLoading = isLoading)
                 }
             }
         }
@@ -116,7 +112,7 @@ class VerifyNewEmailViewModel(
                 authRepository.resetPassword(preferencesDatastoreManager.email, otp, communicator.password.value)
             }
             onSuccess {
-                _uiState.value = VerifyEmailUiState.OnPasswordChanged
+                _uiState.update { VerifyEmailUiState.OnPasswordChanged }
             }
             onErrorWithCode { error, code ->
                 if (code == HttpURLConnection.HTTP_BAD_REQUEST)
@@ -124,13 +120,11 @@ class VerifyNewEmailViewModel(
                         it.copy(otpValid = ValidField.INVALID)
                     }
                 else
-                    _uiState.value = VerifyEmailUiState.OnError(error)
+                    _uiState.update { VerifyEmailUiState.OnError(error) }
             }
             onLoading { isLoading ->
                 _viewState.update {
-                    it.copy(
-                        isLoading = isLoading
-                    )
+                    it.copy(isLoading = isLoading)
                 }
             }
         }
@@ -145,13 +139,11 @@ class VerifyNewEmailViewModel(
                     userAuthRepository.changeEmailInit(communicator.email.value)
             }
             onError { error ->
-                _uiState.value = VerifyEmailUiState.OnError(error)
+                _uiState.update { VerifyEmailUiState.OnError(error) }
             }
             onLoading { isLoading ->
                 _viewState.update {
-                    it.copy(
-                        isLoading = isLoading
-                    )
+                    it.copy(isLoading = isLoading)
                 }
             }
         }

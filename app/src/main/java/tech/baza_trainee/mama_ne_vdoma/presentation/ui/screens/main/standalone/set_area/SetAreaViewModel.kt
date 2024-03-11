@@ -1,7 +1,5 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.standalone.set_area
 
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.model.LatLng
@@ -29,9 +27,9 @@ class SetAreaViewModel(
     private val _viewState = MutableStateFlow(SetAreaViewState())
     val viewState: StateFlow<SetAreaViewState> = _viewState.asStateFlow()
 
-    private val _uiState = mutableStateOf<LocationUiState>(LocationUiState.Idle)
-    val uiState: State<LocationUiState>
-        get() = _uiState
+    private val _uiState = MutableStateFlow<LocationUiState>(LocationUiState.Idle)
+    val uiState: StateFlow<LocationUiState>
+        get() = _uiState.asStateFlow()
 
     init {
         locationInteractor.apply {
@@ -65,19 +63,17 @@ class SetAreaViewModel(
 
     override fun onLoading(state: Boolean) {
         _viewState.update {
-            it.copy(
-                isLoading = state
-            )
+            it.copy(isLoading = state)
         }
     }
 
     override fun onError(error: String) {
-        _uiState.value = LocationUiState.OnError(error)
+        _uiState.update { LocationUiState.OnError(error) }
     }
 
     fun handleEvent(event: SetAreaEvent) {
         when(event) {
-            SetAreaEvent.ResetUiState -> _uiState.value = LocationUiState.Idle
+            SetAreaEvent.ResetUiState -> _uiState.update { LocationUiState.Idle }
             SetAreaEvent.GetLocationFromAddress -> getLocationFromAddress()
             SetAreaEvent.RequestUserLocation -> requestCurrentLocation()
             is SetAreaEvent.UpdateUserAddress -> updateUserAddress(event.address)
@@ -101,33 +97,29 @@ class SetAreaViewModel(
                 longitude = _viewState.value.currentLocation.longitude
             }
             navigator.navigate(StandaloneGroupsRoutes.GroupsFound)
-        } else _uiState.value = LocationUiState.AddressNotChecked
+        } else _uiState.update { LocationUiState.AddressNotChecked }
     }
 
     private fun setRadius(radius: Float) {
         _viewState.update {
-            it.copy(
-                radius = radius
-            )
+            it.copy(radius = radius)
         }
     }
 
     private fun setLocation(location: LatLng) {
         _viewState.update {
-            it.copy(
-                currentLocation = location
-            )
+            it.copy(currentLocation = location)
         }
+
         getAddressFromLocation(location)
     }
 
     private fun requestCurrentLocation() {
         requestCurrentLocation { location ->
             _viewState.update {
-                it.copy(
-                    currentLocation = location
-                )
+                it.copy(currentLocation = location)
             }
+
             getAddressFromLocation(location)
         }
     }
@@ -151,7 +143,7 @@ class SetAreaViewModel(
                     )
                 }
             } ?: run {
-                _uiState.value = LocationUiState.AddressNotFound
+                _uiState.update { LocationUiState.AddressNotFound }
             }
         }
     }

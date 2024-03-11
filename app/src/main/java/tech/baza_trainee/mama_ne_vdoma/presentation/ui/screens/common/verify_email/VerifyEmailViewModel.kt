@@ -1,7 +1,5 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.verify_email
 
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.ktx.Firebase
@@ -38,9 +36,9 @@ class VerifyEmailViewModel(
     private val _viewState = MutableStateFlow(VerifyEmailViewState())
     val viewState: StateFlow<VerifyEmailViewState> = _viewState.asStateFlow()
 
-    private val _uiState = mutableStateOf<RequestState>(RequestState.Idle)
-    val uiState: State<RequestState>
-        get() = _uiState
+    private val _uiState = MutableStateFlow<RequestState>(RequestState.Idle)
+    val uiState: StateFlow<RequestState>
+        get() = _uiState.asStateFlow()
 
     fun handleEvent(event: VerifyEmailEvent) {
         when (event) {
@@ -49,7 +47,7 @@ class VerifyEmailViewModel(
                 event.otpInputFilled
             )
 
-            VerifyEmailEvent.ResetUiState -> _uiState.value = RequestState.Idle
+            VerifyEmailEvent.ResetUiState -> _uiState.update { RequestState.Idle }
             VerifyEmailEvent.ResendCode -> resendCode()
             VerifyEmailEvent.OnBack -> if (communicator.isForPassword.value) navigator.goBack()
             else navigator.navigate(LoginRoutes.RestorePassword)
@@ -96,7 +94,7 @@ class VerifyEmailViewModel(
                         it.copy(otpValid = ValidField.INVALID)
                     }
                 else
-                    _uiState.value = RequestState.OnError(error)
+                    _uiState.update { RequestState.OnError(error) }
             }
             onLoading { isLoading ->
                 _viewState.update {
@@ -128,7 +126,7 @@ class VerifyEmailViewModel(
                         it.copy(otpValid = ValidField.INVALID)
                     }
                 else
-                    _uiState.value = RequestState.OnError(error)
+                    _uiState.update { RequestState.OnError(error) }
             }
             onLoading { isLoading ->
                 _viewState.update {
@@ -155,7 +153,7 @@ class VerifyEmailViewModel(
                 }
             }
             onError { error ->
-                _uiState.value = RequestState.OnError(error)
+                _uiState.update { RequestState.OnError(error) }
             }
             onLoading { isLoading ->
                 _viewState.update {
@@ -174,13 +172,11 @@ class VerifyEmailViewModel(
                 else authRepository.resendCode(communicator.email.value)
             }
             onError { error ->
-                _uiState.value = RequestState.OnError(error)
+                _uiState.update { RequestState.OnError(error) }
             }
             onLoading { isLoading ->
                 _viewState.update {
-                    it.copy(
-                        isLoading = isLoading
-                    )
+                    it.copy(isLoading = isLoading )
                 }
             }
         }

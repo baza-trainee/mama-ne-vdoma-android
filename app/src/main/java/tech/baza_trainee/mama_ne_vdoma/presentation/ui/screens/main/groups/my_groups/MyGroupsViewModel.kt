@@ -1,7 +1,5 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.my_groups
 
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -39,9 +37,9 @@ class MyGroupsViewModel(
     private val _viewState = MutableStateFlow(MyGroupsViewState())
     val viewState: StateFlow<MyGroupsViewState> = _viewState.asStateFlow()
 
-    private val _uiState = mutableStateOf<RequestState>(RequestState.Idle)
-    val uiState: State<RequestState>
-        get() = _uiState
+    private val _uiState = MutableStateFlow<RequestState>(RequestState.Idle)
+    val uiState: StateFlow<RequestState>
+        get() = _uiState.asStateFlow()
 
     init {
         groupsInteractor.apply {
@@ -69,12 +67,12 @@ class MyGroupsViewModel(
     }
 
     override fun onError(error: String) {
-        _uiState.value = RequestState.OnError(error)
+        _uiState.update { RequestState.OnError(error) }
     }
 
     fun handleEvent(event: MyGroupsEvent) {
         when (event) {
-            MyGroupsEvent.ResetUiState -> _uiState.value = RequestState.Idle
+            MyGroupsEvent.ResetUiState -> _uiState.update { RequestState.Idle }
             MyGroupsEvent.OnBack -> navigator.goToPrevious()
             MyGroupsEvent.CreateNewGroup ->
                 mainNavigator.navigate(
@@ -109,14 +107,10 @@ class MyGroupsViewModel(
 
                 preferencesDatastoreManager.myJoinRequests = entity.groupJoinRequests.size
             }
-            onError { error ->
-                _uiState.value = RequestState.OnError(error)
-            }
+            onError(::onError)
             onLoading { isLoading ->
                 _viewState.update {
-                    it.copy(
-                        isLoading = isLoading
-                    )
+                    it.copy(isLoading = isLoading)
                 }
             }
         }

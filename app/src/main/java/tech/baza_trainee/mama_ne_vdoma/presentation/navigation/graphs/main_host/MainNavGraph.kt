@@ -1,5 +1,6 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.navigation.graphs.main_host
 
+import androidx.compose.runtime.collectAsState
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
@@ -28,7 +29,7 @@ fun NavGraphBuilder.mainNavGraph() {
             val viewModel: NotificationsViewModel = koinNavViewModel()
             NotificationScreen(
                 screenState = viewModel.viewState.asStateWithLifecycle(),
-                uiState = viewModel.uiState,
+                uiState = viewModel.uiState.collectAsState(),
                 handleEvent = viewModel::handleEvent
             )
         }

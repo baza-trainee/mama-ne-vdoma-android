@@ -1,8 +1,6 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.full_info
 
 import android.net.Uri
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -41,9 +39,9 @@ class FullInfoViewModel(
     private val _viewState = MutableStateFlow(FullInfoViewState())
     val viewState: StateFlow<FullInfoViewState> = _viewState.asStateFlow()
 
-    private val _uiState = mutableStateOf<RequestState>(RequestState.Idle)
-    val uiState: State<RequestState>
-        get() = _uiState
+    private val _uiState = MutableStateFlow<RequestState>(RequestState.Idle)
+    val uiState: StateFlow<RequestState>
+        get() = _uiState.asStateFlow()
 
     init {
         viewModelScope.launch {
@@ -73,28 +71,28 @@ class FullInfoViewModel(
 
     override fun onLoading(state: Boolean) {
         _viewState.update {
-            it.copy(
-                isLoading = state
-            )
+            it.copy(isLoading = state)
         }
     }
 
     override fun onError(error: String) {
-        _uiState.value = RequestState.OnError(error)
+        _uiState.update { RequestState.OnError(error) }
     }
 
     fun handleFullProfileEvent(event: FullInfoEvent) {
-        when(event) {
+        when (event) {
             FullInfoEvent.DeleteUser -> deleteUser()
             is FullInfoEvent.DeleteChild -> deleteChild(event.id)
             FullInfoEvent.AddChild -> resetCurrentChild()
             is FullInfoEvent.EditChild -> setCurrentChild(event.id)
-            FullInfoEvent.ResetUiState -> _uiState.value = RequestState.Idle
+            FullInfoEvent.ResetUiState -> _uiState.update { RequestState.Idle }
             FullInfoEvent.EditUser -> navigator.navigate(UserProfileRoutes.UserInfo)
             FullInfoEvent.OnBack -> navigator.navigate(Graphs.Login)
             FullInfoEvent.OnNext -> {
                 if (preferencesDatastoreManager.isChildrenDataProvided)
-                    navigator.navigate(UserProfileRoutes.UserCreateSuccess.getDestination(_viewState.value.name))
+                    navigator.navigate(
+                        UserProfileRoutes.UserCreateSuccess.getDestination(_viewState.value.name)
+                    )
                 else
                     navigator.navigate(HostScreenRoutes.Host.getDestination(SETTINGS_PAGE))
             }
@@ -113,6 +111,7 @@ class FullInfoViewModel(
                     isChildInfoFilled = entity.isNotEmpty()
                 )
             }
+
             preferencesDatastoreManager.isChildrenDataProvided = entity.isNotEmpty()
         }
     }
@@ -121,7 +120,8 @@ class FullInfoViewModel(
         getUserInfo { entity ->
             val _isUserInfoFilled = entity.name.isNotEmpty() &&
                     entity.phone.isNotEmpty() &&
-                    entity.location.coordinates.isNotEmpty() && entity.location.coordinates.none { it == 0.00 } &&
+                    entity.location.coordinates.isNotEmpty() &&
+                    entity.location.coordinates.none { it == 0.00 } &&
                     entity.schedule.values.any { it.isFilled() }
 
             getUserAvatar(entity.avatar)
@@ -166,9 +166,7 @@ class FullInfoViewModel(
             preferencesDatastoreManager.avatar = ""
 
             _viewState.update {
-                it.copy(
-                    userAvatar = Uri.EMPTY
-                )
+                it.copy(userAvatar = Uri.EMPTY)
             }
         } else
             getUserAvatar(avatarId) { uri ->
@@ -182,9 +180,7 @@ class FullInfoViewModel(
         getAddressFromLocation(latLng) { address ->
             preferencesDatastoreManager.address = address
             _viewState.update {
-                it.copy(
-                    address = address
-                )
+                it.copy(address = address)
             }
         }
     }

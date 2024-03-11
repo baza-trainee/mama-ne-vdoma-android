@@ -1,7 +1,5 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.search.search_results
 
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -30,9 +28,9 @@ class SearchResultsViewModel(
     private val _viewState = MutableStateFlow(SearchResultsViewState())
     val viewState: StateFlow<SearchResultsViewState> = _viewState.asStateFlow()
 
-    private val _uiState = mutableStateOf<RequestState>(RequestState.Idle)
-    val uiState: State<RequestState>
-        get() = _uiState
+    private val _uiState = MutableStateFlow<RequestState>(RequestState.Idle)
+    val uiState: StateFlow<RequestState>
+        get() = _uiState.asStateFlow()
 
     init {
         getGroups(communicator.user.id)
@@ -47,7 +45,7 @@ class SearchResultsViewModel(
     fun handleEvent(event: SearchResultsEvent) {
         when(event) {
             SearchResultsEvent.OnBack -> navigator.goToPrevious()
-            SearchResultsEvent.ResetUiState -> _uiState.value = RequestState.Idle
+            SearchResultsEvent.ResetUiState -> _uiState.update { RequestState.Idle }
             SearchResultsEvent.OnNewSearch -> navigator.goToPrevious()
         }
     }
@@ -67,13 +65,11 @@ class SearchResultsViewModel(
                 }
             }
             onError { error ->
-                _uiState.value = RequestState.OnError(error)
+                _uiState.update { RequestState.OnError(error) }
             }
             onLoading { isLoading ->
                 _viewState.update {
-                    it.copy(
-                        isLoading = isLoading
-                    )
+                    it.copy(isLoading = isLoading)
                 }
             }
         }
@@ -83,21 +79,18 @@ class SearchResultsViewModel(
         networkExecutor {
             execute { filesRepository.getAvatar(avatarId) }
             onSuccess { uri ->
-                val currentParent = _viewState.value.parent.copy(
-                    avatar = uri
-                )
+                val currentParent = _viewState.value.parent.copy(avatar = uri)
+
                 _viewState.update {
                     it.copy(parent = currentParent)
                 }
             }
             onError { error ->
-                _uiState.value = RequestState.OnError(error)
+                _uiState.update { RequestState.OnError(error) }
             }
             onLoading { isLoading ->
                 _viewState.update {
-                    it.copy(
-                        isLoading = isLoading
-                    )
+                    it.copy(isLoading = isLoading)
                 }
             }
         }

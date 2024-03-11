@@ -2,8 +2,6 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.ed
 
 import android.graphics.Bitmap
 import android.net.Uri
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -45,9 +43,9 @@ class EditProfileViewModel(
     private val _viewState = MutableStateFlow(EditProfileViewState())
     val viewState: StateFlow<EditProfileViewState> = _viewState.asStateFlow()
 
-    private val _uiState = mutableStateOf<UpdateDetailsUiState>(UpdateDetailsUiState.Idle)
-    val uiState: State<UpdateDetailsUiState>
-        get() = _uiState
+    private val _uiState = MutableStateFlow<UpdateDetailsUiState>(UpdateDetailsUiState.Idle)
+    val uiState: StateFlow<UpdateDetailsUiState>
+        get() = _uiState.asStateFlow()
 
     private val childrenToRemove = mutableSetOf<String>()
 
@@ -79,23 +77,22 @@ class EditProfileViewModel(
 
     override fun onLoading(state: Boolean) {
         _viewState.update {
-            it.copy(
-                isLoading = state
-            )
+            it.copy(isLoading = state)
         }
     }
 
     override fun onError(error: String) {
-        _uiState.value = UpdateDetailsUiState.OnError(error)
+        _uiState.update { UpdateDetailsUiState.OnError(error) }
     }
 
     fun handleEvent(event: EditProfileEvent) {
         when(event) {
             EditProfileEvent.DeleteUser -> deleteUser()
             is EditProfileEvent.DeleteChild -> deleteChild(event.id)
-            EditProfileEvent.ResetUiState -> _uiState.value = UpdateDetailsUiState.Idle
+            EditProfileEvent.ResetUiState -> _uiState.update { UpdateDetailsUiState.Idle }
             EditProfileEvent.OnBack -> navigator.goToPrevious()
-            EditProfileEvent.SaveInfo -> saveChanges { _uiState.value = UpdateDetailsUiState.OnSaved }
+            EditProfileEvent.SaveInfo ->
+                saveChanges { _uiState.update { UpdateDetailsUiState.OnSaved } }
             EditProfileEvent.GetLocationFromAddress -> getLocationFromAddress()
             EditProfileEvent.OnDeletePhoto -> deleteUserAvatar()
             EditProfileEvent.OnEditPhoto -> navigator.navigate(SettingsScreenRoutes.EditProfilePhoto)
@@ -114,7 +111,8 @@ class EditProfileViewModel(
 
             EditProfileEvent.AddChild -> navigator.navigate(SettingsScreenRoutes.ChildInfo)
             EditProfileEvent.OnSaveAndBack -> saveChanges { navigator.goToPrevious() }
-            EditProfileEvent.OnSaveAndAddChild -> saveChanges { navigator.navigate(SettingsScreenRoutes.ChildInfo) }
+            EditProfileEvent.OnSaveAndAddChild ->
+                saveChanges { navigator.navigate(SettingsScreenRoutes.ChildInfo) }
             EditProfileEvent.GoToMain -> navigator.navigate(MainScreenRoutes.Main)
         }
     }
@@ -154,7 +152,7 @@ class EditProfileViewModel(
                     profileCommunicator.setProfileChanged(true)
                 }
             }
-        } else _uiState.value = UpdateDetailsUiState.AddressNotChecked
+        } else _uiState.update { UpdateDetailsUiState.AddressNotChecked }
     }
 
     private fun saveChildren() {
@@ -167,17 +165,13 @@ class EditProfileViewModel(
 
     private fun updateParentSchedule(schedule: SnapshotStateMap<DayOfWeek, DayPeriod>) {
         _viewState.update {
-            it.copy(
-                schedule = schedule
-            )
+            it.copy(schedule = schedule)
         }
     }
 
     private fun updateParentNote(value: String) {
         _viewState.update {
-            it.copy(
-                note = value
-            )
+            it.copy(note = value)
         }
     }
 
@@ -191,9 +185,7 @@ class EditProfileViewModel(
             children.add(index, newChild)
         }
         _viewState.update {
-            it.copy(
-                children = children
-            )
+            it.copy(children = children)
         }
     }
 
@@ -206,9 +198,7 @@ class EditProfileViewModel(
     private fun getChildren() {
         getChildren { entity ->
             _viewState.update {
-                it.copy(
-                    children = entity
-                )
+                it.copy(children = entity)
             }
         }
     }
@@ -289,7 +279,7 @@ class EditProfileViewModel(
                         )
                     }
                 } ?: run {
-                    _uiState.value = UpdateDetailsUiState.AddressNotFound
+                    _uiState.update { UpdateDetailsUiState.AddressNotFound }
                 }
         }
     }
@@ -297,9 +287,7 @@ class EditProfileViewModel(
     private fun deleteUserAvatar() {
         deleteUserAvatar {
             _viewState.update {
-                it.copy(
-                    userAvatar = Uri.EMPTY
-                )
+                it.copy(userAvatar = Uri.EMPTY)
             }
         }
     }
@@ -339,9 +327,7 @@ class EditProfileViewModel(
     private fun requestCurrentLocation() {
         requestCurrentLocation { location ->
             _viewState.update {
-                it.copy(
-                    currentLocation = location
-                )
+                it.copy(currentLocation = location)
             }
 
             getAddressFromLocation(location)
@@ -355,9 +341,7 @@ class EditProfileViewModel(
 
     private fun setLocation(location: LatLng) {
         _viewState.update {
-            it.copy(
-                currentLocation = location
-            )
+            it.copy(currentLocation = location)
         }
         getAddressFromLocation(location)
     }
@@ -378,16 +362,14 @@ class EditProfileViewModel(
                 avatar = image,
                 onSuccess = { newImage, uri ->
                     _viewState.update {
-                        it.copy(
-                            userAvatar = uri
-                        )
+                        it.copy(userAvatar = uri)
                     }
                     newAvatar = newImage
                     communicator.justCropped = false
                     communicator.setCroppedImage(null)
                 },
                 onError = {
-                    _uiState.value = UpdateDetailsUiState.OnAvatarError
+                    _uiState.update { UpdateDetailsUiState.OnAvatarError }
                 }
             )
     }

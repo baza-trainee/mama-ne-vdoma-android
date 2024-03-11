@@ -1,7 +1,5 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.change_credentials
 
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -34,16 +32,17 @@ class EditCredentialsViewModel(
     private val _viewState = MutableStateFlow(EditCredentialsViewState())
     val viewState: StateFlow<EditCredentialsViewState> = _viewState.asStateFlow()
 
-    private val _uiState = mutableStateOf<RequestState>(RequestState.Idle)
-    val uiState: State<RequestState>
-        get() = _uiState
+    private val _uiState = MutableStateFlow<RequestState>(RequestState.Idle)
+    val uiState: StateFlow<RequestState>
+        get() = _uiState.asStateFlow()
 
     fun handleEvent(event: EditCredentialsEvent) {
         when (event) {
             EditCredentialsEvent.OnBack -> navigator.goToPrevious()
             EditCredentialsEvent.ResetPassword -> forgetPassword()
-            EditCredentialsEvent.ResetUiState -> _uiState.value = RequestState.Idle
-            is EditCredentialsEvent.ValidateConfirmPassword -> validateConfirmPassword(event.confirmPassword)
+            EditCredentialsEvent.ResetUiState -> _uiState.update { RequestState.Idle }
+            is EditCredentialsEvent.ValidateConfirmPassword ->
+                validateConfirmPassword(event.confirmPassword)
             is EditCredentialsEvent.ValidateEmail -> validateEmail(event.email)
             is EditCredentialsEvent.ValidatePassword -> validatePassword(event.password)
             EditCredentialsEvent.VerifyEmail -> verifyEmail()
@@ -86,9 +85,7 @@ class EditCredentialsViewModel(
         val confirmPasswordValid = if (password == confirmPassword) ValidField.VALID
         else ValidField.INVALID
         _viewState.update {
-            it.copy(
-                confirmPasswordValid = confirmPasswordValid
-            )
+            it.copy(confirmPasswordValid = confirmPasswordValid)
         }
     }
 
@@ -104,8 +101,8 @@ class EditCredentialsViewModel(
                 }
                 navigator.navigate(SettingsScreenRoutes.VerifyNewEmail)
             }
-            onError {
-                _uiState.value = RequestState.OnError(it)
+            onError { error ->
+                _uiState.update { RequestState.OnError(error) }
             }
             onLoading { isLoading ->
                 _viewState.update {
@@ -128,13 +125,11 @@ class EditCredentialsViewModel(
                 navigator.navigate(SettingsScreenRoutes.VerifyNewEmail)
             }
             onError { error ->
-                _uiState.value = RequestState.OnError(error)
+                _uiState.update { RequestState.OnError(error) }
             }
             onLoading { isLoading ->
                 _viewState.update {
-                    it.copy(
-                        isLoading = isLoading
-                    )
+                    it.copy(isLoading = isLoading)
                 }
             }
         }

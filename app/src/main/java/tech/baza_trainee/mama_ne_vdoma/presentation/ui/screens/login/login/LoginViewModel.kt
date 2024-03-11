@@ -1,7 +1,5 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.login
 
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.ktx.Firebase
@@ -39,9 +37,9 @@ class LoginViewModel(
     private val _viewState = MutableStateFlow(LoginViewState())
     val viewState: StateFlow<LoginViewState> = _viewState.asStateFlow()
 
-    private val _uiState = mutableStateOf<RequestState>(RequestState.Idle)
-    val uiState: State<RequestState>
-        get() = _uiState
+    private val _uiState = MutableStateFlow<RequestState>(RequestState.Idle)
+    val uiState: StateFlow<RequestState>
+        get() = _uiState.asStateFlow()
 
     fun handleLoginEvent(event: LoginEvent) {
         when (event) {
@@ -50,7 +48,7 @@ class LoginViewModel(
                 _viewState.value.password
             )
 
-            LoginEvent.ResetUiState -> _uiState.value = RequestState.Idle
+            LoginEvent.ResetUiState -> _uiState.update { RequestState.Idle }
             LoginEvent.OnBack -> {
                 clearInputs()
                 navigator.navigate(Graphs.Start)
@@ -105,13 +103,11 @@ class LoginViewModel(
                 checkUser(it)
             }
             onError { error ->
-                _uiState.value = RequestState.OnError(error)
+                _uiState.update { RequestState.OnError(error) }
             }
             onLoading { isLoading ->
                 _viewState.update {
-                    it.copy(
-                        isLoading = isLoading
-                    )
+                    it.copy(isLoading = isLoading)
                 }
             }
         }
@@ -130,13 +126,11 @@ class LoginViewModel(
             }
             onSuccess { checkUser(it) }
             onError { error ->
-                _uiState.value = RequestState.OnError(error)
+                _uiState.update { RequestState.OnError(error) }
             }
             onLoading { isLoading ->
                 _viewState.update {
-                    it.copy(
-                        isLoading = isLoading
-                    )
+                    it.copy(isLoading = isLoading)
                 }
             }
         }

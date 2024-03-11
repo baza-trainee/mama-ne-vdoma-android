@@ -1,7 +1,5 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.standalone.choose_child
 
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -37,9 +35,9 @@ class ChooseChildStandaloneViewModel(
     private val _viewState = MutableStateFlow(ChooseChildViewState())
     val viewState: StateFlow<ChooseChildViewState> = _viewState.asStateFlow()
 
-    private val _uiState = mutableStateOf<RequestState>(RequestState.Idle)
-    val uiState: State<RequestState>
-        get() = _uiState
+    private val _uiState = MutableStateFlow<RequestState>(RequestState.Idle)
+    val uiState: StateFlow<RequestState>
+        get() = _uiState.asStateFlow()
 
     init {
         viewModelScope.launch {
@@ -58,7 +56,7 @@ class ChooseChildStandaloneViewModel(
 
     fun handleEvent(event: ChooseChildEvent) {
         when (event) {
-            ChooseChildEvent.ResetUiState -> _uiState.value = RequestState.Idle
+            ChooseChildEvent.ResetUiState -> _uiState.update { RequestState.Idle }
             ChooseChildEvent.OnBack -> navigator.goBack()
             is ChooseChildEvent.OnChooseChild -> {
                 communicator.setData(event.childId)
@@ -90,13 +88,11 @@ class ChooseChildStandaloneViewModel(
                 }
             }
             onError { error ->
-                _uiState.value = RequestState.OnError(error)
+                _uiState.update { RequestState.OnError(error) }
             }
             onLoading { isLoading ->
                 _viewState.update {
-                    it.copy(
-                        isLoading = isLoading
-                    )
+                    it.copy(isLoading = isLoading)
                 }
             }
         }

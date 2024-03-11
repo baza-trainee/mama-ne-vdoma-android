@@ -1,7 +1,5 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.new_password
 
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -22,9 +20,9 @@ class NewPasswordScreenViewModel(
     private val _viewState = MutableStateFlow(NewPasswordViewState())
     val viewState: StateFlow<NewPasswordViewState> = _viewState.asStateFlow()
 
-    private val _uiState = mutableStateOf<RequestState>(RequestState.Idle)
-    val uiState: State<RequestState>
-        get() = _uiState
+    private val _uiState = MutableStateFlow<RequestState>(RequestState.Idle)
+    val uiState: StateFlow<RequestState>
+        get() = _uiState.asStateFlow()
 
 
     fun handleNewPasswordEvent(event: NewPasswordEvent) {
@@ -33,7 +31,7 @@ class NewPasswordScreenViewModel(
             NewPasswordEvent.ResetPassword -> navigator.navigate(LoginRoutes.EmailConfirm.getDestination(communicator.email.value, _viewState.value.password))
             is NewPasswordEvent.ValidatePassword -> validatePassword(event.password)
             is NewPasswordEvent.ValidateConfirmPassword -> validateConfirmPassword(event.confirmPassword)
-            NewPasswordEvent.ResetUiState -> _uiState.value = RequestState.Idle
+            NewPasswordEvent.ResetUiState -> _uiState.update { RequestState.Idle }
         }
     }
 

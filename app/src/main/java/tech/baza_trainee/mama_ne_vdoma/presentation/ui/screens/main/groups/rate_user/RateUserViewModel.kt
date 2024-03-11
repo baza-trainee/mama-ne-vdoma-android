@@ -1,7 +1,5 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.rate_user
 
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -30,9 +28,9 @@ class RateUserViewModel(
     private val _viewState = MutableStateFlow(RateUserViewState())
     val viewState: StateFlow<RateUserViewState> = _viewState.asStateFlow()
 
-    private val _uiState = mutableStateOf<RateUserUiState>(RateUserUiState.Idle)
-    val uiState: State<RateUserUiState>
-        get() = _uiState
+    private val _uiState = MutableStateFlow<RateUserUiState>(RateUserUiState.Idle)
+    val uiState: StateFlow<RateUserUiState>
+        get() = _uiState.asStateFlow()
 
     init {
         getUser()
@@ -43,7 +41,7 @@ class RateUserViewModel(
         when(event) {
             RateUserEvent.OnBack -> navigator.goToPrevious()
             RateUserEvent.OnSave -> setUserRating()
-            RateUserEvent.ResetUiState -> _uiState.value = RateUserUiState.Idle
+            RateUserEvent.ResetUiState -> _uiState.update { RateUserUiState.Idle }
             is RateUserEvent.SetNote ->
                 _viewState.update {
                     it.copy(note = event.value)
@@ -74,7 +72,7 @@ class RateUserViewModel(
                 getUserAvatar(user.avatar)
             }
             onError { error ->
-                _uiState.value = RateUserUiState.OnError(error)
+                _uiState.update { RateUserUiState.OnError(error) }
             }
             onLoading(::setProgress)
         }
@@ -89,7 +87,7 @@ class RateUserViewModel(
                 }
             }
             onError { error ->
-                _uiState.value = RateUserUiState.OnError(error)
+                _uiState.update { RateUserUiState.OnError(error) }
             }
             onLoading(::setProgress)
         }
@@ -106,9 +104,9 @@ class RateUserViewModel(
                     )
                 )
             }
-            onSuccess { _uiState.value = RateUserUiState.OnSet }
+            onSuccess { _uiState.update { RateUserUiState.OnSet } }
             onError { error ->
-                _uiState.value = RateUserUiState.OnError(error)
+                _uiState.update { RateUserUiState.OnError(error) }
             }
             onLoading(::setProgress)
         }
@@ -125,7 +123,7 @@ class RateUserViewModel(
                 }
             }
             onError { error ->
-                _uiState.value = RateUserUiState.OnError(error)
+                _uiState.update { RateUserUiState.OnError(error) }
             }
             onLoading(::setProgress)
         }

@@ -1,7 +1,5 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.create
 
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -33,14 +31,14 @@ class UserCreateViewModel(
     private val _viewState = MutableStateFlow(UserCreateViewState())
     val viewState: StateFlow<UserCreateViewState> = _viewState.asStateFlow()
 
-    private val _uiState = mutableStateOf<RequestState>(RequestState.Idle)
-    val uiState: State<RequestState>
-        get() = _uiState
+    private val _uiState = MutableStateFlow<RequestState>(RequestState.Idle)
+    val uiState: StateFlow<RequestState>
+        get() = _uiState.asStateFlow()
 
     fun handleUserCreateEvent(event: UserCreateEvent) {
         when(event) {
             UserCreateEvent.RegisterUser -> registerUser()
-            UserCreateEvent.ResetUiState -> _uiState.value = RequestState.Idle
+            UserCreateEvent.ResetUiState -> _uiState.update { RequestState.Idle }
             is UserCreateEvent.UpdatePolicyCheck -> updatePolicyCheck(event.isChecked)
             is UserCreateEvent.ValidateConfirmPassword -> validateConfirmPassword(event.confirmPassword)
             is UserCreateEvent.ValidateEmail -> validateEmail(event.email)
@@ -129,13 +127,11 @@ class UserCreateViewModel(
                 navigator.navigate(CreateUserRoute.VerifyEmail)
             }
             onError { error ->
-                _uiState.value = RequestState.OnError(error)
+                _uiState.update { RequestState.OnError(error) }
             }
             onLoading { isLoading ->
                 _viewState.update {
-                    it.copy(
-                        isLoading = isLoading
-                    )
+                    it.copy(isLoading = isLoading)
                 }
             }
         }
@@ -155,13 +151,11 @@ class UserCreateViewModel(
                 navigator.navigate(Graphs.UserProfile)
             }
             onError { error ->
-                _uiState.value = RequestState.OnError(error)
+                _uiState.update { RequestState.OnError(error) }
             }
             onLoading { isLoading ->
                 _viewState.update {
-                    it.copy(
-                        isLoading = isLoading
-                    )
+                    it.copy(isLoading = isLoading)
                 }
             }
         }

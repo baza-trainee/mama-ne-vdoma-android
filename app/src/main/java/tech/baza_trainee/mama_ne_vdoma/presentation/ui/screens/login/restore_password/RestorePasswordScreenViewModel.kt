@@ -1,7 +1,5 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.restore_password
 
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -29,15 +27,15 @@ class RestorePasswordScreenViewModel(
     private val _viewState = MutableStateFlow(RestorePasswordViewState())
     val viewState: StateFlow<RestorePasswordViewState> = _viewState.asStateFlow()
 
-    private val _uiState = mutableStateOf<RequestState>(RequestState.Idle)
-    val uiState: State<RequestState>
-        get() = _uiState
+    private val _uiState = MutableStateFlow<RequestState>(RequestState.Idle)
+    val uiState: StateFlow<RequestState>
+        get() = _uiState.asStateFlow()
 
     fun handleRestoreEvent(event: RestorePasswordEvent) {
         when(event) {
             RestorePasswordEvent.OnBack -> navigator.navigate(LoginRoutes.Login)
             RestorePasswordEvent.SendEmail -> forgetPassword()
-            RestorePasswordEvent.ResetUiState -> _uiState.value = RequestState.Idle
+            RestorePasswordEvent.ResetUiState -> _uiState.update { RequestState.Idle }
 
             is RestorePasswordEvent.ValidateEmail -> validateEmail(event.email)
             is RestorePasswordEvent.OnLogin -> {
@@ -73,13 +71,11 @@ class RestorePasswordScreenViewModel(
                 navigator.navigate(LoginRoutes.NewPassword)
             }
             onError { error ->
-                _uiState.value = RequestState.OnError(error)
+                _uiState.update { RequestState.OnError(error) }
             }
             onLoading { isLoading ->
                 _viewState.update {
-                    it.copy(
-                        isLoading = isLoading
-                    )
+                    it.copy(isLoading = isLoading)
                 }
             }
         }

@@ -1,8 +1,6 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.update_group
 
 import android.graphics.Bitmap
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -43,9 +41,9 @@ class UpdateGroupViewModel(
     private val _viewState = MutableStateFlow(UpdateGroupViewState())
     val viewState: StateFlow<UpdateGroupViewState> = _viewState.asStateFlow()
 
-    private val _uiState = mutableStateOf<UpdateDetailsUiState>(UpdateDetailsUiState.Idle)
-    val uiState: State<UpdateDetailsUiState>
-        get() = _uiState
+    private val _uiState = MutableStateFlow<UpdateDetailsUiState>(UpdateDetailsUiState.Idle)
+    val uiState: StateFlow<UpdateDetailsUiState>
+        get() = _uiState.asStateFlow()
 
     private var groupId = ""
 
@@ -74,19 +72,18 @@ class UpdateGroupViewModel(
 
     override fun onLoading(state: Boolean) {
         _viewState.update {
-            it.copy(
-                isLoading = state
-            )
+            it.copy(isLoading = state)
         }
     }
 
     override fun onError(error: String) {
-        _uiState.value = UpdateDetailsUiState.OnError(error)
+        _uiState.update { UpdateDetailsUiState.OnError(error) }
     }
 
     fun handleEvent(event: GroupDetailsEvent) {
         when (event) {
-            GroupDetailsEvent.ResetUiState -> _uiState.value = UpdateDetailsUiState.Idle
+            GroupDetailsEvent.ResetUiState ->
+                _uiState.update { UpdateDetailsUiState.Idle }
             GroupDetailsEvent.OnBack -> navigator.goBack()
             GroupDetailsEvent.OnSave -> updateGroup()
             is GroupDetailsEvent.UpdateGroupSchedule -> updateGroupSchedule(event.day, event.period)
@@ -178,7 +175,7 @@ class UpdateGroupViewModel(
                     )
                 }
             } ?: run {
-                _uiState.value = UpdateDetailsUiState.AddressNotFound
+                _uiState.update { UpdateDetailsUiState.AddressNotFound }
             }
         }
     }
@@ -198,7 +195,7 @@ class UpdateGroupViewModel(
                     communicator.setCroppedImage(null)
                 },
                 onError = {
-                    _uiState.value = UpdateDetailsUiState.OnAvatarError
+                    _uiState.update { UpdateDetailsUiState.OnAvatarError }
                 }
             )
         }
@@ -219,11 +216,11 @@ class UpdateGroupViewModel(
                         avatarPath,
                         _viewState.value.groupDetails.schedule
                     ) {
-                        _uiState.value = UpdateDetailsUiState.OnSaved
+                        _uiState.update { UpdateDetailsUiState.OnSaved }
                     }
                 }
             }
-        } else _uiState.value = UpdateDetailsUiState.AddressNotChecked
+        } else _uiState.update { UpdateDetailsUiState.AddressNotChecked }
     }
 
     private fun updateGroupSchedule(dayOfWeek: DayOfWeek, dayPeriod: Period) {

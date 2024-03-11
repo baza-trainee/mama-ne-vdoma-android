@@ -1,8 +1,6 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.host
 
 import android.net.Uri
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -66,9 +64,9 @@ class HostViewModel(
     private val _viewState = MutableStateFlow(HostViewState())
     val viewState: StateFlow<HostViewState> = _viewState.asStateFlow()
 
-    private val _uiState = mutableStateOf<RequestState>(RequestState.Idle)
-    val uiState: State<RequestState>
-        get() = _uiState
+    private val _uiState = MutableStateFlow<RequestState>(RequestState.Idle)
+    val uiState: StateFlow<RequestState>
+        get() = _uiState.asStateFlow()
 
     private var goToPage = page
 
@@ -108,7 +106,7 @@ class HostViewModel(
                 switchTab(route)
                 navigator.navigate(route)
             }
-            HostEvent.ResetUiState -> _uiState.value = RequestState.Idle
+            HostEvent.ResetUiState -> _uiState.update { RequestState.Idle }
             HostEvent.OnBackLocal -> {
                 when (navigator.getCurrentRoute()) {
                     MainScreenRoutes.Main.route -> mainNavigator.minimize()
@@ -137,9 +135,7 @@ class HostViewModel(
 
     private fun switchTab(route: CommonHostRoute) {
         _viewState.update {
-            it.copy(
-                currentRoute = route
-            )
+            it.copy(currentRoute = route)
         }
     }
 
@@ -192,13 +188,11 @@ class HostViewModel(
                 }
             }
             onError { error ->
-                _uiState.value = RequestState.OnError(error)
+                _uiState.update { RequestState.OnError(error) }
             }
             onLoading { isLoading ->
                 _viewState.update {
-                    it.copy(
-                        isLoading = isLoading
-                    )
+                    it.copy(isLoading = isLoading)
                 }
             }
         }
@@ -220,13 +214,11 @@ class HostViewModel(
                 )
             }
             onError { error ->
-                _uiState.value = RequestState.OnError(error)
+                _uiState.update { RequestState.OnError(error) }
             }
             onLoading { isLoading ->
                 _viewState.update {
-                    it.copy(
-                        isLoading = isLoading
-                    )
+                    it.copy(isLoading = isLoading)
                 }
             }
         }
@@ -241,13 +233,11 @@ class HostViewModel(
                 preferencesDatastoreManager.adminJoinRequests = entityList.flatMap { it.askingJoin }.size
             }
             onError { error ->
-                _uiState.value = RequestState.OnError(error)
+                _uiState.update { RequestState.OnError(error) }
             }
             onLoading { isLoading ->
                 _viewState.update {
-                    it.copy(
-                        isLoading = isLoading
-                    )
+                    it.copy(isLoading = isLoading)
                 }
             }
         }
@@ -262,13 +252,11 @@ class HostViewModel(
                 preferencesDatastoreManager.address = address.orEmpty()
             }
             onError { error ->
-                _uiState.value = RequestState.OnError(error)
+                _uiState.update { RequestState.OnError(error) }
             }
             onLoading { isLoading ->
                 _viewState.update {
-                    it.copy(
-                        isLoading = isLoading
-                    )
+                    it.copy(isLoading = isLoading)
                 }
             }
         }
@@ -286,13 +274,11 @@ class HostViewModel(
                 }
             }
             onError { error ->
-                _uiState.value = RequestState.OnError(error)
+                _uiState.update { RequestState.OnError(error) }
             }
             onLoading { isLoading ->
                 _viewState.update {
-                    it.copy(
-                        isLoading = isLoading
-                    )
+                    it.copy(isLoading = isLoading)
                 }
             }
         }

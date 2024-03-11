@@ -1,7 +1,5 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.schedule.parent_schedule
 
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -35,9 +33,9 @@ class ParentScheduleViewModel(
     private val _viewState = MutableStateFlow(ScheduleViewState())
     val viewState: StateFlow<ScheduleViewState> = _viewState.asStateFlow()
 
-    private val _uiState = mutableStateOf<RequestState>(RequestState.Idle)
-    val uiState: State<RequestState>
-        get() = _uiState
+    private val _uiState = MutableStateFlow<RequestState>(RequestState.Idle)
+    val uiState: StateFlow<RequestState>
+        get() = _uiState.asStateFlow()
 
     init {
         userProfileInteractor.apply {
@@ -55,21 +53,19 @@ class ParentScheduleViewModel(
 
     override fun onLoading(state: Boolean) {
         _viewState.update {
-            it.copy(
-                isLoading = state
-            )
+            it.copy(isLoading = state)
         }
     }
 
     override fun onError(error: String) {
-        _uiState.value = RequestState.OnError(error)
+        _uiState.update { RequestState.OnError(error) }
     }
 
     fun handleScheduleEvent(event: ScheduleEvent) {
         when(event) {
             ScheduleEvent.OnBack -> navigator.goBack()
             ScheduleEvent.PatchParentSchedule -> saveParentSchedule()
-            ScheduleEvent.ResetUiState -> _uiState.value = RequestState.Idle
+            ScheduleEvent.ResetUiState -> _uiState.update { RequestState.Idle }
             is ScheduleEvent.UpdateParentSchedule -> updateParentSchedule(event.day, event.period)
             is ScheduleEvent.UpdateParentComment -> updateComment(event.comment)
             else -> Unit
@@ -94,9 +90,7 @@ class ParentScheduleViewModel(
 
     private fun updateParentSchedule(dayOfWeek: DayOfWeek, dayPeriod: Period) {
         _viewState.update {
-            it.copy(
-                schedule = it.schedule.updateSchedule(dayOfWeek, dayPeriod)
-            )
+            it.copy(schedule = it.schedule.updateSchedule(dayOfWeek, dayPeriod))
         }
     }
 

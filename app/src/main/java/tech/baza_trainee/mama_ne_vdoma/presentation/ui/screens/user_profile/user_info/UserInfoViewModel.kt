@@ -2,8 +2,6 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.use
 
 import android.graphics.Bitmap
 import android.net.Uri
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -35,9 +33,9 @@ class UserInfoViewModel(
     private val _viewState = MutableStateFlow(UserInfoViewState())
     val viewState: StateFlow<UserInfoViewState> = _viewState.asStateFlow()
 
-    private val _uiState = mutableStateOf<UserInfoUiState>(UserInfoUiState.Idle)
-    val uiState: State<UserInfoUiState>
-        get() = _uiState
+    private val _uiState = MutableStateFlow<UserInfoUiState>(UserInfoUiState.Idle)
+    val uiState: StateFlow<UserInfoUiState>
+        get() = _uiState.asStateFlow()
 
     init {
         userProfileInteractor.apply {
@@ -63,14 +61,12 @@ class UserInfoViewModel(
 
     override fun onLoading(state: Boolean) {
         _viewState.update {
-            it.copy(
-                isLoading = state
-            )
+            it.copy(isLoading = state)
         }
     }
 
     override fun onError(error: String) {
-        _uiState.value = UserInfoUiState.OnError(error)
+        _uiState.update { UserInfoUiState.OnError(error) }
     }
 
     fun handleUserInfoEvent(event: UserInfoEvent) {
@@ -80,7 +76,7 @@ class UserInfoViewModel(
             is UserInfoEvent.ValidatePhone -> validatePhone(event.phone)
             is UserInfoEvent.SetCode -> setCode(event.code, event.country)
             UserInfoEvent.SaveInfo -> uploadUserAvatar(_viewState.value.bitmapAvatar)
-            UserInfoEvent.ResetUiState -> _uiState.value = UserInfoUiState.Idle
+            UserInfoEvent.ResetUiState -> _uiState.update { UserInfoUiState.Idle }
             UserInfoEvent.OnEditPhoto -> navigator.navigate(UserProfileRoutes.ImageCrop)
             UserInfoEvent.OnDeletePhoto -> deleteUserAvatar()
             UserInfoEvent.OnBack -> navigator.navigate(UserProfileRoutes.FullProfile)
@@ -96,9 +92,7 @@ class UserInfoViewModel(
             imageCommunicator.uriForCrop = Uri.EMPTY
 
             _viewState.update {
-                it.copy(
-                    userAvatar = Uri.EMPTY
-                )
+                it.copy(userAvatar = Uri.EMPTY)
             }
         }
     }
@@ -118,7 +112,7 @@ class UserInfoViewModel(
                     imageCommunicator.setCroppedImage(null)
                 },
                 onError = {
-                    _uiState.value = UserInfoUiState.OnAvatarError
+                    _uiState.update { UserInfoUiState.OnAvatarError }
                 }
             )
         }

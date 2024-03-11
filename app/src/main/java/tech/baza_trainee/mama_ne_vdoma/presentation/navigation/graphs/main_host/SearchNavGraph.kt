@@ -1,5 +1,6 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.navigation.graphs.main_host
 
+import androidx.compose.runtime.collectAsState
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
@@ -21,7 +22,7 @@ fun NavGraphBuilder.searchNavGraph() {
             val searchRequestViewModel: SearchRequestViewModel = koinNavViewModel()
             SearchRequestScreen(
                 screenState = searchRequestViewModel.viewState.asStateWithLifecycle(),
-                uiState = searchRequestViewModel.uiState,
+                uiState = searchRequestViewModel.uiState.collectAsState(),
                 handleEvent = { searchRequestViewModel.handleEvent(it) }
             )
         }
@@ -29,7 +30,7 @@ fun NavGraphBuilder.searchNavGraph() {
             val searchResultsViewModel: SearchResultsViewModel = koinNavViewModel()
             SearchResultsScreen(
                 screenState = searchResultsViewModel.viewState.asStateWithLifecycle(),
-                uiState = searchResultsViewModel.uiState,
+                uiState = searchResultsViewModel.uiState.collectAsState(),
                 handleEvent = { searchResultsViewModel.handleEvent(it) }
             )
         }

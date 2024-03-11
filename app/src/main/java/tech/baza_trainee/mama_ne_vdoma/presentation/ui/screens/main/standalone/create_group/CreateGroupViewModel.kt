@@ -1,8 +1,6 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.standalone.create_group
 
 import android.graphics.Bitmap
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.model.LatLng
@@ -59,9 +57,9 @@ class CreateGroupViewModel(
     private val _viewState = MutableStateFlow(CreateGroupViewState())
     val viewState: StateFlow<CreateGroupViewState> = _viewState.asStateFlow()
 
-    private val _uiState = mutableStateOf<UpdateDetailsUiState>(UpdateDetailsUiState.Idle)
-    val uiState: State<UpdateDetailsUiState>
-        get() = _uiState
+    private val _uiState = MutableStateFlow<UpdateDetailsUiState>(UpdateDetailsUiState.Idle)
+    val uiState: StateFlow<UpdateDetailsUiState>
+        get() = _uiState.asStateFlow()
 
     private var avatarServerPath = ""
 
@@ -105,12 +103,12 @@ class CreateGroupViewModel(
     }
 
     override fun onError(error: String) {
-        _uiState.value = UpdateDetailsUiState.OnError(error)
+        _uiState.update { UpdateDetailsUiState.OnError(error) }
     }
 
     fun handleEvent(event: GroupDetailsEvent) {
         when (event) {
-            GroupDetailsEvent.ResetUiState -> _uiState.value = UpdateDetailsUiState.Idle
+            GroupDetailsEvent.ResetUiState -> _uiState.update { UpdateDetailsUiState.Idle }
             GroupDetailsEvent.OnBack -> navigator.goBack()
             is GroupDetailsEvent.OnSave -> createGroup()
             is GroupDetailsEvent.UpdateGroupSchedule -> updateGroupSchedule(event.day, event.period)
@@ -162,7 +160,7 @@ class CreateGroupViewModel(
                     )
                 }
             } ?: run {
-                _uiState.value = UpdateDetailsUiState.AddressNotFound
+                _uiState.update { UpdateDetailsUiState.AddressNotFound }
             }
         }
     }
@@ -188,7 +186,7 @@ class CreateGroupViewModel(
                     communicator.setCroppedImage(null)
                 },
                 onError = {
-                    _uiState.value = UpdateDetailsUiState.OnAvatarError
+                    _uiState.update { UpdateDetailsUiState.OnAvatarError }
                 }
             )
         }
@@ -212,7 +210,7 @@ class CreateGroupViewModel(
                 uploadAvatar(_viewState.value.groupDetails.avatar, it.id)
                 updateGroupLocation(_viewState.value.groupDetails.location, it.id)
             }
-        } else _uiState.value = UpdateDetailsUiState.AddressNotChecked
+        } else _uiState.update { UpdateDetailsUiState.AddressNotChecked }
     }
 
     private fun updateGroup(groupId: String) {
@@ -227,7 +225,7 @@ class CreateGroupViewModel(
             avatarServerPath,
             _viewState.value.groupDetails.schedule
         ) {
-            _uiState.value = UpdateDetailsUiState.OnSaved
+            _uiState.update { UpdateDetailsUiState.OnSaved }
         }
     }
 

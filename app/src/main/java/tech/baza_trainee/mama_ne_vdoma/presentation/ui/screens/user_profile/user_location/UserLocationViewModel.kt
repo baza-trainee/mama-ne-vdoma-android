@@ -1,7 +1,5 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.user_location
 
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.model.LatLng
@@ -25,39 +23,37 @@ class UserLocationViewModel(
     private val _viewState = MutableStateFlow(UserLocationViewState())
     val viewState: StateFlow<UserLocationViewState> = _viewState.asStateFlow()
 
-    private val _uiState = mutableStateOf<LocationUiState>(LocationUiState.Idle)
-    val uiState: State<LocationUiState>
-        get() = _uiState
+    private val _uiState = MutableStateFlow<LocationUiState>(LocationUiState.Idle)
+    val uiState: StateFlow<LocationUiState>
+        get() = _uiState.asStateFlow()
 
     init {
         locationInteractor.apply {
             setLocationCoroutineScope(viewModelScope)
             setLocationNetworkListener(this@UserLocationViewModel)
         }
+
         _viewState.update {
-            it.copy(
-                address = preferencesDatastoreManager.address
-            )
+            it.copy(address = preferencesDatastoreManager.address)
         }
+
         if (preferencesDatastoreManager.address.isNotEmpty())
             getLocationFromAddress()
     }
 
     override fun onLoading(state: Boolean) {
         _viewState.update {
-            it.copy(
-                isLoading = state
-            )
+            it.copy(isLoading = state)
         }
     }
 
     override fun onError(error: String) {
-        _uiState.value = LocationUiState.OnError(error)
+        _uiState.update { LocationUiState.OnError(error) }
     }
 
     fun handleUserLocationEvent(event: UserLocationEvent) {
         when(event) {
-            UserLocationEvent.ResetUiState -> _uiState.value = LocationUiState.Idle
+            UserLocationEvent.ResetUiState -> _uiState.update { LocationUiState.Idle }
             UserLocationEvent.GetLocationFromAddress -> getLocationFromAddress()
             UserLocationEvent.RequestUserLocation -> requestCurrentLocation()
             is UserLocationEvent.UpdateUserAddress -> updateUserAddress(event.address)
@@ -68,9 +64,7 @@ class UserLocationViewModel(
 
     private fun setLocation(location: LatLng) {
         _viewState.update {
-            it.copy(
-                currentLocation = location
-            )
+            it.copy(currentLocation = location)
         }
         getAddressFromLocation(location)
     }
@@ -90,15 +84,13 @@ class UserLocationViewModel(
                     navigator.navigate(UserProfileRoutes.ParentSchedule)
                 }
             )
-        } else _uiState.value = LocationUiState.AddressNotChecked
+        } else _uiState.update { LocationUiState.AddressNotChecked }
     }
 
     private fun requestCurrentLocation() {
         requestCurrentLocation { location ->
             _viewState.update {
-                it.copy(
-                    currentLocation = location
-                )
+                it.copy(currentLocation = location)
             }
             getAddressFromLocation(location)
         }
@@ -125,7 +117,7 @@ class UserLocationViewModel(
                         )
                     }
                 } ?: run {
-                    _uiState.value = LocationUiState.AddressNotFound
+                    _uiState.update { LocationUiState.AddressNotFound }
                 }
         }
     }

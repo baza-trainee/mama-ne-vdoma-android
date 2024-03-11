@@ -1,7 +1,5 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.standalone.found_group
 
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -39,9 +37,9 @@ class FoundGroupsStandaloneViewModel(
     private val _viewState = MutableStateFlow(FoundGroupViewState())
     val viewState: StateFlow<FoundGroupViewState> = _viewState.asStateFlow()
 
-    private val _uiState = mutableStateOf<FoundGroupUiState>(FoundGroupUiState.Idle)
-    val uiState: State<FoundGroupUiState>
-        get() = _uiState
+    private val _uiState = MutableStateFlow<FoundGroupUiState>(FoundGroupUiState.Idle)
+    val uiState: StateFlow<FoundGroupUiState>
+        get() = _uiState.asStateFlow()
 
     init {
         groupsInteractor.apply {
@@ -74,19 +72,17 @@ class FoundGroupsStandaloneViewModel(
 
     override fun onLoading(state: Boolean) {
         _viewState.update {
-            it.copy(
-                isLoading = state
-            )
+            it.copy(isLoading = state)
         }
     }
 
     override fun onError(error: String) {
-        _uiState.value = FoundGroupUiState.OnError(error)
+        _uiState.update { FoundGroupUiState.OnError(error) }
     }
 
     fun handleEvent(event: FoundGroupEvent) {
         when (event) {
-            FoundGroupEvent.ResetUiState -> _uiState.value = FoundGroupUiState.Idle
+            FoundGroupEvent.ResetUiState -> _uiState.update { FoundGroupUiState.Idle }
             FoundGroupEvent.OnBack -> navigator.goBack()
             FoundGroupEvent.OnJoin -> sendJoinRequest()
             is FoundGroupEvent.OnSelect -> setSelectedGroup(event.group)
@@ -100,7 +96,9 @@ class FoundGroupsStandaloneViewModel(
                 navigator.navigate(HostScreenRoutes.Host.getDestination(NOTIFICATIONS_PAGE))
 
             FoundGroupEvent.CreateGroup ->
-                navigator.navigate(StandaloneGroupsRoutes.ChooseChild.getDestination(isForSearch = false))
+                navigator.navigate(
+                    StandaloneGroupsRoutes.ChooseChild.getDestination(isForSearch = false)
+                )
         }
     }
 
@@ -112,31 +110,23 @@ class FoundGroupsStandaloneViewModel(
             }
             onSuccess {
                 communicator.setData("")
-                _uiState.value = FoundGroupUiState.OnRequestSent
+                _uiState.update { FoundGroupUiState.OnRequestSent }
             }
-            onError { error ->
-                _uiState.value = FoundGroupUiState.OnError(error)
-            }
-            onLoading { isLoading ->
-                _viewState.update {
-                    it.copy(
-                        isLoading = isLoading
-                    )
-                }
-            }
+            onError(::onError)
+            onLoading(::onLoading)
         }
     }
 
     private fun setSelectedGroup(groupId: String) {
         _viewState.update { state ->
             val groups = mutableListOf<GroupUiModel>()
+
             state.groups.forEach {
                 val group = it.copy(isChecked = it.id == groupId)
                 groups.add(group)
             }
-            state.copy(
-                groups = groups
-            )
+
+            state.copy(groups = groups)
         }
     }
 
@@ -157,16 +147,8 @@ class FoundGroupsStandaloneViewModel(
 
                 startFetching(groups)
             }
-            onError { error ->
-                _uiState.value = FoundGroupUiState.OnError(error)
-            }
-            onLoading { isLoading ->
-                _viewState.update {
-                    it.copy(
-                        isLoading = isLoading
-                    )
-                }
-            }
+            onError(::onError)
+            onLoading(::onLoading)
         }
     }
 }

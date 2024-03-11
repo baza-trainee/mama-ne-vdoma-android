@@ -1,8 +1,6 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.main.notifications
 
 import android.net.Uri
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.model.LatLng
@@ -56,9 +54,9 @@ class NotificationsViewModel(
     private val _viewState = MutableStateFlow(NotificationsViewState())
     val viewState: StateFlow<NotificationsViewState> = _viewState.asStateFlow()
 
-    private val _uiState = mutableStateOf<NotificationsUiState>(NotificationsUiState.Idle)
-    val uiState: State<NotificationsUiState>
-        get() = _uiState
+    private val _uiState = MutableStateFlow<NotificationsUiState>(NotificationsUiState.Idle)
+    val uiState: StateFlow<NotificationsUiState>
+        get() = _uiState.asStateFlow()
 
     init {
         getUserInfo()
@@ -66,7 +64,7 @@ class NotificationsViewModel(
 
     fun handleEvent(event: NotificationsEvent) {
         when (event) {
-            NotificationsEvent.ResetUiState -> _uiState.value = NotificationsUiState.Idle
+            NotificationsEvent.ResetUiState -> _uiState.update { NotificationsUiState.Idle }
             NotificationsEvent.OnBack -> navigator.goToPrevious()
             is NotificationsEvent.AcceptUser -> acceptJoinRequest(event.group, event.child)
             is NotificationsEvent.DeclineUser -> declineJoinRequest(event.group, event.child)
@@ -84,11 +82,11 @@ class NotificationsViewModel(
                 groupsRepository.acceptRequest(group, child)
             }
             onSuccess {
-                _uiState.value = NotificationsUiState.OnAccepted
+                _uiState.update { NotificationsUiState.OnAccepted }
                 getUserInfo()
             }
             onError { error ->
-                _uiState.value = NotificationsUiState.OnError(error)
+                _uiState.update { NotificationsUiState.OnError(error) }
             }
             onLoading(::setProgress)
         }
@@ -101,7 +99,7 @@ class NotificationsViewModel(
             }
             onSuccess { getUserInfo() }
             onError { error ->
-                _uiState.value = NotificationsUiState.OnError(error)
+                _uiState.update { NotificationsUiState.OnError(error) }
             }
             onLoading(::setProgress)
         }
@@ -114,7 +112,7 @@ class NotificationsViewModel(
             }
             onSuccess { getUserInfo() }
             onError { error ->
-                _uiState.value = NotificationsUiState.OnError(error)
+                _uiState.update { NotificationsUiState.OnError(error) }
             }
             onLoading(::setProgress)
         }
@@ -143,7 +141,7 @@ class NotificationsViewModel(
                 preferencesDatastoreManager.myJoinRequests = entity.groupJoinRequests.size
             }
             onError { error ->
-                _uiState.value = NotificationsUiState.OnError(error)
+                _uiState.update { NotificationsUiState.OnError(error) }
             }
             onLoading(::setProgress)
         }
@@ -259,7 +257,7 @@ class NotificationsViewModel(
                 preferencesDatastoreManager.adminJoinRequests = myGroups.flatMap { it.askingJoin }.size
             }
             onError { error ->
-                _uiState.value = NotificationsUiState.OnError(error)
+                _uiState.update { NotificationsUiState.OnError(error) }
             }
             onLoading(::setProgress)
         }
@@ -374,7 +372,7 @@ class NotificationsViewModel(
         networkExecutor {
             execute { userProfileRepository.deleteUserNotifications() }
             onSuccess { getUserInfo() }
-            onError { _uiState.value = NotificationsUiState.OnError(it) }
+            onError { error -> _uiState.update { NotificationsUiState.OnError(error) } }
             onLoading(::setProgress)
         }
     }
@@ -382,7 +380,7 @@ class NotificationsViewModel(
     private fun <T> getResult(result: RequestResult<T>): T? {
         return when(result) {
             is RequestResult.Error -> {
-                _uiState.value = NotificationsUiState.OnError(result.error)
+                _uiState.update { NotificationsUiState.OnError(result.error) }
                 null
             }
 
@@ -392,9 +390,7 @@ class NotificationsViewModel(
 
     private fun setProgress(isLoading: Boolean) {
         _viewState.update {
-            it.copy(
-                isLoading = isLoading
-            )
+            it.copy(isLoading = isLoading)
         }
     }
 }

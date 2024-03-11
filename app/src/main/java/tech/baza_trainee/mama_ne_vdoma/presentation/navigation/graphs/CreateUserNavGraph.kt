@@ -1,5 +1,6 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.navigation.graphs
 
+import androidx.compose.runtime.collectAsState
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
@@ -26,7 +27,7 @@ fun NavGraphBuilder.createUserNavGraph() {
             UserCreateScreen(
                 oneTapClient = oneTapClient,
                 screenState = userCreateViewModel.viewState.asStateWithLifecycle(),
-                uiState = userCreateViewModel.uiState,
+                uiState = userCreateViewModel.uiState.collectAsState(),
                 handleEvent = { userCreateViewModel.handleUserCreateEvent(it) }
             )
         }
@@ -34,7 +35,7 @@ fun NavGraphBuilder.createUserNavGraph() {
             val verifyEmailViewModel: VerifyEmailViewModel = koinNavViewModel()
             VerifyEmailScreen(
                 screenState = verifyEmailViewModel.viewState.asStateWithLifecycle(),
-                uiState = verifyEmailViewModel.uiState,
+                uiState = verifyEmailViewModel.uiState.collectAsState(),
                 title = R.string.title_create_user_profile,
                 handleEvent = { verifyEmailViewModel.handleEvent(it) }
             )
