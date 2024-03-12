@@ -23,7 +23,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -67,7 +66,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.showToast
 fun UserCreateScreen(
     oneTapClient: SignInClient?,
     screenState: UserCreateViewState,
-    uiState: State<RequestState>,
+    uiState: RequestState,
     handleEvent: (UserCreateEvent) -> Unit
 ) {
     SurfaceWithSystemBars {
@@ -75,10 +74,10 @@ fun UserCreateScreen(
 
         val context = LocalContext.current
 
-        when (val state = uiState.value) {
+        when (uiState) {
             RequestState.Idle -> Unit
             is RequestState.OnError -> {
-                context.showToast(state.error)
+                context.showToast(uiState.error)
                 handleEvent(UserCreateEvent.ResetUiState)
             }
         }
@@ -252,7 +251,7 @@ fun UserCreatePreview() {
     UserCreateScreen(
         oneTapClient = null,
         screenState = UserCreateViewState(),
-        uiState = remember { mutableStateOf(RequestState.Idle) },
+        uiState = RequestState.Idle,
         handleEvent = { _ -> }
     )
 }

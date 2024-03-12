@@ -1,10 +1,6 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.child_schedule
 
-import android.widget.Toast
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -14,19 +10,20 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.schedule.S
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.schedule.ScheduleScreen
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.schedule.ScheduleViewState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.showToast
 
 @Composable
 fun ChildScheduleScreen(
     screenState: ScheduleViewState,
-    uiState: State<RequestState>,
+    uiState: RequestState,
     handleEvent: (ScheduleEvent) -> Unit
 ) {
     val context = LocalContext.current
 
-    when(val state = uiState.value) {
+    when(uiState) {
         RequestState.Idle -> Unit
         is RequestState.OnError -> {
-            if (state.error.isNotBlank()) Toast.makeText(context, state.error, Toast.LENGTH_LONG).show()
+            context.showToast(uiState.error)
             handleEvent(ScheduleEvent.ResetUiState)
         }
     }
@@ -48,7 +45,7 @@ fun ChildScheduleScreen(
 fun ChildScheduleScreenPreview() {
     ChildScheduleScreen(
         screenState = ScheduleViewState(),
-        uiState = remember { mutableStateOf(RequestState.Idle) },
+        uiState = RequestState.Idle,
         handleEvent = {}
     )
 }

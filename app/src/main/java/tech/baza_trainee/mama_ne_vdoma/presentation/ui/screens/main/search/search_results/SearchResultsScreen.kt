@@ -1,6 +1,5 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.search.search_results
 
-import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -11,14 +10,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.cards.ParentCardInSearch
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ButtonText
@@ -26,22 +21,22 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_16_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_48_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.showToast
 
 @Composable
 fun SearchResultsScreen(
     screenState: SearchResultsViewState,
-    uiState: State<RequestState>,
+    uiState: RequestState,
     handleEvent: (SearchResultsEvent) -> Unit
 ) {
     BackHandler { handleEvent(SearchResultsEvent.OnBack) }
 
     val context = LocalContext.current
 
-    when (val state = uiState.value) {
+    when (uiState) {
         RequestState.Idle -> Unit
         is RequestState.OnError -> {
-            if (state.error.isNotBlank()) Toast.makeText(context, state.error, Toast.LENGTH_LONG)
-                .show()
+            context.showToast(uiState.error)
             handleEvent(SearchResultsEvent.ResetUiState)
         }
     }
@@ -80,7 +75,7 @@ fun SearchResultsScreen(
 fun SearchResultsScreenPreview() {
     SearchResultsScreen(
         screenState = SearchResultsViewState(),
-        uiState = remember { mutableStateOf(RequestState.Idle) },
+        uiState = RequestState.Idle,
         handleEvent = {}
     )
 }

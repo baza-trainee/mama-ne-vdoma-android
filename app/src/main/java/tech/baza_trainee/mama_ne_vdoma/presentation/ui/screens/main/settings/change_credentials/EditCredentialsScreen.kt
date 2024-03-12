@@ -1,6 +1,5 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.change_credentials
 
-import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -23,9 +22,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -50,22 +46,22 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_4_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_8_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.showToast
 
 @Composable
 fun EditCredentialsScreen(
     screenState: EditCredentialsViewState,
-    uiState: State<RequestState>,
+    uiState: RequestState,
     handleEvent: (EditCredentialsEvent) -> Unit
 ) {
     BackHandler { handleEvent(EditCredentialsEvent.OnBack) }
 
     val context = LocalContext.current
 
-    when (val state = uiState.value) {
+    when (uiState) {
         RequestState.Idle -> Unit
         is RequestState.OnError -> {
-            if (state.error.isNotBlank()) Toast.makeText(context, state.error, Toast.LENGTH_LONG)
-                .show()
+            context.showToast(uiState.error)
             handleEvent(EditCredentialsEvent.ResetUiState)
         }
     }
@@ -196,7 +192,7 @@ fun EditCredentialsScreen(
 fun EditCredentialsScreenPreview() {
     EditCredentialsScreen(
         screenState = EditCredentialsViewState(),
-        uiState = remember { mutableStateOf(RequestState.Idle) },
+        uiState = RequestState.Idle,
         handleEvent = {}
     )
 }

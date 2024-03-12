@@ -1,6 +1,5 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.navigation.graphs
 
-import androidx.compose.runtime.collectAsState
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
@@ -38,7 +37,7 @@ fun NavGraphBuilder.groupStandaloneScreensNavGraph() {
             ChooseChildStandaloneScreen(
                 isForSearch = isForSearch,
                 screenState = chooseChildViewModel.viewState.asStateWithLifecycle(),
-                uiState = chooseChildViewModel.uiState.collectAsState(),
+                uiState = chooseChildViewModel.uiState.asStateWithLifecycle(),
                 handleEvent = { chooseChildViewModel.handleEvent(it) }
             )
         }
@@ -46,7 +45,7 @@ fun NavGraphBuilder.groupStandaloneScreensNavGraph() {
             val setAreaViewModel: SetAreaViewModel = koinNavViewModel()
             SetAreaForSearchScreen(
                 screenState = setAreaViewModel.viewState.asStateWithLifecycle(),
-                uiState = setAreaViewModel.uiState.collectAsState(),
+                uiState = setAreaViewModel.uiState.asStateWithLifecycle(),
                 handleEvent = { setAreaViewModel.handleEvent(it) }
             )
         }
@@ -54,7 +53,7 @@ fun NavGraphBuilder.groupStandaloneScreensNavGraph() {
             val foundGroupViewModel: FoundGroupsStandaloneViewModel = koinNavViewModel()
             FoundGroupScreen(
                 screenState = foundGroupViewModel.viewState.asStateWithLifecycle(),
-                uiState = foundGroupViewModel.uiState.collectAsState(),
+                uiState = foundGroupViewModel.uiState.asStateWithLifecycle(),
                 handleEvent = { foundGroupViewModel.handleEvent(it) }
             )
         }
@@ -64,7 +63,7 @@ fun NavGraphBuilder.groupStandaloneScreensNavGraph() {
             val createGroupViewModel: CreateGroupViewModel = koinNavViewModel()
             CreateGroupScreen(
                 screenState = createGroupViewModel.viewState.asStateWithLifecycle(),
-                uiState = createGroupViewModel.uiState.collectAsState(),
+                uiState = createGroupViewModel.uiState.asStateWithLifecycle(),
                 handleEvent = { createGroupViewModel.handleEvent(it) }
             )
         }

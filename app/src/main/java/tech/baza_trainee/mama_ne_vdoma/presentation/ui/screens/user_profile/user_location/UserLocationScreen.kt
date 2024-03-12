@@ -16,7 +16,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -31,7 +30,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import tech.baza_trainee.mama_ne_vdoma.R
@@ -56,7 +54,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.showToast
 @Composable
 fun UserLocationScreen(
     screenState: UserLocationViewState,
-    uiState: State<LocationUiState>,
+    uiState: LocationUiState,
     handleEvent: (UserLocationEvent) -> Unit
 ) {
     ScaffoldWithNavigationBars(
@@ -73,11 +71,11 @@ fun UserLocationScreen(
         var showAddressDialog by rememberSaveable { mutableStateOf(false) }
         var dialogTitle by rememberSaveable { mutableStateOf("") }
 
-        when (val state = uiState.value) {
+        when (uiState) {
             LocationUiState.Idle -> Unit
 
             is LocationUiState.OnError -> {
-                context.showToast(state.error)
+                context.showToast(uiState.error)
                 handleEvent(UserLocationEvent.ResetUiState)
             }
 
@@ -201,9 +199,7 @@ fun UserLocationScreen(
 fun UserLocationPreview() {
     UserLocationScreen(
         screenState = UserLocationViewState(),
-        uiState = remember {
-            mutableStateOf(LocationUiState.Idle)
-        },
+        uiState = LocationUiState.Idle,
         handleEvent = { _ -> }
     )
 }

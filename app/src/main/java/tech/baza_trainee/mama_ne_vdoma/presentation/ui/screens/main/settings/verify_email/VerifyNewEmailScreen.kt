@@ -1,12 +1,9 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.verify_email
 
-import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
@@ -19,11 +16,12 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.verify_ema
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.verify_email.VerifyEmailViewState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.edit.dialogs.EditCredentialsSuccessDialog
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.showToast
 
 @Composable
 fun VerifyNewEmailScreen(
     screenState: VerifyEmailViewState,
-    uiState: State<VerifyEmailUiState>,
+    uiState: VerifyEmailUiState,
     handleEvent: (VerifyEmailEvent) -> Unit
 ) {
     BackHandler { handleEvent(VerifyEmailEvent.OnBack) }
@@ -33,11 +31,10 @@ fun VerifyNewEmailScreen(
 
     val context = LocalContext.current
 
-    when (val state = uiState.value) {
+    when (uiState) {
         VerifyEmailUiState.Idle -> Unit
         is VerifyEmailUiState.OnError -> {
-            if (state.error.isNotBlank()) Toast.makeText(context, state.error, Toast.LENGTH_LONG)
-                .show()
+            context.showToast(uiState.error)
             handleEvent(VerifyEmailEvent.ResetUiState)
         }
 
@@ -78,7 +75,7 @@ fun VerifyNewEmailScreen(
 fun VerifyNewEmailScreenPreview() {
     VerifyNewEmailScreen(
         screenState = VerifyEmailViewState(),
-        uiState = remember { mutableStateOf(VerifyEmailUiState.Idle) },
+        uiState = VerifyEmailUiState.Idle,
         handleEvent = {}
     )
 }

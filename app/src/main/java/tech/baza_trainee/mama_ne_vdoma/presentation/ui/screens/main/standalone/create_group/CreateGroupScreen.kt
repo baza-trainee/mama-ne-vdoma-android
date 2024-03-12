@@ -9,9 +9,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -28,7 +25,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_16_dp
 @Composable
 fun CreateGroupScreen(
     screenState: CreateGroupViewState,
-    uiState: State<UpdateDetailsUiState>,
+    uiState: UpdateDetailsUiState,
     handleEvent: (GroupDetailsEvent) -> Unit
 ) {
     ScaffoldWithNavigationBars(
@@ -73,7 +70,7 @@ fun CreateGroupScreen(
 fun CreateGroupScreenPreview() {
     CreateGroupScreen(
         screenState = CreateGroupViewState(),
-        uiState = remember { mutableStateOf(UpdateDetailsUiState.Idle) },
+        uiState = UpdateDetailsUiState.Idle,
         handleEvent = {}
     )
 }

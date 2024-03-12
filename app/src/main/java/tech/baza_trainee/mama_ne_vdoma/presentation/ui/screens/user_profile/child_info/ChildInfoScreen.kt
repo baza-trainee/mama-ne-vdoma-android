@@ -5,9 +5,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -25,7 +22,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.showToast
 @Composable
 fun ChildInfoScreen(
     screenState: ChildInfoViewState,
-    uiState: State<RequestState>,
+    uiState: RequestState,
     handleEvent: (ChildInfoEvent) -> Unit
 ) {
     ScaffoldWithNavigationBars(
@@ -42,10 +39,10 @@ fun ChildInfoScreen(
 
         val context = LocalContext.current
 
-        when (val state = uiState.value) {
+        when (uiState) {
             RequestState.Idle -> Unit
             is RequestState.OnError -> {
-                context.showToast(state.error)
+                context.showToast(uiState.error)
                 handleEvent(ChildInfoEvent.ResetUiState)
             }
         }
@@ -67,9 +64,7 @@ fun ChildInfoScreen(
 fun ChildInfoPreview() {
     ChildInfoScreen(
         screenState = ChildInfoViewState(),
-        uiState = remember {
-            mutableStateOf(RequestState.Idle)
-        },
+        uiState = RequestState.Idle,
         handleEvent = { _ -> }
     )
 }

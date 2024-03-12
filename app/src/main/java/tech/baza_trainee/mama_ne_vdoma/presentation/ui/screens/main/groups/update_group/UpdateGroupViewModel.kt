@@ -201,20 +201,20 @@ class UpdateGroupViewModel(
         }
     }
 
-    private fun updateGroup() {
-        if (_viewState.value.groupDetails.isAddressChecked) {
-            uploadGroupAvatar(_viewState.value.groupDetails.avatar) { avatarPath ->
-                updateGroupLocation(_viewState.value.groupDetails.location, groupId) {
+    private fun updateGroup() = with(_viewState.value.groupDetails) {
+        if (isAddressChecked) {
+            uploadGroupAvatar(avatar) { avatarPath ->
+                updateGroupLocation(location, groupId) {
                     val ages =
-                        if (_viewState.value.groupDetails.minAge == _viewState.value.groupDetails.maxAge) _viewState.value.groupDetails.minAge
-                        else "${_viewState.value.groupDetails.minAge}-${_viewState.value.groupDetails.maxAge}"
+                        if (minAge == maxAge) minAge
+                        else "${minAge}-${maxAge}"
                     updateGroup(
                         groupId,
-                        _viewState.value.groupDetails.name,
-                        _viewState.value.groupDetails.description,
+                        name,
+                        description,
                         ages,
                         avatarPath,
-                        _viewState.value.groupDetails.schedule
+                        schedule
                     ) {
                         _uiState.update { UpdateDetailsUiState.OnSaved }
                     }

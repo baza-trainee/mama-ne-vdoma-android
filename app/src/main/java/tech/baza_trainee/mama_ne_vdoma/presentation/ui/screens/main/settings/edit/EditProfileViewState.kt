@@ -27,6 +27,5 @@ data class EditProfileViewState(
     val schedule: SnapshotStateMap<DayOfWeek, DayPeriod> = getDefaultSchedule(),
     val children: List<ChildEntity> = emptyList(),
     val isLoading: Boolean = false,
-    val countries: List<CountryCode> = emptyList(),
-    val isStateValid: Boolean = false
+    val countries: List<CountryCode> = emptyList()
 )

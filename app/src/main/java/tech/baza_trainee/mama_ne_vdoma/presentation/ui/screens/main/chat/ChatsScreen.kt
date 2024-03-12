@@ -7,7 +7,6 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_16_dp
@@ -21,7 +20,7 @@ private const val CHAT = 1
 @Composable
 fun ChatsScreen(
     screenState: ChatsViewState,
-    uiState: State<RequestState>,
+    uiState: RequestState,
     handleEvent: (ChatsScreenEvent) -> Unit
 ) {
     val context = LocalContext.current
@@ -36,10 +35,10 @@ fun ChatsScreen(
             pagerState.scrollToPage(CHAT)
     }
 
-    when (val state = uiState.value) {
+    when (uiState) {
         RequestState.Idle -> Unit
         is RequestState.OnError -> {
-            context.showToast(state.error)
+            context.showToast(uiState.error)
             handleEvent(ChatsScreenEvent.ResetUiState)
         }
     }

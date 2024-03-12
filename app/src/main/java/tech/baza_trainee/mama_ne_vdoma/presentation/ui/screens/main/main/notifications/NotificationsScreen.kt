@@ -1,6 +1,5 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.main.notifications
 
-import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -23,7 +22,6 @@ import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
@@ -41,8 +39,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.domain.model.MessageType
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.cards.AdminJoinRequestCard
@@ -68,6 +64,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_2_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_4_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_52_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_8_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.showToast
 
 private const val MY_REQUESTS = 0
 private const val ADMIN_REQUESTS = 1
@@ -77,7 +74,7 @@ private const val NOTIFICATIONS = 2
 @Composable
 fun NotificationScreen(
     screenState: NotificationsViewState,
-    uiState: State<NotificationsUiState>,
+    uiState: NotificationsUiState,
     handleEvent: (NotificationsEvent) -> Unit
 ) {
     BackHandler { handleEvent(NotificationsEvent.OnBack) }
@@ -94,14 +91,10 @@ fun NotificationScreen(
     val pagerState = rememberPagerState(initialPage = 0, pageCount = { tabs.size })
     var currentPage by rememberSaveable { mutableIntStateOf(0) }
 
-    when (val state = uiState.value) {
+    when (uiState) {
         NotificationsUiState.Idle -> Unit
         is NotificationsUiState.OnError -> {
-            if (state.error.isNotBlank()) Toast.makeText(
-                context,
-                state.error,
-                Toast.LENGTH_LONG
-            ).show()
+            context.showToast(uiState.error)
             handleEvent(NotificationsEvent.ResetUiState)
         }
 
@@ -383,7 +376,7 @@ private fun MyRequests(
 fun NotificationScreenPreview() {
     NotificationScreen(
         screenState = NotificationsViewState(),
-        uiState = remember { mutableStateOf(NotificationsUiState.Idle) },
+        uiState = NotificationsUiState.Idle,
         handleEvent = {}
     )
 }

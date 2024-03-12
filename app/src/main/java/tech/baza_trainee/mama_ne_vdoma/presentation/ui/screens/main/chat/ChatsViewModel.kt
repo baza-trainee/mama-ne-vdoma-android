@@ -200,7 +200,7 @@ class ChatsViewModel(
                     }
                 }
             }
-            onError { error ->_uiState.update { RequestState.OnError(error) } }
+            onError { error -> _uiState.update { RequestState.OnError(error) } }
             onLoading { isLoading ->
                 _viewState.update {
                     it.copy(isLoading = isLoading)

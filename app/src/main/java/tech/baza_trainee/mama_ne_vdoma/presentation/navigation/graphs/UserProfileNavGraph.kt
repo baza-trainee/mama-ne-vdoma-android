@@ -1,6 +1,5 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.navigation.graphs
 
-import androidx.compose.runtime.collectAsState
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
@@ -37,7 +36,7 @@ fun NavGraphBuilder.userProfileGraph() {
             val fullInfoViewModel: FullInfoViewModel = koinNavViewModel()
             FullInfoScreen(
                 screenState = fullInfoViewModel.viewState.asStateWithLifecycle(),
-                uiState = fullInfoViewModel.uiState.collectAsState(),
+                uiState = fullInfoViewModel.uiState.asStateWithLifecycle(),
                 handleEvent = { fullInfoViewModel.handleFullProfileEvent(it) }
             )
         }
@@ -45,7 +44,7 @@ fun NavGraphBuilder.userProfileGraph() {
             val userInfoViewModel: UserInfoViewModel = koinNavViewModel()
             UserInfoScreen(
                 screenState = userInfoViewModel.viewState.asStateWithLifecycle(),
-                uiState = userInfoViewModel.uiState.collectAsState(),
+                uiState = userInfoViewModel.uiState.asStateWithLifecycle(),
                 handleEvent = { userInfoViewModel.handleUserInfoEvent(it)}
             )
         }
@@ -63,7 +62,7 @@ fun NavGraphBuilder.userProfileGraph() {
             val userLocationViewModel: UserLocationViewModel = koinNavViewModel()
             UserLocationScreen(
                 screenState = userLocationViewModel.viewState.asStateWithLifecycle(),
-                uiState = userLocationViewModel.uiState.collectAsState(),
+                uiState = userLocationViewModel.uiState.asStateWithLifecycle(),
                 handleEvent = { userLocationViewModel.handleUserLocationEvent(it) }
             )
         }
@@ -71,7 +70,7 @@ fun NavGraphBuilder.userProfileGraph() {
             val parentScheduleViewModel: ParentScheduleViewModel = koinNavViewModel()
             ParentScheduleScreen(
                 screenState = parentScheduleViewModel.viewState.asStateWithLifecycle(),
-                uiState = parentScheduleViewModel.uiState.collectAsState(),
+                uiState = parentScheduleViewModel.uiState.asStateWithLifecycle(),
                 handleEvent = { parentScheduleViewModel.handleScheduleEvent(it) }
             )
         }
@@ -85,7 +84,7 @@ fun NavGraphBuilder.userProfileGraph() {
             }
             ChildInfoScreen(
                 screenState = childInfoViewModel.viewState.asStateWithLifecycle(),
-                uiState = childInfoViewModel.uiState.collectAsState(),
+                uiState = childInfoViewModel.uiState.asStateWithLifecycle(),
                 handleEvent = { childInfoViewModel.handleChildInfoEvent(it) }
             )
         }
@@ -99,7 +98,7 @@ fun NavGraphBuilder.userProfileGraph() {
             }
             ChildScheduleScreen(
                 screenState = childScheduleViewModel.viewState.asStateWithLifecycle(),
-                uiState = childScheduleViewModel.uiState.collectAsState(),
+                uiState = childScheduleViewModel.uiState.asStateWithLifecycle(),
                 handleEvent = { childScheduleViewModel.handleScheduleEvent(it) }
             )
         }
