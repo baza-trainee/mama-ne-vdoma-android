@@ -43,6 +43,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onError
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onErrorWithCode
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onLoading
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onSuccess
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.toStateMap
 import java.net.HttpURLConnection
 import java.time.DayOfWeek
 
@@ -165,7 +166,7 @@ class HostViewModel(
                         isUserProfileFilled = true
                     }
 
-                    saveUserInfo(entity.schedule)
+                    saveUserInfo(entity.schedule.toStateMap())
 
                     getGroups(entity.id)
 

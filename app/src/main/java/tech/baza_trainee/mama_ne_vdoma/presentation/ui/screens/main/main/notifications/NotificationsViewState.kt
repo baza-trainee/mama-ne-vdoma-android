@@ -1,8 +1,8 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.main.notifications
 
 import androidx.compose.runtime.Immutable
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.JoinRequestUiModel
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.NotificationsUiModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.model.JoinRequestUiModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.model.NotificationsUiModel
 
 @Immutable
 data class NotificationsViewState(

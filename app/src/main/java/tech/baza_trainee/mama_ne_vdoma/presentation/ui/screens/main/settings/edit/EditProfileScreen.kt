@@ -24,7 +24,6 @@ import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -85,7 +84,6 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_96_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.showToast
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditProfileScreen(
     screenState: EditProfileViewState,
@@ -104,6 +102,7 @@ fun EditProfileScreen(
 
     when (uiState) {
         UpdateDetailsUiState.Idle -> Unit
+
         is UpdateDetailsUiState.OnError -> {
             context.showToast(uiState.error)
             handleEvent(EditProfileEvent.ResetUiState)
@@ -114,7 +113,10 @@ fun EditProfileScreen(
             handleEvent(EditProfileEvent.ResetUiState)
         }
 
-        UpdateDetailsUiState.OnSaved -> showSuccessDialog = true
+        UpdateDetailsUiState.OnSaved -> {
+            showSuccessDialog = true
+            handleEvent(EditProfileEvent.ResetUiState)
+        }
         UpdateDetailsUiState.AddressNotChecked -> {
             showAddressDialog = true
             dialogTitle = stringResource(id = R.string.address_not_checked_info)
@@ -445,33 +447,43 @@ fun EditProfileScreen(
 
         if (editUserSchedule) {
             ParentScheduleEditDialog(
-                schedule = screenState.schedule,
-                note = screenState.note,
-                onSave = { schedule, note ->
-                    handleEvent(
-                        EditProfileEvent.SaveParentInfo(
-                            schedule,
-                            note
-                        )
-                    )
+                schedule = screenState.tempSchedule,
+                note = screenState.tempNote,
+                onEditNote = { note ->
+                    handleEvent(EditProfileEvent.EditParentNote(note))
                 },
-                onDismissRequest = { editUserSchedule = false }
+                onEditSchedule = { day, period ->
+                    handleEvent(EditProfileEvent.EditParentSchedule(day, period))
+                },
+                onSave = { handleEvent(EditProfileEvent.SaveParentInfo) },
+                onDismissRequest = {
+                    editUserSchedule = false
+                    handleEvent(EditProfileEvent.ResetParentInfo)
+                }
             )
         }
 
         if (editChildSchedule) {
+            handleEvent(EditProfileEvent.SelectChildForEdit(selectedChild))
             ChildScheduleEditDialog(
                 selectedChild = selectedChild,
                 children = screenState.children,
-                onSave = { schedules, notes ->
-                    handleEvent(
-                        EditProfileEvent.SaveChildren(
-                            schedules,
-                            notes
-                        )
-                    )
+                notes = screenState.childrenTempNotes,
+                schedules = screenState.childrenTempSchedules,
+                onSelectChild = { selected ->
+                    handleEvent(EditProfileEvent.SelectChildForEdit(selected))
                 },
-                onDismissRequest = { editChildSchedule = false }
+                onEditNote = { note ->
+                    handleEvent(EditProfileEvent.EditChildNote(note))
+                },
+                onEditSchedule = { day, period ->
+                    handleEvent(EditProfileEvent.EditChildSchedule(day, period))
+                },
+                onSave = { handleEvent(EditProfileEvent.SaveChildren) },
+                onDismissRequest = {
+                    editChildSchedule = false
+                    handleEvent(EditProfileEvent.ResetChildrenInfo)
+                }
             )
         }
 

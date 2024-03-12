@@ -2,6 +2,7 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.ed
 
 import android.graphics.Bitmap
 import android.net.Uri
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -11,13 +12,15 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import tech.baza_trainee.mama_ne_vdoma.domain.model.ChildEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.DayPeriod
+import tech.baza_trainee.mama_ne_vdoma.domain.model.Period
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UserInfoEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatastoreManager
 import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.LocationInteractor
 import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.NetworkEventsListener
 import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.UserProfileInteractor
+import tech.baza_trainee.mama_ne_vdoma.presentation.mapper.toUiModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.model.ChildUiModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.PageNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.Graphs
@@ -28,6 +31,8 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.image_crop
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.common.EditProfileCommunicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.BitmapHelper
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.toStateMap
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.updateSchedule
 import java.time.DayOfWeek
 
 class EditProfileViewModel(
@@ -64,7 +69,7 @@ class EditProfileViewModel(
         _viewState.update {
             it.copy(
                 userAvatar = preferencesDatastoreManager.avatarUri,
-                countries = userProfileInteractor.getCountryCodes()
+                countries = userProfileInteractor.getCountryCodes(),
             )
         }
 
@@ -91,11 +96,16 @@ class EditProfileViewModel(
             is EditProfileEvent.DeleteChild -> deleteChild(event.id)
             EditProfileEvent.ResetUiState -> _uiState.update { UpdateDetailsUiState.Idle }
             EditProfileEvent.OnBack -> navigator.goToPrevious()
+
             EditProfileEvent.SaveInfo ->
                 saveChanges { _uiState.update { UpdateDetailsUiState.OnSaved } }
+
             EditProfileEvent.GetLocationFromAddress -> getLocationFromAddress()
             EditProfileEvent.OnDeletePhoto -> deleteUserAvatar()
-            EditProfileEvent.OnEditPhoto -> navigator.navigate(SettingsScreenRoutes.EditProfilePhoto)
+
+            EditProfileEvent.OnEditPhoto ->
+                navigator.navigate(SettingsScreenRoutes.EditProfilePhoto)
+
             is EditProfileEvent.OnMapClick -> setLocation(event.location)
             EditProfileEvent.RequestUserLocation -> requestCurrentLocation()
             is EditProfileEvent.SetCode -> setCode(event.code, event.country)
@@ -103,17 +113,37 @@ class EditProfileViewModel(
             is EditProfileEvent.UpdateUserAddress -> updateUserAddress(event.address)
             is EditProfileEvent.ValidatePhone -> validatePhone(event.phone)
             is EditProfileEvent.ValidateUserName -> validateUserName(event.name)
-            is EditProfileEvent.SaveParentInfo -> {
-                updateParentSchedule(event.schedule)
-                updateParentNote(event.note)
-            }
-            is EditProfileEvent.SaveChildren ->  saveChildrenInfo(event.schedules, event.notes)
 
+            is EditProfileEvent.SaveParentInfo -> {
+                _viewState.update {
+                    it.copy(
+                        note = it.tempNote,
+                        schedule = it.tempSchedule
+                    )
+                }
+            }
+
+            is EditProfileEvent.SaveChildren ->  saveChildrenInfo()
             EditProfileEvent.AddChild -> navigator.navigate(SettingsScreenRoutes.ChildInfo)
             EditProfileEvent.OnSaveAndBack -> saveChanges { navigator.goToPrevious() }
+
             EditProfileEvent.OnSaveAndAddChild ->
                 saveChanges { navigator.navigate(SettingsScreenRoutes.ChildInfo) }
+
             EditProfileEvent.GoToMain -> navigator.navigate(MainScreenRoutes.Main)
+            is EditProfileEvent.EditChildNote -> updateChildNote(event.note)
+            is EditProfileEvent.EditChildSchedule -> updateChildSchedule(event.day, event.period)
+            is EditProfileEvent.EditParentNote -> updateParentNote(event.note)
+            is EditProfileEvent.EditParentSchedule -> updateParentSchedule(event.day, event.period)
+
+            is EditProfileEvent.SelectChildForEdit -> {
+                _viewState.update {
+                    it.copy(selectedChild = event.child)
+                }
+            }
+
+            EditProfileEvent.ResetParentInfo -> resetTempParentData()
+            EditProfileEvent.ResetChildrenInfo -> resetTempChildrenData()
         }
     }
 
@@ -152,6 +182,8 @@ class EditProfileViewModel(
                     profileCommunicator.setProfileChanged(true)
                 }
             }
+
+            resetTempParentData()
         } else _uiState.update { UpdateDetailsUiState.AddressNotChecked }
     }
 
@@ -163,24 +195,47 @@ class EditProfileViewModel(
         }
     }
 
-    private fun updateParentSchedule(schedule: SnapshotStateMap<DayOfWeek, DayPeriod>) {
+    private fun updateParentSchedule(day: DayOfWeek, period: Period) {
         _viewState.update {
-            it.copy(schedule = schedule)
+            it.copy(tempSchedule = it.tempSchedule.updateSchedule(day, period))
         }
     }
 
     private fun updateParentNote(value: String) {
         _viewState.update {
-            it.copy(note = value)
+            it.copy(tempNote = value)
         }
     }
 
-    private fun saveChildrenInfo(schedules: Map<Int, SnapshotStateMap<DayOfWeek, DayPeriod>>, notes: Map<Int, String>) {
-        val children = mutableListOf<ChildEntity>()
-        _viewState.value.children.forEachIndexed { index, childEntity ->
-            val newChild = childEntity.copy(
-                schedule = schedules[index] ?: childEntity.schedule,
-                note = notes[index] ?: childEntity.note
+    private fun updateChildSchedule(day: DayOfWeek, period: Period) {
+        _viewState.update {
+            it.copy(
+                childrenTempSchedules = it.childrenTempSchedules.toMutableMap().apply {
+                    put(
+                        it.selectedChild,
+                        it.childrenTempSchedules[it.selectedChild].orEmpty().updateSchedule(day, period)
+                    )
+                }.toStateMap()
+            )
+        }
+    }
+
+    private fun updateChildNote(value: String) {
+        _viewState.update {
+            it.copy(
+                childrenTempNotes = it.childrenTempNotes.toMutableMap().apply {
+                    put(it.selectedChild, value)
+                }.toStateMap()
+            )
+        }
+    }
+
+    private fun saveChildrenInfo() {
+        val children = mutableListOf<ChildUiModel>()
+        _viewState.value.children.forEachIndexed { index, child ->
+            val newChild = child.copy(
+                schedule = _viewState.value.childrenTempSchedules[index] ?: child.schedule,
+                note = _viewState.value.childrenTempNotes[index] ?: child.note
             )
             children.add(index, newChild)
         }
@@ -188,6 +243,8 @@ class EditProfileViewModel(
         _viewState.update {
             it.copy(children = children)
         }
+
+        resetTempChildrenData()
     }
 
     private fun deleteUser() {
@@ -198,9 +255,11 @@ class EditProfileViewModel(
 
     private fun getChildren() {
         getChildren { entity ->
-            _viewState.update {
-                it.copy(children = entity)
+            _viewState.update { state ->
+                state.copy(children = entity.map {  it.toUiModel() })
             }
+
+            resetTempChildrenData()
         }
     }
 
@@ -213,9 +272,14 @@ class EditProfileViewModel(
                     code = entity.countryCode,
                     phone = entity.phone,
                     phoneValid = if (entity.phone.isNotEmpty()) ValidField.VALID else ValidField.VALID,
-                    schedule = entity.schedule
+                    schedule = entity.schedule.toStateMap(),
+                    tempSchedule = entity.schedule.toStateMap(),
+                    note = entity.note,
+                    tempNote = entity.note
                 )
             }
+
+            resetTempParentData()
 
             if (entity.location.coordinates.isNotEmpty()) {
                 val location = LatLng(
@@ -243,6 +307,32 @@ class EditProfileViewModel(
         }
     }
 
+    private fun resetTempParentData() {
+        _viewState.update {
+            it.copy(
+                tempSchedule = it.schedule,
+                tempNote = it.note
+            )
+        }
+    }
+
+    private fun resetTempChildrenData() {
+        _viewState.update {
+            it.copy(
+                childrenTempNotes = mutableStateMapOf<Int, String>().apply {
+                    it.children.forEachIndexed { index, child ->
+                        put(index, child.note)
+                    }
+                },
+                childrenTempSchedules = mutableStateMapOf<Int, SnapshotStateMap<DayOfWeek, DayPeriod>>().apply {
+                    it.children.forEachIndexed { index, child ->
+                        put(index, child.schedule)
+                    }
+                }
+            )
+        }
+    }
+
     private fun getAddressFromLocation(latLng: LatLng) {
         getAddressFromLocation(latLng) { address ->
             preferencesDatastoreManager.address = address
@@ -266,6 +356,8 @@ class EditProfileViewModel(
         _viewState.update {
             it.copy(children = children)
         }
+
+        resetTempChildrenData()
     }
 
     private fun getLocationFromAddress() {

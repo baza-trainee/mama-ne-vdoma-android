@@ -1,9 +1,8 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.edit
 
 import android.net.Uri
-import androidx.compose.runtime.snapshots.SnapshotStateMap
 import com.google.android.gms.maps.model.LatLng
-import tech.baza_trainee.mama_ne_vdoma.domain.model.DayPeriod
+import tech.baza_trainee.mama_ne_vdoma.domain.model.Period
 import java.time.DayOfWeek
 
 sealed interface EditProfileEvent {
@@ -24,8 +23,17 @@ sealed interface EditProfileEvent {
     data object DeleteUser: EditProfileEvent
     data object AddChild: EditProfileEvent
     data object OnSaveAndAddChild: EditProfileEvent
-    data class SaveParentInfo(val schedule: SnapshotStateMap<DayOfWeek, DayPeriod>, val note: String): EditProfileEvent
+    data object SaveParentInfo : EditProfileEvent
+    data object ResetParentInfo : EditProfileEvent
     data class DeleteChild(val id: String): EditProfileEvent
-    data class SaveChildren(val schedules: Map<Int, SnapshotStateMap<DayOfWeek, DayPeriod>>, val notes: Map<Int, String>): EditProfileEvent
+    data object SaveChildren : EditProfileEvent
+    data object ResetChildrenInfo : EditProfileEvent
     data object GoToMain: EditProfileEvent
+
+    data class EditParentSchedule(val day: DayOfWeek, val period: Period): EditProfileEvent
+    data class EditParentNote(val note: String): EditProfileEvent
+
+    data class EditChildSchedule(val day: DayOfWeek, val period: Period): EditProfileEvent
+    data class EditChildNote(val note: String): EditProfileEvent
+    data class SelectChildForEdit(val child: Int): EditProfileEvent
 }

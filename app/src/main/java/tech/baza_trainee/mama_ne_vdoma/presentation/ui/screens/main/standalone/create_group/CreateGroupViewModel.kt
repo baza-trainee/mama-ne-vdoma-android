@@ -12,8 +12,6 @@ import kotlinx.coroutines.launch
 import tech.baza_trainee.mama_ne_vdoma.domain.model.ChildEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.Period
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UserProfileEntity
-import tech.baza_trainee.mama_ne_vdoma.domain.model.getDefaultSchedule
-import tech.baza_trainee.mama_ne_vdoma.domain.model.updateSchedule
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatastoreManager
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserAuthRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
@@ -37,9 +35,12 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.networkExecutor
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.validateName
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.getDefaultSchedule
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onError
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onLoading
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onSuccess
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.toStateMap
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.updateSchedule
 import java.time.DayOfWeek
 
 class CreateGroupViewModel(
@@ -278,7 +279,7 @@ class CreateGroupViewModel(
                 _viewState.update { state ->
                     state.copy(
                         groupDetails = state.groupDetails.copy(
-                            schedule = child?.schedule ?: getDefaultSchedule(),
+                            schedule = child?.schedule?.toStateMap() ?: getDefaultSchedule(),
                             minAge = child?.age.orEmpty(),
                             minAgeValid = ValidField.VALID,
                             maxAge = child?.age.orEmpty(),

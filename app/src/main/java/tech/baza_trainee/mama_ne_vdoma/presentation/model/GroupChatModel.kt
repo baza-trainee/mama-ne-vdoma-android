@@ -1,4 +1,4 @@
-package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model
+package tech.baza_trainee.mama_ne_vdoma.presentation.model
 
 import android.net.Uri
 import tech.baza_trainee.mama_ne_vdoma.domain.socket.ChatMessage

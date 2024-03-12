@@ -26,7 +26,7 @@ import androidx.compose.ui.text.font.FontWeight
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import tech.baza_trainee.mama_ne_vdoma.R
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.GroupChatModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.model.GroupChatModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_11_sp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_12_sp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_14_sp

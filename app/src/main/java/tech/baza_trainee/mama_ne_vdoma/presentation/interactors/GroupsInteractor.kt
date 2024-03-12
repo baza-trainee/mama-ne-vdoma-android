@@ -2,7 +2,6 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.interactors
 
 import android.graphics.Bitmap
 import android.net.Uri
-import androidx.compose.runtime.snapshots.SnapshotStateMap
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
@@ -19,14 +18,15 @@ import tech.baza_trainee.mama_ne_vdoma.domain.repository.FilesRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.GroupsRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.LocationRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.GroupUiModel
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.MemberUiModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.model.GroupUiModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.model.MemberUiModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestResult
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.networkExecutor
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onError
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onLoading
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onSuccess
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.toStateMap
 import java.time.DayOfWeek
 
 interface GroupsInteractor {
@@ -64,7 +64,7 @@ interface GroupsInteractor {
         description: String,
         ages: String,
         avatar: String,
-        schedule: SnapshotStateMap<DayOfWeek, DayPeriod>,
+        schedule: Map<DayOfWeek, DayPeriod>,
         onSuccess: () -> Unit
     )
 
@@ -226,7 +226,7 @@ class GroupsInteractorImpl(
         description: String,
         ages: String,
         avatar: String,
-        schedule: SnapshotStateMap<DayOfWeek, DayPeriod>,
+        schedule: Map<DayOfWeek, DayPeriod>,
         onSuccess: () -> Unit
     ) {
         coroutineScope.networkExecutor {
@@ -308,7 +308,7 @@ class GroupsInteractorImpl(
             name = entity.name,
             description = entity.description,
             ages = entity.ages,
-            schedule = entity.schedule,
+            schedule = entity.schedule.toStateMap(),
             location = LatLng(
                 entity.location.coordinates[1],
                 entity.location.coordinates[0]

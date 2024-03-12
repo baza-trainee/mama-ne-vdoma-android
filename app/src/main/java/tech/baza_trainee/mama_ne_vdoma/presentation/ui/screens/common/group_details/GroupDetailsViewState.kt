@@ -6,10 +6,10 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import com.google.android.gms.maps.model.LatLng
 import tech.baza_trainee.mama_ne_vdoma.domain.model.DayPeriod
-import tech.baza_trainee.mama_ne_vdoma.domain.model.getDefaultSchedule
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.MemberUiModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.model.MemberUiModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.BitmapHelper
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.getDefaultSchedule
 import java.time.DayOfWeek
 
 @Immutable

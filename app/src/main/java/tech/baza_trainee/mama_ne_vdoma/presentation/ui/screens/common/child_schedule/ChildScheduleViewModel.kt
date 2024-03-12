@@ -7,8 +7,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import tech.baza_trainee.mama_ne_vdoma.domain.model.Period
-import tech.baza_trainee.mama_ne_vdoma.domain.model.getDefaultSchedule
-import tech.baza_trainee.mama_ne_vdoma.domain.model.updateSchedule
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatastoreManager
 import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.NetworkEventsListener
 import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.UserProfileInteractor
@@ -16,6 +14,9 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.schedule.S
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.schedule.ScheduleViewState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.getDefaultSchedule
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.toStateMap
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.updateSchedule
 import java.time.DayOfWeek
 
 class ChildScheduleViewModel(
@@ -87,7 +88,7 @@ class ChildScheduleViewModel(
         getChildById(childId) { entity ->
             _viewState.update {
                 it.copy(
-                    schedule = entity?.schedule ?: getDefaultSchedule()
+                    schedule = entity?.schedule?.toStateMap() ?: getDefaultSchedule()
                 )
             }
         }

@@ -1,8 +1,7 @@
-package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model
+package tech.baza_trainee.mama_ne_vdoma.presentation.model
 
 import android.net.Uri
 import androidx.compose.runtime.Immutable
-import tech.baza_trainee.mama_ne_vdoma.domain.model.ChildEntity
 
 @Immutable
 data class JoinRequestUiModel(
@@ -13,5 +12,5 @@ data class JoinRequestUiModel(
     val parentPhone: String = "",
     val parentAddress: String = "",
     val parentAvatar: Uri = Uri.EMPTY,
-    val child: ChildEntity = ChildEntity()
+    val child: ChildUiModel = ChildUiModel()
 )

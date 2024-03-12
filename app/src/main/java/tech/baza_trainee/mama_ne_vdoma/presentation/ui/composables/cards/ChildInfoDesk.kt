@@ -24,9 +24,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import tech.baza_trainee.mama_ne_vdoma.R
-import tech.baza_trainee.mama_ne_vdoma.domain.model.ChildEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.DayPeriod
 import tech.baza_trainee.mama_ne_vdoma.domain.model.Gender
+import tech.baza_trainee.mama_ne_vdoma.presentation.model.ChildUiModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_14_sp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_20_sp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
@@ -38,7 +38,7 @@ import java.util.UUID
 @Composable
 fun ChildInfoDesk(
     modifier: Modifier = Modifier,
-    child: ChildEntity,
+    child: ChildUiModel,
     canEdit: Boolean = true,
     onEdit: (String) -> Unit = {},
     canDelete: Boolean = true,
@@ -112,7 +112,7 @@ fun ChildInfoDesk(
 @Preview
 fun ChildInfoDeskPreview() {
     ChildInfoDesk(
-        child = ChildEntity(
+        child = ChildUiModel(
             childId = UUID.randomUUID().toString(),
             name = "Іванко",
             age = "5",

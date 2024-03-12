@@ -5,8 +5,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import tech.baza_trainee.mama_ne_vdoma.domain.model.ChildEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatastoreManager
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
+import tech.baza_trainee.mama_ne_vdoma.presentation.mapper.toUiModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.networkExecutor
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onError
@@ -34,14 +36,14 @@ class ChildrenInfoViewModel(
     }
 
     private fun getChildren() {
-        networkExecutor {
+        networkExecutor<List<ChildEntity>> {
             execute {
                 userProfileRepository.getChildren()
             }
             onSuccess { entity ->
-                _childrenInfoViewState.update {
-                    it.copy(
-                        children = entity
+                _childrenInfoViewState.update { state ->
+                    state.copy(
+                        children = entity.map { it.toUiModel() }
                     )
                 }
             }

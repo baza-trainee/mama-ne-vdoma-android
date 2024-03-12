@@ -1,0 +1,113 @@
+package tech.baza_trainee.mama_ne_vdoma.presentation.utils
+
+import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.snapshots.SnapshotStateMap
+import tech.baza_trainee.mama_ne_vdoma.domain.model.DayPeriod
+import tech.baza_trainee.mama_ne_vdoma.domain.model.Period
+import java.time.DayOfWeek
+
+fun getDefaultSchedule() = mutableStateMapOf<DayOfWeek, DayPeriod>().also { map ->
+    DayOfWeek.entries.forEach {
+        map[it] = DayPeriod()
+    }
+}
+
+fun <K, V> Map<K, V>.toStateMap(): SnapshotStateMap<K, V> =
+    mutableStateMapOf<K, V>().apply {
+        for ((key, value) in this@toStateMap) {
+            put(key, value)
+        }
+    }
+
+
+
+fun Map<DayOfWeek, DayPeriod>.updateSchedule(dayOfWeek: DayOfWeek, dayPeriod: Period): SnapshotStateMap<DayOfWeek, DayPeriod> {
+    toMutableMap().apply {
+        val map =  when (dayPeriod) {
+            Period.WHOLE_DAY -> {
+                apply {
+                    this[dayOfWeek] = this[dayOfWeek]?.copy(
+                        wholeDay = this[dayOfWeek]?.wholeDay?.not() ?: false
+                    ) ?: DayPeriod()
+                    if (this[dayOfWeek]?.wholeDay == true) {
+                        this[dayOfWeek] = this[dayOfWeek]?.copy(
+                            morning = false,
+                            noon = false,
+                            afternoon = false
+                        ) ?: DayPeriod()
+                    }
+                }
+            }
+
+            Period.MORNING -> {
+                apply {
+                    this[dayOfWeek] = this[dayOfWeek]?.copy(
+                        morning = this[dayOfWeek]?.morning?.not() ?: false
+                    ) ?: DayPeriod()
+                    if (this[dayOfWeek]?.morning == true &&
+                        this[dayOfWeek]?.noon == true &&
+                        this[dayOfWeek]?.afternoon == true
+                    ) {
+                        this[dayOfWeek] = this[dayOfWeek]?.copy(
+                            wholeDay = true,
+                            morning = false,
+                            noon = false,
+                            afternoon = false
+                        ) ?: DayPeriod()
+                    } else if (this[dayOfWeek]?.morning == true && this[dayOfWeek]?.wholeDay == true) {
+                        this[dayOfWeek] = this[dayOfWeek]?.copy(
+                            wholeDay = false
+                        ) ?: DayPeriod()
+                    }
+                }
+            }
+
+            Period.NOON -> {
+                apply {
+                    this[dayOfWeek] = this[dayOfWeek]?.copy(
+                        noon = this[dayOfWeek]?.noon?.not() ?: false
+                    ) ?: DayPeriod()
+                    if (this[dayOfWeek]?.morning == true &&
+                        this[dayOfWeek]?.noon == true &&
+                        this[dayOfWeek]?.afternoon == true
+                    ) {
+                        this[dayOfWeek] = this[dayOfWeek]?.copy(
+                            wholeDay = true,
+                            morning = false,
+                            noon = false,
+                            afternoon = false
+                        ) ?: DayPeriod()
+                    } else if (this[dayOfWeek]?.noon == true && this[dayOfWeek]?.wholeDay == true) {
+                        this[dayOfWeek] = this[dayOfWeek]?.copy(
+                            wholeDay = false
+                        ) ?: DayPeriod()
+                    }
+                }
+            }
+
+            Period.AFTERNOON -> {
+                apply {
+                    this[dayOfWeek] = this[dayOfWeek]?.copy(
+                        afternoon = this[dayOfWeek]?.afternoon?.not() ?: false
+                    ) ?: DayPeriod()
+                    if (this[dayOfWeek]?.morning == true &&
+                        this[dayOfWeek]?.noon == true &&
+                        this[dayOfWeek]?.afternoon == true
+                    ) {
+                        this[dayOfWeek] = this[dayOfWeek]?.copy(
+                            wholeDay = true,
+                            morning = false,
+                            noon = false,
+                            afternoon = false
+                        ) ?: DayPeriod()
+                    } else if (this[dayOfWeek]?.afternoon == true && this[dayOfWeek]?.wholeDay == true) {
+                        this[dayOfWeek] = this[dayOfWeek]?.copy(
+                            wholeDay = false
+                        ) ?: DayPeriod()
+                    }
+                }
+            }
+        }
+        return mutableStateMapOf<DayOfWeek, DayPeriod>().apply { putAll(map) }
+    }
+}

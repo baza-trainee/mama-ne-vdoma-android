@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -34,12 +33,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import tech.baza_trainee.mama_ne_vdoma.R
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.ParentInSearchUiModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.model.ParentInSearchUiModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.SlateGray
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_14_sp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_16_sp

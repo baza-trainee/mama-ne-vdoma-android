@@ -58,6 +58,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import kotlinx.coroutines.launch
 import tech.baza_trainee.mama_ne_vdoma.R
+import tech.baza_trainee.mama_ne_vdoma.presentation.model.MemberUiModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ButtonText
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.GroupAvatarWithCameraAndGallery
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ScheduleGroup
@@ -67,7 +68,6 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.functions.inf
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.text_fields.OutlinedTextFieldWithError
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.UpdateDetailsUiState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.group_details.dialogs.KickUserDialog
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.MemberUiModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.GrayText
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_12_sp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_14_sp

@@ -50,6 +50,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.LocationInteract
 import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.LocationInteractorImpl
 import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.UserProfileInteractor
 import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.UserProfileInteractorImpl
+import tech.baza_trainee.mama_ne_vdoma.presentation.model.GroupUiModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.PageNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.PageNavigatorImpl
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
@@ -74,7 +75,6 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.view_
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.host.HostViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.main.main.MainViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.main.notifications.NotificationsViewModel
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.GroupUiModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.search.search_request.SearchRequestViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.search.search_results.SearchResultsViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.change_credentials.EditCredentialsViewModel

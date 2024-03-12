@@ -21,11 +21,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateMapOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,15 +28,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.domain.model.DayPeriod
-import tech.baza_trainee.mama_ne_vdoma.domain.model.getDefaultSchedule
-import tech.baza_trainee.mama_ne_vdoma.domain.model.updateSchedule
+import tech.baza_trainee.mama_ne_vdoma.domain.model.Period
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ButtonText
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ScheduleGroup
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.text_fields.OutlinedTextFieldWithError
@@ -53,6 +45,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_16_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_1_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_48_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_8_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.getDefaultSchedule
 import java.time.DayOfWeek
 
 @Composable
@@ -60,19 +53,11 @@ import java.time.DayOfWeek
 fun ParentScheduleEditDialog(
     schedule: SnapshotStateMap<DayOfWeek, DayPeriod> = getDefaultSchedule(),
     note: String = "Note",
-    onSave: (SnapshotStateMap<DayOfWeek, DayPeriod>, String) -> Unit = {_,_->},
+    onEditNote: (String) -> Unit ={},
+    onEditSchedule: (DayOfWeek, Period) -> Unit = {_,_->},
+    onSave: () -> Unit = {},
     onDismissRequest: () -> Unit = {}
 ) {
-    var tempNote by rememberSaveable { mutableStateOf(note) }
-    var tempSchedule by rememberSaveable {
-        val map = mutableMapOf<DayOfWeek, DayPeriod>().also { map ->
-        DayOfWeek.entries.forEach {
-            map[it] = (schedule[it] ?: DayPeriod()).copy()
-        }
-    }
-        mutableStateOf(map.toMap())
-    }
-
     Dialog(
         onDismissRequest = onDismissRequest
     ) {
@@ -128,23 +113,21 @@ fun ParentScheduleEditDialog(
             ) {
                 ScheduleGroup(
                     modifier = Modifier.fillMaxWidth(),
-                    schedule = tempSchedule,
-                    onValueChange = { day, period ->
-                        tempSchedule = tempSchedule.updateSchedule(day, period)
-                    }
+                    schedule = schedule,
+                    onValueChange = { day, period -> onEditSchedule(day, period) }
                 )
 
                 OutlinedTextFieldWithError(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = size_8_dp),
-                    value = tempNote,
+                    value = note,
                     label = stringResource(id = R.string.note),
                     hint = stringResource(id = R.string.note_hint),
-                    onValueChange = { tempNote = it },
+                    onValueChange = { onEditNote(it) },
                     minLines = 3,
                     maxLines = 3,
-                    isError = tempNote.length > 1000
+                    isError = note.length > 1000
                 )
 
                 Text(
@@ -174,8 +157,7 @@ fun ParentScheduleEditDialog(
                         .padding(horizontal = size_8_dp)
                         .weight(0.6f),
                     onClick = {
-                        val map = mutableStateMapOf<DayOfWeek, DayPeriod>().apply { putAll(tempSchedule) }
-                        onSave(map, tempNote)
+                        onSave()
                         onDismissRequest()
                     }
                 ) {

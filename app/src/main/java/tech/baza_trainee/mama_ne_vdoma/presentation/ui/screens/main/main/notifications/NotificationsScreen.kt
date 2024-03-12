@@ -41,6 +41,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.domain.model.MessageType
+import tech.baza_trainee.mama_ne_vdoma.presentation.model.JoinRequestUiModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.model.NotificationsUiModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.cards.AdminJoinRequestCard
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.cards.MyRequestCard
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.LoadingIndicator
@@ -53,8 +55,6 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.main.notific
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.main.notifications.items.JoinedItem
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.main.notifications.items.KickedItem
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.main.notifications.items.RejectedItem
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.JoinRequestUiModel
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.NotificationsUiModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_14_sp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_16_sp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily

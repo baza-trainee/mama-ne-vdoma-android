@@ -1,7 +1,6 @@
 package tech.baza_trainee.mama_ne_vdoma.domain.model
 
 import android.os.Parcelable
-import androidx.compose.runtime.snapshots.SnapshotStateMap
 import kotlinx.parcelize.Parcelize
 import kotlinx.parcelize.RawValue
 import java.time.DayOfWeek
@@ -14,5 +13,5 @@ data class ChildEntity(
     val note: String = "",
     val parentId: String = "",
     val childId: String = "",
-    val schedule: @RawValue SnapshotStateMap<DayOfWeek, DayPeriod> = getDefaultSchedule()
+    val schedule: @RawValue Map<DayOfWeek, DayPeriod> = getDefaultSchedule()
 ): Parcelable

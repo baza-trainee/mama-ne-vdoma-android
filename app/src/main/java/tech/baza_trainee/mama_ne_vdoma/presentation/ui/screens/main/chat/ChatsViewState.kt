@@ -3,7 +3,7 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.chat
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.snapshots.SnapshotStateMap
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.GroupChatModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.model.GroupChatModel
 
 @Immutable
 data class ChatsViewState(

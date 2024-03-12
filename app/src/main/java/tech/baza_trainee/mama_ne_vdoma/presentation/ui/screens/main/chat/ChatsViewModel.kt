@@ -17,9 +17,9 @@ import tech.baza_trainee.mama_ne_vdoma.domain.repository.GroupsRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.socket.SocketManager
 import tech.baza_trainee.mama_ne_vdoma.domain.socket.SocketManager.Companion.ERROR_TAG
+import tech.baza_trainee.mama_ne_vdoma.presentation.model.GroupChatModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.model.ParentInChatModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.PageNavigator
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.GroupChatModel
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.ParentInChatModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestResult
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute

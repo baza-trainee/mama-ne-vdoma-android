@@ -9,17 +9,16 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import tech.baza_trainee.mama_ne_vdoma.domain.model.Period
-import tech.baza_trainee.mama_ne_vdoma.domain.model.updateSchedule
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatastoreManager
 import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.GroupsInteractor
 import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.NetworkEventsListener
+import tech.baza_trainee.mama_ne_vdoma.presentation.model.GroupUiModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.PageNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.GroupsScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.MainScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.UpdateDetailsUiState
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.group_details.GroupDetailsEvent
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.image_crop.CropImageCommunicator
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.GroupUiModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.BitmapHelper
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.Communicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.MAX_AGE
@@ -27,6 +26,8 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.MIN_AGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.NAME_LENGTH
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.validateName
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.toStateMap
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.updateSchedule
 import java.time.DayOfWeek
 
 class UpdateGroupViewModel(
@@ -229,7 +230,7 @@ class UpdateGroupViewModel(
         _viewState.update {
             it.copy(
                 groupDetails = it.groupDetails.copy(
-                    schedule = currentSchedule
+                    schedule = currentSchedule.toStateMap()
                 )
             )
         }

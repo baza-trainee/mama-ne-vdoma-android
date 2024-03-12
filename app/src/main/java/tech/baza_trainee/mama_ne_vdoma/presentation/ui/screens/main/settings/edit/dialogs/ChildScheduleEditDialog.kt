@@ -34,7 +34,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -51,9 +51,9 @@ import androidx.compose.ui.window.Dialog
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import tech.baza_trainee.mama_ne_vdoma.R
-import tech.baza_trainee.mama_ne_vdoma.domain.model.ChildEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.DayPeriod
-import tech.baza_trainee.mama_ne_vdoma.domain.model.updateSchedule
+import tech.baza_trainee.mama_ne_vdoma.domain.model.Period
+import tech.baza_trainee.mama_ne_vdoma.presentation.model.ChildUiModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ButtonText
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ScheduleGroup
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.text_fields.OutlinedTextFieldWithError
@@ -74,28 +74,15 @@ import java.time.DayOfWeek
 @Preview
 fun ChildScheduleEditDialog(
     selectedChild: Int = 0,
-    children: List<ChildEntity> = emptyList(),
-    onSave: (Map<Int, SnapshotStateMap<DayOfWeek, DayPeriod>>, Map<Int, String>) -> Unit = {_,_ ->},
+    children: List<ChildUiModel> = emptyList(),
+    notes: SnapshotStateMap<Int, String> = mutableStateMapOf(),
+    schedules: SnapshotStateMap<Int, SnapshotStateMap<DayOfWeek, DayPeriod>> = mutableStateMapOf(),
+    onSelectChild: (Int) -> Unit = {},
+    onEditNote: (String) -> Unit ={},
+    onEditSchedule: (DayOfWeek, Period) -> Unit = {_,_->},
+    onSave: () -> Unit = {},
     onDismissRequest: () -> Unit = {}
 ) {
-    var currentChild by rememberSaveable { mutableIntStateOf(selectedChild) }
-    var schedules by rememberSaveable {
-        val map = mutableMapOf<Int, SnapshotStateMap<DayOfWeek, DayPeriod>>().apply {
-            children.forEachIndexed { index, childEntity ->
-                put(index, childEntity.schedule)
-            }
-        }
-        mutableStateOf(map.toMap())
-    }
-    var notes by rememberSaveable {
-        val map = mutableMapOf<Int, String>().apply {
-            children.forEachIndexed { index, childEntity ->
-                put(index, childEntity.note)
-            }
-        }
-        mutableStateOf(map.toMap())
-    }
-
     Dialog(
         onDismissRequest = onDismissRequest
     ) {
@@ -180,7 +167,8 @@ fun ChildScheduleEditDialog(
                                             )
                                         )
                                         .background(
-                                            color = if (currentChild == 0) Purple80 else MaterialTheme.colorScheme.background,
+                                            color = if (selectedChild == 0) Purple80
+                                            else MaterialTheme.colorScheme.background,
                                             shape = RoundedCornerShape(
                                                 topStart = size_100_dp,
                                                 bottomStart = size_100_dp
@@ -190,7 +178,7 @@ fun ChildScheduleEditDialog(
                                         .clickable(
                                             indication = null,
                                             interactionSource = remember { MutableInteractionSource() }
-                                        ) { currentChild = 0 },
+                                        ) { onSelectChild(0) },
                                     contentAlignment = Alignment.Center
                                 ) {
                                     Text(
@@ -215,7 +203,8 @@ fun ChildScheduleEditDialog(
                                             )
                                         )
                                         .background(
-                                            color = if (currentChild == 1) Purple80 else MaterialTheme.colorScheme.background,
+                                            color = if (selectedChild == 1) Purple80
+                                            else MaterialTheme.colorScheme.background,
                                             shape = RoundedCornerShape(
                                                 topEnd = size_100_dp,
                                                 bottomEnd = size_100_dp
@@ -225,7 +214,7 @@ fun ChildScheduleEditDialog(
                                         .clickable(
                                             indication = null,
                                             interactionSource = remember { MutableInteractionSource() }
-                                        ) { currentChild = 1 },
+                                        ) { onSelectChild(1) },
                                     contentAlignment = Alignment.Center
                                 ) {
                                     Text(
@@ -291,7 +280,7 @@ fun ChildScheduleEditDialog(
                                         DropdownMenuItem(
                                             onClick = {
                                                 searchRequest = child.name
-                                                currentChild = children.indexOf(child)
+                                                onSelectChild(children.indexOf(child))
                                                 expanded = false
                                             },
                                             text = {
@@ -307,14 +296,9 @@ fun ChildScheduleEditDialog(
 
                 ScheduleGroup(
                     modifier = Modifier.fillMaxWidth(),
-                    schedule = schedules[currentChild].orEmpty(),
+                    schedule = schedules[selectedChild].orEmpty(),
                     onValueChange = { day, period ->
-                        schedules = schedules.toMutableMap().apply {
-                            put(
-                                currentChild,
-                                schedules[currentChild].orEmpty().updateSchedule(day, period)
-                            )
-                        }.toMap()
+                        onEditSchedule(day, period)
                     }
                 )
 
@@ -322,17 +306,13 @@ fun ChildScheduleEditDialog(
 
                 OutlinedTextFieldWithError(
                     modifier = Modifier.fillMaxWidth(),
-                    value = notes[currentChild].orEmpty(),
+                    value = notes[selectedChild].orEmpty(),
                     label = stringResource(id = R.string.note),
                     hint = stringResource(id = R.string.note_hint),
-                    onValueChange = {
-                        notes = notes.toMutableMap().apply {
-                            put(currentChild, it)
-                        }.toMap()
-                    },
+                    onValueChange = { onEditNote(it) },
                     minLines = 3,
                     maxLines = 3,
-                    isError = notes[currentChild].orEmpty().length > 1000
+                    isError = notes[selectedChild].orEmpty().length > 1000
                 )
 
                 Text(
@@ -362,7 +342,7 @@ fun ChildScheduleEditDialog(
                         .padding(horizontal = size_8_dp)
                         .weight(0.6f),
                     onClick = {
-                        onSave(schedules, notes)
+                        onSave()
                         onDismissRequest()
                     }
                 ) {

@@ -1,6 +1,5 @@
 package tech.baza_trainee.mama_ne_vdoma.domain.model
 
-import androidx.compose.runtime.snapshots.SnapshotStateMap
 import java.time.DayOfWeek
 
 data class UserInfoEntity(
@@ -9,7 +8,7 @@ data class UserInfoEntity(
     val phone: String = "",
     val sendingEmails: Boolean = true,
     val avatar: String? = null,
-    val schedule: SnapshotStateMap<DayOfWeek, DayPeriod> = getDefaultSchedule(),
+    val schedule: Map<DayOfWeek, DayPeriod> = getDefaultSchedule(),
     val note: String = "",
     val deviceId: String? = null
 )

@@ -1,7 +1,7 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.common
 
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.GroupsInSearchUiModel
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.ParentInSearchUiModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.model.GroupsInSearchUiModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.model.ParentInSearchUiModel
 
 class SearchResultsCommunicator {
     var user: ParentInSearchUiModel = ParentInSearchUiModel()

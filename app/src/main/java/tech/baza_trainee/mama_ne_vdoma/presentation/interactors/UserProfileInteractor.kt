@@ -2,7 +2,6 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.interactors
 
 import android.graphics.Bitmap
 import android.net.Uri
-import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.core.net.toUri
 import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
 import kotlinx.coroutines.CoroutineScope
@@ -49,7 +48,7 @@ interface UserProfileInteractor {
 
     fun getChildById(childId: String, onSuccess: (ChildEntity?) -> Unit)
 
-    fun patchChild(childId: String, note: String, schedule: SnapshotStateMap<DayOfWeek, DayPeriod>, onSuccess: () -> Unit)
+    fun patchChild(childId: String, note: String, schedule: Map<DayOfWeek, DayPeriod>, onSuccess: () -> Unit)
 
     fun updateParent(user: UserInfoEntity, onSuccess: () -> Unit)
 
@@ -184,7 +183,7 @@ class UserProfileInteractorImpl(
         }
     }
 
-    override fun patchChild(childId: String, note: String, schedule: SnapshotStateMap<DayOfWeek, DayPeriod>, onSuccess: () -> Unit) {
+    override fun patchChild(childId: String, note: String, schedule: Map<DayOfWeek, DayPeriod>, onSuccess: () -> Unit) {
         coroutineScope.networkExecutor {
             execute {
                 userProfileRepository.patchChildById(

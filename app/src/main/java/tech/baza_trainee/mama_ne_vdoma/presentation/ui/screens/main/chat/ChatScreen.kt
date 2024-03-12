@@ -45,8 +45,8 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.domain.socket.ChatMessage
+import tech.baza_trainee.mama_ne_vdoma.presentation.model.ParentInChatModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.functions.isScrollingUp
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.ParentInChatModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.Black
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.ChatMessageBackgroundMine
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.ChatMessageBackgroundOther

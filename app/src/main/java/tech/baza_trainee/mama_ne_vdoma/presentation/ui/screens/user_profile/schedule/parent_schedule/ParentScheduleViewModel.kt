@@ -10,7 +10,6 @@ import kotlinx.coroutines.flow.update
 import tech.baza_trainee.mama_ne_vdoma.domain.model.DayPeriod
 import tech.baza_trainee.mama_ne_vdoma.domain.model.Period
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UserInfoEntity
-import tech.baza_trainee.mama_ne_vdoma.domain.model.updateSchedule
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatastoreManager
 import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.NetworkEventsListener
 import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.UserProfileInteractor
@@ -21,6 +20,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.schedule.S
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.Communicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.updateSchedule
 import java.time.DayOfWeek
 
 class ParentScheduleViewModel(

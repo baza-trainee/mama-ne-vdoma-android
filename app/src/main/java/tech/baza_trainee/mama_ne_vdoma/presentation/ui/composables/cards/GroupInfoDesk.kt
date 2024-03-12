@@ -49,12 +49,12 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import kotlinx.coroutines.launch
 import tech.baza_trainee.mama_ne_vdoma.R
+import tech.baza_trainee.mama_ne_vdoma.presentation.model.GroupUiModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.model.MemberUiModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ButtonText
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.Rating
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.dialogs.MakeAdminConfirmationDialog
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.dialogs.MakeAdminDialog
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.GroupUiModel
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.MemberUiModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.LogoutButtonColor
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.LogoutButtonTextColor
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_10_sp

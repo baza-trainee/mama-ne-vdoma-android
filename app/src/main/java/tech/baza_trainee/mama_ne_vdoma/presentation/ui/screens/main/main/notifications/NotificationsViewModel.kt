@@ -11,7 +11,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import tech.baza_trainee.mama_ne_vdoma.domain.model.ChildEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.GroupEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.GroupFullInfoEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.JoinRequestEntity
@@ -24,15 +23,17 @@ import tech.baza_trainee.mama_ne_vdoma.domain.repository.GroupsRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.LocationRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserAuthRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
+import tech.baza_trainee.mama_ne_vdoma.presentation.mapper.toUiModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.model.ChildUiModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.model.GroupUiModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.model.JoinRequestUiModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.model.MemberUiModel
+import tech.baza_trainee.mama_ne_vdoma.presentation.model.NotificationsUiModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.PageNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.GroupsScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.MainScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.StandaloneGroupsRoutes
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.GroupUiModel
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.JoinRequestUiModel
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.MemberUiModel
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.model.NotificationsUiModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestResult
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.networkExecutor
@@ -212,7 +213,7 @@ class NotificationsViewModel(
                 address = getResult(location).orEmpty(),
                 members = members
             ),
-            child = ChildEntity(childId = request.childId)
+            child = ChildUiModel(childId = request.childId)
         )
     }
 
@@ -322,7 +323,8 @@ class NotificationsViewModel(
             parentPhone = "${parent.countryCode}${parent.phone}",
             parentAvatar = avatar,
             parentAddress = address,
-            child = groupEntity.children.find { it.childId == member.childId } ?: ChildEntity()
+            child = groupEntity.children.find { it.childId == member.childId }?.toUiModel()
+                ?: ChildUiModel()
         )
     }
 

@@ -18,6 +18,7 @@ import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatasto
 import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.LocationInteractor
 import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.NetworkEventsListener
 import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.UserProfileInteractor
+import tech.baza_trainee.mama_ne_vdoma.presentation.mapper.toUiModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.Graphs
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.HostScreenRoutes
@@ -25,6 +26,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.UserProfil
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.Communicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.SETTINGS_PAGE
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.toStateMap
 import java.time.DayOfWeek
 
 class FullInfoViewModel(
@@ -105,9 +107,9 @@ class FullInfoViewModel(
 
     private fun getChildren() {
         getChildren { entity ->
-            _viewState.update {
-                it.copy(
-                    children = entity,
+            _viewState.update { state ->
+                state.copy(
+                    children = entity.map { it.toUiModel() },
                     isChildInfoFilled = entity.isNotEmpty()
                 )
             }
@@ -129,12 +131,12 @@ class FullInfoViewModel(
             _viewState.update {
                 it.copy(
                     name = entity.name,
-                    schedule = entity.schedule,
+                    schedule = entity.schedule.toStateMap(),
                     isUserInfoFilled = _isUserInfoFilled
                 )
             }
 
-            communicator.setData(entity.schedule)
+            communicator.setData(entity.schedule.toStateMap())
 
             preferencesDatastoreManager.apply {
                 id = entity.id

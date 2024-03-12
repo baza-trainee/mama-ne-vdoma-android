@@ -1,6 +1,5 @@
 package tech.baza_trainee.mama_ne_vdoma.domain.mapper
 
-import androidx.compose.runtime.snapshots.SnapshotStateMap
 import tech.baza_trainee.mama_ne_vdoma.data.model.DayScheduleDto
 import tech.baza_trainee.mama_ne_vdoma.data.model.UpdateGroupDto
 import tech.baza_trainee.mama_ne_vdoma.data.model.UserInfoDto
@@ -45,7 +44,7 @@ fun DayPeriod.toDataModel() = DayScheduleDto(
     evening = if (wholeDay) true else afternoon
 )
 
-fun SnapshotStateMap<DayOfWeek, DayPeriod>.toWeek() = mutableMapOf<String, DayScheduleDto>().also { map ->
+fun Map<DayOfWeek, DayPeriod>.toWeek() = hashMapOf<String, DayScheduleDto>().also { map ->
     forEach {
         map[it.key.name.lowercase()] = it.value.toDataModel()
     }
