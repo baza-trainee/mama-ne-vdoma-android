@@ -1,6 +1,5 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.rate_user
 
-import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -18,7 +17,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,8 +31,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import tech.baza_trainee.mama_ne_vdoma.R
@@ -54,11 +50,12 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_2_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_32_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_48_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_8_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.showToast
 
 @Composable
 fun RateUserScreen(
     screenState: RateUserViewState,
-    uiState: State<RateUserUiState>,
+    uiState: RateUserUiState,
     handleEvent: (RateUserEvent) -> Unit
 ) {
     BackHandler { handleEvent(RateUserEvent.OnBack) }
@@ -67,13 +64,9 @@ fun RateUserScreen(
 
     var showRatingSetDialog by remember { mutableStateOf(false) }
 
-    when (val state = uiState.value) {
+    when (uiState) {
         is RateUserUiState.OnError -> {
-            if (state.error.isNotBlank()) Toast.makeText(
-                context,
-                state.error,
-                Toast.LENGTH_LONG
-            ).show()
+            context.showToast(uiState.error)
             handleEvent(RateUserEvent.ResetUiState)
         }
 
@@ -216,7 +209,7 @@ fun RateUserScreen(
 fun RateUserScreenPreview() {
     RateUserScreen(
         screenState = RateUserViewState(),
-        uiState = remember { mutableStateOf(RateUserUiState.Idle) },
+        uiState = RateUserUiState.Idle,
         handleEvent = {}
     )
 }

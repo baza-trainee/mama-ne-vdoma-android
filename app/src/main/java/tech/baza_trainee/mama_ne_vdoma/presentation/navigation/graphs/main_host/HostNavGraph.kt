@@ -27,6 +27,7 @@ fun NavGraphBuilder.hostNavGraph() {
             HostScreen(
                 navigator = hostViewModel.screenNavigator,
                 screenState = hostViewModel.viewState.asStateWithLifecycle(),
+                uiState = hostViewModel.uiState.asStateWithLifecycle(),
                 handleEvent = { hostViewModel.handleEvent(it) }
             )
         }

@@ -1,6 +1,5 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.view_reviews
 
-import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -19,9 +18,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -47,24 +43,21 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_24_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_70_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_8_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.showToast
 
 @Composable
 fun ViewReviewsScreen(
     screenState: ViewReviewsViewState,
-    uiState: State<RequestState>,
+    uiState: RequestState,
     handleEvent: (ViewReviewsEvent) -> Unit
 ) {
     BackHandler { handleEvent(ViewReviewsEvent.OnBack) }
 
     val context = LocalContext.current
 
-    when (val state = uiState.value) {
+    when (uiState) {
         is RequestState.OnError -> {
-            if (state.error.isNotBlank()) Toast.makeText(
-                context,
-                state.error,
-                Toast.LENGTH_LONG
-            ).show()
+            context.showToast(uiState.error)
             handleEvent(ViewReviewsEvent.ResetUiState)
         }
 
@@ -170,7 +163,7 @@ private fun UserReviewCard(
 fun ViewReviewsScreenPreview() {
     ViewReviewsScreen(
         screenState = ViewReviewsViewState(),
-        uiState = remember { mutableStateOf(RequestState.Idle) },
+        uiState = RequestState.Idle,
         handleEvent = {}
     )
 }

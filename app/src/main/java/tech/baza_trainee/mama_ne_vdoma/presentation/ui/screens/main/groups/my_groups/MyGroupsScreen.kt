@@ -1,6 +1,5 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.my_groups
 
-import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -15,7 +14,6 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -28,8 +26,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.cards.GroupInfoDesk
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.LoadingIndicator
@@ -40,11 +36,12 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFa
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_16_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_8_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.showToast
 
 @Composable
 fun MyGroupsScreen(
     screenState: MyGroupsViewState,
-    uiState: State<RequestState>,
+    uiState: RequestState,
     handleEvent: (MyGroupsEvent) -> Unit
 ) {
     BackHandler { handleEvent(MyGroupsEvent.OnBack) }
@@ -54,13 +51,9 @@ fun MyGroupsScreen(
     var showDeleteDialog by rememberSaveable { mutableStateOf(false) }
     var groupToDelete by rememberSaveable { mutableStateOf("") }
 
-    when (val state = uiState.value) {
+    when (uiState) {
         is RequestState.OnError -> {
-            if (state.error.isNotBlank()) Toast.makeText(
-                context,
-                state.error,
-                Toast.LENGTH_LONG
-            ).show()
+            context.showToast(uiState.error)
             handleEvent(MyGroupsEvent.ResetUiState)
         }
 
@@ -151,7 +144,7 @@ fun MyGroupsScreen(
 fun MyGroupsScreenPreview() {
     MyGroupsScreen(
         screenState = MyGroupsViewState(),
-        uiState = remember { mutableStateOf(RequestState.Idle) },
+        uiState = RequestState.Idle,
         handleEvent = {}
     )
 }

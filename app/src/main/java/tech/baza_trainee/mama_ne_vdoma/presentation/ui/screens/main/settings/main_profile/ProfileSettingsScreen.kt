@@ -1,6 +1,5 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.main_profile
 
-import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -31,10 +30,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -47,8 +44,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import tech.baza_trainee.mama_ne_vdoma.R
@@ -75,23 +70,23 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_48_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_4_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_8_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.showToast
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ProfileSettingsScreen(
     screenState: ProfileSettingsViewState,
-    uiState: State<RequestState>,
+    uiState: RequestState,
     handleEvent: (ProfileSettingsEvent) -> Unit
 ) {
     BackHandler { handleEvent(ProfileSettingsEvent.OnBack) }
 
     val context = LocalContext.current
 
-    when (val state = uiState.value) {
+    when (uiState) {
         RequestState.Idle -> Unit
         is RequestState.OnError -> {
-            if (state.error.isNotBlank()) Toast.makeText(context, state.error, Toast.LENGTH_LONG)
-                .show()
+            context.showToast(uiState.error)
             handleEvent(ProfileSettingsEvent.ResetUiState)
         }
     }
@@ -328,7 +323,7 @@ fun ProfileSettingsScreen(
 fun ProfileSettingsScreenPreview() {
     ProfileSettingsScreen(
         screenState = ProfileSettingsViewState(),
-        uiState = remember { mutableStateOf(RequestState.Idle) },
+        uiState = RequestState.Idle,
         handleEvent = {}
     )
 }

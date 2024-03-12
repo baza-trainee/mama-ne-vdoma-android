@@ -13,8 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -38,7 +36,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.showToast
 
 @Composable
 fun EmailConfirmScreen(
-    uiState: State<RequestState>,
+    uiState: RequestState,
     email: String,
     password: String,
     handleEvent: (RestorePasswordEvent) -> Unit
@@ -55,10 +53,10 @@ fun EmailConfirmScreen(
 
         val context = LocalContext.current
 
-        when (val state = uiState.value) {
+        when (uiState) {
             RequestState.Idle -> Unit
             is RequestState.OnError -> {
-                context.showToast(state.error)
+                context.showToast(uiState.error)
                 handleEvent(RestorePasswordEvent.ResetUiState)
             }
         }
@@ -114,7 +112,7 @@ fun EmailConfirmScreen(
 @Preview
 fun EmailConfirmPreview() {
     EmailConfirmScreen(
-        uiState = remember { mutableStateOf(RequestState.Idle) },
+        uiState = RequestState.Idle,
         email = "",
         password = "",
         handleEvent = { _ -> }

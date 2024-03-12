@@ -1,6 +1,6 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.edit
 
-import android.widget.Toast
+import android.net.Uri
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -30,7 +30,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -84,12 +83,13 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_4_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_8_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_96_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.showToast
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditProfileScreen(
     screenState: EditProfileViewState,
-    uiState: State<UpdateDetailsUiState>,
+    uiState: UpdateDetailsUiState,
     handleEvent: (EditProfileEvent) -> Unit
 ) {
     var exitScreen by remember { mutableIntStateOf(-1) }
@@ -102,20 +102,15 @@ fun EditProfileScreen(
 
     val context = LocalContext.current
 
-    when (val state = uiState.value) {
+    when (uiState) {
         UpdateDetailsUiState.Idle -> Unit
         is UpdateDetailsUiState.OnError -> {
-            if (state.error.isNotBlank()) Toast.makeText(context, state.error, Toast.LENGTH_LONG)
-                .show()
+            context.showToast(uiState.error)
             handleEvent(EditProfileEvent.ResetUiState)
         }
 
         UpdateDetailsUiState.OnAvatarError -> {
-            Toast.makeText(
-                context,
-                stringResource(id = R.string.photo_size_error),
-                Toast.LENGTH_LONG
-            ).show()
+            context.showToast(stringResource(id = R.string.photo_size_error))
             handleEvent(EditProfileEvent.ResetUiState)
         }
 
@@ -421,7 +416,9 @@ fun EditProfileScreen(
                 .padding(vertical = size_16_dp)
                 .height(size_48_dp),
             onClick = { handleEvent(EditProfileEvent.SaveInfo) },
-            enabled = screenState.isStateValid
+            enabled = screenState.isAddressChecked && screenState.nameValid == ValidField.VALID &&
+                    screenState.phoneValid == ValidField.VALID && screenState.userAvatar != Uri.EMPTY &&
+                    screenState.code.isNotEmpty()
         ) {
             ButtonText(
                 text = stringResource(id = R.string.action_save_changes)
@@ -556,7 +553,7 @@ fun EditProfileScreen(
 fun EditProfileScreenPreview() {
     EditProfileScreen(
         screenState = EditProfileViewState(),
-        uiState = remember { mutableStateOf(UpdateDetailsUiState.Idle) },
+        uiState = UpdateDetailsUiState.Idle,
         handleEvent = {}
     )
 }

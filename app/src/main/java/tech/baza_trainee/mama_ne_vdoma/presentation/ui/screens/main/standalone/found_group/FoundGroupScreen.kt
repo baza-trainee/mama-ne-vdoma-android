@@ -18,7 +18,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -50,9 +49,9 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.showToast
 
 @Composable
 fun FoundGroupScreen(
-    screenState: FoundGroupViewState = FoundGroupViewState(),
-    uiState: State<FoundGroupUiState> = mutableStateOf(FoundGroupUiState.Idle),
-    handleEvent: (FoundGroupEvent) -> Unit = { _ -> }
+    screenState: FoundGroupViewState,
+    uiState: FoundGroupUiState,
+    handleEvent: (FoundGroupEvent) -> Unit
 ) {
     ScaffoldWithNavigationBars(
         topBar = {
@@ -76,10 +75,10 @@ fun FoundGroupScreen(
         var showSuccessDialog by rememberSaveable { mutableStateOf(false) }
         var selectedGroupName by rememberSaveable { mutableStateOf("") }
 
-        when (val state = uiState.value) {
+        when (uiState) {
             FoundGroupUiState.Idle -> Unit
             is FoundGroupUiState.OnError -> {
-                context.showToast(state.error)
+                context.showToast(uiState.error)
                 handleEvent(FoundGroupEvent.ResetUiState)
             }
 
@@ -220,7 +219,7 @@ fun FoundGroupScreen(
 fun FoundGroupScreenPreview() {
     FoundGroupScreen(
         screenState = FoundGroupViewState(),
-        uiState = remember { mutableStateOf(FoundGroupUiState.Idle) },
+        uiState = FoundGroupUiState.Idle,
         handleEvent = { _ -> }
     )
 }

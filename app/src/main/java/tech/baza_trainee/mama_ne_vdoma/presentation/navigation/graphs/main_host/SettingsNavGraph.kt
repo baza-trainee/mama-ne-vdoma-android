@@ -1,6 +1,5 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.navigation.graphs.main_host
 
-import androidx.compose.runtime.collectAsState
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
@@ -35,7 +34,7 @@ fun NavGraphBuilder.settingsNavGraph() {
             val viewModel: ProfileSettingsViewModel = koinNavViewModel()
             ProfileSettingsScreen(
                 screenState = viewModel.viewState.asStateWithLifecycle(),
-                uiState = viewModel.uiState.collectAsState(),
+                uiState = viewModel.uiState.asStateWithLifecycle(),
                 handleEvent = viewModel::handleEvent
             )
         }
@@ -43,7 +42,7 @@ fun NavGraphBuilder.settingsNavGraph() {
             val viewModel: EditProfileViewModel = koinNavViewModel()
             EditProfileScreen(
                 screenState = viewModel.viewState.asStateWithLifecycle(),
-                uiState = viewModel.uiState.collectAsState(),
+                uiState = viewModel.uiState.asStateWithLifecycle(),
                 handleEvent = viewModel::handleEvent
             )
         }
@@ -61,7 +60,7 @@ fun NavGraphBuilder.settingsNavGraph() {
             val viewModel: VerifyNewEmailViewModel = koinNavViewModel()
             VerifyNewEmailScreen(
                 screenState = viewModel.viewState.asStateWithLifecycle(),
-                uiState = viewModel.uiState.collectAsState(),
+                uiState = viewModel.uiState.asStateWithLifecycle(),
                 handleEvent = viewModel::handleEvent
             )
         }
@@ -75,7 +74,7 @@ fun NavGraphBuilder.settingsNavGraph() {
             }
             ChildInfoScreenInSettings(
                 screenState = childInfoViewModel.viewState.asStateWithLifecycle(),
-                uiState = childInfoViewModel.uiState.collectAsState(),
+                uiState = childInfoViewModel.uiState.asStateWithLifecycle(),
                 handleEvent = { childInfoViewModel.handleChildInfoEvent(it) }
             )
         }
@@ -89,7 +88,7 @@ fun NavGraphBuilder.settingsNavGraph() {
             }
             ChildScheduleScreenInSettings(
                 screenState = childScheduleViewModel.viewState.asStateWithLifecycle(),
-                uiState = childScheduleViewModel.uiState.collectAsState(),
+                uiState = childScheduleViewModel.uiState.asStateWithLifecycle(),
                 handleEvent = { childScheduleViewModel.handleScheduleEvent(it) }
             )
         }
@@ -97,7 +96,7 @@ fun NavGraphBuilder.settingsNavGraph() {
             val viewModel: EditCredentialsViewModel = koinNavViewModel()
             EditCredentialsScreen(
                 screenState = viewModel.viewState.asStateWithLifecycle(),
-                uiState = viewModel.uiState.collectAsState(),
+                uiState = viewModel.uiState.asStateWithLifecycle(),
                 handleEvent = viewModel::handleEvent
             )
         }

@@ -96,9 +96,7 @@ class CreateGroupViewModel(
 
     override fun onLoading(state: Boolean) {
         _viewState.update {
-            it.copy(
-                isLoading = state
-            )
+            it.copy(isLoading = state)
         }
     }
 
@@ -199,31 +197,31 @@ class CreateGroupViewModel(
         }
     }
 
-    private fun createGroup() {
-        if (_viewState.value.groupDetails.isAddressChecked) {
+    private fun createGroup() = with(_viewState.value.groupDetails) {
+        if (isAddressChecked) {
             createGroup(
-                childCommunicator.dataFlow.value.orEmpty(),
-                _viewState.value.groupDetails.name,
-                _viewState.value.groupDetails.description
+                childCommunicator.dataFlow.value,
+                name,
+                description
             ) {
                 childCommunicator.setData("")
-                uploadAvatar(_viewState.value.groupDetails.avatar, it.id)
-                updateGroupLocation(_viewState.value.groupDetails.location, it.id)
+                uploadAvatar(avatar, it.id)
+                updateGroupLocation(location, it.id)
             }
         } else _uiState.update { UpdateDetailsUiState.AddressNotChecked }
     }
 
-    private fun updateGroup(groupId: String) {
+    private fun updateGroup(groupId: String) = with(_viewState.value.groupDetails) {
         val ages =
-            if (_viewState.value.groupDetails.minAge == _viewState.value.groupDetails.maxAge) _viewState.value.groupDetails.minAge
-            else "${_viewState.value.groupDetails.minAge}-${_viewState.value.groupDetails.maxAge}"
+            if (minAge == maxAge) minAge
+            else "${minAge}-${maxAge}"
         updateGroup(
             groupId,
-            _viewState.value.groupDetails.name,
-            _viewState.value.groupDetails.description,
+            name,
+            description,
             ages,
             avatarServerPath,
-            _viewState.value.groupDetails.schedule
+            schedule
         ) {
             _uiState.update { UpdateDetailsUiState.OnSaved }
         }
@@ -262,7 +260,8 @@ class CreateGroupViewModel(
             _viewState.update {
                 it.copy(
                     groupDetails = it.groupDetails.copy(
-                        address = address
+                        address = address,
+                        isAddressChecked = true
                     )
                 )
             }

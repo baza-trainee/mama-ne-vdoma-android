@@ -11,17 +11,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.LoadingIndicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.SurfaceWithSystemBars
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.VerifyEmail
@@ -36,7 +31,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.showToast
 @Composable
 fun VerifyEmailScreen(
     screenState: VerifyEmailViewState,
-    uiState: State<RequestState>,
+    uiState: RequestState,
     @StringRes title: Int = -1,
     handleEvent: (VerifyEmailEvent) -> Unit
 ) {
@@ -45,10 +40,10 @@ fun VerifyEmailScreen(
 
         BackHandler { handleEvent(VerifyEmailEvent.OnBack) }
 
-        when (val state = uiState.value) {
+        when (uiState) {
             RequestState.Idle -> Unit
             is RequestState.OnError -> {
-                context.showToast(state.error)
+                context.showToast(uiState.error)
                 handleEvent(VerifyEmailEvent.ResetUiState)
             }
         }
@@ -96,7 +91,7 @@ fun VerifyEmailScreen(
 fun CodeVerificationPreview() {
     VerifyEmailScreen(
         screenState = VerifyEmailViewState(),
-        uiState = remember { mutableStateOf(RequestState.Idle) },
+        uiState = RequestState.Idle,
         handleEvent = { _ -> }
     )
 }

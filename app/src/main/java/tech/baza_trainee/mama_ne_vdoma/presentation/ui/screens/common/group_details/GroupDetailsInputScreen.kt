@@ -2,7 +2,6 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.group_det
 
 import android.content.Intent
 import android.net.Uri
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -34,7 +33,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -86,11 +84,12 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_4_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_88_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_8_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.showToast
 
 @Composable
 fun GroupDetailsInputScreen(
     screenState: GroupDetailsViewState,
-    uiState: State<UpdateDetailsUiState>,
+    uiState: UpdateDetailsUiState,
     isForEditing: Boolean = false,
     handleEvent: (GroupDetailsEvent) -> Unit
 ) {
@@ -103,24 +102,15 @@ fun GroupDetailsInputScreen(
     var showKickDialog by rememberSaveable { mutableStateOf(false) }
     var kickDialogData by rememberSaveable { mutableStateOf(Pair("", emptyList<String>())) }
 
-    when (val state = uiState.value) {
+    when (uiState) {
         UpdateDetailsUiState.Idle -> Unit
         is UpdateDetailsUiState.OnError -> {
-            if (state.error.isNotBlank())
-                Toast.makeText(
-                    context,
-                    state.error,
-                    Toast.LENGTH_LONG
-                ).show()
+            context.showToast(uiState.error)
             handleEvent(GroupDetailsEvent.ResetUiState)
         }
 
         UpdateDetailsUiState.OnAvatarError -> {
-            Toast.makeText(
-                context,
-                stringResource(id = R.string.photo_size_error),
-                Toast.LENGTH_LONG
-            ).show()
+            context.showToast(stringResource(id = R.string.photo_size_error))
             handleEvent(GroupDetailsEvent.ResetUiState)
         }
 

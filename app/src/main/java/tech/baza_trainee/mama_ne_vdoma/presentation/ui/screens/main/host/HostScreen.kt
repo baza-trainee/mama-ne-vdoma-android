@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -44,9 +43,9 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.showToast
 @Composable
 fun HostScreen(
     navigator: PageNavigator,
-    screenState: HostViewState = HostViewState(),
-    uiState: State<RequestState> = mutableStateOf(RequestState.Idle),
-    handleEvent: (HostEvent) -> Unit = {}
+    screenState: HostViewState,
+    uiState: RequestState,
+    handleEvent: (HostEvent) -> Unit
 ) {
     SurfaceWithNavigationBars {
         val context = LocalContext.current
@@ -68,10 +67,10 @@ fun HostScreen(
             }
         }
 
-        when (val state = uiState.value) {
+        when (uiState) {
             RequestState.Idle -> Unit
             is RequestState.OnError -> {
-                context.showToast(state.error)
+                context.showToast(uiState.error)
                 handleEvent(HostEvent.ResetUiState)
             }
         }
@@ -152,7 +151,7 @@ fun HostScreenPreview() {
     HostScreen(
         navigator = PageNavigatorImpl(),
         screenState = HostViewState(),
-        uiState = remember { mutableStateOf(RequestState.Idle) },
+        uiState = RequestState.Idle,
         handleEvent = {}
     )
 }

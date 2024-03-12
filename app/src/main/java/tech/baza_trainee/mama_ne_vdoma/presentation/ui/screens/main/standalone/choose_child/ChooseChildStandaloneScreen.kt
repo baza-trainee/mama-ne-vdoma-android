@@ -13,7 +13,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,7 +45,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.showToast
 fun ChooseChildStandaloneScreen(
     isForSearch: Boolean,
     screenState: ChooseChildViewState,
-    uiState: State<RequestState>,
+    uiState: RequestState,
     handleEvent: (ChooseChildEvent) -> Unit
 ) {
     ScaffoldWithNavigationBars(
@@ -70,10 +69,10 @@ fun ChooseChildStandaloneScreen(
 
         val context = LocalContext.current
 
-        when(val state = uiState.value) {
+        when(uiState) {
             RequestState.Idle -> Unit
             is RequestState.OnError -> {
-                context.showToast(state.error)
+                context.showToast(uiState.error)
                 handleEvent(ChooseChildEvent.ResetUiState)
             }
         }
@@ -144,7 +143,7 @@ fun ChooseChildScreenPreview() {
     ChooseChildStandaloneScreen(
         isForSearch = true,
         screenState = ChooseChildViewState(),
-        uiState = remember { mutableStateOf(RequestState.Idle) },
+        uiState = RequestState.Idle,
         handleEvent = {}
     )
 }

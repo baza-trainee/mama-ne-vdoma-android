@@ -1,6 +1,5 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.search.search_request
 
-import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -18,14 +17,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Error
 import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -52,12 +48,12 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_48_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_4_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_8_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.showToast
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchRequestScreen(
-    screenState: SearchRequestViewState = SearchRequestViewState(),
-    uiState: State<SearchRequestUiState> = mutableStateOf(SearchRequestUiState.Idle),
+    screenState: SearchRequestViewState,
+    uiState: SearchRequestUiState,
     handleEvent: (SearchRequestEvent) -> Unit = {}
 ) {
     BackHandler { handleEvent(SearchRequestEvent.OnBack) }
@@ -66,11 +62,10 @@ fun SearchRequestScreen(
 
     val context = LocalContext.current
 
-    when (val state = uiState.value) {
+    when (uiState) {
         SearchRequestUiState.Idle -> Unit
         is SearchRequestUiState.OnError -> {
-            if (state.error.isNotBlank()) Toast.makeText(context, state.error, Toast.LENGTH_LONG)
-                .show()
+            context.showToast(uiState.error)
             handleEvent(SearchRequestEvent.ResetUiState)
         }
 
@@ -199,7 +194,7 @@ fun SearchRequestScreen(
 fun SearchRequestScreenPreview() {
     SearchRequestScreen(
         screenState = SearchRequestViewState(),
-        uiState = remember { mutableStateOf(SearchRequestUiState.Idle) },
+        uiState = SearchRequestUiState.Idle,
         handleEvent = {}
     )
 }

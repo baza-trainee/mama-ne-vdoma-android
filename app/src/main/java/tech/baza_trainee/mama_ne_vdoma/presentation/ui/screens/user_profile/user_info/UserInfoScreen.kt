@@ -1,6 +1,5 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.user_info
 
-import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -18,9 +17,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -30,8 +26,6 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import tech.baza_trainee.mama_ne_vdoma.R
@@ -54,7 +48,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.showToast
 @Composable
 fun UserInfoScreen(
     screenState: UserInfoViewState,
-    uiState: State<UserInfoUiState>,
+    uiState: UserInfoUiState,
     handleEvent: (UserInfoEvent) -> Unit
 ) {
     SurfaceWithSystemBars {
@@ -62,19 +56,15 @@ fun UserInfoScreen(
 
         val context = LocalContext.current
 
-        when (val state = uiState.value) {
+        when (uiState) {
             UserInfoUiState.Idle -> Unit
             is UserInfoUiState.OnError -> {
-                context.showToast(state.error)
+                context.showToast(uiState.error)
                 handleEvent(UserInfoEvent.ResetUiState)
             }
 
             UserInfoUiState.OnAvatarError -> {
-                Toast.makeText(
-                    context,
-                    context.getString(R.string.photo_size_error),
-                    Toast.LENGTH_LONG
-                ).show()
+                context.showToast(stringResource(id = R.string.photo_size_error))
                 handleEvent(UserInfoEvent.ResetUiState)
             }
         }
@@ -193,9 +183,7 @@ fun UserInfoScreen(
 fun UserInfoPreview() {
     UserInfoScreen(
         screenState = UserInfoViewState(),
-        uiState = remember {
-            mutableStateOf(UserInfoUiState.Idle)
-        },
+        uiState = UserInfoUiState.Idle,
         handleEvent = { _ -> }
     )
 }

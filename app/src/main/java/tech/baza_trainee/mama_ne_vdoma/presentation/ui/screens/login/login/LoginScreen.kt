@@ -26,7 +26,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -40,8 +39,6 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.SignInClient
 import tech.baza_trainee.mama_ne_vdoma.BuildConfig
@@ -57,7 +54,6 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_20_sp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_16_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_24_dp
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_32_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_48_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_64_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_8_dp
@@ -71,7 +67,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.showToast
 fun LoginUserScreen(
     oneTapClient: SignInClient?,
     screenState: LoginViewState,
-    uiState: State<RequestState>,
+    uiState: RequestState,
     handleEvent: (LoginEvent) -> Unit
 ) {
     SurfaceWithSystemBars {
@@ -79,10 +75,10 @@ fun LoginUserScreen(
 
         val context = LocalContext.current
 
-        when (val state = uiState.value) {
+        when (uiState) {
             RequestState.Idle -> Unit
             is RequestState.OnError -> {
-                context.showToast(state.error)
+                context.showToast(uiState.error)
                 handleEvent(LoginEvent.ResetUiState)
             }
         }
@@ -272,7 +268,7 @@ fun LoginUserPreview() {
     LoginUserScreen(
         oneTapClient = null,
         screenState = LoginViewState(),
-        uiState = remember { mutableStateOf(RequestState.Idle) },
+        uiState = RequestState.Idle,
         handleEvent = { _ -> }
     )
 }
