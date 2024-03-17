@@ -20,6 +20,7 @@ val size_48_dp = 48.dp
 val size_52_dp = 52.dp
 val size_54_dp = 54.dp
 val size_56_dp = 56.dp
+val size_60_dp = 60.dp
 val size_64_dp = 64.dp
 val size_70_dp = 70.dp
 val size_72_dp = 72.dp

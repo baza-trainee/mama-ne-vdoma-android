@@ -1,12 +1,12 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.start
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -36,7 +37,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
@@ -44,12 +44,15 @@ import kotlinx.coroutines.launch
 import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.Indicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.SurfaceWithNavigationBars
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.functions.conditional
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_16_sp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_16_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_24_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_32_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_48_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_4_dp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_60_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_70_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_8_dp
 
@@ -138,110 +141,102 @@ fun InfoScreen(onCreate: () -> Unit) {
                 }
             }
 
-            Column(
+            Row(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .padding(horizontal = size_16_dp)
                     .constrainAs(footer) {
                         bottom.linkTo(parent.bottom, size_16_dp)
                         height = Dimension.preferredValue(size_70_dp)
                     },
-                horizontalAlignment = Alignment.CenterHorizontally
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.End
             ) {
                 val isLastPage by remember {
                     derivedStateOf { pagerState.currentPage == 2 }
                 }
 
-                AnimatedVisibility(
-                    visible = !isLastPage,
-                    enter = slideInHorizontally(initialOffsetX = { -it }),
-                    exit = slideOutHorizontally(targetOffsetX = { -it })
-                ) {
-                    ConstraintLayout(
-                        modifier = Modifier.fillMaxWidth()
+                if (!isLastPage) {
+                    Row(
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(end = size_16_dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Start
                     ) {
-                        val (indicator, btnSkip, btnNext) = createRefs()
-
-                        Row(
-                            modifier = Modifier
-                                .constrainAs(indicator) {
-                                    top.linkTo(parent.top)
-                                    bottom.linkTo(parent.bottom)
-                                }
-                                .padding(horizontal = size_16_dp)
-                        ) {
-                            repeat(pageTextContent.size) { iteration ->
-                                val isSelected by remember {
-                                    derivedStateOf { pagerState.currentPage == iteration }
-                                }
-                                Indicator(
-                                    isSelected = isSelected,
-                                    selectedColor = MaterialTheme.colorScheme.primary,
-                                    backgroundColor = MaterialTheme.colorScheme.background,
-                                    defaultRadius = size_8_dp,
-                                    selectedLength = size_24_dp
-                                )
-
-                                if (iteration < pageTextContent.size)
-                                    Spacer(modifier = Modifier.width(size_4_dp))
+                        repeat(pageTextContent.size) { iteration ->
+                            val isSelected by remember {
+                                derivedStateOf { pagerState.currentPage == iteration }
                             }
-                        }
-                        Text(
-                            modifier = Modifier
-                                .clickable { onCreate() }
-                                .constrainAs(btnSkip) {
-                                    top.linkTo(parent.top)
-                                    bottom.linkTo(parent.bottom)
-                                    end.linkTo(btnNext.start, size_16_dp)
-                                },
-                            text = stringResource(id = R.string.action_skip),
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.primary,
-                            fontFamily = redHatDisplayFontFamily
-                        )
-                        Button(
-                            shape = CircleShape,
-                            modifier = Modifier
-                                .size(60.dp)
-                                .constrainAs(btnNext) {
-                                    top.linkTo(parent.top)
-                                    bottom.linkTo(parent.bottom)
-                                    end.linkTo(parent.end, size_16_dp)
-                                },
-                            onClick = {
-                                with(pagerState) {
-                                    scrollCoroutineScope.launch {
-                                        animateScrollToPage(currentPage + 1)
-                                    }
-                                }
-                            }
-                        ) {
-                            Image(
-                                modifier = Modifier
-                                    .rotate(180f),
-                                painter = painterResource(id = R.drawable.arrow_back),
-                                contentDescription = "start",
-                                alignment = Alignment.Center
+                            Indicator(
+                                isSelected = isSelected,
+                                selectedColor = MaterialTheme.colorScheme.primary,
+                                backgroundColor = MaterialTheme.colorScheme.background,
+                                defaultRadius = size_8_dp,
+                                selectedLength = size_24_dp
                             )
+
+                            if (iteration < pageTextContent.size)
+                                Spacer(modifier = Modifier.width(size_4_dp))
                         }
                     }
+
+                    Text(
+                        modifier = Modifier
+                            .padding(end = size_16_dp)
+                            .clickable { onCreate() },
+                        text = stringResource(id = R.string.action_skip),
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.primary,
+                        fontFamily = redHatDisplayFontFamily
+                    )
                 }
 
-                AnimatedVisibility(
-                    visible = isLastPage,
-                    enter = slideInHorizontally(initialOffsetX = { it }),
-                    exit = slideOutHorizontally(targetOffsetX = { it })
+                val buttonSize = animateDpAsState(
+                    targetValue = if (isLastPage) size_48_dp else size_60_dp,
+                    animationSpec = tween(durationMillis = 1_000),
+                    label = "button_height"
+                )
+
+                Button(
+                    shape = if (isLastPage) RoundedCornerShape(size_32_dp)
+                    else CircleShape,
+                    modifier = Modifier
+                        .animateContentSize()
+                        .conditional(
+                            condition = isLastPage,
+                            ifTrue = {
+                                fillMaxWidth().height(buttonSize.value)
+                            },
+                            ifFalse = {
+                                size(buttonSize.value)
+                            }
+                        ),
+                    onClick = {
+                        if (isLastPage) {
+                            onCreate()
+                        } else {
+                            with(pagerState) {
+                                scrollCoroutineScope.launch {
+                                    animateScrollToPage(currentPage + 1)
+                                }
+                            }
+                        }
+                    }
                 ) {
-                    Button(
-                        modifier = Modifier
-                            .padding(horizontal = size_16_dp)
-                            .fillMaxWidth()
-                            .height(size_48_dp),
-                        onClick = onCreate
-                    ) {
+                    if (isLastPage) {
                         Text(
                             text = stringResource(id = R.string.action_start),
                             fontWeight = FontWeight.Bold,
                             fontFamily = redHatDisplayFontFamily
+                        )
+                    } else {
+                        Image(
+                            modifier = Modifier
+                                .rotate(180f),
+                            painter = painterResource(id = R.drawable.arrow_back),
+                            contentDescription = "start",
+                            alignment = Alignment.Center
                         )
                     }
                 }
