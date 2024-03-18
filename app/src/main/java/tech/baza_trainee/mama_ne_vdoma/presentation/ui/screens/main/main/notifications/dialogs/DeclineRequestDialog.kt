@@ -21,6 +21,7 @@ fun DeclineRequestDialog(
         confirmButtonText = stringResource(id = R.string.action_approve),
         confirmButtonAction = onAccept,
         dismissButtonText = stringResource(id = R.string.action_refuse),
+        dismissButtonAction = onDecline,
         onDismissRequest = onDismiss
     )
 }

@@ -2,6 +2,7 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.dialogs
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
@@ -18,13 +19,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_14_sp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_16_sp
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_20_sp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
+import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_16_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_4_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_8_dp
 
 @Composable
 fun GenericAlertDialog(
-    icon: ImageVector,
+    icon: ImageVector? = null,
+    title: String? = null,
     text: String,
     confirmButtonText: String,
     confirmButtonAction: () -> Unit,
@@ -36,11 +40,27 @@ fun GenericAlertDialog(
         onDismissRequest = onDismissRequest,
         shape = RoundedCornerShape(size_4_dp),
         icon = {
-            Icon(
-                imageVector = icon,
-                contentDescription = "alert",
-                tint = MaterialTheme.colorScheme.primary
-            )
+            icon?.let {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = "alert",
+                    tint = MaterialTheme.colorScheme.primary
+                )
+            }
+        },
+        title = {
+                title?.let {
+                    Text(
+                        modifier = Modifier
+                            .padding(top = size_8_dp)
+                            .padding(horizontal = size_16_dp)
+                            .fillMaxWidth(),
+                        text = title,
+                        fontSize = font_size_20_sp,
+                        textAlign = TextAlign.Center,
+                        fontFamily = redHatDisplayFontFamily
+                    )
+                }
         },
         text = {
             Text(
