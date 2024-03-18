@@ -15,7 +15,7 @@ android {
         applicationId = "tech.baza_trainee.mama_ne_vdoma"
         minSdk = 24
         targetSdk = 34
-        versionCode = 41
+        versionCode = 49
         versionName = "0.4.7"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -97,6 +97,7 @@ dependencies {
     implementation("com.google.maps.android:android-maps-utils:2.3.0")
 
     implementation("com.google.android.gms:play-services-auth:21.0.0")
+    implementation("com.google.android.play:app-update-ktx:2.1.0")
 
     // KTX for the Maps SDK for Android
     implementation ("com.google.maps.android:maps-ktx:3.4.0")

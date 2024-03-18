@@ -1,9 +1,13 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.IntentSenderRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_WEAK
 import androidx.biometric.BiometricManager.Authenticators.DEVICE_CREDENTIAL
@@ -23,7 +27,13 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.fragment.app.FragmentActivity
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
+import com.google.android.play.core.appupdate.AppUpdateInfo
+import com.google.android.play.core.appupdate.AppUpdateManagerFactory
+import com.google.android.play.core.appupdate.AppUpdateOptions
+import com.google.android.play.core.install.model.AppUpdateType
+import com.google.android.play.core.install.model.UpdateAvailability
 import org.koin.android.ext.android.inject
+import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.graphs.createUserNavGraph
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.graphs.groupStandaloneScreensNavGraph
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.graphs.loginNavGraph
@@ -42,6 +52,10 @@ class MainActivity : FragmentActivity() {
 
     private val viewModel: MainActivityViewModel by inject()
 
+    private val appUpdateManager by lazy { AppUpdateManagerFactory.create(this) }
+
+    private lateinit var appUpdateLauncher: ActivityResultLauncher<IntentSenderRequest>
+
     override fun onCreate(savedInstanceState: Bundle?) {
 
         val splashScreen = installSplashScreen()
@@ -49,6 +63,23 @@ class MainActivity : FragmentActivity() {
         super.onCreate(savedInstanceState)
 
         enableEdgeToEdge()
+
+        appUpdateLauncher = registerForActivityResult(
+            ActivityResultContracts.StartIntentSenderForResult()
+        ) {
+            Log.d("AUTO-UPDATE", "activityResult : ${it.resultCode}")
+            if (it.resultCode != RESULT_OK)
+                Toast.makeText(this, "Update failed", Toast.LENGTH_SHORT).show()
+        }
+
+        appUpdateManager.appUpdateInfo
+            .addOnSuccessListener { appUpdateInfo ->
+                Log.d("AUTO-UPDATE", "${appUpdateInfo.availableVersionCode()}")
+                checkAppUpdates(appUpdateInfo)
+            }
+            .addOnFailureListener {
+                Log.d("AUTO-UPDATE", it.toString())
+            }
 
         setContent {
             Mama_ne_vdomaTheme {
@@ -104,8 +135,8 @@ class MainActivity : FragmentActivity() {
         }
 
     private fun buildBiometricPromptInfo() = PromptInfo.Builder()
-        .setTitle("Біометрична автентифікація")
-        .setSubtitle("Використайте Ваш спосіб розблокування пристрою для входу в застосунок")
+        .setTitle(getString(R.string.bio_auth_title))
+        .setSubtitle(getString(R.string.bio_auth_subtitle))
         .setAllowedAuthenticators(BIOMETRIC_WEAK or DEVICE_CREDENTIAL)
         .build()
 
@@ -121,7 +152,7 @@ class MainActivity : FragmentActivity() {
                 ) {
                     Toast.makeText(
                         applicationContext,
-                        "Невдала спроба автентифікації",
+                        getString(R.string.bio_attempt_error),
                         Toast.LENGTH_SHORT
                     ).show()
                 }
@@ -136,10 +167,25 @@ class MainActivity : FragmentActivity() {
                 super.onAuthenticationFailed()
                 Toast.makeText(
                     applicationContext,
-                    "Невдала спроба автентифікації",
+                    getString(R.string.bio_attempt_error),
                     Toast.LENGTH_SHORT
                 ).show()
             }
         }
     )
+
+    private fun checkAppUpdates(appUpdateInfo: AppUpdateInfo) {
+        if (isUpdateAvailable(appUpdateInfo)) {
+            appUpdateManager.startUpdateFlowForResult(
+                appUpdateInfo,
+                appUpdateLauncher,
+                AppUpdateOptions.newBuilder(AppUpdateType.IMMEDIATE).build()
+            )
+        }
+    }
+    private fun isUpdateAvailable(appUpdateInfo: AppUpdateInfo): Boolean =
+        appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE ||
+                appUpdateInfo.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS &&
+                appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE)
+
 }

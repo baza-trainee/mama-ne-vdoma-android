@@ -258,4 +258,7 @@
     <string name="today">Сьогодні</string>
     <string name="yesterday">Вчора</string>
     <string name="go_to_chats">Назад до списку чатів</string>
+    <string name="bio_attempt_error">Невдала спроба автентифікації</string>
+    <string name="bio_auth_title">Біометрична автентифікація</string>
+    <string name="bio_auth_subtitle">Використайте Ваш спосіб розблокування пристрою для входу в застосунок</string>
 </resources>
