@@ -66,6 +66,10 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_8_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.formatDate
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.formatTime
 
+private const val SCROLL_PAGING_LIMIT = 9
+private const val SCROLL_PAGING_LIMIT_0 = 0
+private const val SCROLL_PAGING_EMPTY_KEY = ""
+
 @Composable
 fun ChatScreen(
     screenState: ChatsViewState,
@@ -84,7 +88,13 @@ fun ChatScreen(
         derivedStateOf { screenState.groupChats[screenState.selectedChat]?.members.orEmpty() }
     }
     val key by remember {
-        derivedStateOf { screenState.groupChats[screenState.selectedChat]?.messages?.get(9)?.id.orEmpty() }
+        derivedStateOf {
+            when {
+                chatMessages.isEmpty() -> SCROLL_PAGING_EMPTY_KEY
+                chatMessages.size >= SCROLL_PAGING_LIMIT -> chatMessages[SCROLL_PAGING_LIMIT].id
+                else -> chatMessages[SCROLL_PAGING_LIMIT_0].id
+            }
+        }
     }
 
     val firstVisible by remember {
@@ -96,18 +106,19 @@ fun ChatScreen(
     }
 
     LaunchedEffect(Unit) {
-        lazyListState.scrollToItem(chatMessages.lastIndex)
+        if (chatMessages.isNotEmpty())
+            lazyListState.scrollToItem(chatMessages.lastIndex)
     }
 
     LaunchedEffect(chatMessages.size) {
-        if (needToScroll) {
+        if (needToScroll && chatMessages.isNotEmpty()) {
             lazyListState.scrollToItem(chatMessages.lastIndex)
             needToScroll = false
         }
     }
 
     LaunchedEffect(needToScrollByFAB) {
-        if (needToScrollByFAB) {
+        if (needToScrollByFAB && chatMessages.isNotEmpty()) {
             lazyListState.scrollToItem(chatMessages.lastIndex)
             needToScrollByFAB = false
         }
