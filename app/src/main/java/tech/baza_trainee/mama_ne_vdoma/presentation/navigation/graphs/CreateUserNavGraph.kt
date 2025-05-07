@@ -4,7 +4,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.google.android.gms.auth.api.identity.SignInClient
-import org.koin.androidx.compose.navigation.koinNavViewModel
+import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.CreateUserRoute
@@ -21,7 +21,7 @@ fun NavGraphBuilder.createUserNavGraph() {
         startDestination = CreateUserRoute.CreateUser.route
     ) {
         composable(CreateUserRoute.CreateUser.route) {
-            val userCreateViewModel: UserCreateViewModel = koinNavViewModel()
+            val userCreateViewModel: UserCreateViewModel = koinViewModel()
             val oneTapClient: SignInClient = koinInject()
             UserCreateScreen(
                 oneTapClient = oneTapClient,
@@ -31,7 +31,7 @@ fun NavGraphBuilder.createUserNavGraph() {
             )
         }
         composable(CreateUserRoute.VerifyEmail.route) {
-            val verifyEmailViewModel: VerifyEmailViewModel = koinNavViewModel()
+            val verifyEmailViewModel: VerifyEmailViewModel = koinViewModel()
             VerifyEmailScreen(
                 screenState = verifyEmailViewModel.viewState.asStateWithLifecycle(),
                 uiState = verifyEmailViewModel.uiState.asStateWithLifecycle(),

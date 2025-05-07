@@ -50,7 +50,8 @@ class UserInfoViewModel(
                 code = preferencesDatastoreManager.code,
                 phone = preferencesDatastoreManager.phone,
                 phoneValid = if (preferencesDatastoreManager.phone.isEmpty()) ValidField.EMPTY else ValidField.VALID,
-                userAvatar = preferencesDatastoreManager.avatarUri
+                userAvatar = preferencesDatastoreManager.avatarUri,
+                countries = userProfileInteractor.getCountryCodes()
             )
         }
 

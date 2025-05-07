@@ -3,7 +3,7 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.navigation.graphs.main_host
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import org.koin.androidx.compose.navigation.koinNavViewModel
+import org.koin.androidx.compose.koinViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.Graphs
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.MainScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.functions.asStateWithLifecycle
@@ -18,14 +18,14 @@ fun NavGraphBuilder.mainNavGraph() {
         startDestination = MainScreenRoutes.Main.route
     ) {
         composable(MainScreenRoutes.Main.route) {
-            val mainViewModel: MainViewModel = koinNavViewModel()
+            val mainViewModel: MainViewModel = koinViewModel()
             MainScreen(
                 screenState = mainViewModel.viewState.asStateWithLifecycle(),
                 handleEvent = { mainViewModel.handleEvent(it) }
             )
         }
         composable(MainScreenRoutes.Notifications.route) {
-            val viewModel: NotificationsViewModel = koinNavViewModel()
+            val viewModel: NotificationsViewModel = koinViewModel()
             NotificationScreen(
                 screenState = viewModel.viewState.asStateWithLifecycle(),
                 uiState = viewModel.uiState.asStateWithLifecycle(),

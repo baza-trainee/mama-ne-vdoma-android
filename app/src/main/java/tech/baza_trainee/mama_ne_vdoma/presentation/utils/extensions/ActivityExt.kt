@@ -7,7 +7,6 @@ import android.provider.Settings
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.BeginSignInResult
 import com.google.android.gms.auth.api.identity.SignInClient
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resumeWithException
 
@@ -18,7 +17,6 @@ fun Activity.openAppSettings() {
     ).also(::startActivity)
 }
 
-@OptIn(ExperimentalCoroutinesApi::class)
 suspend fun Activity.beginSignInGoogleOneTap(
     oneTapClient: SignInClient?,
     signInRequest: BeginSignInRequest

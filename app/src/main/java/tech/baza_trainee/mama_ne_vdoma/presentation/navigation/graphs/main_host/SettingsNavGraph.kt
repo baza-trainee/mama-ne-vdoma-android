@@ -3,7 +3,7 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.navigation.graphs.main_host
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import org.koin.androidx.compose.navigation.koinNavViewModel
+import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 import org.koin.core.parameter.parametersOf
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.PageNavigator
@@ -31,7 +31,7 @@ fun NavGraphBuilder.settingsNavGraph() {
         startDestination = SettingsScreenRoutes.Settings.route
     ) {
         composable(SettingsScreenRoutes.Settings.route) {
-            val viewModel: ProfileSettingsViewModel = koinNavViewModel()
+            val viewModel: ProfileSettingsViewModel = koinViewModel()
             ProfileSettingsScreen(
                 screenState = viewModel.viewState.asStateWithLifecycle(),
                 uiState = viewModel.uiState.asStateWithLifecycle(),
@@ -39,7 +39,7 @@ fun NavGraphBuilder.settingsNavGraph() {
             )
         }
         composable(SettingsScreenRoutes.EditProfile.route) {
-            val viewModel: EditProfileViewModel = koinNavViewModel()
+            val viewModel: EditProfileViewModel = koinViewModel()
             EditProfileScreen(
                 screenState = viewModel.viewState.asStateWithLifecycle(),
                 uiState = viewModel.uiState.asStateWithLifecycle(),
@@ -48,7 +48,7 @@ fun NavGraphBuilder.settingsNavGraph() {
         }
         composable(SettingsScreenRoutes.EditProfilePhoto.route) {
             val navigator = koinInject<PageNavigator>()
-            val imageCropViewModel: ImageCropViewModel = koinNavViewModel {
+            val imageCropViewModel: ImageCropViewModel = koinViewModel {
                 parametersOf(navigator)
             }
             ProfileImageCropScreen(
@@ -57,7 +57,7 @@ fun NavGraphBuilder.settingsNavGraph() {
             )
         }
         composable(SettingsScreenRoutes.VerifyNewEmail.route) {
-            val viewModel: VerifyNewEmailViewModel = koinNavViewModel()
+            val viewModel: VerifyNewEmailViewModel = koinViewModel()
             VerifyNewEmailScreen(
                 screenState = viewModel.viewState.asStateWithLifecycle(),
                 uiState = viewModel.uiState.asStateWithLifecycle(),
@@ -66,7 +66,7 @@ fun NavGraphBuilder.settingsNavGraph() {
         }
         composable(SettingsScreenRoutes.ChildInfo.route) {
             val navigator: PageNavigator = koinInject()
-            val childInfoViewModel: ChildInfoViewModel = koinNavViewModel {
+            val childInfoViewModel: ChildInfoViewModel = koinViewModel {
                 parametersOf(
                     { navigator.navigate(SettingsScreenRoutes.ChildSchedule) },
                     { navigator.goToPrevious() }
@@ -80,7 +80,7 @@ fun NavGraphBuilder.settingsNavGraph() {
         }
         composable(SettingsScreenRoutes.ChildSchedule.route) {
             val navigator: PageNavigator = koinInject()
-            val childScheduleViewModel: ChildScheduleViewModel = koinNavViewModel {
+            val childScheduleViewModel: ChildScheduleViewModel = koinViewModel {
                 parametersOf(
                     { navigator.navigate(SettingsScreenRoutes.EditProfile) },
                     { navigator.goToPrevious() }
@@ -93,7 +93,7 @@ fun NavGraphBuilder.settingsNavGraph() {
             )
         }
         composable(SettingsScreenRoutes.EditCredentials.route) {
-            val viewModel: EditCredentialsViewModel = koinNavViewModel()
+            val viewModel: EditCredentialsViewModel = koinViewModel()
             EditCredentialsScreen(
                 screenState = viewModel.viewState.asStateWithLifecycle(),
                 uiState = viewModel.uiState.asStateWithLifecycle(),

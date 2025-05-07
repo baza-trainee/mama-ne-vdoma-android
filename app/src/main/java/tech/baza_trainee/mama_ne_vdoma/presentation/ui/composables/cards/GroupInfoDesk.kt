@@ -1,7 +1,6 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.cards
 
 import android.content.Intent
-import android.net.Uri
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -44,7 +43,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import kotlinx.coroutines.launch
@@ -513,9 +512,9 @@ private fun MemberContent(
             IconButton(
                 onClick = {
                     scope.launch {
-                        val intent = Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:${member.email}"))
+                        val intent = Intent(Intent.ACTION_SENDTO, "mailto:${member.email}".toUri())
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                        ContextCompat.startActivity(context, intent, null)
+                        context.startActivity(intent, null)
                     }
                 }
             ) {
@@ -529,9 +528,9 @@ private fun MemberContent(
             IconButton(
                 onClick = {
                     scope.launch {
-                        val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:${member.phone}"))
+                        val intent = Intent(Intent.ACTION_DIAL, "tel:${member.phone}".toUri())
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                        ContextCompat.startActivity(context, intent, null)
+                        context.startActivity(intent, null)
                     }
                 }
             ) {

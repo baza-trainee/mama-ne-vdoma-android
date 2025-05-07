@@ -3,7 +3,7 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.navigation.graphs.main_host
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import org.koin.androidx.compose.navigation.koinNavViewModel
+import org.koin.androidx.compose.koinViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.ChatScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.Graphs
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.functions.asStateWithLifecycle
@@ -16,7 +16,7 @@ fun NavGraphBuilder.chatNavGraph() {
         startDestination = ChatScreenRoutes.Chats.route
     ) {
         composable(ChatScreenRoutes.Chats.route) {
-            val chatsViewModel: ChatsViewModel = koinNavViewModel()
+            val chatsViewModel: ChatsViewModel = koinViewModel()
             ChatsScreen(
                 screenState = chatsViewModel.viewState.asStateWithLifecycle(),
                 uiState = chatsViewModel.uiState.asStateWithLifecycle(),

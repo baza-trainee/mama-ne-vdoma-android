@@ -3,7 +3,7 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.navigation.graphs
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import org.koin.androidx.compose.navigation.koinNavViewModel
+import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 import org.koin.core.parameter.parametersOf
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
@@ -33,7 +33,7 @@ fun NavGraphBuilder.userProfileGraph() {
         startDestination = UserProfileRoutes.FullProfile.route
     ) {
         composable(UserProfileRoutes.FullProfile.route) {
-            val fullInfoViewModel: FullInfoViewModel = koinNavViewModel()
+            val fullInfoViewModel: FullInfoViewModel = koinViewModel()
             FullInfoScreen(
                 screenState = fullInfoViewModel.viewState.asStateWithLifecycle(),
                 uiState = fullInfoViewModel.uiState.asStateWithLifecycle(),
@@ -41,7 +41,7 @@ fun NavGraphBuilder.userProfileGraph() {
             )
         }
         composable(UserProfileRoutes.UserInfo.route) {
-            val userInfoViewModel: UserInfoViewModel = koinNavViewModel()
+            val userInfoViewModel: UserInfoViewModel = koinViewModel()
             UserInfoScreen(
                 screenState = userInfoViewModel.viewState.asStateWithLifecycle(),
                 uiState = userInfoViewModel.uiState.asStateWithLifecycle(),
@@ -50,7 +50,7 @@ fun NavGraphBuilder.userProfileGraph() {
         }
         composable(UserProfileRoutes.ImageCrop.route) {
             val navigator = koinInject<ScreenNavigator>()
-            val imageCropViewModel: ImageCropViewModel = koinNavViewModel {
+            val imageCropViewModel: ImageCropViewModel = koinViewModel {
                 parametersOf(navigator)
             }
             UserImageCropScreen(
@@ -59,7 +59,7 @@ fun NavGraphBuilder.userProfileGraph() {
             )
         }
         composable(UserProfileRoutes.UserLocation.route) {
-            val userLocationViewModel: UserLocationViewModel = koinNavViewModel()
+            val userLocationViewModel: UserLocationViewModel = koinViewModel()
             UserLocationScreen(
                 screenState = userLocationViewModel.viewState.asStateWithLifecycle(),
                 uiState = userLocationViewModel.uiState.asStateWithLifecycle(),
@@ -67,7 +67,7 @@ fun NavGraphBuilder.userProfileGraph() {
             )
         }
         composable(UserProfileRoutes.ParentSchedule.route) {
-            val parentScheduleViewModel: ParentScheduleViewModel = koinNavViewModel()
+            val parentScheduleViewModel: ParentScheduleViewModel = koinViewModel()
             ParentScheduleScreen(
                 screenState = parentScheduleViewModel.viewState.asStateWithLifecycle(),
                 uiState = parentScheduleViewModel.uiState.asStateWithLifecycle(),
@@ -76,7 +76,7 @@ fun NavGraphBuilder.userProfileGraph() {
         }
         composable(UserProfileRoutes.ChildInfo.route) {
             val navigator: ScreenNavigator = koinInject()
-            val childInfoViewModel: ChildInfoViewModel = koinNavViewModel {
+            val childInfoViewModel: ChildInfoViewModel = koinViewModel {
                 parametersOf(
                     { navigator.navigate(UserProfileRoutes.ChildSchedule) },
                     { navigator.navigate(UserProfileRoutes.FullProfile) }
@@ -90,7 +90,7 @@ fun NavGraphBuilder.userProfileGraph() {
         }
         composable(UserProfileRoutes.ChildSchedule.route) {
             val navigator: ScreenNavigator = koinInject()
-            val childScheduleViewModel: ChildScheduleViewModel = koinNavViewModel {
+            val childScheduleViewModel: ChildScheduleViewModel = koinViewModel {
                 parametersOf(
                     { navigator.navigate(UserProfileRoutes.FullProfile) },
                     { navigator.navigate(UserProfileRoutes.FullProfile) }
@@ -115,7 +115,7 @@ fun NavGraphBuilder.userProfileGraph() {
             )
         }
 //        composable(UserProfileRoutes.ChildrenInfo.route) {
-//            val childrenInfoViewModel: ChildrenInfoViewModel = koinNavViewModel()
+//            val childrenInfoViewModel: ChildrenInfoViewModel = koinViewModel()
 //            ChildrenInfoScreen(
 //                screenState = childrenInfoViewModel.childrenInfoViewState.collectAsStateWithLifecycle(),
 //                onHandleChildrenInfoEvent = { childrenInfoViewModel.handleChildrenInfoEvent(it) },

@@ -133,7 +133,6 @@ fun EditProfileScreen(
     var editUserSchedule by rememberSaveable { mutableStateOf(false) }
     var editChildSchedule by rememberSaveable { mutableStateOf(false) }
     var deleteChildDialog by rememberSaveable { mutableStateOf(false) }
-    var selectedChild by rememberSaveable { mutableIntStateOf(0) }
 
     Column(
         modifier = Modifier
@@ -320,7 +319,11 @@ fun EditProfileScreen(
                         .padding(size_4_dp)
                         .border(
                             width = size_1_dp,
-                            color = if (screenState.isAddressChecked || screenState.address.isEmpty()) Color.Transparent else color,
+                            color = if (screenState.isAddressChecked ||
+                                screenState.address.isEmpty())
+                                Color.Transparent
+                            else
+                                color,
                             shape = RoundedCornerShape(size_2_dp)
                         )
                 ) {
@@ -402,11 +405,11 @@ fun EditProfileScreen(
                 modifier = Modifier.fillMaxWidth(),
                 child = child,
                 onEdit = {
-                    selectedChild = index
+                    handleEvent(EditProfileEvent.SelectChildForEdit(index))
                     editChildSchedule = true
                 },
                 onDelete = {
-                    selectedChild = index
+                    handleEvent(EditProfileEvent.SelectChildForEdit(index))
                     deleteChildDialog = true
                 }
             )
@@ -464,9 +467,8 @@ fun EditProfileScreen(
         }
 
         if (editChildSchedule) {
-            handleEvent(EditProfileEvent.SelectChildForEdit(selectedChild))
             ChildScheduleEditDialog(
-                selectedChild = selectedChild,
+                selectedChild = screenState.selectedChild,
                 children = screenState.children,
                 notes = screenState.childrenTempNotes,
                 schedules = screenState.childrenTempSchedules,
@@ -501,12 +503,12 @@ fun EditProfileScreen(
                 text = stringResource(id = R.string.delete_child_info),
                 button = stringResource(id = R.string.action_delete_child),
                 onDismissRequest = {
-                    selectedChild = 0
+                    handleEvent(EditProfileEvent.SelectChildForEdit(-1))
                     deleteChildDialog = false
                 },
                 onDelete = {
                     deleteChildDialog = false
-                    handleEvent(EditProfileEvent.DeleteChild(screenState.children[selectedChild].childId))
+                    handleEvent(EditProfileEvent.DeleteChild(screenState.children[screenState.selectedChild].childId))
                 }
             )
         }

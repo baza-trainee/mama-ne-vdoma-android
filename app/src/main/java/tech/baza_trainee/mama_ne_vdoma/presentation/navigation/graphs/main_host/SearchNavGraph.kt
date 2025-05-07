@@ -3,7 +3,7 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.navigation.graphs.main_host
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import org.koin.androidx.compose.navigation.koinNavViewModel
+import org.koin.androidx.compose.koinViewModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.Graphs
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.SearchScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.functions.asStateWithLifecycle
@@ -18,7 +18,7 @@ fun NavGraphBuilder.searchNavGraph() {
         startDestination = SearchScreenRoutes.SearchUser.route
     ) {
         composable(SearchScreenRoutes.SearchUser.route) {
-            val searchRequestViewModel: SearchRequestViewModel = koinNavViewModel()
+            val searchRequestViewModel: SearchRequestViewModel = koinViewModel()
             SearchRequestScreen(
                 screenState = searchRequestViewModel.viewState.asStateWithLifecycle(),
                 uiState = searchRequestViewModel.uiState.asStateWithLifecycle(),
@@ -26,7 +26,7 @@ fun NavGraphBuilder.searchNavGraph() {
             )
         }
         composable(SearchScreenRoutes.SearchResults.route) {
-            val searchResultsViewModel: SearchResultsViewModel = koinNavViewModel()
+            val searchResultsViewModel: SearchResultsViewModel = koinViewModel()
             SearchResultsScreen(
                 screenState = searchResultsViewModel.viewState.asStateWithLifecycle(),
                 uiState = searchResultsViewModel.uiState.asStateWithLifecycle(),

@@ -16,4 +16,3 @@ dependencyResolutionManagement {
 
 rootProject.name = "Mama_ne_vdoma"
 include(":app")
-include(":app")

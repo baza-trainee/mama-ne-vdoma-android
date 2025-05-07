@@ -12,7 +12,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidApplication
 import org.koin.android.ext.koin.androidContext
-import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.core.module.dsl.viewModel
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import retrofit2.Retrofit
@@ -163,8 +163,12 @@ val repoModule = module {
 }
 
 val commonScreensModule = module {
-    viewModel { (nextRoute: () -> Unit, backRoute: () -> Unit) -> ChildInfoViewModel(nextRoute, backRoute, get(), get()) }
-    viewModel { (nextRoute: () -> Unit, backRoute: () -> Unit) -> ChildScheduleViewModel(nextRoute, backRoute, get(), get()) }
+    viewModel { (nextRoute: () -> Unit, backRoute: () -> Unit) ->
+        ChildInfoViewModel(nextRoute, backRoute, get(), get())
+    }
+    viewModel { (nextRoute: () -> Unit, backRoute: () -> Unit) ->
+        ChildScheduleViewModel(nextRoute, backRoute, get(), get())
+    }
 }
 
 val userCreateModule = module {
@@ -302,21 +306,25 @@ fun createOkHttpClient(
 
 fun createSSLSocketFactory(context: Context): Pair<SSLSocketFactory, X509TrustManager> {
     // Create a certificate for the production environment
-    var ca: Certificate?
-    context.resources.openRawResource(R.raw.certificate).use { inputStreamSSH ->
-        ca = CertificateFactory.getInstance("X.509").generateCertificate(inputStreamSSH)
+    val certificateFactory = CertificateFactory.getInstance("X.509")
+    val ca: Certificate
+    context.resources.openRawResource(R.raw.certificate).use { inputStream ->
+        ca = certificateFactory.generateCertificate(inputStream)
     }
+
     // Create a KeyStore containing our trusted CAs
     val keyStoreType = KeyStore.getDefaultType()
     val keyStore = KeyStore.getInstance(keyStoreType)
     keyStore.load(null, null)
     keyStore.setCertificateEntry("ca", ca)
+
     // Create a TrustManager that trusts the CAs in our KeyStore
-    val tmf = TrustManagerFactory
-        .getInstance(TrustManagerFactory.getDefaultAlgorithm())
-    tmf.init(keyStore)
+    val trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm())
+    trustManagerFactory.init(keyStore)
+
     // Create an SSLContext that uses our TrustManager
     val sslContext = SSLContext.getInstance("TLSv1.2")
-    sslContext.init(null, tmf.trustManagers, SecureRandom())
-    return Pair(sslContext.socketFactory, tmf.trustManagers[0] as X509TrustManager)
+    sslContext.init(null, trustManagerFactory.trustManagers, SecureRandom())
+
+    return Pair(sslContext.socketFactory, trustManagerFactory.trustManagers[0] as X509TrustManager)
 }

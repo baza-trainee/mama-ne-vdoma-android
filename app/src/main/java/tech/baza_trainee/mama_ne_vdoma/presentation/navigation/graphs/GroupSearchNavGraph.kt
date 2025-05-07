@@ -3,7 +3,7 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.navigation.graphs
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import org.koin.androidx.compose.navigation.koinNavViewModel
+import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 import org.koin.core.parameter.parametersOf
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
@@ -31,7 +31,7 @@ fun NavGraphBuilder.groupStandaloneScreensNavGraph() {
             arguments = StandaloneGroupsRoutes.ChooseChild.argumentList
         ) { entry ->
             val (isForSearch) = StandaloneGroupsRoutes.ChooseChild.parseArguments(entry)
-            val chooseChildViewModel: ChooseChildStandaloneViewModel = koinNavViewModel {
+            val chooseChildViewModel: ChooseChildStandaloneViewModel = koinViewModel {
                 parametersOf(isForSearch)
             }
             ChooseChildStandaloneScreen(
@@ -42,7 +42,7 @@ fun NavGraphBuilder.groupStandaloneScreensNavGraph() {
             )
         }
         composable(StandaloneGroupsRoutes.SetArea.route) {
-            val setAreaViewModel: SetAreaViewModel = koinNavViewModel()
+            val setAreaViewModel: SetAreaViewModel = koinViewModel()
             SetAreaForSearchScreen(
                 screenState = setAreaViewModel.viewState.asStateWithLifecycle(),
                 uiState = setAreaViewModel.uiState.asStateWithLifecycle(),
@@ -50,7 +50,7 @@ fun NavGraphBuilder.groupStandaloneScreensNavGraph() {
             )
         }
         composable(StandaloneGroupsRoutes.GroupsFound.route) {
-            val foundGroupViewModel: FoundGroupsStandaloneViewModel = koinNavViewModel()
+            val foundGroupViewModel: FoundGroupsStandaloneViewModel = koinViewModel()
             FoundGroupScreen(
                 screenState = foundGroupViewModel.viewState.asStateWithLifecycle(),
                 uiState = foundGroupViewModel.uiState.asStateWithLifecycle(),
@@ -60,7 +60,7 @@ fun NavGraphBuilder.groupStandaloneScreensNavGraph() {
         composable(
             route = StandaloneGroupsRoutes.CreateGroup.route
         ) {
-            val createGroupViewModel: CreateGroupViewModel = koinNavViewModel()
+            val createGroupViewModel: CreateGroupViewModel = koinViewModel()
             CreateGroupScreen(
                 screenState = createGroupViewModel.viewState.asStateWithLifecycle(),
                 uiState = createGroupViewModel.uiState.asStateWithLifecycle(),
@@ -69,7 +69,7 @@ fun NavGraphBuilder.groupStandaloneScreensNavGraph() {
         }
         composable(StandaloneGroupsRoutes.GroupImageCrop.route) {
             val navigator = koinInject<ScreenNavigator>()
-            val imageCropViewModel: ImageCropViewModel = koinNavViewModel {
+            val imageCropViewModel: ImageCropViewModel = koinViewModel {
                 parametersOf(navigator)
             }
             GroupImageCropScreen(

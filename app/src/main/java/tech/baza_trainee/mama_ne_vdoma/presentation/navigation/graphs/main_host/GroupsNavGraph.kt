@@ -3,7 +3,7 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.navigation.graphs.main_host
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import org.koin.androidx.compose.navigation.koinNavViewModel
+import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 import org.koin.core.parameter.parametersOf
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.PageNavigator
@@ -27,7 +27,7 @@ fun NavGraphBuilder.groupNavGraph() {
         startDestination = GroupsScreenRoutes.Groups.route
     ) {
         composable(GroupsScreenRoutes.Groups.route) {
-            val viewModel: MyGroupsViewModel = koinNavViewModel()
+            val viewModel: MyGroupsViewModel = koinViewModel()
             MyGroupsScreen(
                 screenState = viewModel.viewState.asStateWithLifecycle(),
                 uiState = viewModel.uiState.asStateWithLifecycle(),
@@ -35,7 +35,7 @@ fun NavGraphBuilder.groupNavGraph() {
             )
         }
         composable(GroupsScreenRoutes.UpdateGroup.route) {
-            val viewModel: UpdateGroupViewModel = koinNavViewModel()
+            val viewModel: UpdateGroupViewModel = koinViewModel()
             UpdateGroupScreen(
                 screenState = viewModel.viewState.asStateWithLifecycle(),
                 uiState = viewModel.uiState.asStateWithLifecycle(),
@@ -44,7 +44,7 @@ fun NavGraphBuilder.groupNavGraph() {
         }
         composable(GroupsScreenRoutes.UpdateGroupAvatar.route) {
             val navigator = koinInject<PageNavigator>()
-            val viewModel: ImageCropViewModel = koinNavViewModel {
+            val viewModel: ImageCropViewModel = koinViewModel {
                 parametersOf(navigator)
             }
             UpdateGroupAvatarScreen(
@@ -57,7 +57,7 @@ fun NavGraphBuilder.groupNavGraph() {
             arguments = GroupsScreenRoutes.RateUser.argumentList
         ) {
             val (userId) = GroupsScreenRoutes.RateUser.parseArguments(it)
-            val viewModel: RateUserViewModel = koinNavViewModel {
+            val viewModel: RateUserViewModel = koinViewModel {
                 parametersOf(userId)
             }
             RateUserScreen(
@@ -71,7 +71,7 @@ fun NavGraphBuilder.groupNavGraph() {
             arguments = GroupsScreenRoutes.ViewReviews.argumentList
         ) {
             val (userId) = GroupsScreenRoutes.ViewReviews.parseArguments(it)
-            val viewModel: ViewReviewsViewModel = koinNavViewModel {
+            val viewModel: ViewReviewsViewModel = koinViewModel {
                 parametersOf(userId)
             }
             ViewReviewsScreen(

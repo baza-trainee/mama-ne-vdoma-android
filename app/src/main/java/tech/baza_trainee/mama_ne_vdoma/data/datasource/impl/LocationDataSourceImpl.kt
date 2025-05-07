@@ -5,6 +5,7 @@ import android.app.Application
 import android.location.Address
 import android.location.Geocoder
 import android.location.Location
+import android.util.Log
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
@@ -12,9 +13,11 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.tasks.CancellationTokenSource
 import com.google.android.gms.tasks.Task
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import tech.baza_trainee.mama_ne_vdoma.data.datasource.LocationDataSource
-import java.util.Locale
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
 class LocationDataSourceImpl(
@@ -29,56 +32,109 @@ class LocationDataSourceImpl(
 
     @SuppressLint("MissingPermission")
     override suspend fun getCurrentLocation(): LatLng? {
-        var result: LatLng? = null
-        suspendCoroutine<LatLng?> { cont ->
+        return suspendCoroutine { cont ->
             fusedLocationClient?.getCurrentLocation(
                 Priority.PRIORITY_HIGH_ACCURACY,
                 cancellationTokenSource.token
             )?.addOnCompleteListener { task: Task<Location> ->
                 if (task.isSuccessful && task.result != null) {
-                    result = LatLng(task.result.latitude, task.result.longitude)
+                    val result = LatLng(task.result.latitude, task.result.longitude)
                     cont.resumeWith(Result.success((result)))
                 } else {
                     cont.resumeWith(Result.success(null))
                 }
             }
         }
-        return result
     }
 
     override suspend fun getLocationFromAddress(address: String): LatLng? {
-        var result: LatLng? = null
-        withContext(Dispatchers.IO) {
-            val coder = Geocoder(application)
-            val addressList: List<Address>?
-            try {
-                addressList = coder.getFromLocationName(address, 1)
-                result = if (!addressList.isNullOrEmpty()) {
-                    val location: Address = addressList[0]
-                    LatLng(location.latitude, location.longitude)
-                } else null
-            } catch (ex: Exception) {
-                ex.printStackTrace()
+        val coder = Geocoder(application)
+        // Check for Android 13+ compatibility
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            return try {
+                suspendCancellableCoroutine { continuation ->
+                    coder.getFromLocationName(address, 1, object : Geocoder.GeocodeListener {
+
+                        override fun onGeocode(addresses: MutableList<Address>) {
+                            if (addresses.isNotEmpty()) {
+                                val location = addresses[0]
+                                continuation.resume(LatLng(location.latitude, location.longitude))
+                            } else {
+                                continuation.resume(null) // No results
+                            }
+                        }
+
+                        override fun onError(errorMessage: String?) {
+                            continuation.resumeWithException(
+                                Exception(errorMessage ?: "Unknown geocoding error")
+                            )
+                        }
+                    })
+                }
+            } catch (e: Exception) {
+                Log.e("GeocoderError", "Geocoding failed", e)
+                null
+            }
+        } else {
+            // Fallback for devices below Android 13
+            return withContext(Dispatchers.IO) {
+                try {
+                    val addressList = coder.getFromLocationName(address, 1)
+                    if (!addressList.isNullOrEmpty()) {
+                        val location = addressList[0]
+                        LatLng(location.latitude, location.longitude)
+                    } else null
+                } catch (e: Exception) {
+                    Log.e("GeocoderError", "Geocoding failed", e)
+                    null
+                }
             }
         }
-        return result
     }
 
     override suspend fun getAddressFromLocation(latLng: LatLng): String {
-        var result: String = ""
-        withContext(Dispatchers.IO) {
-            val coder = Geocoder(application)
-            val addressList: List<Address>?
-            try {
-                addressList = coder.getFromLocation(latLng.latitude, latLng.longitude, 1)
-                if (addressList != null) {
-                    val location: Address = addressList.firstOrNull() ?: Address(Locale.getDefault())
-                    result = location.getAddressLine(0)
+        val coder = Geocoder(application)
+        // Check for Android 13+ compatibility
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            return try {
+                suspendCancellableCoroutine { continuation ->
+                    coder.getFromLocation(latLng.latitude, latLng.longitude, 1, object : Geocoder.GeocodeListener {
+
+                        override fun onGeocode(addresses: MutableList<Address>) {
+                            if (addresses.isNotEmpty()) {
+                                val location = addresses[0]
+                                continuation.resume(location.getAddressLine(0) ?: "")
+                            } else {
+                                continuation.resume("")
+                            }
+                        }
+
+                        override fun onError(errorMessage: String?) {
+                            continuation.resumeWithException(
+                                Exception(errorMessage ?: "Unknown geocoding error")
+                            )
+                        }
+                    })
                 }
-            } catch (ex: Exception) {
-                ex.printStackTrace()
+            } catch (e: Exception) {
+                Log.e("GeocoderError", "Geocoding failed", e)
+                ""
+            }
+        } else {
+            // Fallback for devices below Android 13
+            return withContext(Dispatchers.IO) {
+                try {
+                    val addressList = coder.getFromLocation(latLng.latitude, latLng.longitude, 1)
+                    if (!addressList.isNullOrEmpty()) {
+                        addressList[0].getAddressLine(0) ?: ""
+                    } else {
+                        ""
+                    }
+                } catch (e: Exception) {
+                    Log.e("GeocoderError", "Geocoding failed", e)
+                    ""
+                }
             }
         }
-        return result
     }
 }

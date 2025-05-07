@@ -2,6 +2,7 @@ package tech.baza_trainee.mama_ne_vdoma.domain.preferences
 
 import android.content.Context
 import android.net.Uri
+import androidx.core.net.toUri
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
@@ -56,7 +57,7 @@ class UserPreferencesDatastoreManager(private val context: Context) {
         }.map { preferences ->
             val id = preferences[KEY_ID].orEmpty()
             val avatar = preferences[KEY_AVATAR].orEmpty()
-            val avatarUri = Uri.parse(preferences[KEY_AVATAR_URI].orEmpty())
+            val avatarUri = preferences[KEY_AVATAR_URI].orEmpty().toUri()
             val name = preferences[KEY_NAME].orEmpty()
             val code = preferences[KEY_COUNTRY_CODE].orEmpty()
             val phone = preferences[KEY_PHONE_NUMBER].orEmpty()
@@ -97,7 +98,7 @@ class UserPreferencesDatastoreManager(private val context: Context) {
 
 
     var avatarUri: Uri
-        get() = Uri.parse(userDataStore.get(KEY_AVATAR_URI, ""))
+        get() = userDataStore.get(KEY_AVATAR_URI, "").toUri()
         set(value) = userDataStore.set(KEY_AVATAR_URI, value.toString())
 
     var name: String

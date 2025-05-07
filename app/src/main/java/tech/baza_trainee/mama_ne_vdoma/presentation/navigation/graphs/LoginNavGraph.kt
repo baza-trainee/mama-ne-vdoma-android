@@ -5,7 +5,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.google.android.gms.auth.api.identity.SignInClient
-import org.koin.androidx.compose.navigation.koinNavViewModel
+import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.Graphs
@@ -31,7 +31,7 @@ fun NavGraphBuilder.loginNavGraph(
         startDestination = LoginRoutes.Login.route
     ) {
         composable(LoginRoutes.Login.route) {
-            val loginViewModel: LoginViewModel = koinNavViewModel()
+            val loginViewModel: LoginViewModel = koinViewModel()
             val oneTapClient: SignInClient = koinInject()
             LoginUserScreen(
                 oneTapClient = oneTapClient,
@@ -62,7 +62,7 @@ fun NavGraphBuilder.loginNavGraph(
             )
         }
         composable(LoginRoutes.VerifyEmail.route) {
-            val verifyEmailViewModel: VerifyEmailViewModel = koinNavViewModel()
+            val verifyEmailViewModel: VerifyEmailViewModel = koinViewModel()
             VerifyEmailScreen(
                 screenState = verifyEmailViewModel.viewState.asStateWithLifecycle(),
                 uiState = verifyEmailViewModel.uiState.asStateWithLifecycle(),
@@ -71,7 +71,7 @@ fun NavGraphBuilder.loginNavGraph(
             )
         }
         composable(LoginRoutes.NewPassword.route) {
-            val newPasswordScreenViewModel: NewPasswordScreenViewModel = koinNavViewModel()
+            val newPasswordScreenViewModel: NewPasswordScreenViewModel = koinViewModel()
             NewPasswordScreen(
                 screenState = newPasswordScreenViewModel.viewState.asStateWithLifecycle(),
                 uiState = newPasswordScreenViewModel.uiState.asStateWithLifecycle(),

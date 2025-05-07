@@ -1,7 +1,6 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.common.group_details
 
 import android.content.Intent
-import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -53,7 +52,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import kotlinx.coroutines.launch
@@ -330,10 +329,10 @@ fun GroupDetailsInputScreen(
                                             val intent =
                                                 Intent(
                                                     Intent.ACTION_SENDTO,
-                                                    Uri.parse("mailto:${it.email}")
+                                                    "mailto:${it.email}".toUri()
                                                 )
                                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                                            ContextCompat.startActivity(context, intent, null)
+                                            context.startActivity(intent, null)
                                         }
                                     }
                                 ) {
@@ -350,10 +349,10 @@ fun GroupDetailsInputScreen(
                                             val intent =
                                                 Intent(
                                                     Intent.ACTION_DIAL,
-                                                    Uri.parse("tel:${it.phone}")
+                                                    "tel:${it.phone}".toUri()
                                                 )
                                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                                            ContextCompat.startActivity(context, intent, null)
+                                            context.startActivity(intent, null)
                                         }
                                     }
                                 ) {
