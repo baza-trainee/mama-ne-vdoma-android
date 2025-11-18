@@ -10,14 +10,14 @@ plugins {
 
 android {
     namespace = "tech.baza_trainee.mama_ne_vdoma"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "tech.baza_trainee.mama_ne_vdoma"
         minSdk = 24
-        targetSdk = 35
-        versionCode = 53
-        versionName = "0.4.8"
+        targetSdk = 36
+        versionCode = 54
+        versionName = "0.4.9"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -63,32 +63,32 @@ android {
 dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
 
-    implementation("androidx.core:core-ktx:1.16.0")
+    implementation("androidx.core:core-ktx:1.17.0")
     implementation("androidx.core:core-splashscreen:1.0.1")
 
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.7")
-    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.7")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.9.1")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.9.1")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.9.1")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.9.1")
 
-    implementation("androidx.activity:activity-compose:1.10.1")
-    implementation("androidx.navigation:navigation-compose:2.8.9")
+    implementation("androidx.activity:activity-compose:1.12.0-rc01")
+    implementation("androidx.navigation:navigation-compose:2.9.5")
     implementation("androidx.constraintlayout:constraintlayout-compose:1.1.1")
 
     implementation("androidx.exifinterface:exifinterface:1.4.1")
 
     implementation("androidx.biometric:biometric:1.1.0")
 
-    implementation(platform("androidx.compose:compose-bom:2025.04.01"))
-    implementation("androidx.compose.ui:ui")
+    implementation(platform("androidx.compose:compose-bom:2025.11.00"))
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
-    implementation("androidx.compose.material3:material3:1.3.2")
+    implementation("androidx.compose.material3:material3:1.5.0-alpha08")
     implementation("androidx.compose.material:material-icons-extended:1.7.8")
     implementation("androidx.compose.ui:ui-text-google-fonts:1.8.0")
     implementation("androidx.compose.material:material:1.8.0")
 
     implementation("androidx.datastore:datastore-preferences:1.0.0")
+
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1")
 
     //Google Maps
@@ -103,11 +103,10 @@ dependencies {
     // KTX for the Maps SDK for Android
     implementation ("com.google.maps.android:maps-ktx:3.4.0")
 
-    // Koin
-    implementation("io.insert-koin:koin-core:4.0.4")
-    implementation("io.insert-koin:koin-android:4.0.4")
-    implementation("io.insert-koin:koin-androidx-compose:4.0.4")
-    implementation("io.insert-koin:koin-androidx-compose-navigation:4.0.4")
+    implementation("io.insert-koin:koin-core:4.1.1")
+    implementation("io.insert-koin:koin-android:4.1.1")
+    implementation("io.insert-koin:koin-androidx-compose:4.1.1")
+    implementation("io.insert-koin:koin-androidx-compose-navigation:4.1.1")
 
     //Retrofit
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
@@ -133,16 +132,13 @@ dependencies {
     implementation("com.google.firebase:firebase-messaging-ktx:24.1.1")
 
     implementation("io.socket:socket.io-client:2.1.0") {
-        exclude(
-            group = "org.json",
-            module = "json"
-        )
+        exclude(group = "org.json", module = "json")
     }
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
-    androidTestImplementation(platform("androidx.compose:compose-bom:2025.04.01"))
+    androidTestImplementation(platform("androidx.compose:compose-bom:2025.11.00"))
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
