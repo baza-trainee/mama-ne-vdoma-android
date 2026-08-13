@@ -3,7 +3,7 @@ package tech.baza_trainee.mama_ne_vdoma.di
 import android.content.Context
 import com.chuckerteam.chucker.api.ChuckerCollector
 import com.chuckerteam.chucker.api.ChuckerInterceptor
-import com.google.android.gms.auth.api.identity.Identity
+import androidx.credentials.CredentialManager
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.ToNumberPolicy
@@ -110,7 +110,7 @@ private const val SCHEDULE = "SCHEDULE"
 private const val UPDATE_GROUP = "UPDATE_GROUP"
 
 val gsoModule = module {
-    single { Identity.getSignInClient(androidContext()) }
+    single { CredentialManager.create(androidContext()) }
 }
 
 val communicatorsModule = module {
@@ -226,7 +226,7 @@ val mainModule = module {
             locationRepository = get(),
             groupsRepository = get(),
             preferencesDatastoreManager = get(),
-            oneTapClient = get()
+            credentialManager = get()
         )
     }
     viewModel { MainViewModel(get(), get()) }

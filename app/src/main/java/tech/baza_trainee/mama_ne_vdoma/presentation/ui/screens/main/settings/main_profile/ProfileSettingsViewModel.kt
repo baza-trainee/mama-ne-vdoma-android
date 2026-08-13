@@ -2,7 +2,8 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.ma
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.android.gms.auth.api.identity.SignInClient
+import androidx.credentials.ClearCredentialStateRequest
+import androidx.credentials.CredentialManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -26,7 +27,7 @@ class ProfileSettingsViewModel(
     private val communicator: EditProfileCommunicator,
     private val userProfileInteractor: UserProfileInteractor,
     private val preferencesDatastoreManager: UserPreferencesDatastoreManager,
-    private val oneTapClient: SignInClient
+    private val credentialManager: CredentialManager
 ): ViewModel(), UserProfileInteractor by userProfileInteractor, NetworkEventsListener {
 
     private val _viewState = MutableStateFlow(ProfileSettingsViewState())
@@ -92,7 +93,11 @@ class ProfileSettingsViewModel(
             ProfileSettingsEvent.EditProfile -> navigator.navigate(SettingsScreenRoutes.EditProfile)
             ProfileSettingsEvent.LogOut -> {
                 preferencesDatastoreManager.clearData()
-                oneTapClient.signOut()
+                viewModelScope.launch {
+                    runCatching {
+                        credentialManager.clearCredentialState(ClearCredentialStateRequest())
+                    }
+                }
                 mainNavigator.navigate(LoginRoutes.Login)
             }
 

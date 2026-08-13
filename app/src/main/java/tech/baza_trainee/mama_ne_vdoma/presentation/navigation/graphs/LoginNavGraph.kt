@@ -4,7 +4,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.google.android.gms.auth.api.identity.SignInClient
+import androidx.credentials.CredentialManager
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 import tech.baza_trainee.mama_ne_vdoma.R
@@ -32,16 +32,17 @@ fun NavGraphBuilder.loginNavGraph(
     ) {
         composable(LoginRoutes.Login.route) {
             val loginViewModel: LoginViewModel = koinViewModel()
-            val oneTapClient: SignInClient = koinInject()
+            val credentialManager: CredentialManager = koinInject()
             LoginUserScreen(
-                oneTapClient = oneTapClient,
+                credentialManager = credentialManager,
                 screenState = loginViewModel.viewState.asStateWithLifecycle(),
                 uiState = loginViewModel.uiState.asStateWithLifecycle(),
                 handleEvent = { loginViewModel.handleLoginEvent(it) }
             )
         }
         composable(LoginRoutes.RestorePassword.route) { entry ->
-            val restorePasswordScreenViewModel: RestorePasswordScreenViewModel = entry.sharedViewModel(navHostController)
+            val restorePasswordScreenViewModel: RestorePasswordScreenViewModel =
+                entry.sharedViewModel(navHostController)
             RestorePasswordScreen(
                 screenState = restorePasswordScreenViewModel.viewState.asStateWithLifecycle(),
                 uiState = restorePasswordScreenViewModel.uiState.asStateWithLifecycle(),
@@ -53,7 +54,8 @@ fun NavGraphBuilder.loginNavGraph(
             arguments = LoginRoutes.EmailConfirm.argumentList
         ) { entry ->
             val (email, password) = LoginRoutes.EmailConfirm.parseArguments(entry)
-            val restorePasswordScreenViewModel: RestorePasswordScreenViewModel = entry.sharedViewModel(navHostController)
+            val restorePasswordScreenViewModel: RestorePasswordScreenViewModel =
+                entry.sharedViewModel(navHostController)
             EmailConfirmScreen(
                 uiState = restorePasswordScreenViewModel.uiState.asStateWithLifecycle(),
                 email = email,

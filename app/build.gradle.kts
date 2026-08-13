@@ -101,8 +101,12 @@ dependencies {
     implementation(libs.play.services.location)
     implementation(libs.android.maps.utils)
 
-    implementation(libs.play.services.auth)
     implementation(libs.app.update.ktx)
+
+    //Credential Manager
+    implementation(libs.credentials)
+    implementation(libs.credentials.play.services.auth)
+    implementation(libs.googleid)
 
     // KTX for the Maps SDK for Android
     implementation (libs.maps.ktx)

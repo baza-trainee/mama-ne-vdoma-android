@@ -2,9 +2,6 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.login.login
 
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.IntentSenderRequest
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -33,15 +30,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import com.google.android.gms.auth.api.identity.BeginSignInRequest
-import com.google.android.gms.auth.api.identity.SignInClient
-import tech.baza_trainee.mama_ne_vdoma.BuildConfig
+import androidx.credentials.CredentialManager
+import androidx.credentials.exceptions.GetCredentialCancellationException
 import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.LoadingIndicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.SocialLoginBlock
@@ -59,13 +56,14 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_64_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_8_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.beginSignInGoogleOneTap
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.AuthCredential
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.findActivity
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.requestAuthCredential
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.showToast
 
 @Composable
 fun LoginUserScreen(
-    oneTapClient: SignInClient?,
+    credentialManager: CredentialManager?,
     screenState: LoginViewState,
     uiState: RequestState,
     handleEvent: (LoginEvent) -> Unit
@@ -74,6 +72,7 @@ fun LoginUserScreen(
         BackHandler { handleEvent(LoginEvent.OnBack) }
 
         val context = LocalContext.current
+        val resources = LocalResources.current
 
         when (uiState) {
             RequestState.Idle -> Unit
@@ -85,70 +84,44 @@ fun LoginUserScreen(
 
         var googleLogin by remember { mutableStateOf(false) }
 
-        val intentSender =
-            rememberLauncherForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) {
-                try {
-                    val credential = oneTapClient?.getSignInCredentialFromIntent(it.data)
-                    val idToken = credential?.googleIdToken
-                    val username = credential?.id.orEmpty()
-                    val password = credential?.password
-                    when {
-                        idToken != null -> handleEvent(LoginEvent.LoginWithToken(idToken))
-                        password != null -> handleEvent(
+        LaunchedEffect(key1 = googleLogin) {
+            if (googleLogin) {
+                runCatching {
+                    context.findActivity().requestAuthCredential(
+                        credentialManager = credentialManager,
+                        includePassword = true,
+                        autoSelectEnabled = true,
+                        filterByAuthorizedAccounts = true
+                    )
+                }.onSuccess { credential ->
+                    when (credential) {
+                        is AuthCredential.GoogleIdToken ->
+                            handleEvent(LoginEvent.LoginWithToken(credential.token))
+
+                        is AuthCredential.Password -> handleEvent(
                             LoginEvent.LoginWithPassword(
-                                username,
-                                password
+                                credential.username,
+                                credential.password
                             )
                         )
 
-                        else -> {
+                        null -> {
                             Toast.makeText(
                                 context,
-                                context.getString(R.string.no_data_for_auth),
+                                resources.getString(R.string.no_data_for_auth),
                                 Toast.LENGTH_LONG
                             ).show()
                         }
                     }
-                } catch (exc: Exception) {
-                    Toast.makeText(
-                        context,
-                        context.getString(R.string.no_data_for_auth),
-                        Toast.LENGTH_LONG
-                    ).show()
-                }
-            }
-
-        LaunchedEffect(key1 = googleLogin) {
-            if (googleLogin) {
-                try {
-                    val signInRequest = BeginSignInRequest.builder()
-                        .setPasswordRequestOptions(
-                            BeginSignInRequest.PasswordRequestOptions.builder()
-                                .setSupported(true)
-                                .build()
-                        )
-                        .setGoogleIdTokenRequestOptions(
-                            BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
-                                .setSupported(true)
-                                .setServerClientId(BuildConfig.ONE_TAP_SERVER_CLIENT_ID)
-                                .setFilterByAuthorizedAccounts(true)
-                                .build()
-                        )
-                        .setAutoSelectEnabled(true)
-                        .build()
-
-                    val activity = context.findActivity()
-                    val result = activity.beginSignInGoogleOneTap(oneTapClient, signInRequest)
-                    intentSender.launch(
-                        IntentSenderRequest.Builder(result.pendingIntent.intentSender)
-                            .build()
-                    )
-                } catch (exc: Exception) {
-                    Toast.makeText(
-                        context,
-                        context.getString(R.string.auth_impossible),
-                        Toast.LENGTH_LONG
-                    ).show()
+                }.onFailure { exc ->
+                    // dismissing the credential sheet is not an error
+                    if (exc !is GetCredentialCancellationException) {
+                        Toast.makeText(
+                            context,
+                            resources.getString(R.string.auth_impossible),
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
                 }
                 googleLogin = false
             }
@@ -266,7 +239,7 @@ fun LoginUserScreen(
 @Preview
 fun LoginUserPreview() {
     LoginUserScreen(
-        oneTapClient = null,
+        credentialManager = null,
         screenState = LoginViewState(),
         uiState = RequestState.Idle,
         handleEvent = { _ -> }

@@ -3,7 +3,7 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.navigation.graphs
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.google.android.gms.auth.api.identity.SignInClient
+import androidx.credentials.CredentialManager
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 import tech.baza_trainee.mama_ne_vdoma.R
@@ -22,9 +22,9 @@ fun NavGraphBuilder.createUserNavGraph() {
     ) {
         composable(CreateUserRoute.CreateUser.route) {
             val userCreateViewModel: UserCreateViewModel = koinViewModel()
-            val oneTapClient: SignInClient = koinInject()
+            val credentialManager: CredentialManager = koinInject()
             UserCreateScreen(
-                oneTapClient = oneTapClient,
+                credentialManager = credentialManager,
                 screenState = userCreateViewModel.viewState.asStateWithLifecycle(),
                 uiState = userCreateViewModel.uiState.asStateWithLifecycle(),
                 handleEvent = { userCreateViewModel.handleUserCreateEvent(it) }

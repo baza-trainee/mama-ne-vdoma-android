@@ -4,7 +4,8 @@ import android.net.Uri
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.android.gms.auth.api.identity.SignInClient
+import androidx.credentials.ClearCredentialStateRequest
+import androidx.credentials.CredentialManager
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -57,7 +58,7 @@ class HostViewModel(
     private val locationRepository: LocationRepository,
     private val groupsRepository: GroupsRepository,
     private val preferencesDatastoreManager: UserPreferencesDatastoreManager,
-    private val oneTapClient: SignInClient
+    private val credentialManager: CredentialManager
 ): ViewModel() {
 
     val screenNavigator get() = navigator
@@ -127,9 +128,17 @@ class HostViewModel(
             }
             onErrorWithCode { _, code ->
                 if (code == HttpURLConnection.HTTP_UNAUTHORIZED) {
-                    oneTapClient.signOut()
+                    clearCredentialState()
                     mainNavigator.navigate(LoginRoutes.Login)
                 }
+            }
+        }
+    }
+
+    private fun clearCredentialState() {
+        viewModelScope.launch {
+            runCatching {
+                credentialManager.clearCredentialState(ClearCredentialStateRequest())
             }
         }
     }
