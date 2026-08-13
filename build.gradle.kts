@@ -1,16 +1,15 @@
 buildscript {
     dependencies {
-        classpath("com.android.tools.build:gradle:8.11.0")
-        classpath("com.google.gms:google-services:4.4.4")
-        classpath("com.google.firebase:firebase-crashlytics-gradle:3.0.3")
+        classpath(libs.gradle)
+        classpath(libs.google.services)
+        classpath(libs.firebase.crashlytics.gradle)
     }
 }
 
 plugins {
-    id("com.android.application") version "8.11.0" apply false
-    id("org.jetbrains.kotlin.android") version "2.2.20" apply false
-    kotlin("plugin.serialization") version "2.2.20"
-    id("org.jetbrains.kotlin.plugin.compose") version "2.2.20" apply false
+    id("com.android.application") version "9.3.1" apply false
+    kotlin("plugin.serialization") version "2.4.10" apply false
+    id("org.jetbrains.kotlin.plugin.compose") version "2.4.10" apply false
     id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin") version "2.0.1" apply false
 }
 
