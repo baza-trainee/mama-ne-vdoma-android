@@ -3,39 +3,43 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.functions
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.material3.TabPosition
+import androidx.compose.material3.TabIndicatorScope
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.composed
-import androidx.compose.ui.platform.debugInspectorInfo
 import androidx.compose.ui.unit.Dp
 
+private const val ANIMATION_DURATION = 250
+
+/**
+ * Indicator sized to [tabWidth] and centred under the selected tab.
+ *
+ * Positioning is delegated to [TabIndicatorScope.tabIndicatorOffset], which spans the selected tab
+ * and reads the tab positions inside the tab row's own layout, so it is correct on the first frame.
+ * The width is animated here in composition, because the tab row composes its indicator together
+ * with the tabs, and a width fed back out of the layout phase would arrive a frame late.
+ *
+ * The scope is a parameter because it cannot be a second receiver alongside [Modifier].
+ */
+@Composable
 fun Modifier.customTabIndicatorOffset(
-    currentTabPosition: TabPosition,
+    scope: TabIndicatorScope,
+    selectedTabIndex: Int,
     tabWidth: Dp
-): Modifier = composed(
-    inspectorInfo = debugInspectorInfo {
-        name = "customTabIndicatorOffset"
-        value = currentTabPosition
-    }
-) {
+): Modifier {
     val currentTabWidth by animateDpAsState(
         targetValue = tabWidth,
-        animationSpec = tween(durationMillis = 250, easing = FastOutSlowInEasing),
+        animationSpec = tween(durationMillis = ANIMATION_DURATION, easing = FastOutSlowInEasing),
         label = ""
     )
-    val indicatorOffset by animateDpAsState(
-        targetValue = ((currentTabPosition.left + currentTabPosition.right - tabWidth) / 2),
-        animationSpec = tween(durationMillis = 250, easing = FastOutSlowInEasing),
-        label = ""
-    )
-    fillMaxWidth()
-        .wrapContentSize(Alignment.BottomStart)
-        .offset(x = indicatorOffset)
-        .width(currentTabWidth)
+
+    return with(scope) {
+        this@customTabIndicatorOffset
+            .tabIndicatorOffset(selectedTabIndex)
+            .wrapContentSize(Alignment.BottomCenter)
+            .width(currentTabWidth)
+    }
 }

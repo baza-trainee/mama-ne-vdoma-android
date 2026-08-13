@@ -16,15 +16,15 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SecondaryTabRow
 import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -35,10 +35,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.domain.model.MessageType
 import tech.baza_trainee.mama_ne_vdoma.presentation.model.JoinRequestUiModel
@@ -58,7 +59,6 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.main.notific
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_14_sp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.font_size_16_sp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.redHatDisplayFontFamily
-import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_0_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_16_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_2_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_4_dp
@@ -114,24 +114,33 @@ fun NotificationScreen(
 
     Column {
         val density = LocalDensity.current
-        val tabWidths = remember {
-            val tabWidthStateList = mutableStateListOf<Dp>()
-            repeat(tabs.size) {
-                tabWidthStateList.add(size_0_dp)
+        val textMeasurer = rememberTextMeasurer()
+
+        val tabTextStyle = LocalTextStyle.current.merge(
+            TextStyle(
+                fontSize = font_size_14_sp,
+                fontFamily = redHatDisplayFontFamily,
+                textAlign = TextAlign.Center
+            )
+        )
+
+        val tabWidths = remember(tabs, tabTextStyle, textMeasurer, density) {
+            tabs.map { text ->
+                with(density) { textMeasurer.measure(text, tabTextStyle).size.width.toDp() }
             }
-            tabWidthStateList
         }
 
-        TabRow(
+        SecondaryTabRow(
             modifier = Modifier.height(size_52_dp),
             selectedTabIndex = pagerState.currentPage,
             containerColor = MaterialTheme.colorScheme.background,
             contentColor = MaterialTheme.colorScheme.onBackground,
-            indicator = { tabPositions ->
+            indicator = {
                 Box(
                     modifier = Modifier
                         .customTabIndicatorOffset(
-                            currentTabPosition = tabPositions[pagerState.currentPage],
+                            scope = this,
+                            selectedTabIndex = pagerState.currentPage,
                             tabWidth = tabWidths[pagerState.currentPage]
                         )
                         .height(size_4_dp)
@@ -151,13 +160,7 @@ fun NotificationScreen(
                     Text(
                         modifier = Modifier.padding(vertical = size_8_dp),
                         text = text,
-                        fontSize = font_size_14_sp,
-                        fontFamily = redHatDisplayFontFamily,
-                        onTextLayout = {
-                            tabWidths[index] =
-                                with(density) { it.size.width.toDp() }
-                        },
-                        textAlign = TextAlign.Center
+                        style = tabTextStyle
                     )
                 }
             }

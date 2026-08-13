@@ -2,6 +2,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.plugin.compose")
     id("org.jetbrains.kotlin.plugin.serialization")
+    id("com.android.compose.screenshot")
     id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
     id("com.google.gms.google-services")
     id("com.google.firebase.crashlytics")
@@ -47,6 +48,7 @@ android {
         buildConfig = true
         compose = true
     }
+    experimentalProperties["android.experimental.enableScreenshotTest"] = true
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
@@ -150,5 +152,7 @@ dependencies {
     androidTestImplementation(platform(libs.compose.bom))
     androidTestImplementation(libs.ui.test.junit4)
     debugImplementation(libs.ui.tooling)
+    screenshotTestImplementation(libs.ui.tooling)
+    screenshotTestImplementation(libs.screenshot.validation.api)
     debugImplementation(libs.ui.test.manifest)
 }

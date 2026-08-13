@@ -41,6 +41,7 @@ okhttp3 = "5.4.0"
 playServicesLocation = "21.4.0"
 playServicesMaps = "20.0.0"
 retrofit2 = "3.0.0"
+screenshotValidation = "0.0.1-alpha16"
 uiTextGoogleFonts = "1.12.0"
 
 [libraries]
@@ -95,6 +96,7 @@ okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhtt
 play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
 play-services-maps = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "playServicesMaps" }
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit2" }
+screenshot-validation-api = { group = "com.android.tools.screenshot", name = "screenshot-validation-api", version.ref = "screenshotValidation" }
 ui = { group = "androidx.compose.ui", name = "ui" }
 ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
 ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }

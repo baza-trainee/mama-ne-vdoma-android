@@ -265,12 +265,13 @@ class UserProfileInteractorImpl(
     override fun getCountryCodes(): List<CountryCode> {
         val set = phoneNumberUtil.supportedRegions
         val arr = set.toTypedArray()
+        val language = Locale.getDefault().language
 
         return arr.map {
             CountryCode(
                 it,
                 phoneNumberUtil.getCountryCodeForRegion(it).toString(),
-                Locale(Locale.getDefault().language, it).displayCountry
+                Locale.forLanguageTag("$language-$it").displayCountry
             )
         }
     }
