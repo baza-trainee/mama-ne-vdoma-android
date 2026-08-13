@@ -16,11 +16,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalLocale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import tech.baza_trainee.mama_ne_vdoma.domain.model.DayPeriod
 import tech.baza_trainee.mama_ne_vdoma.domain.model.Period
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_48_dp
@@ -29,7 +29,6 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.theme.size_8_dp
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.capitalize
 import java.time.DayOfWeek
 import java.time.format.TextStyle
-import java.util.Locale
 
 @Composable
 @Preview
@@ -97,7 +96,7 @@ fun ScheduleGroup(
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                val dayName = day.getDisplayName(TextStyle.FULL, Locale.getDefault())
+                val dayName = day.getDisplayName(TextStyle.FULL, LocalLocale.current.platformLocale)
                     .replaceFirstChar { it.uppercase() }
 
                 Box(

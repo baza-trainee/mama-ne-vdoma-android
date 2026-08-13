@@ -49,7 +49,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.google.maps.android.compose.Marker
-import com.google.maps.android.compose.MarkerState
+import com.google.maps.android.compose.rememberUpdatedMarkerState
 import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.cards.ChildInfoDesk
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.cards.ParentInfoDesk
@@ -278,7 +278,7 @@ fun EditProfileScreen(
             onMapClick = { handleEvent(EditProfileEvent.OnMapClick(it)) }
         ) {
             Marker(
-                state = MarkerState(position = screenState.currentLocation),
+                state = rememberUpdatedMarkerState(position = screenState.currentLocation),
                 title = stringResource(id = R.string.you_are_here),
                 snippet = stringResource(id = R.string.current_location)
             )

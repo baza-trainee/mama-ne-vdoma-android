@@ -31,7 +31,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import com.google.maps.android.compose.Marker
-import com.google.maps.android.compose.MarkerState
+import com.google.maps.android.compose.rememberUpdatedMarkerState
 import tech.baza_trainee.mama_ne_vdoma.R
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.ButtonText
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.composables.custom_views.CustomGoogleMap
@@ -112,7 +112,7 @@ fun UserLocationScreen(
                 onMapClick = { handleEvent(UserLocationEvent.OnMapClick(it)) }
             ) {
                 Marker(
-                    state = MarkerState(position = screenState.currentLocation),
+                    state = rememberUpdatedMarkerState(position = screenState.currentLocation),
                     title = stringResource(id = R.string.you_are_here),
                     snippet = stringResource(id = R.string.current_location)
                 )
