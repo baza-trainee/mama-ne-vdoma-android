@@ -1,6 +1,12 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes
 
-sealed class StartRoutes(override val route: String): CommonRoute(route) {
-    data object Start : StartRoutes("start_screen")
-    data object Info : StartRoutes("info_screen")
+import kotlinx.serialization.Serializable
+
+sealed interface StartRoutes : CommonRoute {
+
+    @Serializable
+    data object Start : StartRoutes
+
+    @Serializable
+    data object Info : StartRoutes
 }

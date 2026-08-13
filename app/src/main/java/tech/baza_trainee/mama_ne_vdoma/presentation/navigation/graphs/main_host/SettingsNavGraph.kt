@@ -26,11 +26,10 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.ver
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.settings.verify_email.VerifyNewEmailViewModel
 
 fun NavGraphBuilder.settingsNavGraph() {
-    navigation(
-        route = Graphs.HostNested.Settings.route,
-        startDestination = SettingsScreenRoutes.Settings.route
+    navigation<Graphs.HostNested.Settings>(
+        startDestination = SettingsScreenRoutes.Settings
     ) {
-        composable(SettingsScreenRoutes.Settings.route) {
+        composable<SettingsScreenRoutes.Settings> {
             val viewModel: ProfileSettingsViewModel = koinViewModel()
             ProfileSettingsScreen(
                 screenState = viewModel.viewState.asStateWithLifecycle(),
@@ -38,7 +37,7 @@ fun NavGraphBuilder.settingsNavGraph() {
                 handleEvent = viewModel::handleEvent
             )
         }
-        composable(SettingsScreenRoutes.EditProfile.route) {
+        composable<SettingsScreenRoutes.EditProfile> {
             val viewModel: EditProfileViewModel = koinViewModel()
             EditProfileScreen(
                 screenState = viewModel.viewState.asStateWithLifecycle(),
@@ -46,7 +45,7 @@ fun NavGraphBuilder.settingsNavGraph() {
                 handleEvent = viewModel::handleEvent
             )
         }
-        composable(SettingsScreenRoutes.EditProfilePhoto.route) {
+        composable<SettingsScreenRoutes.EditProfilePhoto> {
             val navigator = koinInject<PageNavigator>()
             val imageCropViewModel: ImageCropViewModel = koinViewModel {
                 parametersOf(navigator)
@@ -56,7 +55,7 @@ fun NavGraphBuilder.settingsNavGraph() {
                 handleEvent = { imageCropViewModel.handleEvent(it) }
             )
         }
-        composable(SettingsScreenRoutes.VerifyNewEmail.route) {
+        composable<SettingsScreenRoutes.VerifyNewEmail> {
             val viewModel: VerifyNewEmailViewModel = koinViewModel()
             VerifyNewEmailScreen(
                 screenState = viewModel.viewState.asStateWithLifecycle(),
@@ -64,7 +63,7 @@ fun NavGraphBuilder.settingsNavGraph() {
                 handleEvent = viewModel::handleEvent
             )
         }
-        composable(SettingsScreenRoutes.ChildInfo.route) {
+        composable<SettingsScreenRoutes.ChildInfo> {
             val navigator: PageNavigator = koinInject()
             val childInfoViewModel: ChildInfoViewModel = koinViewModel {
                 parametersOf(
@@ -78,7 +77,7 @@ fun NavGraphBuilder.settingsNavGraph() {
                 handleEvent = { childInfoViewModel.handleChildInfoEvent(it) }
             )
         }
-        composable(SettingsScreenRoutes.ChildSchedule.route) {
+        composable<SettingsScreenRoutes.ChildSchedule> {
             val navigator: PageNavigator = koinInject()
             val childScheduleViewModel: ChildScheduleViewModel = koinViewModel {
                 parametersOf(
@@ -92,7 +91,7 @@ fun NavGraphBuilder.settingsNavGraph() {
                 handleEvent = { childScheduleViewModel.handleScheduleEvent(it) }
             )
         }
-        composable(SettingsScreenRoutes.EditCredentials.route) {
+        composable<SettingsScreenRoutes.EditCredentials> {
             val viewModel: EditCredentialsViewModel = koinViewModel()
             EditCredentialsScreen(
                 screenState = viewModel.viewState.asStateWithLifecycle(),

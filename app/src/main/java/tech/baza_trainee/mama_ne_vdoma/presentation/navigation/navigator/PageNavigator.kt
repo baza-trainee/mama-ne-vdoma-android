@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.update
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.CommonHostRoute
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.CommonRoute
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.MainScreenRoutes
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.NO_PAGE
 import java.util.Deque
 import java.util.LinkedList
 
@@ -19,14 +20,23 @@ interface PageNavigator: ScreenNavigator {
 
     fun goToPrevious()
 
-    fun getCurrentRoute(): String
+    fun getCurrentRoute(): CommonHostRoute
+}
+
+/**
+ * Placeholder emitted before the host navigates anywhere. Its [page] is [NO_PAGE] so that
+ * collectors can tell it apart from a real destination.
+ */
+private data object NoRoute : CommonHostRoute {
+    override val page = NO_PAGE
+    override val title = 0
 }
 
 class PageNavigatorImpl: PageNavigator {
 
     override val routesFlow: StateFlow<CommonHostRoute>
         get() = _routesFlow.asStateFlow()
-    private val _routesFlow = MutableStateFlow(CommonHostRoute("", -1, -1))
+    private val _routesFlow = MutableStateFlow<CommonHostRoute>(NoRoute)
 
     private val routesQueue: Deque<CommonHostRoute> = LinkedList()
 
@@ -71,5 +81,5 @@ class PageNavigatorImpl: PageNavigator {
         navigate(route)
     }
 
-    override fun getCurrentRoute() = routesQueue.peekLast()?.route ?: MainScreenRoutes.Main.route
+    override fun getCurrentRoute() = routesQueue.peekLast() ?: MainScreenRoutes.Main
 }

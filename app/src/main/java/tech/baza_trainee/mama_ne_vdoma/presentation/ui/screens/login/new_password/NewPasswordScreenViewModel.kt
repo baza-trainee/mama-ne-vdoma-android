@@ -28,7 +28,10 @@ class NewPasswordScreenViewModel(
     fun handleNewPasswordEvent(event: NewPasswordEvent) {
         when(event) {
             NewPasswordEvent.OnBack -> navigator.navigate(LoginRoutes.Login)
-            NewPasswordEvent.ResetPassword -> navigator.navigate(LoginRoutes.EmailConfirm.getDestination(communicator.email.value, _viewState.value.password))
+            NewPasswordEvent.ResetPassword -> navigator.navigate(LoginRoutes.EmailConfirm(
+                email = communicator.email.value,
+                password = _viewState.value.password
+            ))
             is NewPasswordEvent.ValidatePassword -> validatePassword(event.password)
             is NewPasswordEvent.ValidateConfirmPassword -> validateConfirmPassword(event.confirmPassword)
             NewPasswordEvent.ResetUiState -> _uiState.update { RequestState.Idle }

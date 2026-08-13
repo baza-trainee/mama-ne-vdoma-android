@@ -82,10 +82,10 @@ class SetAreaViewModel(
             SetAreaEvent.SaveArea -> checkFields()
             SetAreaEvent.OnBack -> navigator.goBack()
             SetAreaEvent.OnAvatarClicked ->
-                navigator.navigate(HostScreenRoutes.Host.getDestination(SETTINGS_PAGE))
+                navigator.navigate(HostScreenRoutes.Host(SETTINGS_PAGE))
 
             SetAreaEvent.GoToNotifications ->
-                navigator.navigate(HostScreenRoutes.Host.getDestination(NOTIFICATIONS_PAGE))
+                navigator.navigate(HostScreenRoutes.Host(NOTIFICATIONS_PAGE))
         }
     }
     

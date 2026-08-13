@@ -11,11 +11,10 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.chat.ChatsSc
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.chat.ChatsViewModel
 
 fun NavGraphBuilder.chatNavGraph() {
-    navigation(
-        route = Graphs.HostNested.Chat.route,
-        startDestination = ChatScreenRoutes.Chats.route
+    navigation<Graphs.HostNested.Chat>(
+        startDestination = ChatScreenRoutes.Chats
     ) {
-        composable(ChatScreenRoutes.Chats.route) {
+        composable<ChatScreenRoutes.Chats> {
             val chatsViewModel: ChatsViewModel = koinViewModel()
             ChatsScreen(
                 screenState = chatsViewModel.viewState.asStateWithLifecycle(),

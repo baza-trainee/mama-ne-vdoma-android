@@ -87,17 +87,17 @@ class FoundGroupsStandaloneViewModel(
             FoundGroupEvent.OnJoin -> sendJoinRequest()
             is FoundGroupEvent.OnSelect -> setSelectedGroup(event.group)
             FoundGroupEvent.GoToMain ->
-                navigator.navigate(HostScreenRoutes.Host.getDestination(MAIN_PAGE))
+                navigator.navigate(HostScreenRoutes.Host(MAIN_PAGE))
 
             FoundGroupEvent.OnAvatarClicked ->
-                navigator.navigate(HostScreenRoutes.Host.getDestination(SETTINGS_PAGE))
+                navigator.navigate(HostScreenRoutes.Host(SETTINGS_PAGE))
 
             FoundGroupEvent.GoToNotifications ->
-                navigator.navigate(HostScreenRoutes.Host.getDestination(NOTIFICATIONS_PAGE))
+                navigator.navigate(HostScreenRoutes.Host(NOTIFICATIONS_PAGE))
 
             FoundGroupEvent.CreateGroup ->
                 navigator.navigate(
-                    StandaloneGroupsRoutes.ChooseChild.getDestination(isForSearch = false)
+                    StandaloneGroupsRoutes.ChooseChild(isForSearch = false)
                 )
         }
     }

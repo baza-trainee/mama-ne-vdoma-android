@@ -76,7 +76,7 @@ class MyGroupsViewModel(
             MyGroupsEvent.OnBack -> navigator.goToPrevious()
             MyGroupsEvent.CreateNewGroup ->
                 mainNavigator.navigate(
-                    StandaloneGroupsRoutes.ChooseChild.getDestination(isForSearch = false)
+                    StandaloneGroupsRoutes.ChooseChild(isForSearch = false)
                 )
             is MyGroupsEvent.OnLeave -> leaveGroup(event.group)
             is MyGroupsEvent.OnDelete -> deleteGroup(event.group)
@@ -88,7 +88,7 @@ class MyGroupsViewModel(
             }
 
             is MyGroupsEvent.OnRateUser ->
-                navigator.navigate(GroupsScreenRoutes.RateUser.getDestination(event.user))
+                navigator.navigate(GroupsScreenRoutes.RateUser(event.user))
         }
     }
 

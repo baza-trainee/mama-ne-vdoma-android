@@ -12,18 +12,17 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.start.StartScreen
 fun NavGraphBuilder.startNavGraph(
     navHostController: NavHostController
 ) {
-    navigation(
-        route = Graphs.Start.route,
-        startDestination = StartRoutes.Start.route
+    navigation<Graphs.Start>(
+        startDestination = StartRoutes.Start
     ) {
-        composable(StartRoutes.Start.route) {
+        composable<StartRoutes.Start> {
             StartScreen(
-                onStart = { navHostController.navigate(StartRoutes.Info.route) },
-                onLogin = { navHostController.navigate(Graphs.Login.route) }
+                onStart = { navHostController.navigate(StartRoutes.Info) },
+                onLogin = { navHostController.navigate(Graphs.Login) }
             )
         }
-        composable(StartRoutes.Info.route) {
-            InfoScreen { navHostController.navigate(Graphs.CreateUser.route) }
+        composable<StartRoutes.Info> {
+            InfoScreen { navHostController.navigate(Graphs.CreateUser) }
         }
     }
 }

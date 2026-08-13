@@ -26,9 +26,10 @@ class ImageCropViewModel(
 
     init {
         viewModelScope.launch {
+            val image = bitmapHelper.bitmapFromUri(communicator.uriForCrop)
             _viewState.update {
                 it.copy(
-                    image = bitmapHelper.bitmapFromUri(communicator.uriForCrop).asImageBitmap()
+                    image = image.asImageBitmap()
                 )
             }
         }
@@ -39,7 +40,7 @@ class ImageCropViewModel(
             ImageCropEvent.OnBack -> navigator.goBack()
             is ImageCropEvent.OnImageCropped -> saveCroppedImage(event.image)
             ImageCropEvent.OnAvatarClicked ->
-                navigator.navigate(HostScreenRoutes.Host.getDestination(SETTINGS_PAGE))
+                navigator.navigate(HostScreenRoutes.Host(SETTINGS_PAGE))
 
             ImageCropEvent.RotateLeft -> rotateBitmap(-90)
             ImageCropEvent.RotateRight -> rotateBitmap(90)

@@ -1,5 +1,6 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.utils
 
+const val NO_PAGE = -1
 const val MAIN_PAGE = 0
 const val GROUPS_PAGE = 1
 const val CHAT_PAGE = 2

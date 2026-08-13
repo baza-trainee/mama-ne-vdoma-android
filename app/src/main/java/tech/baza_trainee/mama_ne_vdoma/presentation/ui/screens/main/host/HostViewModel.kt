@@ -35,6 +35,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.CHAT_PAGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.EDIT_PROFILE_PAGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.GROUPS_PAGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.NOTIFICATIONS_PAGE
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.NO_PAGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.SEARCH_PAGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.SETTINGS_PAGE
@@ -86,15 +87,15 @@ class HostViewModel(
 
         viewModelScope.launch {
             navigator.routesFlow.collect {
-                if (it.page != -1) switchTab(it)
+                if (it.page != NO_PAGE) switchTab(it)
             }
         }
 
-        if (goToPage != -1) {
+        if (goToPage != NO_PAGE) {
             val route = getRouteFromPage(goToPage)
             switchTab(route)
             navigator.navigate(route)
-            goToPage = -1
+            goToPage = NO_PAGE
         }
 
         getUserInfo()
@@ -111,7 +112,7 @@ class HostViewModel(
             HostEvent.ResetUiState -> _uiState.update { RequestState.Idle }
             HostEvent.OnBackLocal -> {
                 when (navigator.getCurrentRoute()) {
-                    MainScreenRoutes.Main.route -> mainNavigator.minimize()
+                    MainScreenRoutes.Main -> mainNavigator.minimize()
                     else -> navigator.goToPrevious()
                 }
             }

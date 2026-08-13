@@ -143,12 +143,12 @@ class LoginViewModel(
                 preferencesDatastoreManager.fcmToken = token
 
             if (id == preferencesDatastoreManager.id)
-                navigator.navigate(HostScreenRoutes.Host.getDestination(MAIN_PAGE))
+                navigator.navigate(HostScreenRoutes.Host(MAIN_PAGE))
             else {
                 val cookies = preferencesDatastoreManager.cookies
                 preferencesDatastoreManager.clearData()
                 preferencesDatastoreManager.cookies = cookies
-                navigator.navigate(HostScreenRoutes.Host.getDestination(EDIT_PROFILE_PAGE))
+                navigator.navigate(HostScreenRoutes.Host(EDIT_PROFILE_PAGE))
             }
         }
     }

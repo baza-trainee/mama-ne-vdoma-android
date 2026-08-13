@@ -73,7 +73,8 @@ class NotificationsViewModel(
             NotificationsEvent.ClearNotifications -> clearNotifications()
             NotificationsEvent.GoToMain -> navigator.navigate(MainScreenRoutes.Main)
             NotificationsEvent.MyGroups -> navigator.navigate(GroupsScreenRoutes.Groups)
-            NotificationsEvent.SearchGroup -> mainNavigator.navigate(StandaloneGroupsRoutes.ChooseChild.getDestination(isForSearch = true))
+            NotificationsEvent.SearchGroup ->
+                mainNavigator.navigate(StandaloneGroupsRoutes.ChooseChild(isForSearch = true))
         }
     }
 

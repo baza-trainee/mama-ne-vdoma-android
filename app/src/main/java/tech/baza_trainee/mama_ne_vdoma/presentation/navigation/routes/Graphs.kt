@@ -1,18 +1,42 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes
 
-sealed class Graphs(override val route: String): CommonRoute(route) {
-    data object Start : Graphs("start_graph")
-    data object CreateUser : Graphs("create_user_graph")
-    data object Login : Graphs("login_graph")
-    data object UserProfile : Graphs("user_profile_graph")
-    data object FirstGroupSearch : Graphs("first_group_search_graph")
-    data object Host : Graphs("host_graph")
+import kotlinx.serialization.Serializable
 
-    sealed class HostNested {
-        data object Main : Graphs("host_main_graph")
-        data object Groups : Graphs("host_groups_graph")
-        data object Chat : Graphs("host_chat_graph")
-        data object Search : Graphs("host_search_graph")
-        data object Settings : Graphs("host_settings_graph")
+sealed interface Graphs : CommonRoute {
+
+    @Serializable
+    data object Start : Graphs
+
+    @Serializable
+    data object CreateUser : Graphs
+
+    @Serializable
+    data object Login : Graphs
+
+    @Serializable
+    data object UserProfile : Graphs
+
+    @Serializable
+    data object FirstGroupSearch : Graphs
+
+    @Serializable
+    data object Host : Graphs
+
+    sealed interface HostNested : Graphs {
+
+        @Serializable
+        data object Main : HostNested
+
+        @Serializable
+        data object Groups : HostNested
+
+        @Serializable
+        data object Chat : HostNested
+
+        @Serializable
+        data object Search : HostNested
+
+        @Serializable
+        data object Settings : HostNested
     }
 }

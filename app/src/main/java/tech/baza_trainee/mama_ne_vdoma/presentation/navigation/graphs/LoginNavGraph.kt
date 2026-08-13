@@ -3,6 +3,7 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.navigation.graphs
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
+import androidx.navigation.toRoute
 import androidx.navigation.navigation
 import androidx.credentials.CredentialManager
 import org.koin.androidx.compose.koinViewModel
@@ -26,11 +27,10 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.sharedViewM
 fun NavGraphBuilder.loginNavGraph(
     navHostController: NavHostController
 ) {
-    navigation(
-        route = Graphs.Login.route,
-        startDestination = LoginRoutes.Login.route
+    navigation<Graphs.Login>(
+        startDestination = LoginRoutes.Login
     ) {
-        composable(LoginRoutes.Login.route) {
+        composable<LoginRoutes.Login> {
             val loginViewModel: LoginViewModel = koinViewModel()
             val credentialManager: CredentialManager = koinInject()
             LoginUserScreen(
@@ -40,7 +40,7 @@ fun NavGraphBuilder.loginNavGraph(
                 handleEvent = { loginViewModel.handleLoginEvent(it) }
             )
         }
-        composable(LoginRoutes.RestorePassword.route) { entry ->
+        composable<LoginRoutes.RestorePassword> { entry ->
             val restorePasswordScreenViewModel: RestorePasswordScreenViewModel =
                 entry.sharedViewModel(navHostController)
             RestorePasswordScreen(
@@ -49,11 +49,8 @@ fun NavGraphBuilder.loginNavGraph(
                 handleEvent = { restorePasswordScreenViewModel.handleRestoreEvent(it) }
             )
         }
-        composable(
-            route = LoginRoutes.EmailConfirm().route,
-            arguments = LoginRoutes.EmailConfirm.argumentList
-        ) { entry ->
-            val (email, password) = LoginRoutes.EmailConfirm.parseArguments(entry)
+        composable<LoginRoutes.EmailConfirm> { entry ->
+            val (email, password) = entry.toRoute<LoginRoutes.EmailConfirm>()
             val restorePasswordScreenViewModel: RestorePasswordScreenViewModel =
                 entry.sharedViewModel(navHostController)
             EmailConfirmScreen(
@@ -63,7 +60,7 @@ fun NavGraphBuilder.loginNavGraph(
                 handleEvent = { restorePasswordScreenViewModel.handleRestoreEvent(it) }
             )
         }
-        composable(LoginRoutes.VerifyEmail.route) {
+        composable<LoginRoutes.VerifyEmail> {
             val verifyEmailViewModel: VerifyEmailViewModel = koinViewModel()
             VerifyEmailScreen(
                 screenState = verifyEmailViewModel.viewState.asStateWithLifecycle(),
@@ -72,7 +69,7 @@ fun NavGraphBuilder.loginNavGraph(
                 handleEvent = { verifyEmailViewModel.handleEvent(it) }
             )
         }
-        composable(LoginRoutes.NewPassword.route) {
+        composable<LoginRoutes.NewPassword> {
             val newPasswordScreenViewModel: NewPasswordScreenViewModel = koinViewModel()
             NewPasswordScreen(
                 screenState = newPasswordScreenViewModel.viewState.asStateWithLifecycle(),
@@ -80,8 +77,8 @@ fun NavGraphBuilder.loginNavGraph(
                 handleEvent = { newPasswordScreenViewModel.handleNewPasswordEvent(it) }
             )
         }
-        composable(LoginRoutes.RestoreSuccess.route) {
-            RestoreSuccessScreen { navHostController.navigate(Graphs.Start.route) }
+        composable<LoginRoutes.RestoreSuccess> {
+            RestoreSuccessScreen { navHostController.navigate(Graphs.Start) }
         }
     }
 }

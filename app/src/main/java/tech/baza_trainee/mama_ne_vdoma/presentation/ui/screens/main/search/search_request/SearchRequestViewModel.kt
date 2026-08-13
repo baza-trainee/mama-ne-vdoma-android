@@ -46,7 +46,7 @@ class SearchRequestViewModel(
             SearchRequestEvent.OnMain -> navigator.navigate(MainScreenRoutes.Main)
             SearchRequestEvent.SearchGroup ->
                 mainNavigator.navigate(
-                    StandaloneGroupsRoutes.ChooseChild.getDestination(isForSearch = true)
+                    StandaloneGroupsRoutes.ChooseChild(isForSearch = true)
                 )
         }
     }

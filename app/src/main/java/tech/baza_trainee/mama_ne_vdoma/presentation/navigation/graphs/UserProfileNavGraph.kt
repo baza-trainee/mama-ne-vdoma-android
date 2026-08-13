@@ -2,6 +2,7 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.navigation.graphs
 
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import androidx.navigation.toRoute
 import androidx.navigation.navigation
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
@@ -28,11 +29,10 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.user
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.user_profile.user_location.UserLocationViewModel
 
 fun NavGraphBuilder.userProfileGraph() {
-    navigation(
-        route = Graphs.UserProfile.route,
-        startDestination = UserProfileRoutes.FullProfile.route
+    navigation<Graphs.UserProfile>(
+        startDestination = UserProfileRoutes.FullProfile
     ) {
-        composable(UserProfileRoutes.FullProfile.route) {
+        composable<UserProfileRoutes.FullProfile> {
             val fullInfoViewModel: FullInfoViewModel = koinViewModel()
             FullInfoScreen(
                 screenState = fullInfoViewModel.viewState.asStateWithLifecycle(),
@@ -40,7 +40,7 @@ fun NavGraphBuilder.userProfileGraph() {
                 handleEvent = { fullInfoViewModel.handleFullProfileEvent(it) }
             )
         }
-        composable(UserProfileRoutes.UserInfo.route) {
+        composable<UserProfileRoutes.UserInfo> {
             val userInfoViewModel: UserInfoViewModel = koinViewModel()
             UserInfoScreen(
                 screenState = userInfoViewModel.viewState.asStateWithLifecycle(),
@@ -48,7 +48,7 @@ fun NavGraphBuilder.userProfileGraph() {
                 handleEvent = { userInfoViewModel.handleUserInfoEvent(it)}
             )
         }
-        composable(UserProfileRoutes.ImageCrop.route) {
+        composable<UserProfileRoutes.ImageCrop> {
             val navigator = koinInject<ScreenNavigator>()
             val imageCropViewModel: ImageCropViewModel = koinViewModel {
                 parametersOf(navigator)
@@ -58,7 +58,7 @@ fun NavGraphBuilder.userProfileGraph() {
                 handleEvent = { imageCropViewModel.handleEvent(it) }
             )
         }
-        composable(UserProfileRoutes.UserLocation.route) {
+        composable<UserProfileRoutes.UserLocation> {
             val userLocationViewModel: UserLocationViewModel = koinViewModel()
             UserLocationScreen(
                 screenState = userLocationViewModel.viewState.asStateWithLifecycle(),
@@ -66,7 +66,7 @@ fun NavGraphBuilder.userProfileGraph() {
                 handleEvent = { userLocationViewModel.handleUserLocationEvent(it) }
             )
         }
-        composable(UserProfileRoutes.ParentSchedule.route) {
+        composable<UserProfileRoutes.ParentSchedule> {
             val parentScheduleViewModel: ParentScheduleViewModel = koinViewModel()
             ParentScheduleScreen(
                 screenState = parentScheduleViewModel.viewState.asStateWithLifecycle(),
@@ -74,7 +74,7 @@ fun NavGraphBuilder.userProfileGraph() {
                 handleEvent = { parentScheduleViewModel.handleScheduleEvent(it) }
             )
         }
-        composable(UserProfileRoutes.ChildInfo.route) {
+        composable<UserProfileRoutes.ChildInfo> {
             val navigator: ScreenNavigator = koinInject()
             val childInfoViewModel: ChildInfoViewModel = koinViewModel {
                 parametersOf(
@@ -88,7 +88,7 @@ fun NavGraphBuilder.userProfileGraph() {
                 handleEvent = { childInfoViewModel.handleChildInfoEvent(it) }
             )
         }
-        composable(UserProfileRoutes.ChildSchedule.route) {
+        composable<UserProfileRoutes.ChildSchedule> {
             val navigator: ScreenNavigator = koinInject()
             val childScheduleViewModel: ChildScheduleViewModel = koinViewModel {
                 parametersOf(
@@ -102,19 +102,16 @@ fun NavGraphBuilder.userProfileGraph() {
                 handleEvent = { childScheduleViewModel.handleScheduleEvent(it) }
             )
         }
-        composable(
-            route = UserProfileRoutes.UserCreateSuccess().route,
-            arguments = UserProfileRoutes.UserCreateSuccess.argumentList
-        ) { entry ->
+        composable<UserProfileRoutes.UserCreateSuccess> { entry ->
             val navigator: ScreenNavigator = koinInject()
-            val (name) = UserProfileRoutes.UserCreateSuccess.parseArguments(entry)
+            val (name) = entry.toRoute<UserProfileRoutes.UserCreateSuccess>()
             UserCreateSuccessScreen(
                 name = name,
-                onNext = { navigator.navigate(StandaloneGroupsRoutes.ChooseChild.getDestination(isForSearch = true)) },
+                onNext = { navigator.navigate(StandaloneGroupsRoutes.ChooseChild(isForSearch = true)) },
                 onBack = { navigator.goBack() }
             )
         }
-//        composable(UserProfileRoutes.ChildrenInfo.route) {
+//        composable<UserProfileRoutes.ChildrenInfo> {
 //            val childrenInfoViewModel: ChildrenInfoViewModel = koinViewModel()
 //            ChildrenInfoScreen(
 //                screenState = childrenInfoViewModel.childrenInfoViewState.collectAsStateWithLifecycle(),

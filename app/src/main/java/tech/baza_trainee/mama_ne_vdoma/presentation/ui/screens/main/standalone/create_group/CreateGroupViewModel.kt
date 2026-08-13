@@ -120,17 +120,17 @@ class CreateGroupViewModel(
             is GroupDetailsEvent.SetImageToCrop -> communicator.uriForCrop = event.uri
             GroupDetailsEvent.GoToMain -> {
                 childCommunicator.setData("")
-                navigator.navigate(HostScreenRoutes.Host.getDestination(MAIN_PAGE))
+                navigator.navigate(HostScreenRoutes.Host(MAIN_PAGE))
             }
 
             GroupDetailsEvent.GetLocationFromAddress -> getLocationFromAddress()
             is GroupDetailsEvent.UpdateGroupAddress -> updateGroupAddress(event.address)
 
             GroupDetailsEvent.OnAvatarClicked ->
-                navigator.navigate(HostScreenRoutes.Host.getDestination(SETTINGS_PAGE))
+                navigator.navigate(HostScreenRoutes.Host(SETTINGS_PAGE))
 
             GroupDetailsEvent.GoToNotifications ->
-                navigator.navigate(HostScreenRoutes.Host.getDestination(NOTIFICATIONS_PAGE))
+                navigator.navigate(HostScreenRoutes.Host(NOTIFICATIONS_PAGE))
 
             else -> Unit
         }

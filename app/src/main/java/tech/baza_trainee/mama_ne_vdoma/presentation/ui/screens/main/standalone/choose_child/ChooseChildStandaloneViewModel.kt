@@ -67,10 +67,10 @@ class ChooseChildStandaloneViewModel(
             }
 
             ChooseChildEvent.OnAvatarClicked ->
-                navigator.navigate(HostScreenRoutes.Host.getDestination(SETTINGS_PAGE))
+                navigator.navigate(HostScreenRoutes.Host(SETTINGS_PAGE))
 
             ChooseChildEvent.GoToNotifications ->
-                navigator.navigate(HostScreenRoutes.Host.getDestination(NOTIFICATIONS_PAGE))
+                navigator.navigate(HostScreenRoutes.Host(NOTIFICATIONS_PAGE))
         }
     }
 

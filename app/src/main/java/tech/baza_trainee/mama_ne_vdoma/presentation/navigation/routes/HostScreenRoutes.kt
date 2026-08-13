@@ -1,47 +1,14 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes
 
-import androidx.navigation.NamedNavArgument
-import androidx.navigation.NavBackStackEntry
-import androidx.navigation.NavType
-import androidx.navigation.navArgument
+import kotlinx.serialization.Serializable
+import tech.baza_trainee.mama_ne_vdoma.presentation.utils.NO_PAGE
 
-sealed class HostScreenRoutes(override val route: String): CommonRoute(route) {
-    class Host: HostScreenRoutes(ROUTE) {
+sealed interface HostScreenRoutes : CommonRoute {
 
-        data class HostArgs (
-            val page: Int
-        )
-
-        companion object {
-
-            const val ROUTE = "${BASE_ROUTE}?${PAGE}={${PAGE}}"
-
-            val argumentList: MutableList<NamedNavArgument>
-                get() = mutableListOf(
-                    navArgument(PAGE) {
-                        type = NavType.IntType
-                    }
-                )
-
-            fun parseArguments(backStackEntry: NavBackStackEntry): HostArgs {
-                return HostArgs(
-                    page = backStackEntry.arguments?.getInt(PAGE) ?: -1,
-                )
-            }
-
-            fun getDestination(page: Int): CommonRoute {
-                return CommonRoute(
-                    "${BASE_ROUTE}?" +
-                            "${PAGE}=$page" +
-                            ""
-                )
-            }
-        }
-    }
-
-    companion object {
-
-        private const val BASE_ROUTE = "host_screen"
-        private const val PAGE = "page"
-    }
+    /**
+     * [page] defaults to [NO_PAGE] so that entering the graph without a target page keeps the tab
+     * the host is already on.
+     */
+    @Serializable
+    data class Host(val page: Int = NO_PAGE) : HostScreenRoutes
 }

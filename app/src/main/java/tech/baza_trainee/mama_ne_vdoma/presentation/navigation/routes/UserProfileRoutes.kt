@@ -1,59 +1,30 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes
 
-import androidx.navigation.NamedNavArgument
-import androidx.navigation.NavBackStackEntry
-import androidx.navigation.NavType
-import androidx.navigation.navArgument
+import kotlinx.serialization.Serializable
 
-sealed class UserProfileRoutes(override val route: String): CommonRoute(route) {
+sealed interface UserProfileRoutes : CommonRoute {
 
-    data object UserInfo: UserProfileRoutes("user_info_screen")
-    data object ImageCrop: UserProfileRoutes("user_crop_screen")
-    data object UserLocation: UserProfileRoutes("user_location_screen")
-    data object ChildInfo: UserProfileRoutes("child_info_screen")
-    data object ChildSchedule: UserProfileRoutes("child_schedule_screen")
+    @Serializable
+    data object UserInfo : UserProfileRoutes
 
-//    data object ChildrenInfo: UserProfileRoutes("children_info_screen")
+    @Serializable
+    data object ImageCrop : UserProfileRoutes
 
-    data object ParentSchedule : UserProfileRoutes("parent_schedule_screen")
-    data object FullProfile : UserProfileRoutes("full_profile_screen")
-    class UserCreateSuccess : CommonRoute(ROUTE){
+    @Serializable
+    data object UserLocation : UserProfileRoutes
 
-        data class SuccessArgs(
-            val name: String
-        )
+    @Serializable
+    data object ChildInfo : UserProfileRoutes
 
-        companion object {
+    @Serializable
+    data object ChildSchedule : UserProfileRoutes
 
-            const val ROUTE =
-                "${BASE_ROUTE}?${NAME}={${NAME}}"
+    @Serializable
+    data object ParentSchedule : UserProfileRoutes
 
-            val argumentList: MutableList<NamedNavArgument>
-                get() = mutableListOf(
-                    navArgument(NAME) {
-                        type = NavType.StringType
-                    }
-                )
+    @Serializable
+    data object FullProfile : UserProfileRoutes
 
-            fun parseArguments(backStackEntry: NavBackStackEntry): SuccessArgs {
-                return SuccessArgs(
-                    name = backStackEntry.arguments?.getString(NAME) ?: ""
-                )
-            }
-
-            fun getDestination(name: String): CommonRoute {
-                return CommonRoute(
-                    "${BASE_ROUTE}?" +
-                            "${NAME}=$name" +
-                            ""
-                )
-            }
-        }
-    }
-
-    companion object {
-
-        private const val BASE_ROUTE = "user_create_success_screen"
-        private const val NAME = "name"
-    }
+    @Serializable
+    data class UserCreateSuccess(val name: String) : UserProfileRoutes
 }

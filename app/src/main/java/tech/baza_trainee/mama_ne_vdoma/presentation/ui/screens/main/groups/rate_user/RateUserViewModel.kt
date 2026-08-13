@@ -52,7 +52,7 @@ class RateUserViewModel(
                 }
 
             RateUserEvent.ViewReviews ->
-                navigator.navigate(GroupsScreenRoutes.ViewReviews.getDestination(userId))
+                navigator.navigate(GroupsScreenRoutes.ViewReviews(userId))
 
             RateUserEvent.GoToMain -> navigator.navigate(MainScreenRoutes.Main)
         }

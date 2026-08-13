@@ -99,7 +99,7 @@ class MainActivity : FragmentActivity() {
                                     onSuccess = {
                                         checkAuth = false
                                         navigator.navigate(
-                                            HostScreenRoutes.Host.getDestination(MAIN_PAGE)
+                                            HostScreenRoutes.Host(MAIN_PAGE)
                                         )
                                     }
                                 ).authenticate(buildBiometricPromptInfo())
@@ -115,7 +115,7 @@ class MainActivity : FragmentActivity() {
                 NavHost(
                     modifier = Modifier.windowInsetsPadding(WindowInsets.ime),
                     navController = navController,
-                    startDestination = Graphs.Start.route
+                    startDestination = Graphs.Start
                 ) {
                     startNavGraph(navController)
                     loginNavGraph(navController)

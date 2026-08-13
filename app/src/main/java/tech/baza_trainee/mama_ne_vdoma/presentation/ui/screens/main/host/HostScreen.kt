@@ -133,7 +133,7 @@ fun HostScreen(
                     .fillMaxSize()
                     .padding(horizontal = size_16_dp),
                 navController = navController,
-                startDestination = Graphs.HostNested.Main.route
+                startDestination = Graphs.HostNested.Main
             ) {
                 mainNavGraph()
                 groupNavGraph()

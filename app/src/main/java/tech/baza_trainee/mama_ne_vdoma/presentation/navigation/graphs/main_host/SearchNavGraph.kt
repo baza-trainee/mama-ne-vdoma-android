@@ -13,11 +13,10 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.search.searc
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.search.search_results.SearchResultsViewModel
 
 fun NavGraphBuilder.searchNavGraph() {
-    navigation(
-        route = Graphs.HostNested.Search.route,
-        startDestination = SearchScreenRoutes.SearchUser.route
+    navigation<Graphs.HostNested.Search>(
+        startDestination = SearchScreenRoutes.SearchUser
     ) {
-        composable(SearchScreenRoutes.SearchUser.route) {
+        composable<SearchScreenRoutes.SearchUser> {
             val searchRequestViewModel: SearchRequestViewModel = koinViewModel()
             SearchRequestScreen(
                 screenState = searchRequestViewModel.viewState.asStateWithLifecycle(),
@@ -25,7 +24,7 @@ fun NavGraphBuilder.searchNavGraph() {
                 handleEvent = { searchRequestViewModel.handleEvent(it) }
             )
         }
-        composable(SearchScreenRoutes.SearchResults.route) {
+        composable<SearchScreenRoutes.SearchResults> {
             val searchResultsViewModel: SearchResultsViewModel = koinViewModel()
             SearchResultsScreen(
                 screenState = searchResultsViewModel.viewState.asStateWithLifecycle(),

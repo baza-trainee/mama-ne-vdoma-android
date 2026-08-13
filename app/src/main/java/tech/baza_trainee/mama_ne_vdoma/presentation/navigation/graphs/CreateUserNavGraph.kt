@@ -1,9 +1,9 @@
 package tech.baza_trainee.mama_ne_vdoma.presentation.navigation.graphs
 
+import androidx.credentials.CredentialManager
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import androidx.credentials.CredentialManager
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 import tech.baza_trainee.mama_ne_vdoma.R
@@ -16,11 +16,10 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.creat
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.create_user.create.UserCreateViewModel
 
 fun NavGraphBuilder.createUserNavGraph() {
-    navigation(
-        route = Graphs.CreateUser.route,
-        startDestination = CreateUserRoute.CreateUser.route
+    navigation<Graphs.CreateUser>(
+        startDestination = CreateUserRoute.CreateUser
     ) {
-        composable(CreateUserRoute.CreateUser.route) {
+        composable<CreateUserRoute.CreateUser> {
             val userCreateViewModel: UserCreateViewModel = koinViewModel()
             val credentialManager: CredentialManager = koinInject()
             UserCreateScreen(
@@ -30,7 +29,7 @@ fun NavGraphBuilder.createUserNavGraph() {
                 handleEvent = { userCreateViewModel.handleUserCreateEvent(it) }
             )
         }
-        composable(CreateUserRoute.VerifyEmail.route) {
+        composable<CreateUserRoute.VerifyEmail> {
             val verifyEmailViewModel: VerifyEmailViewModel = koinViewModel()
             VerifyEmailScreen(
                 screenState = verifyEmailViewModel.viewState.asStateWithLifecycle(),

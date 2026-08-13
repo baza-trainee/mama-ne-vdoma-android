@@ -2,6 +2,7 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.navigation.graphs.main_host
 
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import androidx.navigation.toRoute
 import androidx.navigation.navigation
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -12,15 +13,11 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.host.HostScr
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.host.HostViewModel
 
 fun NavGraphBuilder.hostNavGraph() {
-    navigation(
-        route = Graphs.Host.route,
-        startDestination = HostScreenRoutes.Host().route
+    navigation<Graphs.Host>(
+        startDestination = HostScreenRoutes.Host()
     ) {
-        composable(
-            route = HostScreenRoutes.Host().route,
-            arguments = HostScreenRoutes.Host.argumentList
-        ) { entry ->
-            val (page) = HostScreenRoutes.Host.parseArguments(entry)
+        composable<HostScreenRoutes.Host> { entry ->
+            val (page) = entry.toRoute<HostScreenRoutes.Host>()
             val hostViewModel: HostViewModel = koinViewModel {
                 parametersOf(page)
             }

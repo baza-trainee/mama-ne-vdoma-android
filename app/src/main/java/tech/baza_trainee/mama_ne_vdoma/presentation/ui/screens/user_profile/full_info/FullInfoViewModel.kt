@@ -93,10 +93,10 @@ class FullInfoViewModel(
             FullInfoEvent.OnNext -> {
                 if (preferencesDatastoreManager.isChildrenDataProvided)
                     navigator.navigate(
-                        UserProfileRoutes.UserCreateSuccess.getDestination(_viewState.value.name)
+                        UserProfileRoutes.UserCreateSuccess(_viewState.value.name)
                     )
                 else
-                    navigator.navigate(HostScreenRoutes.Host.getDestination(SETTINGS_PAGE))
+                    navigator.navigate(HostScreenRoutes.Host(SETTINGS_PAGE))
             }
         }
     }

@@ -2,6 +2,7 @@ package tech.baza_trainee.mama_ne_vdoma.presentation.navigation.graphs.main_host
 
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import androidx.navigation.toRoute
 import androidx.navigation.navigation
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
@@ -22,11 +23,10 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.view_
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.groups.view_reviews.ViewReviewsViewModel
 
 fun NavGraphBuilder.groupNavGraph() {
-    navigation(
-        route = Graphs.HostNested.Groups.route,
-        startDestination = GroupsScreenRoutes.Groups.route
+    navigation<Graphs.HostNested.Groups>(
+        startDestination = GroupsScreenRoutes.Groups
     ) {
-        composable(GroupsScreenRoutes.Groups.route) {
+        composable<GroupsScreenRoutes.Groups> {
             val viewModel: MyGroupsViewModel = koinViewModel()
             MyGroupsScreen(
                 screenState = viewModel.viewState.asStateWithLifecycle(),
@@ -34,7 +34,7 @@ fun NavGraphBuilder.groupNavGraph() {
                 handleEvent = viewModel::handleEvent
             )
         }
-        composable(GroupsScreenRoutes.UpdateGroup.route) {
+        composable<GroupsScreenRoutes.UpdateGroup> {
             val viewModel: UpdateGroupViewModel = koinViewModel()
             UpdateGroupScreen(
                 screenState = viewModel.viewState.asStateWithLifecycle(),
@@ -42,7 +42,7 @@ fun NavGraphBuilder.groupNavGraph() {
                 handleEvent = viewModel::handleEvent
             )
         }
-        composable(GroupsScreenRoutes.UpdateGroupAvatar.route) {
+        composable<GroupsScreenRoutes.UpdateGroupAvatar> {
             val navigator = koinInject<PageNavigator>()
             val viewModel: ImageCropViewModel = koinViewModel {
                 parametersOf(navigator)
@@ -52,11 +52,8 @@ fun NavGraphBuilder.groupNavGraph() {
                 handleEvent = viewModel::handleEvent
             )
         }
-        composable(
-            route = GroupsScreenRoutes.RateUser.ROUTE,
-            arguments = GroupsScreenRoutes.RateUser.argumentList
-        ) {
-            val (userId) = GroupsScreenRoutes.RateUser.parseArguments(it)
+        composable<GroupsScreenRoutes.RateUser> {
+            val (userId) = it.toRoute<GroupsScreenRoutes.RateUser>()
             val viewModel: RateUserViewModel = koinViewModel {
                 parametersOf(userId)
             }
@@ -66,11 +63,8 @@ fun NavGraphBuilder.groupNavGraph() {
                 handleEvent = viewModel::handleEvent
             )
         }
-        composable(
-            route = GroupsScreenRoutes.ViewReviews.ROUTE,
-            arguments = GroupsScreenRoutes.ViewReviews.argumentList
-        ) {
-            val (userId) = GroupsScreenRoutes.ViewReviews.parseArguments(it)
+        composable<GroupsScreenRoutes.ViewReviews> {
+            val (userId) = it.toRoute<GroupsScreenRoutes.ViewReviews>()
             val viewModel: ViewReviewsViewModel = koinViewModel {
                 parametersOf(userId)
             }

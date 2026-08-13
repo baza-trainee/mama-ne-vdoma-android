@@ -13,18 +13,17 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.main.notific
 import tech.baza_trainee.mama_ne_vdoma.presentation.ui.screens.main.main.notifications.NotificationsViewModel
 
 fun NavGraphBuilder.mainNavGraph() {
-    navigation(
-        route = Graphs.HostNested.Main.route,
-        startDestination = MainScreenRoutes.Main.route
+    navigation<Graphs.HostNested.Main>(
+        startDestination = MainScreenRoutes.Main
     ) {
-        composable(MainScreenRoutes.Main.route) {
+        composable<MainScreenRoutes.Main> {
             val mainViewModel: MainViewModel = koinViewModel()
             MainScreen(
                 screenState = mainViewModel.viewState.asStateWithLifecycle(),
                 handleEvent = { mainViewModel.handleEvent(it) }
             )
         }
-        composable(MainScreenRoutes.Notifications.route) {
+        composable<MainScreenRoutes.Notifications> {
             val viewModel: NotificationsViewModel = koinViewModel()
             NotificationScreen(
                 screenState = viewModel.viewState.asStateWithLifecycle(),
