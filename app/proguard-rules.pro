@@ -1,21 +1,27 @@
-# Add project specific ProGuard rules here.
-# You can control the set of applied configuration files using the
-# proguardFiles setting in build.gradle.
-#
-# For more details, see
-#   http://developer.android.com/guide/developing/tools/proguard.html
+# Keep names while allowing R8 shrinking and optimization.
+-dontobfuscate
 
-# If your project uses WebView with JS, uncomment the following
-# and specify the fully qualified class name to the JavaScript interface
-# class:
-#-keepclassmembers class fqcn.of.javascript.interface.for.webview {
-#   public *;
-#}
+# Gson models
+-keep class tech.baza_trainee.mama_ne_vdoma.data.model.** { *; }
+-keep class tech.baza_trainee.mama_ne_vdoma.data.utils.CustomResponse { *; }
 
-# Uncomment this to preserve the line number information for
-# debugging stack traces.
-#-keepattributes SourceFile,LineNumberTable
+# Gson reflection metadata
+-keepattributes Signature
+-keepattributes *Annotation*
+-dontwarn sun.misc.Unsafe
 
-# If you keep the line number information, uncomment this to
-# hide the original source file name.
-#-renamesourcefileattribute SourceFile
+# Retrofit annotations
+-keepattributes RuntimeVisibleAnnotations,RuntimeVisibleParameterAnnotations
+-keepclassmembernames interface * {
+    @retrofit2.http.* <methods>;
+}
+
+-keep,allowoptimization class * extends androidx.lifecycle.ViewModel {
+    <init>(...);
+}
+
+# Kotlin Serialization navigation routes
+-keep class tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.** { *; }
+
+# Stack traces
+-keepattributes SourceFile,LineNumberTable

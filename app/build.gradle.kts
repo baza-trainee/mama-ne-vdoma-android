@@ -17,8 +17,8 @@ android {
         applicationId = "tech.baza_trainee.mama_ne_vdoma"
         minSdk = 24
         targetSdk = 36
-        versionCode = 55
-        versionName = "0.5.0"
+        versionCode = 57
+        versionName = "0.5.2"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -28,7 +28,8 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
