@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
-class Communicator<T>(private val initial: T) {
+class Communicator<T>(initial: T) {
 
     private val _dataFlow = MutableStateFlow(initial)
     val dataFlow: StateFlow<T> = _dataFlow.asStateFlow()

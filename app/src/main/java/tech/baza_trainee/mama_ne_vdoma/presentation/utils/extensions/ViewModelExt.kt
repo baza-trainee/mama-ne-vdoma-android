@@ -7,8 +7,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.NetworkRequestBuilder
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestResult
+import tech.baza_trainee.mama_ne_vdoma.domain.utils.NetworkRequestBuilder
+import tech.baza_trainee.mama_ne_vdoma.domain.utils.RequestResult
 
 fun <T> ViewModel.networkExecutor(networkBuilder: NetworkRequestBuilder<T>.() -> Unit) {
     viewModelScope.networkExecutor(networkBuilder)

@@ -2,7 +2,7 @@ package tech.baza_trainee.mama_ne_vdoma.domain.repository
 
 import android.graphics.Bitmap
 import android.net.Uri
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestResult
+import tech.baza_trainee.mama_ne_vdoma.domain.utils.RequestResult
 
 interface FilesRepository {
 

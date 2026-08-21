@@ -18,14 +18,14 @@ import tech.baza_trainee.mama_ne_vdoma.domain.repository.FilesRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.GroupsRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.LocationRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
+import tech.baza_trainee.mama_ne_vdoma.domain.utils.RequestResult
+import tech.baza_trainee.mama_ne_vdoma.domain.utils.execute
+import tech.baza_trainee.mama_ne_vdoma.domain.utils.onError
+import tech.baza_trainee.mama_ne_vdoma.domain.utils.onLoading
+import tech.baza_trainee.mama_ne_vdoma.domain.utils.onSuccess
 import tech.baza_trainee.mama_ne_vdoma.presentation.model.GroupUiModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.model.MemberUiModel
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestResult
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.networkExecutor
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onError
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onLoading
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onSuccess
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.toStateMap
 import java.time.DayOfWeek
 

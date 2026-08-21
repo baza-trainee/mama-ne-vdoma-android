@@ -7,8 +7,8 @@ import okhttp3.RequestBody.Companion.asRequestBody
 import tech.baza_trainee.mama_ne_vdoma.data.api.FilesApi
 import tech.baza_trainee.mama_ne_vdoma.data.utils.getRequestResult
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.FilesRepository
+import tech.baza_trainee.mama_ne_vdoma.domain.utils.RequestResult
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.BitmapHelper
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestResult
 
 class FilesRepositoryImpl(
     private val filesApi: FilesApi,

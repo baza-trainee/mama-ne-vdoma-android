@@ -23,6 +23,11 @@ import tech.baza_trainee.mama_ne_vdoma.domain.repository.GroupsRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.LocationRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserAuthRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
+import tech.baza_trainee.mama_ne_vdoma.domain.utils.RequestResult
+import tech.baza_trainee.mama_ne_vdoma.domain.utils.execute
+import tech.baza_trainee.mama_ne_vdoma.domain.utils.onError
+import tech.baza_trainee.mama_ne_vdoma.domain.utils.onLoading
+import tech.baza_trainee.mama_ne_vdoma.domain.utils.onSuccess
 import tech.baza_trainee.mama_ne_vdoma.presentation.mapper.toUiModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.model.ChildUiModel
 import tech.baza_trainee.mama_ne_vdoma.presentation.model.GroupUiModel
@@ -34,12 +39,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenN
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.GroupsScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.MainScreenRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.StandaloneGroupsRoutes
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestResult
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.networkExecutor
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onError
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onLoading
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onSuccess
 
 class NotificationsViewModel(
     private val userAuthRepository: UserAuthRepository,

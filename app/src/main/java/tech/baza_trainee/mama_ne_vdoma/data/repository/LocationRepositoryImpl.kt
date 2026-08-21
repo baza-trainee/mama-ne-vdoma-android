@@ -3,7 +3,7 @@ package tech.baza_trainee.mama_ne_vdoma.data.repository
 import com.google.android.gms.maps.model.LatLng
 import tech.baza_trainee.mama_ne_vdoma.data.datasource.LocationDataSource
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.LocationRepository
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestResult
+import tech.baza_trainee.mama_ne_vdoma.domain.utils.RequestResult
 
 class LocationRepositoryImpl (
     private val locationDataSource: LocationDataSource

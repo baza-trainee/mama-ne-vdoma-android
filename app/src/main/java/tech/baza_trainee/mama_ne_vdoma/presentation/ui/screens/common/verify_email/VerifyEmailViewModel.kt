@@ -12,18 +12,18 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatastoreManager
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.AuthRepository
+import tech.baza_trainee.mama_ne_vdoma.domain.utils.execute
+import tech.baza_trainee.mama_ne_vdoma.domain.utils.onError
+import tech.baza_trainee.mama_ne_vdoma.domain.utils.onErrorWithCode
+import tech.baza_trainee.mama_ne_vdoma.domain.utils.onLoading
+import tech.baza_trainee.mama_ne_vdoma.domain.utils.onStart
+import tech.baza_trainee.mama_ne_vdoma.domain.utils.onSuccess
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.Graphs
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.LoginRoutes
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.networkExecutor
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onError
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onErrorWithCode
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onLoading
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onStart
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onSuccess
 import java.net.HttpURLConnection
 
 class VerifyEmailViewModel(

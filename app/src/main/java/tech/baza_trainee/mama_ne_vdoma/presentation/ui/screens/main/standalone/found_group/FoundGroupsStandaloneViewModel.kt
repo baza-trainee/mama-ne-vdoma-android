@@ -10,6 +10,10 @@ import kotlinx.coroutines.launch
 import tech.baza_trainee.mama_ne_vdoma.domain.model.GroupEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatastoreManager
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.GroupsRepository
+import tech.baza_trainee.mama_ne_vdoma.domain.utils.execute
+import tech.baza_trainee.mama_ne_vdoma.domain.utils.onError
+import tech.baza_trainee.mama_ne_vdoma.domain.utils.onLoading
+import tech.baza_trainee.mama_ne_vdoma.domain.utils.onSuccess
 import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.GroupsInteractor
 import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.NetworkEventsListener
 import tech.baza_trainee.mama_ne_vdoma.presentation.model.GroupUiModel
@@ -20,11 +24,7 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.Communicator
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.MAIN_PAGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.NOTIFICATIONS_PAGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.SETTINGS_PAGE
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.networkExecutor
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onError
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onLoading
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onSuccess
 
 class FoundGroupsStandaloneViewModel(
     private val communicator: Communicator<String>,

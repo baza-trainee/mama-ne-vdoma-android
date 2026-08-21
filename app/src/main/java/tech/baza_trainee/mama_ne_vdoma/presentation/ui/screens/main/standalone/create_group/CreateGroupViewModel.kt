@@ -15,6 +15,10 @@ import tech.baza_trainee.mama_ne_vdoma.domain.model.UserProfileEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatastoreManager
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserAuthRepository
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
+import tech.baza_trainee.mama_ne_vdoma.domain.utils.execute
+import tech.baza_trainee.mama_ne_vdoma.domain.utils.onError
+import tech.baza_trainee.mama_ne_vdoma.domain.utils.onLoading
+import tech.baza_trainee.mama_ne_vdoma.domain.utils.onSuccess
 import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.GroupsInteractor
 import tech.baza_trainee.mama_ne_vdoma.presentation.interactors.NetworkEventsListener
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
@@ -32,13 +36,9 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.NAME_LENGTH
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.NOTIFICATIONS_PAGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.SETTINGS_PAGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.networkExecutor
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.validateName
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.getDefaultSchedule
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onError
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onLoading
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onSuccess
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.toStateMap
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.updateSchedule
 import java.time.DayOfWeek

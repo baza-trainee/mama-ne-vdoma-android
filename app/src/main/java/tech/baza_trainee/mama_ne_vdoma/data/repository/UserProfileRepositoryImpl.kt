@@ -1,18 +1,18 @@
 package tech.baza_trainee.mama_ne_vdoma.data.repository
 
 import tech.baza_trainee.mama_ne_vdoma.data.api.UserProfileApi
+import tech.baza_trainee.mama_ne_vdoma.data.mapper.toDataModel
 import tech.baza_trainee.mama_ne_vdoma.data.mapper.toDomainModel
 import tech.baza_trainee.mama_ne_vdoma.data.model.InitChildDto
 import tech.baza_trainee.mama_ne_vdoma.data.model.LocationPatchDto
 import tech.baza_trainee.mama_ne_vdoma.data.model.UserSearchRequest
 import tech.baza_trainee.mama_ne_vdoma.data.utils.getRequestResult
-import tech.baza_trainee.mama_ne_vdoma.domain.mapper.toDataModel
 import tech.baza_trainee.mama_ne_vdoma.domain.model.PatchChildEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UserInfoEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UserRatingDomainModel
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatastoreManager
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserProfileRepository
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestResult
+import tech.baza_trainee.mama_ne_vdoma.domain.utils.RequestResult
 
 class UserProfileRepositoryImpl(
     private val userProfileApi: UserProfileApi,

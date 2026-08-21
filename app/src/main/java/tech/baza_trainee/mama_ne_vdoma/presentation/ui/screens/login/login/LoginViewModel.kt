@@ -12,6 +12,10 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import tech.baza_trainee.mama_ne_vdoma.domain.preferences.UserPreferencesDatastoreManager
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.AuthRepository
+import tech.baza_trainee.mama_ne_vdoma.domain.utils.execute
+import tech.baza_trainee.mama_ne_vdoma.domain.utils.onError
+import tech.baza_trainee.mama_ne_vdoma.domain.utils.onLoading
+import tech.baza_trainee.mama_ne_vdoma.domain.utils.onSuccess
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.navigator.ScreenNavigator
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.Graphs
 import tech.baza_trainee.mama_ne_vdoma.presentation.navigation.routes.HostScreenRoutes
@@ -20,13 +24,9 @@ import tech.baza_trainee.mama_ne_vdoma.presentation.utils.EDIT_PROFILE_PAGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.MAIN_PAGE
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestState
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.ValidField
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.networkExecutor
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.validateEmail
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.validatePassword
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onError
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onLoading
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onSuccess
 
 class LoginViewModel(
     private val navigator: ScreenNavigator,

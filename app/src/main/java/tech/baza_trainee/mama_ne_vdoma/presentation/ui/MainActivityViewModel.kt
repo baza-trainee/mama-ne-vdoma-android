@@ -6,9 +6,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import tech.baza_trainee.mama_ne_vdoma.domain.repository.UserAuthRepository
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.execute
+import tech.baza_trainee.mama_ne_vdoma.domain.utils.execute
+import tech.baza_trainee.mama_ne_vdoma.domain.utils.onSuccess
 import tech.baza_trainee.mama_ne_vdoma.presentation.utils.extensions.networkExecutor
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.onSuccess
 
 class MainActivityViewModel(
     private val userAuthRepository: UserAuthRepository

@@ -5,7 +5,7 @@ import tech.baza_trainee.mama_ne_vdoma.domain.model.PatchChildEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UserInfoEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UserProfileEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UserRatingDomainModel
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestResult
+import tech.baza_trainee.mama_ne_vdoma.domain.utils.RequestResult
 
 interface UserProfileRepository {
 

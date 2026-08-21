@@ -3,7 +3,7 @@ package tech.baza_trainee.mama_ne_vdoma.domain.repository
 import tech.baza_trainee.mama_ne_vdoma.domain.model.GroupEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.GroupFullInfoEntity
 import tech.baza_trainee.mama_ne_vdoma.domain.model.UpdateGroupEntity
-import tech.baza_trainee.mama_ne_vdoma.presentation.utils.RequestResult
+import tech.baza_trainee.mama_ne_vdoma.domain.utils.RequestResult
 
 interface GroupsRepository {
 
